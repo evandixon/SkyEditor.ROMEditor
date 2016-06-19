@@ -64,8 +64,13 @@ Public Class PsmdDir
         Await DungeonFixedPokemon.OpenFile(IO.Path.Combine(RootDirectory, "romfs", "dungeon", "fixed_pokemon.bin"), Provider)
 
         PokemonNameHashes = New List(Of Integer)
-        For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Split(vbCrLf)
-            PokemonNameHashes.Add(CInt(item.Trim))
+        For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf)
+            Dim trimmed = item.Trim
+            If IsNumeric(item.Trim(trimmed)) Then
+                PokemonNameHashes.Add(trimmed)
+            Else
+                Throw New Exception($"Invalid resource item: ""{trimmed}""")
+            End If
         Next
 
         Dim en = GetEnglishCommon()
