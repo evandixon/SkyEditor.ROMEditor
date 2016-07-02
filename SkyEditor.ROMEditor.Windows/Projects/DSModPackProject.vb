@@ -232,8 +232,10 @@ Namespace Projects
                 End Select
 
                 '-Copy patching wizard
-                IO.File.Copy(EnvironmentPaths.GetResourceName("DSPatcher.exe"), IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), True)
-                IO.File.Copy(EnvironmentPaths.GetResourceName("ICSharpCode.SharpZipLib.dll"), IO.Path.Combine(GetModPackDir, "ICSharpCode.SharpZipLib.dll"), True)
+                Dim patcherFilePath = GetType(DS_ROM_Patcher.PatcherCore).Assembly.Location
+                Dim sharpZipPath = GetType(ICSharpCode.SharpZipLib.SharpZipBaseException).Assembly.Location
+                IO.File.Copy(patcherFilePath, IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), True)
+                IO.File.Copy(sharpZipPath, IO.Path.Combine(GetModPackDir, "ICSharpCode.SharpZipLib.dll"), True)
             End Using
         End Sub
 
