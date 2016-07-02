@@ -295,49 +295,49 @@
     <Content Include="Resources\ctrtool.exe" />
     <Content Include="Resources\ffmpeg.exe" />
     <Content Include="Resources\PSMD Pokemon Name Hashes.txt" />
-    <Content Include="ROMEditor\3DS Builder.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\3DS Builder.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\lua\bin2c5.1.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\lua\bin2c5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\lua\lua5.1.dll">
+    <Content Include="SkyEditor.ROMEditor.Windows\lua\lua5.1.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\lua\lua5.1.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\lua\lua5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\lua\lua51.dll">
+    <Content Include="SkyEditor.ROMEditor.Windows\lua\lua51.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\lua\luac5.1.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\lua\luac5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\lua\Microsoft.VC80.CRT\msvcm80.dll">
+    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcm80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\lua\Microsoft.VC80.CRT\msvcp80.dll">
+    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcp80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\lua\Microsoft.VC80.CRT\msvcr80.dll">
+    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcr80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\lua\wlua5.1.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\lua\wlua5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\makerom.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\makerom.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\PSMD English Soundtrack.txt">
+    <Content Include="SkyEditor.ROMEditor.Windows\PSMD English Soundtrack.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\rom_tool.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\rom_tool.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\unluac.jar">
+    <Content Include="SkyEditor.ROMEditor.Windows\unluac.jar">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\lua\Microsoft.VC80.CRT\Microsoft.VC80.CRT.manifest">
+    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\Microsoft.VC80.CRT.manifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\vgmstream.zip" />
@@ -349,32 +349,32 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ROMEditor\dsicontool.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\dsicontool.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\facenames.txt">
+    <Content Include="SkyEditor.ROMEditor.Windows\facenames.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\ndstool.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\ndstool.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\pk3DS.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\pk3DS.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\pokenames.txt">
+    <Content Include="SkyEditor.ROMEditor.Windows\pokenames.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\ppmd_kaoutil.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\ppmd_kaoutil.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\ppmd_kaoutil.txt" />
-    <Content Include="ROMEditor\ppmd_pxcomp.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\ppmd_kaoutil.txt" />
+    <Content Include="SkyEditor.ROMEditor.Windows\ppmd_pxcomp.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\ppmd_unpx.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\ppmd_unpx.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="ROMEditor\xdelta\xdelta3.exe">
+    <Content Include="SkyEditor.ROMEditor.Windows\xdelta\xdelta3.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

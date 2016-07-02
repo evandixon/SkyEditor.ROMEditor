@@ -10,7 +10,7 @@ Namespace MenuActions
         Public Overrides Function SupportedTypes() As IEnumerable(Of TypeInfo)
             Return {GetType(CteImage).GetTypeInfo}
         End Function
-        Public Overrides Function DoAction(Targets As IEnumerable(Of Object)) As Task
+        Public Overrides Sub DoAction(Targets As IEnumerable(Of Object))
             For Each item As CteImage In Targets
                 If SaveFileDialog1.ShowDialog = DialogResult.OK Then
                     Dim format As System.Drawing.Imaging.ImageFormat
@@ -25,8 +25,7 @@ Namespace MenuActions
                     item.ContainedImage.Save(SaveFileDialog1.FileName, format)
                 End If
             Next
-            Return Task.CompletedTask
-        End Function
+        End Sub
         Public Sub New()
             MyBase.New({My.Resources.Language.MenuImage, My.Resources.Language.MenuImageExport})
             SaveFileDialog1 = New SaveFileDialog

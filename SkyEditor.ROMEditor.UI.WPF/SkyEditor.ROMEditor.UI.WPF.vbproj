@@ -53,6 +53,18 @@
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Id3, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ID3.0.4.0-beta\lib\net40\Id3.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Id3.Files, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ID3.Files.0.4.0-beta\lib\net40\Id3.Files.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ListViewDragDropManager, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ListViewDragDropManager.1.1.0.0\lib\net45\ListViewDragDropManager.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -65,11 +77,17 @@
       <HintPath>..\packages\SkyEditor.Core.Windows.4.0.3-CI00022\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SkyEditor.SaveEditor, Version=4.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.SaveEditor.4.0.3-CI00005\lib\portable45-net45+win8\SkyEditor.SaveEditor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SkyEditor.UI.WPF, Version=4.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.UI.WPF.4.0.3-CI00002\lib\net46\SkyEditor.UI.WPF.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System" />
@@ -137,6 +155,158 @@
     <Import Include="System.Windows.Navigation" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DrawingImageConverter.vb" />
+    <Compile Include="Explorers\SingleStringParameterCommandEditor.xaml.vb">
+      <DependentUpon>SingleStringParameterCommandEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Explorers\SsbScriptToolbar.xaml.vb">
+      <DependentUpon>SsbScriptToolbar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Explorers\MultiLangStringParameterEditor.xaml.vb">
+      <DependentUpon>MultiLangStringParameterEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Explorers\StringParameterEditor.xaml.vb">
+      <DependentUpon>StringParameterEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FlashcartManager.xaml.vb">
+      <DependentUpon>FlashcartManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Language.Designer.vb">
+      <DependentUpon>Language.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="ObjectControls\CteImageControl.xaml.vb">
+      <DependentUpon>CteImageControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Explorers\item_p_Editor.xaml.vb">
+      <DependentUpon>item_p_Editor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectControls\MessageBinEditor.xaml.vb">
+      <DependentUpon>MessageBinEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectControls\MessageBinEntryEditor.xaml.vb">
+      <DependentUpon>MessageBinEntryEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectControls\ModpackInfoControl.xaml.vb">
+      <DependentUpon>ModpackInfoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectControls\NDSModSrcEditor.xaml.vb">
+      <DependentUpon>NDSModSrcEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Explorers\PersonalityTest.xaml.vb">
+      <DependentUpon>PersonalityTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectControls\PsmdLuaLangIntegration.xaml.vb">
+      <DependentUpon>PsmdLuaLangIntegration.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Explorers\SSBStringDictionaryEditor.xaml.vb">
+      <DependentUpon>SSBStringDictionaryEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Explorers\SSBStringEditor.xaml.vb">
+      <DependentUpon>SSBStringEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectControls\ThreeDSModPackControl.xaml.vb">
+      <DependentUpon>ThreeDSModPackControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PluginDefinition.vb" />
+    <Compile Include="ROM.vb" />
+    <Compile Include="DeploySetup.xaml.vb">
+      <DependentUpon>DeploySetup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Explorers\SSBScriptEditor.xaml.vb">
+      <DependentUpon>SSBScriptEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\GameCodeSelector.xaml.vb">
+      <DependentUpon>GameCodeSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RomSelector.xaml.vb">
+      <DependentUpon>RomSelector.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Explorers\SingleStringParameterCommandEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Explorers\SsbScriptToolbar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Explorers\MultiLangStringParameterEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Explorers\StringParameterEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FlashcartManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ObjectControls\CteImageControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Explorers\item_p_Editor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ObjectControls\MessageBinEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ObjectControls\MessageBinEntryEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ObjectControls\ModpackInfoControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ObjectControls\NDSModSrcEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Explorers\PersonalityTest.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ObjectControls\PsmdLuaLangIntegration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Explorers\SSBStringDictionaryEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Explorers\SSBStringEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ObjectControls\ThreeDSModPackControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeploySetup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Explorers\SSBScriptEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\GameCodeSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\RomSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="My Project\AssemblyInfo.vb">
       <SubType>Code</SubType>
     </Compile>
@@ -154,6 +324,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Language.resx">
+      <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Language.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -168,6 +344,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SkyEditor.ROMEditor.Windows\SkyEditor.ROMEditor.Windows.vbproj">
+      <Project>{f05c12e8-eab7-4b9e-a8d2-d21b80c1a646}</Project>
+      <Name>SkyEditor.ROMEditor.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj">
+      <Project>{b7f1e33d-ede9-42ba-8932-6cca5891d2e0}</Project>
+      <Name>SkyEditor.ROMEditor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

@@ -93,7 +93,7 @@ Namespace MenuActions
             End If
         End Function
 
-        Public Overrides Async Function DoAction(Targets As IEnumerable(Of Object)) As Task
+        Public Overrides Async Sub DoAction(Targets As IEnumerable(Of Object))
             For Each node As SolutionNode In Targets
                 If SupportsObject(node) Then
                     Dim project As BaseRomProject = DirectCast(node, SolutionNode).Project
@@ -174,8 +174,7 @@ Namespace MenuActions
                     End Using
                 End If
             Next
-            'PluginHelper.SetLoadingStatusFinished()
-        End Function
+        End Sub
 
         Public Sub New()
             MyBase.New({My.Resources.Language.MenuUtilities, My.Resources.Language.MenuUtilitiesExportSoundtrack})
