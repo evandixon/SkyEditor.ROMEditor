@@ -11,14 +11,13 @@ Namespace MenuActions
         Public Overrides Function SupportedTypes() As IEnumerable(Of TypeInfo)
             Return {GetType(CteImage).GetTypeInfo}
         End Function
-        Public Overrides Function DoAction(Targets As IEnumerable(Of Object)) As Task
+        Public Overrides Sub DoAction(Targets As IEnumerable(Of Object))
             For Each item As CteImage In Targets
                 If OpenFileDialog1.ShowDialog = DialogResult.OK Then
                     item.ContainedImage = Bitmap.FromFile(OpenFileDialog1.FileName)
                 End If
             Next
-            Return Task.CompletedTask
-        End Function
+        End Sub
         Public Sub New()
             MyBase.New({My.Resources.Language.MenuImage, My.Resources.Language.MenuImageImport})
             OpenFileDialog1 = New OpenFileDialog
