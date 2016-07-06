@@ -5,7 +5,7 @@ Imports SkyEditor.Core.Windows.Processes
 Namespace FileFormats.Explorers
     Public Class DecompressedFile
         Inherits GenericFile
-        'Public Property RawData As Byte()
+
         Public Shared Async Function RunDecompress(sourceFilename As String, destinationFilename As String) As Task
             Using external As New ExternalProgramManager
                 Await external.RunPPMDUnPX(String.Format("""{0}"" ""{1}""", sourceFilename, destinationFilename))
