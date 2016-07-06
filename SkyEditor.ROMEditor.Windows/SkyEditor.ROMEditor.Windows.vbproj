@@ -294,6 +294,8 @@
     <Content Include="App.ico" />
     <Content Include="Resources\ctrtool.exe" />
     <Content Include="Resources\ffmpeg.exe" />
+    <Content Include="Resources\ppmd_pxcomp.exe" />
+    <Content Include="Resources\ppmd_unpx.exe" />
     <Content Include="Resources\PSMD Pokemon Name Hashes.txt" />
     <Content Include="SkyEditor.ROMEditor.Windows\3DS Builder.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -368,12 +370,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="SkyEditor.ROMEditor.Windows\ppmd_kaoutil.txt" />
-    <Content Include="SkyEditor.ROMEditor.Windows\ppmd_pxcomp.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\ppmd_unpx.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="SkyEditor.ROMEditor.Windows\xdelta\xdelta3.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

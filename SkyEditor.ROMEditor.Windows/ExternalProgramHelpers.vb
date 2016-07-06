@@ -62,6 +62,25 @@
 
         Return IO.Path.Combine(fullPath, "test.exe")
     End Function
+
+    Public Function GetPPMDUnPXPath() As String
+        Dim path = IO.Path.Combine(GetToolsDir, "ppmd_unpx.exe")
+        If Not IO.File.Exists(path) Then
+            IO.File.WriteAllBytes(path, My.Resources.ppmd_unpx)
+            ToDelete.Add(path)
+        End If
+        Return path
+    End Function
+
+    Public Function GetPPMDPXCompPath() As String
+        Dim path = IO.Path.Combine(GetToolsDir, "ppmd_pxcomp.exe")
+        If Not IO.File.Exists(path) Then
+            IO.File.WriteAllBytes(path, My.Resources.ppmd_pxcomp)
+            ToDelete.Add(path)
+        End If
+        Return path
+    End Function
+
 #End Region
 
 #Region "Run"
@@ -86,6 +105,14 @@
 
     Public Async Function RunVgmStream(arguments As String) As Task
         Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetVgmStreamPath, arguments)
+    End Function
+
+    Public Async Function RunPPMDUnPX(arguments As String) As Task
+        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetPPMDUnPXPath, arguments)
+    End Function
+
+    Public Async Function RunPPMDPXComp(arguments As String) As Task
+        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetPPMDPXCompPath, arguments)
     End Function
 
 #End Region

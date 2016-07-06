@@ -83,10 +83,9 @@ Namespace Projects
                     End If
 
                     If includeInPack Then
-                        Dim img = BGP.ConvertFromBitmap(Drawing.Bitmap.FromFile(background))
-                        img.Save(IO.Path.Combine(rawDir, "Data", "BACK", IO.Path.GetFileNameWithoutExtension(background) & ".bgp"), CurrentPluginManager.CurrentIOProvider)
-                        img.Dispose()
-                        Await BGP.RunCompress(IO.Path.Combine(rawDir, "Data", "BACK", IO.Path.GetFileNameWithoutExtension(background) & ".bgp"))
+                        Using img = BGP.ConvertFromBitmap(Drawing.Bitmap.FromFile(background))
+                            img.Save(IO.Path.Combine(rawDir, "Data", "BACK", IO.Path.GetFileNameWithoutExtension(background) & ".bgp"), CurrentPluginManager.CurrentIOProvider)
+                        End Using
                     End If
 
                 Next

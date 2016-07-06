@@ -3,7 +3,7 @@ Imports SkyEditor.Core.Utilities
 
 Namespace FileFormats.Explorers
     Public Class BGP
-        Inherits DecomressedFile
+        Inherits DecompressedFile
 
         Private Class Palette
             Public Property Colors As Generic.List(Of Color)
