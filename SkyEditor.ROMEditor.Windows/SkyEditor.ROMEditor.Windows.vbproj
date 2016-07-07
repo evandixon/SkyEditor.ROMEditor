@@ -176,6 +176,7 @@
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
     <Compile Include="Makerom.vb" />
+    <Compile Include="MenuActions\BGPImageExport.vb" />
     <Compile Include="Projects\ExplorersScriptModProject.vb" />
     <Compile Include="PsmdDir.vb" />
     <Compile Include="FileFormats\Explorers\Script\CommandGroup.vb" />

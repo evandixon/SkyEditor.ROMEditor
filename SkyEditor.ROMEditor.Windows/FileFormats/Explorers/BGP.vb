@@ -5,6 +5,11 @@ Namespace FileFormats.Explorers
     Public Class BGP
         Inherits DecompressedFile
 
+        Public Sub New()
+            MyBase.New
+            IsAT4PX = True
+        End Sub
+
         Private Class Palette
             Public Property Colors As Generic.List(Of Color)
             Public Function ToBytes() As Byte()

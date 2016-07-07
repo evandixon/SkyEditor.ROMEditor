@@ -6,6 +6,8 @@ Namespace FileFormats.Explorers
     Public Class DecompressedFile
         Inherits GenericFile
 
+        Protected Property IsAT4PX As Boolean
+
         Public Shared Async Function RunDecompress(sourceFilename As String, destinationFilename As String) As Task
             Using external As New ExternalProgramManager
                 Await external.RunPPMDUnPX(String.Format("""{0}"" ""{1}""", sourceFilename, destinationFilename))
@@ -25,6 +27,10 @@ Namespace FileFormats.Explorers
         ''' <remarks></remarks>
         Public Overrides Sub Save(Path As String, provider As IOProvider)
             Dim tempFilename = provider.GetTempFilename
+            If IsAT4PX Then
+                IO.File.Move(tempFilename, tempFilename & ".at4px")
+                tempFilename = tempFilename & ".at4px"
+            End If
             MyBase.Save(tempFilename, provider)
             RunCompress(tempFilename, Path).Wait()
             Me.OriginalFilename = Path
@@ -39,6 +45,7 @@ Namespace FileFormats.Explorers
 
         Public Sub New()
             Me.EnableInMemoryLoad = True
+            IsAT4PX = False
         End Sub
     End Class
 End Namespace
