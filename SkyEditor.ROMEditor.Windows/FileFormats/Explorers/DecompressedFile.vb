@@ -17,7 +17,7 @@ Namespace FileFormats.Explorers
         Public Shared Async Function RunCompress(sourceFilename As String, destinationFilename As String) As Task
             Using external As New ExternalProgramManager
                 'Todo: specify encryption
-                Await external.RunPPMDPXComp(String.Format("""{0}"" ""{1}""", sourceFilename, destinationFilename))
+                Await external.RunPPMDPXComp(String.Format("""{0}"" ""{1}""", sourceFilename, destinationFilename)).ConfigureAwait(False)
             End Using
         End Function
 

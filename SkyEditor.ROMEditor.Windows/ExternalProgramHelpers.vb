@@ -112,7 +112,7 @@
     End Function
 
     Public Async Function RunPPMDPXComp(arguments As String) As Task
-        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetPPMDPXCompPath, arguments)
+        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgramNoOutput(GetPPMDPXCompPath, arguments).ConfigureAwait(False)
     End Function
 
 #End Region
