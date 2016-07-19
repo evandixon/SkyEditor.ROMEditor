@@ -62,10 +62,6 @@
     <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DSPatcher, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DSPatcher.1.0.0-CI00000\lib\net46\DSPatcher.exe</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
@@ -75,15 +71,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.0.4-CI00048\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.4.0.4-CI59\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SkyEditor.Core.Windows, Version=4.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.Windows.4.0.4-CI00048\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.Windows.4.0.4-CI59\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.SaveEditor, Version=4.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.SaveEditor.4.0.3\lib\portable45-net45+win8\SkyEditor.SaveEditor.dll</HintPath>
+    <Reference Include="SkyEditor.SaveEditor, Version=4.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.SaveEditor.4.0.4-CI17\lib\portable45-net45+win8\SkyEditor.SaveEditor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
