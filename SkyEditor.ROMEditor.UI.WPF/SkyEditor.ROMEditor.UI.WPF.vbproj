@@ -341,6 +341,7 @@
     </None>
     <AppDesigner Include="My Project\" />
     <None Include="packages.config" />
+    <None Include="SkyEditor.ROMEditor.UI.WPF.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
