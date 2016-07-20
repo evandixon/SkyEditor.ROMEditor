@@ -54,11 +54,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Id3, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ID3.0.4.0-beta\lib\net40\Id3.dll</HintPath>
+      <HintPath>..\packages\ID3.0.3.0\lib\net40\Id3.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Id3.Files, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ID3.Files.0.4.0-beta\lib\net40\Id3.Files.dll</HintPath>
+      <HintPath>..\packages\ID3.Files.0.3.0\lib\net40\Id3.Files.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ListViewDragDropManager, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
