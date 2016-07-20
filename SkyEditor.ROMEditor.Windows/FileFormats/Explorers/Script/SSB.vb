@@ -505,7 +505,10 @@ Namespace FileFormats.Explorers.Script
         End Sub
 
         Public Function GetDefaultExtension() As String Implements ISavableAs.GetDefaultExtension
-            Return ".ssb"
+            Return "ssb"
+        End Function
+        Public Function GetSupportedExtensions() As IEnumerable(Of String) Implements ISavableAs.GetSupportedExtensions
+            Return {"ssb"}
         End Function
 #End Region
 
@@ -561,6 +564,7 @@ Namespace FileFormats.Explorers.Script
         Public Sub RaiseModified()
             RaiseEvent Modified(Me, New EventArgs)
         End Sub
+
 #End Region
 
 

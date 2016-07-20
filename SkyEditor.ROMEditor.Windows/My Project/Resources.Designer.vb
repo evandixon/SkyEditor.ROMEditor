@@ -81,6 +81,26 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized resource of type System.Byte[].
+        '''</summary>
+        Friend ReadOnly Property ppmd_pxcomp() As Byte()
+            Get
+                Dim obj As Object = ResourceManager.GetObject("ppmd_pxcomp", resourceCulture)
+                Return CType(obj,Byte())
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Byte[].
+        '''</summary>
+        Friend ReadOnly Property ppmd_unpx() As Byte()
+            Get
+                Dim obj As Object = ResourceManager.GetObject("ppmd_unpx", resourceCulture)
+                Return CType(obj,Byte())
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to 150118018
         '''781321446
         '''-1427025407
