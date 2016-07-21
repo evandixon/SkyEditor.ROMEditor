@@ -25,6 +25,7 @@ Namespace Projects
             End If
             Dim LSPatcher As New FilePatcher()
             With LSPatcher
+                Throw New NotImplementedException("Todo: provide absolute path for LanguageStringPatcher.exe")
                 .CreatePatchProgram = "LanguageStringPatcher.exe"
                 .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
                 .ApplyPatchProgram = "LanguageStringPatcher.exe"
