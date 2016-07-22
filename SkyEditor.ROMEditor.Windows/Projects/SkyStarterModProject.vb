@@ -24,11 +24,11 @@ Namespace Projects
                 patchers = New List(Of FilePatcher)
             End If
             Dim LSPatcher As New FilePatcher()
+            Dim lsFilePath = GetType(LanguageStringPatcher.LanguageString).Assembly.Location
             With LSPatcher
-                Throw New NotImplementedException("Todo: provide absolute path for LanguageStringPatcher.exe")
-                .CreatePatchProgram = "LanguageStringPatcher.exe"
+                .CreatePatchProgram = lsFilePath
                 .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
-                .ApplyPatchProgram = "LanguageStringPatcher.exe"
+                .ApplyPatchProgram = lsFilePath
                 .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
                 .MergeSafe = True
                 .PatchExtension = "textstrlsp"
