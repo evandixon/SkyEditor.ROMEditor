@@ -421,7 +421,7 @@ Namespace Projects
                                                           Dim newF As String = IO.Path.Combine(currentFiles, Item.Trim("\"))
                                                           Dim patchFile As String = IO.Path.Combine(modTempFiles, Item.Trim("\") & "." & patcher.PatchExtension.Trim("*").Trim("."))
 
-                                                          Await ConsoleApp.RunProgram(IO.Path.Combine(EnvironmentPaths.GetResourceDirectory, patcher.CreatePatchProgram), String.Format(patcher.CreatePatchArguments, oldF, newF, patchFile))
+                                                          Await ConsoleApp.RunProgram(patcher.CreatePatchProgram, String.Format(patcher.CreatePatchArguments, oldF, newF, patchFile))
                                                           patchMade = True
                                                           Exit For
                                                       End If
@@ -455,7 +455,7 @@ Namespace Projects
                 End If
                 For Each item In patchers
                     If item IsNot Nothing Then
-                        IO.File.Copy(IO.Path.Combine(EnvironmentPaths.GetResourceDirectory, item.ApplyPatchProgram), IO.Path.Combine(modTempTools, IO.Path.GetFileName(item.ApplyPatchProgram)), True)
+                        IO.File.Copy(item.ApplyPatchProgram, IO.Path.Combine(modTempTools, IO.Path.GetFileName(item.ApplyPatchProgram)), True)
                     End If
                 Next
                 Json.SerializeToFile(IO.Path.Combine(modTempTools, "patchers.json"), patchers, CurrentPluginManager.CurrentIOProvider)

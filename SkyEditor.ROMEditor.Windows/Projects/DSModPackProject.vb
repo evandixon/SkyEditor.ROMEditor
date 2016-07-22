@@ -169,7 +169,7 @@ Namespace Projects
             'IO.File.Copy(PluginHelper.GetResourceName("xdelta/xdelta3.exe"), IO.Path.Combine(toolsDir, "xdelta3.exe"), True)
             '-Ensure xdelta is registered as a patching program
             Dim xdelta As New FilePatcher
-            xdelta.ApplyPatchProgram = "xdelta\xdelta3.exe"
+            xdelta.ApplyPatchProgram = IO.Path.Combine(EnvironmentPaths.GetResourceDirectory, "xdelta\xdelta3.exe")
             xdelta.ApplyPatchArguments = "-d -n -s ""{0}"" ""{1}"" ""{2}"""
             xdelta.MergeSafe = False
             xdelta.PatchExtension = "xdelta"
@@ -177,10 +177,11 @@ Namespace Projects
             '-Copy patchers
             IO.File.WriteAllText(IO.Path.Combine(modpackToolsDir, "patchers.json"), Json.Serialize(patchers))
             For Each item In patchers
-                If Not IO.Directory.Exists(IO.Path.GetDirectoryName(IO.Path.Combine(GetPatchersDir, item.ApplyPatchProgram))) Then
-                    IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(IO.Path.Combine(GetPatchersDir, item.ApplyPatchProgram)))
+                Dim patcherDestination = IO.Path.Combine(GetPatchersDir, IO.Path.GetFileName(item.ApplyPatchProgram))
+                If Not IO.Directory.Exists(IO.Path.GetDirectoryName(patcherDestination)) Then
+                    IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(patcherDestination))
                 End If
-                IO.File.Copy(IO.Path.Combine(EnvironmentPaths.GetResourceDirectory, item.ApplyPatchProgram), IO.Path.Combine(GetPatchersDir, item.ApplyPatchProgram), True)
+                IO.File.Copy(item.ApplyPatchProgram, patcherDestination, True)
                 '--Copy Dependencies
                 If item.ApplyPatchDependencies IsNot Nothing Then
                     For Each d In item.ApplyPatchDependencies

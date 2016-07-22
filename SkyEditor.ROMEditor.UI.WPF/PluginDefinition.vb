@@ -24,6 +24,8 @@ Public Class PluginDefinition
     Public Overrides Sub Load(Manager As PluginManager)
         'Load the plugin this one depends on
         Manager.LoadRequiredPlugin(New SkyEditor.ROMEditor.Windows.PluginDefinition, Me)
+        Manager.LoadRequiredPlugin(New SkyEditor.CodeEditor.PluginDefinition, Me)
+        Manager.LoadRequiredPlugin(New SkyEditor.CodeEditor.UI.WPF.PluginInfo, Me)
     End Sub
 
     Public Overrides Sub UnLoad(Manager As PluginManager)

@@ -10,6 +10,27 @@ Namespace FileFormats.PSMD
         Inherits GenericFile
         Implements IOpenableFile
 
+        Public Sub New()
+            MyBase.New()
+            Me.EnableInMemoryLoad = True
+        End Sub
+
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+            Await MyBase.OpenFile(Filename, Provider)
+
+            Dim sir0Type = Me.Int32(&H20)
+            Dim sir0Offset = Me.Int32(&H24)
+            Dim sir0Length = Me.Int32(&H28)
+            DataOffset = Me.Int32(&H2C)
+            Dim datLength = Me.Int32(&H30)
+
+            'Todo: use another class for another sir0 type
+            'This code is for sir0 type 5
+            Header = New Sir0Fat5
+            Header.EnableInMemoryLoad = True
+            Header.CreateFile("", Me.RawData(sir0Offset, sir0Length))
+        End Function
+
         Public Property Header As Sir0Fat5
         Protected Property DataOffset As Integer
 
@@ -104,35 +125,20 @@ Namespace FileFormats.PSMD
                     out.Add(CUInt(item.Key), item.Value)
                 Next
             End If
-            'If IO.File.Exists(resourceFile) Then
-            '    Dim i As New BasicIniFile
-            '    i.OpenFile(resourceFile)
-            '    For Each item In i.Entries
-            '        out.Add(CUInt(item.Key), item.Value)
-            '    Next
-            'End If
             Return out
         End Function
 
-        Public Sub New()
-            MyBase.New()
-            Me.EnableInMemoryLoad = True
-        End Sub
-
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
-            Await MyBase.OpenFile(Filename, Provider)
-
-            Dim sir0Type = Me.Int32(&H20)
-            Dim sir0Offset = Me.Int32(&H24)
-            Dim sir0Length = Me.Int32(&H28)
-            DataOffset = Me.Int32(&H2C)
-            Dim datLength = Me.Int32(&H30)
-
-            'Todo: use another class for another sir0 type
-            'This code is for sir0 type 5
-            Header = New Sir0Fat5
-            Header.EnableInMemoryLoad = True
-            Header.CreateFile("", Me.RawData(sir0Offset, sir0Length))
+        Private Shared Function GetReverseFileDictionary(Filename As String, provider As IOProvider) As Dictionary(Of String, UInteger)
+            Dim out As New Dictionary(Of String, UInteger)
+            Dim resource = My.Resources.FarcFilenames.ResourceManager.GetString(IO.Path.GetFileNameWithoutExtension(Filename))
+            If Not String.IsNullOrEmpty(resource) Then
+                Dim i As New BasicIniFile
+                i.CreateFile(resource)
+                For Each item In i.Entries
+                    out.Add(item.Value, CUInt(item.Key))
+                Next
+            End If
+            Return out
         End Function
 
         Public Shared Function Pack(SourceDirectory As String, DestinationFarcFilename As String, provider As IOProvider) As Task
@@ -236,19 +242,6 @@ Namespace FileFormats.PSMD
 
             'archive.Dispose()
             Return Task.CompletedTask
-        End Function
-
-        Private Shared Function GetReverseFileDictionary(Filename As String, provider As IOProvider) As Dictionary(Of String, UInteger)
-            Dim out As New Dictionary(Of String, UInteger)
-            Dim resourceFile = EnvironmentPaths.GetResourceName(IO.Path.Combine("farc", IO.Path.GetFileNameWithoutExtension(Filename) & ".txt"))
-            If IO.File.Exists(resourceFile) Then
-                Dim i As New BasicIniFile
-                i.OpenFile(resourceFile, provider)
-                For Each item In i.Entries
-                    out.Add(item.Value, CUInt(item.Key))
-                Next
-            End If
-            Return out
         End Function
 
 #Region "IDisposable Support"

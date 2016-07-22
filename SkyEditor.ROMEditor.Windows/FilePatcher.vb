@@ -5,7 +5,7 @@
     ''' <returns></returns>
     Public Property FilePath As String
     ''' <summary>
-    ''' Path of the program to create a patch, relative to ROMEditor's plugin directory.
+    ''' Absolute path of the program used to create a patch.
     ''' </summary>
     ''' <returns></returns>
     Public Property CreatePatchProgram As String
@@ -16,7 +16,7 @@
     ''' <returns></returns>
     Public Property CreatePatchArguments As String
     ''' <summary>
-    ''' Path of the patcher program, relative to ROMEditor's plugin directory.
+    ''' Absolute path of the program used to apply a patch.
     ''' Will be placed in the Tools directory of a mod pack, and any dependencies should be supplied by FilePatcher.ApplyPatchDependencies.
     ''' </summary>
     ''' <returns></returns>
