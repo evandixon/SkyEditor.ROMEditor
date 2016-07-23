@@ -15,19 +15,14 @@ Namespace ViewModels
         Public Property MessageTabs As ObservableCollection(Of TabItem)
 
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
-            'Todo: re-enable this once CurrentPluginManager is fixed
-            Return MyBase.SupportsObject(Obj) 'AndAlso CurrentPluginManager.CurrentIOUIManager.GetOpenedFileProject(Obj) IsNot Nothing
+            Return MyBase.SupportsObject(Obj) AndAlso CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(Obj) IsNot Nothing
         End Function
 
         Public Overrides Async Sub SetModel(model As Object)
             MyBase.SetModel(model)
 
             Dim codeFile As LuaCodeFile = model
-            ''Todo: restore this when bug is fixed
-            'Dim project = CurrentPluginManager.CurrentIOUIManager.GetOpenedFileProject(codeFile)
-            Dim manager As PluginManager = CurrentPluginManager
-            Dim project = manager.CurrentIOUIManager.CurrentSolution.GetAllProjects.Where(Function(x) TypeOf x Is PsmdLuaProject).First
-
+            Dim project = CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(codeFile)
 
             Dim messageFiles As New Dictionary(Of String, MessageBin)
             For Each item In Directory.GetDirectories(Path.Combine(project.GetRootDirectory, "Languages"), "*", SearchOption.TopDirectoryOnly)

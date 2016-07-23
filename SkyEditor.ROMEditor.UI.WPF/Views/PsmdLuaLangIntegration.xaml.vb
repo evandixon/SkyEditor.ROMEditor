@@ -17,16 +17,12 @@ Public Class PsmdLuaLangIntegration
         Return 1
     End Function
 
-    'Public Overrides Function SupportsObject(Obj As Object) As Boolean
-    '    Return CurrentPluginManager.CurrentIOUIManager.GetOpenedFileProject(Obj) IsNot Nothing
-    'End Function
-
     Private Sub OnModified(sender As Object, e As EventArgs)
         IsModified = True
     End Sub
 
     Private Async Sub btnAdd_Click(sender As Object, e As RoutedEventArgs) Handles btnAdd.Click
-        Dim p As Projects.PsmdLuaProject = CurrentPluginManager.CurrentIOUIManager.CurrentSolution.GetAllProjects.Where(Function(x) TypeOf x Is PsmdLuaProject).First 'CurrentPluginManager.CurrentIOUIManager.GetOpenedFileProject(ObjectToEdit)
+        Dim p As Projects.PsmdLuaProject = CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(ObjectToEdit)
         Dim oldText As String = btnAdd.Content
         If Not p.IsLanguageLoaded Then
             btnAdd.IsEnabled = False
