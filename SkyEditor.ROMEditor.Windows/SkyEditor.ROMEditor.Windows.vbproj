@@ -194,6 +194,7 @@
     <Compile Include="Makerom.vb" />
     <Compile Include="MenuActions\BGPImageExport.vb" />
     <Compile Include="Projects\ExplorersScriptModProject.vb" />
+    <Compile Include="Projects\PpmduStatsUtilProject.vb" />
     <Compile Include="PsmdDir.vb" />
     <Compile Include="FileFormats\Explorers\Script\CommandGroup.vb" />
     <Compile Include="FileFormats\Explorers\Script\SSA.vb" />
@@ -311,7 +312,9 @@
     <Content Include="App.ico" />
     <Content Include="Resources\ctrtool.exe" />
     <Content Include="Resources\ffmpeg.exe" />
+    <None Include="Resources\pmd2data.xml" />
     <Content Include="Resources\ppmd_pxcomp.exe" />
+    <None Include="Resources\ppmd_statsutil.exe" />
     <Content Include="Resources\ppmd_unpx.exe" />
     <Content Include="Resources\PSMD Pokemon Name Hashes.txt" />
     <Content Include="SkyEditor.ROMEditor.Windows\3DS Builder.exe">
