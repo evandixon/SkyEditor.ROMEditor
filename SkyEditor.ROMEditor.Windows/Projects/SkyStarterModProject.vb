@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.Projects
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
 
 Namespace Projects

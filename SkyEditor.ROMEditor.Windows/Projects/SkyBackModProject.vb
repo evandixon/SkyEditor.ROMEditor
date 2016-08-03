@@ -1,5 +1,6 @@
 ﻿Imports System.Collections.Concurrent
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
 

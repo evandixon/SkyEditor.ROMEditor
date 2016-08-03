@@ -2,6 +2,7 @@
 Imports System.Reflection
 Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.UI
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
@@ -83,8 +84,8 @@ Namespace MenuActions
         End Function
 
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
-            If TypeOf Obj Is SolutionNode AndAlso DirectCast(Obj, SolutionNode).Project IsNot Nothing AndAlso TypeOf DirectCast(Obj, SolutionNode).Project Is BaseRomProject Then
-                Dim proj As BaseRomProject = DirectCast(Obj, SolutionNode).Project
+            If TypeOf Obj Is SolutionNode AndAlso DirectCast(Obj, SolutionNode).Item IsNot Nothing AndAlso TypeOf DirectCast(Obj, SolutionNode).Item Is BaseRomProject Then
+                Dim proj As BaseRomProject = DirectCast(Obj, SolutionNode).Item
                 Dim psmd As New Regex(GameStrings.PSMDCode)
 
                 Return proj.RomSystem = "3DS" AndAlso psmd.IsMatch(proj.GameCode)
@@ -96,7 +97,7 @@ Namespace MenuActions
         Public Overrides Async Sub DoAction(Targets As IEnumerable(Of Object))
             For Each node As SolutionNode In Targets
                 If SupportsObject(node) Then
-                    Dim project As BaseRomProject = DirectCast(node, SolutionNode).Project
+                    Dim project As BaseRomProject = DirectCast(node, SolutionNode).Item
                     Dim sourceDir As String = IO.Path.Combine(project.GetRawFilesDir, "romfs", "sound", "stream")
                     Dim destDir As String = IO.Path.Combine(project.GetRootDirectory, "Soundtrack")
 

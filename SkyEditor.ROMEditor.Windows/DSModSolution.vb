@@ -1,6 +1,7 @@
 ﻿Imports System.Reflection
 Imports SkyEditor.Core
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.Projects
 Imports SkyEditor.ROMEditor.Windows.Projects
 
 Public Class DSModSolution

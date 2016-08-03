@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports SkyEditor.Core
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.ROMEditor
 
