@@ -153,6 +153,36 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to dofile(&quot;script/include/inc_all.lua&quot;)
+        '''dofile(&quot;script/include/inc_event.lua&quot;)
+        '''dofile(&quot;script/include/inc_charchoice.lua&quot;)
+        '''local sunny = 0
+        '''local calm = 0
+        '''local flexible = 0
+        '''local serious = 0
+        '''local cooperate = 0
+        '''local chartype = &quot;&quot;
+        '''local basecharname = &quot;&quot;
+        '''local charname = &quot;&quot;
+        '''local persontype = &quot;&quot;
+        '''local pertnername = &quot;&quot;
+        '''local pertnergender = &quot;&quot;
+        '''function groundInit()
+        '''end
+        '''function groundStart()
+        '''end
+        '''function seikakushindansetsumei01_init()
+        '''end
+        '''function seikakushindansetsumei01_start()
+        '''  SCREEN_ [rest of string was truncated]&quot;;.
+        '''</summary>
+        Friend ReadOnly Property PSMDStarterIntroScript() As String
+            Get
+                Return ResourceManager.GetString("PSMDStarterIntroScript", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized resource of type System.Byte[].
         '''</summary>
         Friend ReadOnly Property vgmstream() As Byte()

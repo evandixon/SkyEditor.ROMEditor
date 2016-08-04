@@ -344,6 +344,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Patching Scripts....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingPatchingScripts() As String
+            Get
+                Return ResourceManager.GetString("LoadingPatchingScripts", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Unpacking....
         '''</summary>
         Friend Shared ReadOnly Property LoadingUnpacking() As String

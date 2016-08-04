@@ -265,4 +265,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="ErrorModPackTypeNotSupported" xml:space="preserve">
     <value>The given system type "{0}" is not supported.</value>
   </data>
+  <data name="LoadingPatchingScripts" xml:space="preserve">
+    <value>Patching Scripts...</value>
+  </data>
 </root>

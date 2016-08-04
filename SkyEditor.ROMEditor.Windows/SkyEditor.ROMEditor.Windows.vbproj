@@ -185,6 +185,7 @@
     <Compile Include="FileFormats\PSMD\ItemDataInfo.vb" />
     <Compile Include="FileFormats\PSMD\MessageBinStringEntry.vb" />
     <Compile Include="FileFormats\PSMD\PokemonDataInfo.vb" />
+    <Compile Include="FileFormats\PSMD\Pokemon\ActorDataInfo.vb" />
     <Compile Include="FileFormats\PSMD\WazaDataInfo.vb" />
     <Compile Include="Language.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -194,6 +195,7 @@
     <Compile Include="Makerom.vb" />
     <Compile Include="MenuActions\BGPImageExport.vb" />
     <Compile Include="Projects\Mods\ExplorersScriptModProject.vb" />
+    <Compile Include="Projects\Mods\PSMDStarterMod.vb" />
     <Compile Include="PsmdDir.vb" />
     <Compile Include="FileFormats\Explorers\Script\CommandGroup.vb" />
     <Compile Include="FileFormats\Explorers\Script\SSA.vb" />
@@ -314,6 +316,7 @@
     <Content Include="Resources\ppmd_pxcomp.exe" />
     <Content Include="Resources\ppmd_unpx.exe" />
     <Content Include="Resources\PSMD Pokemon Name Hashes.txt" />
+    <Content Include="Resources\PSMDStarterIntroScript.txt" />
     <Content Include="SkyEditor.ROMEditor.Windows\3DS Builder.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
