@@ -2,7 +2,7 @@
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
 
-Namespace Projects
+Namespace Projects.Mods
     Public Class SkyStarterModProject
         Inherits GenericModProject
 

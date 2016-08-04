@@ -1,13 +1,12 @@
 ﻿Imports System.Collections.Concurrent
 Imports System.Text.RegularExpressions
-Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.Core.Windows.Processes
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
 
-Namespace Projects
+Namespace Projects.Mods
     Public Class PsmdLuaProject
         Inherits GenericModProject
 

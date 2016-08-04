@@ -3,6 +3,7 @@ Imports SkyEditor.ROMEditor.UI.WPF.ViewModels
 Imports SkyEditor.ROMEditor.Windows
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
 Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.ROMEditor.Windows.Projects.Mods
 Imports SkyEditor.UI.WPF
 
 Public Class PsmdLuaLangIntegration
@@ -22,7 +23,7 @@ Public Class PsmdLuaLangIntegration
     End Sub
 
     Private Async Sub btnAdd_Click(sender As Object, e As RoutedEventArgs) Handles btnAdd.Click
-        Dim p As Projects.PsmdLuaProject = CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(ObjectToEdit)
+        Dim p As PsmdLuaProject = CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(ObjectToEdit)
         Dim oldText As String = btnAdd.Content
         If Not p.IsLanguageLoaded Then
             btnAdd.IsEnabled = False

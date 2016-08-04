@@ -1,8 +1,6 @@
-﻿Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.Projects
-Imports SkyEditor.Core.Utilities
+﻿Imports SkyEditor.Core.Projects
 
-Namespace Projects
+Namespace Projects.Mods
     Public Class ExplorersScriptModProject
         Inherits GenericModProject
         Public Overrides Function GetRawFilesDir() As String

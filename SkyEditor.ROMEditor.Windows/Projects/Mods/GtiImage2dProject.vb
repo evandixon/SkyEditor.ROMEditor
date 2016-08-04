@@ -1,9 +1,8 @@
-﻿Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.Projects
+﻿Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
 
-Namespace Projects
+Namespace Projects.Mods
     Public Class GtiImage2dProject
         Inherits GenericModProject
 

@@ -1,10 +1,10 @@
 ﻿Imports System.Security.Cryptography
 Imports System.Text.RegularExpressions
-Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.Core.Windows.Processes
+
 Namespace Projects
     Public Class GenericModProject
         Inherits Project

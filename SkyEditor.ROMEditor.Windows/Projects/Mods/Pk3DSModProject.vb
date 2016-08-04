@@ -1,7 +1,6 @@
-﻿Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.Windows
+﻿Imports SkyEditor.Core.Windows
 
-Namespace Projects
+Namespace Projects.Mods
     Public Class Pk3DSModProject
         Inherits GenericModProject
         Public Overrides Function GetSupportedGameCodes() As IEnumerable(Of String)
