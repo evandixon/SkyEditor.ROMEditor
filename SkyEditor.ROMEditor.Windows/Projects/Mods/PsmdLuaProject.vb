@@ -7,8 +7,51 @@ Imports SkyEditor.Core.Windows.Processes
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
 
 Namespace Projects.Mods
+    ''' <summary>
+    ''' A mod project that allows editing the scripts and associated language files of PSMD and GTI.
+    ''' </summary>
     Public Class PsmdLuaProject
         Inherits GenericModProject
+
+        Public Sub New()
+            MyBase.New
+            ExistingLanguageIds = New HashSet(Of UInteger)
+            AddScriptsToProject = True
+        End Sub
+
+#Region "Event Handlers"
+        Private Async Sub GenericModProject_ProjectOpened(sender As Object, e As EventArgs) Handles Me.ProjectOpened
+            'Fix bug from Beta 1
+            'Re-extract the language files if they don't exist
+            If IO.Directory.Exists(IO.Path.Combine(Me.GetRootDirectory, "Languages")) AndAlso IO.Directory.GetFiles(IO.Path.Combine(Me.GetRootDirectory, "Languages"), "*", IO.SearchOption.AllDirectories).Length = 0 Then
+                Await ExtractLanguages()
+            End If
+        End Sub
+#End Region
+
+#Region "Properties"
+
+        ''' <summary>
+        ''' List of all language IDs that are in use.
+        ''' </summary>
+        Private Property ExistingLanguageIds As HashSet(Of UInteger)
+
+        ''' <summary>
+        ''' Gets or sets whether or not the scripts will be visibly added to the project during initialization.
+        ''' </summary>
+        Protected Property AddScriptsToProject As Boolean
+
+        ''' <summary>
+        ''' Gets the task that loads the Language file IDs, to avoid duplicate keys.
+        ''' </summary>
+        Public ReadOnly Property LanguageLoadTask As Task
+            Get
+                Return _languageLoadTask
+            End Get
+        End Property
+        Dim _languageLoadTask As Task
+
+#End Region
 
         Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)
             Dim patchers = New List(Of FilePatcher)
@@ -30,19 +73,6 @@ Namespace Projects.Mods
             Return patchers
         End Function
 
-        Private Property LanguageIDDictionary As ConcurrentDictionary(Of UInteger, Boolean)
-
-        ''' <summary>
-        ''' Gets the task that loads the Language file IDs, to avoid duplicate keys.
-        ''' </summary>
-        ''' <returns></returns>
-        Public ReadOnly Property LanguageLoadTask As Task
-            Get
-                Return _languageLoadTask
-            End Get
-        End Property
-        Dim _languageLoadTask As Task
-
         Public Function IsLanguageLoaded() As Boolean
             Return LanguageLoadTask IsNot Nothing AndAlso LanguageLoadTask.IsCompleted
         End Function
@@ -61,18 +91,11 @@ Namespace Projects.Mods
 
             Await LanguageLoadTask
 
-            'Validate the ID
-Validate:
-            For Each item In LanguageIDDictionary.Keys
-                If item = newID AndAlso LanguageIDDictionary(item) = True Then
-                    'Then this ID is in use.  Increment by 1 and try again
-                    newID += 1
-                    GoTo Validate
-                End If
-            Next
-
-            'the ID must be valid.  Let's register it.
-            LanguageIDDictionary(newID) = True
+            'Find a unique ID
+            While ExistingLanguageIds.Contains(newID)
+                newID += 1
+            End While
+            ExistingLanguageIds.Add(newID)  'Register the new ID so it can't be used again
 
             Return newID
         End Function
@@ -93,11 +116,7 @@ Validate:
                                                                                   Await msg.OpenFileOnlyIDs(File, CurrentPluginManager.CurrentIOProvider)
 
                                                                                   For Each entry In msg.Strings
-                                                                                      'If LanguageIDs(lang).Contains(entry.Hash) Then
-                                                                                      '    'Todo: throw an error of some sort
-                                                                                      'Else
-                                                                                      LanguageIDDictionary(entry.Hash) = True
-                                                                                      'End If
+                                                                                      ExistingLanguageIds.Add(entry.Hash)
                                                                                   Next
                                                                               End Using
                                                                           End Function, IO.Directory.GetFiles(Item))
@@ -152,7 +171,7 @@ Validate:
                                 End Function, languageDirFilenames)
         End Function
 
-        Private _languageExtractTask As Task
+
         ''' <summary>
         ''' Extracts the language files.
         ''' If called multiple times, only extracts once.
@@ -164,14 +183,7 @@ Validate:
             End If
             Return _languageExtractTask
         End Function
-
-        Private Async Sub GenericModProject_ProjectOpened(sender As Object, e As EventArgs) Handles Me.ProjectOpened
-            'Fix bug from Beta 1
-            'Re-extract the language files if they don't exist
-            If IO.Directory.Exists(IO.Path.Combine(Me.GetRootDirectory, "Languages")) AndAlso IO.Directory.GetFiles(IO.Path.Combine(Me.GetRootDirectory, "Languages"), "*", IO.SearchOption.AllDirectories).Length = 0 Then
-                Await ExtractLanguages()
-            End If
-        End Sub
+        Private _languageExtractTask As Task
 
         Protected Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
@@ -228,12 +240,14 @@ Validate:
             '                        Await Me.AddExistingFile(d, Item, CurrentPluginManager.CurrentIOProvider)
             '                    End Function, filesToOpen)
 
-            Dim batchAdd As New List(Of Project.AddExistingFileBatchOperation)
-            For Each item In filesToOpen
-                Dim d = IO.Path.GetDirectoryName(item).Replace(scriptDestination, "script")
-                batchAdd.Add(New Project.AddExistingFileBatchOperation With {.ParentPath = d, .ActualFilename = item})
-            Next
-            Await Me.RecreateRootWithExistingFiles(batchAdd, CurrentPluginManager.CurrentIOProvider)
+            If AddScriptsToProject Then
+                Dim batchAdd As New List(Of Project.AddExistingFileBatchOperation)
+                For Each item In filesToOpen
+                    Dim d = IO.Path.GetDirectoryName(item).Replace(scriptDestination, "script")
+                    batchAdd.Add(New Project.AddExistingFileBatchOperation With {.ParentPath = d, .ActualFilename = item})
+                Next
+                Await Me.RecreateRootWithExistingFiles(batchAdd, CurrentPluginManager.CurrentIOProvider)
+            End If
 
             BuildProgress = 1
             Me.BuildStatusMessage = My.Resources.Language.Complete
@@ -331,10 +345,7 @@ Validate:
             Return {GameStrings.GTICode, GameStrings.PSMDCode}
         End Function
 
-        Public Sub New()
-            MyBase.New
-            LanguageIDDictionary = New ConcurrentDictionary(Of UInteger, Boolean)
-        End Sub
+
     End Class
 
 End Namespace
