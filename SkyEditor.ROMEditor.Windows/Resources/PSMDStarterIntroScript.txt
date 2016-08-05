@@ -1,0 +1,110 @@
+﻿dofile("script/include/inc_all.lua")
+dofile("script/include/inc_event.lua")
+dofile("script/include/inc_charchoice.lua")
+local sunny = 0
+local calm = 0
+local flexible = 0
+local serious = 0
+local cooperate = 0
+local chartype = ""
+local basecharname = ""
+local charname = ""
+local persontype = ""
+local pertnername = ""
+local pertnergender = ""
+function groundInit()
+end
+function groundStart()
+end
+function seikakushindansetsumei01_init()
+end
+function seikakushindansetsumei01_start()  
+  SOUND:PlayBgm(SymSnd("BGM_EVE_SHINPI"), Volume(256))
+  
+  repeat
+    WINDOW:CloseMessage()
+    WINDOW:SysMsg(200000)
+    WINDOW:SelectStart()
+    WINDOW:SelectChain(200001, 0)
+    WINDOW:SelectChain(200002, 1)
+    WINDOW:SelectChain(200003, 2)
+    WINDOW:DefaultCursor(0)
+    local id = WINDOW:SelectEnd(MENU_SELECT_MODE.DISABLE_CANCEL)
+   
+    if id == 1 then
+      WINDOW:SysMsg( 200004 )
+      local oldpokemonid = SymAct("HERO"):GetIndex()
+      local menu      = MENU:CreateNumericMenuWindow(ScreenType.A)
+      menu:SetLayoutRect(Rectangle(96, 80, 132, 84))
+      menu:SetPlace(3)
+      menu:SetDigit(3)
+      menu:SetStartNum(initval)
+      menu:SetType(NUM_MENU_TYPE.TYPE_DIGIT_ON)
+      menu:SetTextOffset(24, 40)
+      function menu:decideAction()
+        charname = self:GetSettingData()
+        GROUND:SetHero(charname, 0)
+        CHARA:ReloadHeroPartner()
+        self:Close()
+      end
+      function menu:cancelAction()
+        charname = oldpokemonid
+        GROUND:SetHero(charname, 0)
+        CHARA:ReloadHeroPartner()
+        self:Close()
+      end
+      menu:Open()
+      menu:SetCaption("Pokemon ID")
+      MENU:SetFocus(menu)
+      MENU:WaitClose(menu)
+      
+    elseif id == 2 then
+      WINDOW:SysMsg( 200005 )
+      local oldpokemonid = SymAct("HERO"):GetIndex()
+      local menu      = MENU:CreateNumericMenuWindow(ScreenType.A)
+      menu:SetLayoutRect(Rectangle(96, 80, 132, 84))
+      menu:SetPlace(3)
+      menu:SetDigit(3)
+      menu:SetStartNum(initval)
+      menu:SetType(NUM_MENU_TYPE.TYPE_DIGIT_ON)
+      menu:SetTextOffset(24, 40)
+      function menu:decideAction()
+        pertnername = self:GetSettingData()
+        GROUND:SetPartner(pertnername, 0)
+        CHARA:ReloadHeroPartner()
+        self:Close()
+      end
+      function menu:cancelAction()
+        pertnername = oldpokemonid
+        GROUND:SetPartner(pertnername, 0)
+        CHARA:ReloadHeroPartner()
+        self:Close()
+      end
+      menu:Open()
+      menu:SetCaption("Pokemon ID")
+      MENU:SetFocus(menu)
+      MENU:WaitClose(menu)
+    end
+  until id == 0
+  SOUND:FadeOutBgm(TimeSec(3))
+end
+function seikakushindansetsumei01_end()
+end
+function seikakushindankekka01_init()
+end
+function seikakushindankekka01_start()
+end
+function seikakushindankekka01_end()
+end
+function seikakushindankekka02_init()
+end
+function seikakushindankekka02_start()
+end
+function seikakushindankekka02_end()
+end
+function seikakushindankekka02_5_init()
+end
+function seikakushindankekka02_5_start()
+end
+function seikakushindankekka02_5_end()
+end

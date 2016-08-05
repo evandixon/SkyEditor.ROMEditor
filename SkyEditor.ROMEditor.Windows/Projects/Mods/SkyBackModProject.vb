@@ -1,10 +1,9 @@
 ﻿Imports System.Collections.Concurrent
-Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
 
-Namespace Projects
+Namespace Projects.Mods
     Public Class SkyBackModProject
         Inherits GenericModProject
 

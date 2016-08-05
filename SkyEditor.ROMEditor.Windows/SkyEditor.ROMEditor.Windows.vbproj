@@ -185,6 +185,7 @@
     <Compile Include="FileFormats\PSMD\ItemDataInfo.vb" />
     <Compile Include="FileFormats\PSMD\MessageBinStringEntry.vb" />
     <Compile Include="FileFormats\PSMD\PokemonDataInfo.vb" />
+    <Compile Include="FileFormats\PSMD\Pokemon\ActorDataInfo.vb" />
     <Compile Include="FileFormats\PSMD\WazaDataInfo.vb" />
     <Compile Include="Language.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -193,7 +194,8 @@
     </Compile>
     <Compile Include="Makerom.vb" />
     <Compile Include="MenuActions\BGPImageExport.vb" />
-    <Compile Include="Projects\ExplorersScriptModProject.vb" />
+    <Compile Include="Projects\Mods\ExplorersScriptModProject.vb" />
+    <Compile Include="Projects\Mods\PSMDStarterMod.vb" />
     <Compile Include="PsmdDir.vb" />
     <Compile Include="FileFormats\Explorers\Script\CommandGroup.vb" />
     <Compile Include="FileFormats\Explorers\Script\SSA.vb" />
@@ -253,12 +255,12 @@
     </Compile>
     <Compile Include="Portrait.vb" />
     <Compile Include="MenuActions\PsmdSoundtrackAction.vb" />
-    <Compile Include="Projects\GtiImage2dProject.vb" />
-    <Compile Include="Projects\KaomadoProject.vb" />
-    <Compile Include="Projects\Pk3DSModProject.vb" />
-    <Compile Include="Projects\SkyBackModProject.vb" />
-    <Compile Include="Projects\SkyStarterModProject.vb" />
-    <Compile Include="Projects\PsmdLuaProject.vb" />
+    <Compile Include="Projects\Mods\GtiImage2dProject.vb" />
+    <Compile Include="Projects\Mods\KaomadoProject.vb" />
+    <Compile Include="Projects\Mods\Pk3DSModProject.vb" />
+    <Compile Include="Projects\Mods\SkyBackModProject.vb" />
+    <Compile Include="Projects\Mods\SkyStarterModProject.vb" />
+    <Compile Include="Projects\Mods\PsmdLuaProject.vb" />
     <Compile Include="Roms\Cxi3DSRom.vb" />
     <Compile Include="Roms\Generic3DSRom.vb" />
     <Compile Include="romTool3ds.vb" />
@@ -314,6 +316,7 @@
     <Content Include="Resources\ppmd_pxcomp.exe" />
     <Content Include="Resources\ppmd_unpx.exe" />
     <Content Include="Resources\PSMD Pokemon Name Hashes.txt" />
+    <Content Include="Resources\PSMDStarterIntroScript.txt" />
     <Content Include="SkyEditor.ROMEditor.Windows\3DS Builder.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -1,8 +1,7 @@
-﻿Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.Projects
+﻿Imports SkyEditor.Core.Projects
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
 
-Namespace Projects
+Namespace Projects.Mods
     Public Class KaomadoProject
         Inherits GenericModProject
 
