@@ -180,7 +180,7 @@
     <Compile Include="FileFormats\PSMD\DungeonDataInfo.vb" />
     <Compile Include="FileFormats\PSMD\Experience.vb" />
     <Compile Include="FileFormats\Explorers\MonsterMDFile.vb" />
-    <Compile Include="FileFormats\PSMD\FixedPokemon.vb" />
+    <Compile Include="FileFormats\PSMD\Dungeon\FixedPokemon.vb" />
     <Compile Include="FileFormats\PSMD\FlowData.vb" />
     <Compile Include="FileFormats\PSMD\ItemDataInfo.vb" />
     <Compile Include="FileFormats\PSMD\MessageBinStringEntry.vb" />

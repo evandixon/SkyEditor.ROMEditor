@@ -1,8 +1,9 @@
 ﻿Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Dungeon
 
-Public Class PsmdDir
+<Obsolete> Public Class PsmdDir
     Implements IOpenableFile
     Implements IContainer(Of PokemonDataInfo)
     Implements IContainer(Of Experience)

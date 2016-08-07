@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 
-Namespace FileFormats.PSMD
+Namespace FileFormats.PSMD.Dungeon
     Public Class FixedPokemon
         Inherits Sir0
         Public Class PokemonEntry

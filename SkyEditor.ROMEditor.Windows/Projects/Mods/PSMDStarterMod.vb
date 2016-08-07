@@ -2,6 +2,7 @@
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Dungeon
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Pokemon
 
 Namespace Projects.Mods
