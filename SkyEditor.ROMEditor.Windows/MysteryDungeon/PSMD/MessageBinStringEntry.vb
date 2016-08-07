@@ -1,7 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports SkyEditor.Core.Utilities
 
-Namespace FileFormats.PSMD
+Namespace MysteryDungeon.PSMD
     Public Class MessageBinStringEntry
         Implements INotifyPropertyChanged
         Friend Property Pointer As Integer

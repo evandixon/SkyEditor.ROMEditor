@@ -2,6 +2,7 @@
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Dungeon
+Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
 
 <Obsolete> Public Class PsmdDir
     Implements IOpenableFile

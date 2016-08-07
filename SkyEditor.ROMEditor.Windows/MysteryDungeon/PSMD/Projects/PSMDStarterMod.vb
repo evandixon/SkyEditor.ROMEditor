@@ -4,8 +4,9 @@ Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Dungeon
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Pokemon
+Imports SkyEditor.ROMEditor.Windows.Projects.Mods
 
-Namespace Projects.Mods
+Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
     ''' Mod for PSMD that allows editing playable starter Pokémon.
     ''' </summary>

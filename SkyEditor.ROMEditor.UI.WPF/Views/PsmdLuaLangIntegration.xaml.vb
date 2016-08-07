@@ -2,6 +2,8 @@
 Imports SkyEditor.ROMEditor.UI.WPF.ViewModels
 Imports SkyEditor.ROMEditor.Windows
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
+Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD.Projects
 Imports SkyEditor.ROMEditor.Windows.Projects
 Imports SkyEditor.ROMEditor.Windows.Projects.Mods
 Imports SkyEditor.UI.WPF

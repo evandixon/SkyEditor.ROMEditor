@@ -1,6 +1,7 @@
 ﻿Imports SkyEditor.Core.ConsoleCommands
 Imports SkyEditor.Core.IO
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
 
 Namespace ConsoleCommands
     Public Class NameListResearcher
@@ -19,7 +20,8 @@ Namespace ConsoleCommands
                     Dim msg2 As New MessageBin
                     Await msg.OpenFile(Arguments(0), CurrentPluginManager.CurrentIOProvider)
                     Await msg2.OpenFile(Arguments(0), CurrentPluginManager.CurrentIOProvider)
-                    Dim position = &HD0BA
+                    'Dim position = &HD0BA 'For Items
+                    Dim position = &H14F56 'For Moves
                     For count = 0 To 2000
                         Dim s = msg.ReadNullTerminatedString(position, Text.Encoding.Unicode)
                         Console.WriteLine(s)
@@ -30,8 +32,10 @@ Namespace ConsoleCommands
                     Next
                     'IO.File.WriteAllText("PSMD Dungeon Name Hashes.txt", output.ToString)
                     'IO.File.WriteAllText("PSMD Dungeon BGM Names.txt", nameOutput.ToString)
-                    IO.File.WriteAllText("PSMD Item Name Hashes.txt", output.ToString)
-                    IO.File.WriteAllText("PSMD Item Names.txt", nameOutput.ToString)
+                    'IO.File.WriteAllText("PSMD Item Name Hashes.txt", output.ToString)
+                    'IO.File.WriteAllText("PSMD Item Names.txt", nameOutput.ToString)
+                    IO.File.WriteAllText("PSMD Move Name Hashes.txt", output.ToString)
+                    IO.File.WriteAllText("PSMD Move Names.txt", nameOutput.ToString)
                     Console.Write("Done.")
                 Else
                     Console.WriteLine("File doesn't exist")
