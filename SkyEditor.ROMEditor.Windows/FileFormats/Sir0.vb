@@ -5,6 +5,13 @@ Namespace FileFormats
         Inherits GenericFile
         Implements IOpenableFile
 
+        Public Sub New()
+            MyBase.New
+            PaddingByte = &H0
+            ResizeFileOnLoad = True
+            RelativePointers = New List(Of Integer)
+        End Sub
+
         ''' <summary>
         ''' The byte used to pad blocks that aren't divisible by 0x10.
         ''' </summary>
@@ -72,6 +79,16 @@ Namespace FileFormats
         ''' </summary>
         ''' <returns></returns>
         Protected Property ResizeFileOnLoad As Boolean
+
+        Public Overridable Async Function IsOfType(File As GenericFile) As Task(Of Boolean)
+            'Todo: possible parsing of file to ensure file contents are OK.
+            'Checking the magic should be good enough.
+            Return File.Length >= 32 AndAlso
+                (Await File.Read(0)) = &H53 AndAlso 'S
+                (Await File.Read(1)) = &H49 AndAlso 'I
+                (Await File.Read(2)) = &H52 AndAlso 'R
+                (Await File.Read(3)) = &H30         '0
+        End Function
 
         Public Overrides Sub CreateFile(Name As String, FileContents() As Byte)
             MyBase.CreateFile(Name, FileContents)
@@ -178,12 +195,6 @@ Namespace FileFormats
             If Not Me.IsReadOnly AndAlso ResizeFileOnLoad Then Me.Length = Me.Length - Me.PointerLength - Me.HeaderLength
         End Sub
 
-        Public Sub New()
-            MyBase.New
-            PaddingByte = &H0
-            ResizeFileOnLoad = True
-            RelativePointers = New List(Of Integer)
-        End Sub
     End Class
 End Namespace
 

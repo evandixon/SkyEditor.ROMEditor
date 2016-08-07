@@ -1,8 +1,11 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports System.IO
+Imports SkyEditor.Core.IO
 
 Namespace FileFormats.PSMD.Dungeon
     Public Class FixedPokemon
         Inherits Sir0
+        Implements IDetectableFileType
+
         Public Class PokemonEntry
             Private Property Data As Byte()
             Private Property AllWords As UInt16()
@@ -62,6 +65,11 @@ Namespace FileFormats.PSMD.Dungeon
                 Data = tmp
             End Sub
         End Class
+
+        Public Sub New()
+            MyBase.New
+            Entries = New List(Of PokemonEntry)
+        End Sub
 
         Public Property Entries As List(Of PokemonEntry)
 
@@ -138,10 +146,10 @@ Namespace FileFormats.PSMD.Dungeon
             MyBase.Save(Destination, provider)
         End Sub
 
-        Public Sub New()
-            MyBase.New
-            Entries = New List(Of PokemonEntry)
-        End Sub
+        Public Overrides Async Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
+            'Check to see if it's a SIR0 file named "fixed_pokemon.bin"
+            Return Await MyBase.IsOfType(File) AndAlso Path.GetFileName(File.OriginalFilename) = "fixed_pokemon.bin"
+        End Function
     End Class
 
 End Namespace
