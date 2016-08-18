@@ -40,14 +40,14 @@ Public Class PsmdLuaLangIntegration
     End Sub
 
     Private Sub btnSciptSort_Click(sender As Object, e As RoutedEventArgs) Handles btnSciptSort.Click
-        'Dim numberRegex As New Text.RegularExpressions.Regex("\-?[0-9]+")
-        'Dim matches As New List(Of Integer)
-        'For Each item As Text.RegularExpressions.Match In numberRegex.Matches(GetEditingObject(Of CodeFiles.LuaCodeFile).Text)
-        '    matches.Add(CInt(item.Value))
-        'Next
-        'For Each item As TabItem In tcTabs.Items
-        '    DirectCast(item.Content, MessageBinEditor).Sort(matches)
-        'Next
+        Dim numberRegex As New Text.RegularExpressions.Regex("\-?[0-9]+")
+        Dim matches As New List(Of Integer)
+        For Each item As Text.RegularExpressions.Match In numberRegex.Matches(DirectCast(ObjectToEdit, PsmdLuaLangIntegrationViewModel).Model.Text)
+            matches.Add(CInt(item.Value))
+        Next
+        For Each item As TabItem In tcTabs.Items
+            DirectCast(item.Content, MessageBinEditor).Sort(matches)
+        Next
     End Sub
 
     Public Overrides Property ObjectToEdit As Object
