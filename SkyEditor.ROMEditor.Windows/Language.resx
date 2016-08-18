@@ -268,4 +268,15 @@ evandixon (Personality test, bgp files)</value>
   <data name="LoadingPatchingScripts" xml:space="preserve">
     <value>Patching Scripts...</value>
   </data>
+  <data name="ErrorLocalizedPsmdLanguageFileLanguageNotFound" xml:space="preserve">
+    <value>Unable to find the language "{0}".</value>
+  </data>
+  <data name="LocalizedPsmdLanguageFileLanguage" xml:space="preserve">
+    <value>us</value>
+    <comment>The language file that would normally be used for the current culture.  Can either be "us", "en", "fr", "de", "it", "sp", or "jp".  If the value here can't be found, the following will be the defaults (in order of priority): "us", "en", "jp".</comment>
+  </data>
+  <data name="NonePokemon" xml:space="preserve">
+    <value>(None)</value>
+    <comment>The string representing Pokemon ID 0.</comment>
+  </data>
 </root>

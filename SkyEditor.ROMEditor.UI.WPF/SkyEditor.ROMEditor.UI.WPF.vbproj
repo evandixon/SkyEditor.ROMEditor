@@ -196,6 +196,8 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="MysteryDungeon\PSMD\ViewModels\FixedPokemonEntryViewModel.vb" />
+    <Compile Include="MysteryDungeon\PSMD\ViewModels\FixedPokemonViewModel.vb" />
     <Compile Include="ObjectControls\CteImageControl.xaml.vb">
       <DependentUpon>CteImageControl.xaml</DependentUpon>
     </Compile>

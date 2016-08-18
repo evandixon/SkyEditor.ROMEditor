@@ -1,12 +1,14 @@
 ﻿Imports System.Collections.Concurrent
+Imports System.IO
 Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.Core.Windows.Processes
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.Windows.Projects
 
-Namespace Projects.Mods
+Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
     ''' A mod project that allows editing the scripts and associated language files of PSMD and GTI.
     ''' </summary>
@@ -51,6 +53,43 @@ Namespace Projects.Mods
         End Property
         Dim _languageLoadTask As Task
 
+#End Region
+
+#Region "IPsmdMessageBinProject Implementation"
+        ''' <summary>
+        ''' Gets the localized language file with the given name.
+        ''' </summary>
+        ''' <param name="name">Name of the language file of which to get (e.g. "common").</param>
+        ''' <returns>The <see cref="MessageBin"/> with the given <paramref name="name"/> for the language appropriate for the current culture.</returns>
+        Public Async Function GetLanguageFile(name As String) As Task(Of MessageBin)
+            Dim dir = IO.Path.Combine(Me.GetRootDirectory, "Languages")
+            Dim availableDirs = Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly)
+
+            Dim languageDir As String
+            If availableDirs.Any(Function(x) x.ToLower = My.Resources.Language.LocalizedPsmdLanguageFileLanguage) Then
+                languageDir = IO.Path.Combine(dir, My.Resources.Language.LocalizedPsmdLanguageFileLanguage)
+            ElseIf availableDirs.Any(Function(x) x.ToLower = "us") Then
+                languageDir = IO.Path.Combine(dir, "us")
+            ElseIf availableDirs.Any(Function(x) x.ToLower = "en") Then
+                languageDir = IO.Path.Combine(dir, "en")
+            ElseIf availableDirs.Any(Function(x) x.ToLower = "jp") Then
+                languageDir = IO.Path.Combine(dir, "jp")
+            Else
+                Throw New IO.DirectoryNotFoundException(String.Format(My.Resources.Language.ErrorLocalizedPsmdLanguageFileLanguageNotFound, My.Resources.Language.LocalizedPsmdLanguageFileLanguage))
+            End If
+
+            Dim message As New MessageBin
+            Await message.OpenFile(IO.Path.Combine(languageDir, name), CurrentPluginManager.CurrentIOProvider)
+            Return message
+        End Function
+
+        Public Async Function GetPokemonNames() As Task(Of Dictionary(Of Integer, String))
+            Return (Await GetLanguageFile("common")).GetCommonPokemonNames
+        End Function
+
+        Public Async Function GetMoveNames() As Task(Of Dictionary(Of Integer, String))
+            Return (Await GetLanguageFile("common")).GetCommonMoveNames
+        End Function
 #End Region
 
         Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)

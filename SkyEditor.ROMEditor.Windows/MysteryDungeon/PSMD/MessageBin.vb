@@ -1,9 +1,11 @@
 ﻿Imports System.Collections.ObjectModel
 Imports System.ComponentModel
+Imports System.Text
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.ROMEditor.Windows.FileFormats
 
-Namespace FileFormats.PSMD
+Namespace MysteryDungeon.PSMD
     ''' <summary>
     ''' Models a .bin file in the message directory of PMD: GTI and PSMD.
     ''' </summary>
@@ -19,6 +21,21 @@ Namespace FileFormats.PSMD
 
             Public Property NewID As UInteger
         End Class
+
+        Public Sub New()
+            MyBase.New
+            Strings = New ObservableCollection(Of MessageBinStringEntry)
+        End Sub
+
+        Public Sub New(OpenReadOnly As Boolean)
+            Me.New
+            IsReadOnly = OpenReadOnly
+            Strings = New ObservableCollection(Of MessageBinStringEntry)
+        End Sub
+
+        Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
+        Public Event EntryAdded(sender As Object, e As EntryAddedEventArgs)
+        Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
 
         ''' <summary>
         ''' Matches string hashes to the strings contained in the file.
@@ -157,20 +174,61 @@ Namespace FileFormats.PSMD
             MyBase.Save(Destination, provider)
         End Sub
 
-        Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
-        Public Event EntryAdded(sender As Object, e As EntryAddedEventArgs)
-        Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
+        ''' <summary>
+        ''' Gets the Pokemon names, if the current instance of <see cref="MessageBin"/> is the common file. 
+        ''' </summary>
+        ''' <returns>A dictionary matching the IDs of Pokemon to Pokemon names.</returns>
+        ''' <exception cref="InvalidOperationException">Thrown if the current instance of <see cref="MessageBin"/> is not the common file.</exception>
+        Public Function GetCommonPokemonNames() As Dictionary(Of Integer, String)
+            'Get the hashes from the resources
+            Dim pokemonNameHashes As New List(Of Integer)
+            For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf)
+                Dim trimmed = item.Trim
+                If IsNumeric(item.Trim(trimmed)) Then
+                    pokemonNameHashes.Add(trimmed)
+                Else
+                    Throw New Exception($"Invalid resource item: ""{trimmed}""")
+                End If
+            Next
 
-        Public Sub New()
-            MyBase.New
-            Strings = New ObservableCollection(Of MessageBinStringEntry)
-        End Sub
+            'Get the corresponding names
+            Dim pokemonNames As New Dictionary(Of Integer, String)
+            pokemonNames.Add(0, My.Resources.Language.NonePokemon)
+            For count = 0 To pokemonNameHashes.Count - 1
+                Dim count2 = count 'Helps avoid potential weirdness from having an iterator variable in the lambda expression below
+                pokemonNames.Add(count + 1, ((From s In Strings Where s.HashSigned = pokemonNameHashes(count2)).First).Entry)
+            Next
 
-        Public Sub New(OpenReadOnly As Boolean)
-            Me.New
-            IsReadOnly = OpenReadOnly
-            Strings = New ObservableCollection(Of MessageBinStringEntry)
-        End Sub
+            Return pokemonNames
+        End Function
+
+        ''' <summary>
+        ''' Gets the move names, if the current instance of <see cref="MessageBin"/> is the common file. 
+        ''' </summary>
+        ''' <returns>A dictionary matching the IDs of moves to move names.</returns>
+        ''' <exception cref="InvalidOperationException">Thrown if the current instance of <see cref="MessageBin"/> is not the common file.</exception>
+        Public Function GetCommonMoveNames() As Dictionary(Of Integer, String)
+            'Get the hashes from the resources
+            Dim pokemonNameHashes As New List(Of Integer)
+            For Each item In My.Resources.PSMD_Move_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf)
+                Dim trimmed = item.Trim
+                If IsNumeric(item.Trim(trimmed)) Then
+                    pokemonNameHashes.Add(trimmed)
+                Else
+                    Throw New Exception($"Invalid resource item: ""{trimmed}""")
+                End If
+            Next
+
+            'Get the corresponding names
+            Dim pokemonNames As New Dictionary(Of Integer, String)
+            pokemonNames.Add(0, My.Resources.Language.NonePokemon)
+            For count = 0 To pokemonNameHashes.Count - 1
+                Dim count2 = count 'Helps avoid potential weirdness from having an iterator variable in the lambda expression below
+                pokemonNames.Add(count, ((From s In Strings Where s.HashSigned = pokemonNameHashes(count2)).First).Entry)
+            Next
+
+            Return pokemonNames
+        End Function
 
     End Class
 End Namespace

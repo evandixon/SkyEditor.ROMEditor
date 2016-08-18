@@ -241,6 +241,7 @@ Namespace Projects
                     IO.Directory.CreateDirectory(GetRawFilesDir)
                 End If
             End If
+            RequiresInitialization = False
         End Function
 
         ''' <summary>

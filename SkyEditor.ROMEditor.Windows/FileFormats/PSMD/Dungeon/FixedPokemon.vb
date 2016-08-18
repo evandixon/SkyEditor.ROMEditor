@@ -1,23 +1,25 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports System.IO
+Imports SkyEditor.Core.IO
 
-Namespace FileFormats.PSMD
+Namespace FileFormats.PSMD.Dungeon
     Public Class FixedPokemon
         Inherits Sir0
+        Implements IDetectableFileType
+
         Public Class PokemonEntry
             Private Property Data As Byte()
-            Private Property AllWords As UInt16()
+            <Obsolete> Private Property AllWords As UInt16()
             Public Property PokemonID As Int16
             Public Property Move1 As UInt16
             Public Property Move2 As UInt16
             Public Property Move3 As UInt16
             Public Property Move4 As UInt16
-            'Not currently used
-            Public Property AttackBoost As Byte '0x17
-            Public Property SpAttackBoost As Byte '0x18
-            Public Property DefenseBoost As Byte '0x19
-            Public Property SpDefenseBoost As Byte '0x1A
-            Public Property SpeedBoost As Byte '0x1B
-            'End not currently used
+            Public Property HPBoost As Int16
+            Public Property AttackBoost As Byte
+            Public Property SpAttackBoost As Byte
+            Public Property DefenseBoost As Byte
+            Public Property SpDefenseBoost As Byte
+            Public Property SpeedBoost As Byte
             Public Function GetBytes() As Byte()
                 Dim pid = BitConverter.GetBytes(PokemonID)
                 Dim m1 = BitConverter.GetBytes(Move1)
@@ -32,6 +34,13 @@ Namespace FileFormats.PSMD
                     Data(&HC + count) = m3(count)
                     Data(&HE + count) = m4(count)
                 Next
+
+                Data(&H17) = AttackBoost
+                Data(&H18) = SpAttackBoost
+                Data(&H19) = DefenseBoost
+                Data(&H1A) = SpDefenseBoost
+                Data(&H1B) = SpeedBoost
+
                 Return Data
             End Function
             Public Overrides Function ToString() As String
@@ -47,10 +56,16 @@ Namespace FileFormats.PSMD
                 Next
 
                 PokemonID = BitConverter.ToInt16(RawData, 0)
+                HPBoost = BitConverter.ToInt16(RawData, 2)
                 Move1 = BitConverter.ToUInt16(RawData, 8)
                 Move2 = BitConverter.ToUInt16(RawData, &HA)
                 Move3 = BitConverter.ToUInt16(RawData, &HC)
                 Move4 = BitConverter.ToUInt16(RawData, &HE)
+                AttackBoost = Data(&H17)
+                SpAttackBoost = Data(&H18)
+                DefenseBoost = Data(&H19)
+                SpDefenseBoost = Data(&H1A)
+                SpeedBoost = Data(&H1B)
             End Sub
             Public Sub New()
                 Dim tmp(&H30 - 1) As Byte
@@ -62,6 +77,11 @@ Namespace FileFormats.PSMD
                 Data = tmp
             End Sub
         End Class
+
+        Public Sub New()
+            MyBase.New
+            Entries = New List(Of PokemonEntry)
+        End Sub
 
         Public Property Entries As List(Of PokemonEntry)
 
@@ -138,10 +158,10 @@ Namespace FileFormats.PSMD
             MyBase.Save(Destination, provider)
         End Sub
 
-        Public Sub New()
-            MyBase.New
-            Entries = New List(Of PokemonEntry)
-        End Sub
+        Public Overrides Async Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
+            'Check to see if it's a SIR0 file named "fixed_pokemon.bin"
+            Return Await MyBase.IsOfType(File) AndAlso Path.GetFileName(File.OriginalFilename) = "fixed_pokemon.bin"
+        End Function
     End Class
 
 End Namespace

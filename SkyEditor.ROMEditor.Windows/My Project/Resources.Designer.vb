@@ -101,6 +101,58 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to -718398628
+        '''-435230016
+        '''-1654573358
+        '''1903015878
+        '''503435898
+        '''-1410980566
+        '''989233605
+        '''1935809866
+        '''-179177891
+        '''1246365421
+        '''-92254823
+        '''1628463885
+        '''-97659969
+        '''257607992
+        '''-1524198606
+        '''-677644957
+        '''-1992013654
+        '''-384388233
+        '''115663861
+        '''-168484640
+        '''868012407
+        '''259992450
+        '''2119179250
+        '''730694348
+        '''-1340880491
+        '''603494511
+        '''1136534868
+        '''834898904
+        '''-1018186886
+        '''724043848
+        '''-416731511
+        '''-410355533
+        '''-477930037
+        '''-1457571583
+        '''59851618
+        '''1445443351
+        '''1473822057
+        '''1729223756
+        '''911239694
+        '''-1231703692
+        '''-1394792168
+        '''-1543689364
+        '''1997354599
+        '''- [rest of string was truncated]&quot;;.
+        '''</summary>
+        Friend ReadOnly Property PSMD_Move_Name_Hashes() As String
+            Get
+                Return ResourceManager.GetString("PSMD_Move_Name_Hashes", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to 150118018
         '''781321446
         '''-1427025407
@@ -173,8 +225,8 @@ Namespace My.Resources
         '''end
         '''function seikakushindansetsumei01_init()
         '''end
-        '''function seikakushindansetsumei01_start()
-        '''  SCREEN_ [rest of string was truncated]&quot;;.
+        '''function seikakushindansetsumei01_start()  
+        '''  SOUND [rest of string was truncated]&quot;;.
         '''</summary>
         Friend ReadOnly Property PSMDStarterIntroScript() As String
             Get

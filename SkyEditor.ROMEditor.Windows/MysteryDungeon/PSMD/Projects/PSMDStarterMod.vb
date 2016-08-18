@@ -2,9 +2,11 @@
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Dungeon
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Pokemon
+Imports SkyEditor.ROMEditor.Windows.Projects.Mods
 
-Namespace Projects.Mods
+Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
     ''' Mod for PSMD that allows editing playable starter Pokémon.
     ''' </summary>
@@ -167,7 +169,29 @@ Namespace Projects.Mods
             actorInfo.Save(CurrentPluginManager.CurrentIOProvider)
 
             'Replace intro sequence with custom script
-            CurrentPluginManager.CurrentIOProvider.WriteAllText(IO.Path.Combine(Me.GetRootDirectory, "script", "event", "other", "seikakushindan", "seikakushindan.lua"), My.Resources.PSMDStarterIntroScript)
+            ' -- TODO: Figure out how to patch this without storing a modified copy
+            Dim starterscriptContent = My.Resources.PSMDStarterIntroScript
+            starterscriptContent = starterscriptContent.Replace("#Starter1#", starter1.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter5#", starter5.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter10#", starter10.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter30#", starter30.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter197#", starter197.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter200#", starter200.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter203#", starter203.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter322#", starter322.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter325#", starter325.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter329#", starter329.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter479#", starter479.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter482#", starter482.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter485#", starter485.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter537#", starter537.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter592#", starter592.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter595#", starter595.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter598#", starter598.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter766#", starter766.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter769#", starter769.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter772#", starter772.ToString)
+            CurrentPluginManager.CurrentIOProvider.WriteAllText(IO.Path.Combine(Me.GetRootDirectory, "script", "event", "other", "seikakushindan", "seikakushindan.lua"), starterscriptContent)
 
             'Create language resources
             Dim enLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "en", "seikakushindan")
@@ -184,7 +208,7 @@ Namespace Projects.Mods
                         Await langFile.OpenFile(langFilename, CurrentPluginManager.CurrentIOProvider)
                         If Not langFile.Strings.Any(Function(x) x.Hash = 200000) Then
                             langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200000, .Entry = "Hero: \D301" & vbLf & "Partner: \D302"})
-                            langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200001, .Entry = "Done"})
+                            'langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200001, .Entry = "Done"})
                             langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200002, .Entry = "Set Hero"})
                             langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200003, .Entry = "Set Partner"})
                             langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200004, .Entry = "Setting Hero..."})
@@ -192,6 +216,90 @@ Namespace Projects.Mods
                         End If
                         langFile.Save(CurrentPluginManager.CurrentIOProvider)
                     End Using
+                End If
+            Next
+
+            'Patch inc_charchoice script
+            '-Get the hashes of the scripts to change
+            Dim charchoiceRegex = New Regex("function char([A-Z]+)\(\)\s*WINDOW\:SysMsg\((-?[0-9]+)\)", RegexOptions.IgnoreCase)
+            Dim sourceScript = IO.Path.Combine(Me.GetRootDirectory, "script", "include", "inv_charchoice.lua.original")
+            Dim charchoiceMatches = charchoiceRegex.Matches(sourceScript)
+            Dim charchoiceData As New Dictionary(Of String, Integer) 'Key: Internal name, Value: String Hash
+            For Each item As Match In charchoiceMatches
+                charchoiceData.Add(item.Groups(1).Value, Integer.Parse(item.Groups(2).Value))
+            Next
+
+            '-Patch the script text
+            Dim charchoiceLanguageTemplates As New Dictionary(Of String, String) 'Key: Language name, Value: template
+            charchoiceLanguageTemplates.Add("en", "\C200{0}!")
+            charchoiceLanguageTemplates.Add("fr", "\C200{0} !")
+            charchoiceLanguageTemplates.Add("ge", "\C200...{0}!")
+            charchoiceLanguageTemplates.Add("it", "\C200{0}!")
+            charchoiceLanguageTemplates.Add("jp", "\C200{0}だ\FF01")
+            charchoiceLanguageTemplates.Add("sp", "\C200¡{0}!")
+            charchoiceLanguageTemplates.Add("us", "\C200{0}!")
+            For Each charchoiceLanguageTemplate In charchoiceLanguageTemplates
+                If IO.Directory.Exists(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key)) Then
+                    'Get Pokemon names to work with
+                    Dim common As New MessageBin
+                    Await common.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "common"), CurrentPluginManager.CurrentIOProvider)
+                    Dim pokemonNames = common.GetCommonPokemonNames
+
+                    For Each charchoice In charchoiceData
+                        Dim pokemonID As Integer
+                        Select Case charchoice.Key
+                            Case "FUSHIGIDANE"
+                                pokemonID = starter1
+                            Case "HITOKAGE"
+                                pokemonID = starter5
+                            Case "ZENIGAME"
+                                pokemonID = starter10
+                            Case "PIKACHUU"
+                                pokemonID = starter30
+                            Case "CHIKORIITA"
+                                pokemonID = starter197
+                            Case "HINOARASHI"
+                                pokemonID = starter200
+                            Case "WANINOKO"
+                                pokemonID = starter203
+                            Case "KIMORI"
+                                pokemonID = starter322
+                            Case "ACHAMO"
+                                pokemonID = starter325
+                            Case "MIZUGOROU"
+                                pokemonID = starter329
+                            Case "NAETORU"
+                                pokemonID = starter479
+                            Case "HIKOZARU"
+                                pokemonID = starter482
+                            Case "POTCHAMA"
+                                pokemonID = starter485
+                            Case "RIORU"
+                                pokemonID = starter537
+                            Case "TSUTAAJA"
+                                pokemonID = starter592
+                            Case "POKABU"
+                                pokemonID = starter595
+                            Case "MIJUMARU"
+                                pokemonID = starter598
+                            Case "HARIMARON"
+                                pokemonID = starter766
+                            Case "FOKKO"
+                                pokemonID = starter769
+                            Case "KEROMATSU"
+                                pokemonID = starter772
+                            Case Else
+                                'Unknow Pokemon name.  Make no changes.
+                                Exit For
+                        End Select
+
+                        'Patch the message bin
+                        Dim charchoiceFile As New MessageBin
+                        Await charchoiceFile.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "charchoice"), CurrentPluginManager.CurrentIOProvider)
+                        Dim charchoiceEntry = charchoiceFile.Strings.Where(Function(x) x.HashSigned = charchoice.Value).Single
+                        charchoiceEntry.Entry = String.Format(charchoiceLanguageTemplate.Value, pokemonNames(pokemonID))
+                        charchoiceFile.Save(CurrentPluginManager.CurrentIOProvider)
+                    Next
                 End If
             Next
 

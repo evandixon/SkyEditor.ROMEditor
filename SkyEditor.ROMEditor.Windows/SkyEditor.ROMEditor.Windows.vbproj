@@ -180,10 +180,10 @@
     <Compile Include="FileFormats\PSMD\DungeonDataInfo.vb" />
     <Compile Include="FileFormats\PSMD\Experience.vb" />
     <Compile Include="FileFormats\Explorers\MonsterMDFile.vb" />
-    <Compile Include="FileFormats\PSMD\FixedPokemon.vb" />
+    <Compile Include="FileFormats\PSMD\Dungeon\FixedPokemon.vb" />
     <Compile Include="FileFormats\PSMD\FlowData.vb" />
     <Compile Include="FileFormats\PSMD\ItemDataInfo.vb" />
-    <Compile Include="FileFormats\PSMD\MessageBinStringEntry.vb" />
+    <Compile Include="MysteryDungeon\PSMD\MessageBinStringEntry.vb" />
     <Compile Include="FileFormats\PSMD\PokemonDataInfo.vb" />
     <Compile Include="FileFormats\PSMD\Pokemon\ActorDataInfo.vb" />
     <Compile Include="FileFormats\PSMD\WazaDataInfo.vb" />
@@ -194,8 +194,9 @@
     </Compile>
     <Compile Include="Makerom.vb" />
     <Compile Include="MenuActions\BGPImageExport.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Projects\IPsmdMessageBinProject.vb" />
     <Compile Include="Projects\Mods\ExplorersScriptModProject.vb" />
-    <Compile Include="Projects\Mods\PSMDStarterMod.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Projects\PSMDStarterMod.vb" />
     <Compile Include="PsmdDir.vb" />
     <Compile Include="FileFormats\Explorers\Script\CommandGroup.vb" />
     <Compile Include="FileFormats\Explorers\Script\SSA.vb" />
@@ -212,7 +213,7 @@
     <Compile Include="FileFormats\PSMD\Farc.vb" />
     <Compile Include="FileFormats\Explorers\item_s_p.vb" />
     <Compile Include="FileFormats\PSMD\JukeboxBin.vb" />
-    <Compile Include="FileFormats\PSMD\MessageBin.vb" />
+    <Compile Include="MysteryDungeon\PSMD\MessageBin.vb" />
     <Compile Include="FileFormats\Sir0.vb" />
     <Compile Include="FileFormats\Sir0Fat5.vb" />
     <Compile Include="FileFormats\Explorers\TableDatItemList.vb" />
@@ -260,7 +261,7 @@
     <Compile Include="Projects\Mods\Pk3DSModProject.vb" />
     <Compile Include="Projects\Mods\SkyBackModProject.vb" />
     <Compile Include="Projects\Mods\SkyStarterModProject.vb" />
-    <Compile Include="Projects\Mods\PsmdLuaProject.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Projects\PsmdLuaProject.vb" />
     <Compile Include="Roms\Cxi3DSRom.vb" />
     <Compile Include="Roms\Generic3DSRom.vb" />
     <Compile Include="romTool3ds.vb" />
@@ -315,6 +316,7 @@
     <Content Include="Resources\ffmpeg.exe" />
     <Content Include="Resources\ppmd_pxcomp.exe" />
     <Content Include="Resources\ppmd_unpx.exe" />
+    <Content Include="Resources\PSMD Move Name Hashes.txt" />
     <Content Include="Resources\PSMD Pokemon Name Hashes.txt" />
     <Content Include="Resources\PSMDStarterIntroScript.txt" />
     <Content Include="SkyEditor.ROMEditor.Windows\3DS Builder.exe">
