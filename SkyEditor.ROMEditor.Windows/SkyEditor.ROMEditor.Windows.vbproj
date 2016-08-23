@@ -318,7 +318,7 @@
     <Content Include="Resources\ppmd_unpx.exe" />
     <Content Include="Resources\PSMD Move Name Hashes.txt" />
     <Content Include="Resources\PSMD Pokemon Name Hashes.txt" />
-    <Content Include="Resources\PSMDStarterIntroScript.txt" />
+    <Content Include="Resources\PSMDStarterIntroScript.lua" />
     <Content Include="SkyEditor.ROMEditor.Windows\3DS Builder.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
