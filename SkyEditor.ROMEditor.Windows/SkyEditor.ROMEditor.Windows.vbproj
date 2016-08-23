@@ -74,6 +74,10 @@
       <HintPath>..\packages\LanguageStringPatcher.1.0.0\lib\net46\LanguageStringPatcher.exe</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MediaToolkit, Version=1.1.1.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaToolkit.1.1.1-CI5\lib\net20\MediaToolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MessageFARCPatcher, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Message-FARC-Patcher.1.0.0\lib\net452\MessageFARCPatcher.exe</HintPath>
       <Private>True</Private>
@@ -208,7 +212,6 @@
     <Compile Include="DSIconTool.vb" />
     <Compile Include="Projects\DSModPackProject.vb" />
     <Compile Include="DSModSolution.vb" />
-    <Compile Include="ffmpeg.vb" />
     <Compile Include="FileFormats\PSMD\DatabaseBin.vb" />
     <Compile Include="FileFormats\PSMD\Farc.vb" />
     <Compile Include="FileFormats\Explorers\item_s_p.vb" />
@@ -313,7 +316,6 @@
     <None Include="packages.config" />
     <Content Include="App.ico" />
     <Content Include="Resources\ctrtool.exe" />
-    <Content Include="Resources\ffmpeg.exe" />
     <Content Include="Resources\ppmd_pxcomp.exe" />
     <Content Include="Resources\ppmd_unpx.exe" />
     <Content Include="Resources\PSMD Move Name Hashes.txt" />

@@ -1,6 +1,9 @@
 ﻿Imports System.IO
 Imports System.Reflection
 Imports System.Text.RegularExpressions
+Imports MediaToolkit
+Imports MediaToolkit.Model
+Imports MediaToolkit.Options
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.UI
@@ -124,7 +127,6 @@ Namespace MenuActions
                     'PluginHelper.SetLoadingStatus(My.Resources.Language.ConvertingStreams)
                     Using external As New ExternalProgramManager
                         Dim vgmPath = external.GetVgmStreamPath()
-                        Dim ffmpegPath = external.GetFFMpegPath()
 
                         Dim f As New AsyncFor '(My.Resources.Language.ConvertingStreams)
                         f.BatchSize = Environment.ProcessorCount * 2
@@ -149,7 +151,13 @@ Namespace MenuActions
                                                Await vgmstream.RunVGMStream(vgmPath, source, destinationWav)
 
                                                'Convert to mp3
-                                               Await ffmpeg.ConvertToMp3(ffmpegPath, destinationWav, destinationMp3)
+                                               Using e As New Engine(True)
+                                                   Dim wav As New MediaFile(destinationWav)
+                                                   Dim mp3 As New MediaFile(destinationMp3)
+                                                   Dim options = New ConversionOptions
+                                                   options.AudioSampleRate = AudioSampleRate.Hz48000
+                                                   e.Convert(wav, mp3, options)
+                                               End Using
 
                                                IO.File.Delete(destinationWav)
 
@@ -159,6 +167,10 @@ Namespace MenuActions
                                                    With t.Tag
                                                        .Album = My.Resources.Language.PSMDSoundTrackAlbum
                                                        .AlbumArtists = {My.Resources.Language.PSMDSoundTrackArtist}
+#Disable Warning
+                                                       'Disabling warning because this tag needs to be set to ensure compatibility, like with Windows Explorer and Windows Media Player.
+                                                       .Artists = {My.Resources.Language.PSMDSoundTrackArtist}
+#Enable Warning
                                                        .Year = 2015
                                                        Dim filenameParts = trackNames(filename).Split(" ".ToCharArray, 2)
                                                        If filenameParts.Count = 2 Then
