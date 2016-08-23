@@ -73,16 +73,6 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Byte[].
         '''</summary>
-        Friend ReadOnly Property ffmpeg() As Byte()
-            Get
-                Dim obj As Object = ResourceManager.GetObject("ffmpeg", resourceCulture)
-                Return CType(obj,Byte())
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized resource of type System.Byte[].
-        '''</summary>
         Friend ReadOnly Property ppmd_pxcomp() As Byte()
             Get
                 Dim obj As Object = ResourceManager.GetObject("ppmd_pxcomp", resourceCulture)
@@ -225,8 +215,8 @@ Namespace My.Resources
         '''end
         '''function seikakushindansetsumei01_init()
         '''end
-        '''function seikakushindansetsumei01_start()  
-        '''  SOUND [rest of string was truncated]&quot;;.
+        '''function seikakushindansetsumei01_start()
+        '''  CAMERA: [rest of string was truncated]&quot;;.
         '''</summary>
         Friend ReadOnly Property PSMDStarterIntroScript() As String
             Get

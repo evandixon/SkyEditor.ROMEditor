@@ -33,20 +33,6 @@
         Return path
     End Function
 
-    ''' <summary>
-    ''' Gets the path for ffmpeg.exe
-    ''' </summary>
-    ''' <returns></returns>
-    Public Function GetFFMpegPath() As String
-        'Ensure ffmpeg exists
-        Dim path = IO.Path.Combine(GetToolsDir, "ffmpeg.exe")
-        If Not IO.File.Exists(path) Then
-            IO.File.WriteAllBytes(path, My.Resources.ffmpeg)
-            ToDelete.Add(path)
-        End If
-        Return path
-    End Function
-
     Public Function GetVgmStreamPath() As String
         'Ensure the zip exists
         Dim zipPath = IO.Path.Combine(GetToolsDir, "vgmstream.zip")
@@ -92,15 +78,6 @@
     ''' <returns></returns>
     Public Async Function RunCtrTool(arguments As String) As Task
         Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetCtrToolPath, arguments)
-    End Function
-
-    ''' <summary>
-    ''' Runs ffmpeg.exe with the given arguments
-    ''' </summary>
-    ''' <param name="arguments"></param>
-    ''' <returns></returns>
-    Public Async Function RunFFMpeg(arguments As String) As Task
-        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetFFMpegPath, arguments)
     End Function
 
     Public Async Function RunVgmStream(arguments As String) As Task

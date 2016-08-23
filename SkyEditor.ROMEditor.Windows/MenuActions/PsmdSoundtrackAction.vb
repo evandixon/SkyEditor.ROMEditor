@@ -124,7 +124,6 @@ Namespace MenuActions
                     'PluginHelper.SetLoadingStatus(My.Resources.Language.ConvertingStreams)
                     Using external As New ExternalProgramManager
                         Dim vgmPath = external.GetVgmStreamPath()
-                        Dim ffmpegPath = external.GetFFMpegPath()
 
                         Dim f As New AsyncFor '(My.Resources.Language.ConvertingStreams)
                         f.BatchSize = Environment.ProcessorCount * 2
@@ -149,7 +148,14 @@ Namespace MenuActions
                                                Await vgmstream.RunVGMStream(vgmPath, source, destinationWav)
 
                                                'Convert to mp3
-                                               Await ffmpeg.ConvertToMp3(ffmpegPath, destinationWav, destinationMp3)
+                                               'Start awaiting so we can queue other processes
+                                               Await Task.Run(Sub()
+                                                                  Using e As New MediaToolkit.Engine(True)
+                                                                      Dim wav As New MediaToolkit.Model.MediaFile(destinationWav)
+                                                                      Dim mp3 As New MediaToolkit.Model.MediaFile(destinationMp3)
+                                                                      e.Convert(wav, mp3, New MediaToolkit.Options.ConversionOptions With {.AudioSampleRate = MediaToolkit.Options.AudioSampleRate.Hz48000})
+                                                                  End Using
+                                                              End Sub)
 
                                                IO.File.Delete(destinationWav)
 
