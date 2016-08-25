@@ -2,7 +2,10 @@
 Imports SkyEditor.ROMEditor.UI.WPF.ViewModels
 Imports SkyEditor.ROMEditor.Windows
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
+Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD.Projects
 Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.ROMEditor.Windows.Projects.Mods
 Imports SkyEditor.UI.WPF
 
 Public Class PsmdLuaLangIntegration
@@ -22,7 +25,7 @@ Public Class PsmdLuaLangIntegration
     End Sub
 
     Private Async Sub btnAdd_Click(sender As Object, e As RoutedEventArgs) Handles btnAdd.Click
-        Dim p As Projects.PsmdLuaProject = CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(ObjectToEdit)
+        Dim p As PsmdLuaProject = CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(ObjectToEdit)
         Dim oldText As String = btnAdd.Content
         If Not p.IsLanguageLoaded Then
             btnAdd.IsEnabled = False
@@ -37,14 +40,14 @@ Public Class PsmdLuaLangIntegration
     End Sub
 
     Private Sub btnSciptSort_Click(sender As Object, e As RoutedEventArgs) Handles btnSciptSort.Click
-        'Dim numberRegex As New Text.RegularExpressions.Regex("\-?[0-9]+")
-        'Dim matches As New List(Of Integer)
-        'For Each item As Text.RegularExpressions.Match In numberRegex.Matches(GetEditingObject(Of CodeFiles.LuaCodeFile).Text)
-        '    matches.Add(CInt(item.Value))
-        'Next
-        'For Each item As TabItem In tcTabs.Items
-        '    DirectCast(item.Content, MessageBinEditor).Sort(matches)
-        'Next
+        Dim numberRegex As New Text.RegularExpressions.Regex("\-?[0-9]+")
+        Dim matches As New List(Of Integer)
+        For Each item As Text.RegularExpressions.Match In numberRegex.Matches(DirectCast(ObjectToEdit, PsmdLuaLangIntegrationViewModel).Model.Text)
+            matches.Add(CInt(item.Value))
+        Next
+        For Each item As TabItem In tcTabs.Items
+            DirectCast(item.Content, MessageBinEditor).Sort(matches)
+        Next
     End Sub
 
     Public Overrides Property ObjectToEdit As Object

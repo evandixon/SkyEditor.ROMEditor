@@ -1,5 +1,6 @@
 ﻿Imports SkyEditor.Core.ConsoleCommands
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
 
 Namespace ConsoleCommands
     Public Class PSMDLangSearch

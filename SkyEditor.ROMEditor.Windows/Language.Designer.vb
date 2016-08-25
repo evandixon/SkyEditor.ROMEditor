@@ -110,6 +110,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Unable to find the language &quot;{0}&quot;..
+        '''</summary>
+        Friend Shared ReadOnly Property ErrorLocalizedPsmdLanguageFileLanguageNotFound() As String
+            Get
+                Return ResourceManager.GetString("ErrorLocalizedPsmdLanguageFileLanguageNotFound", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to The given system type &quot;{0}&quot; is not supported..
         '''</summary>
         Friend Shared ReadOnly Property ErrorModPackTypeNotSupported() As String
@@ -344,11 +353,29 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Patching Scripts....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingPatchingScripts() As String
+            Get
+                Return ResourceManager.GetString("LoadingPatchingScripts", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Unpacking....
         '''</summary>
         Friend Shared ReadOnly Property LoadingUnpacking() As String
             Get
                 Return ResourceManager.GetString("LoadingUnpacking", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to us.
+        '''</summary>
+        Friend Shared ReadOnly Property LocalizedPsmdLanguageFileLanguage() As String
+            Get
+                Return ResourceManager.GetString("LocalizedPsmdLanguageFileLanguage", resourceCulture)
             End Get
         End Property
         
@@ -430,6 +457,15 @@ Namespace My.Resources
         Friend Shared ReadOnly Property NDSRomFile() As String
             Get
                 Return ResourceManager.GetString("NDSRomFile", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to (None).
+        '''</summary>
+        Friend Shared ReadOnly Property NonePokemon() As String
+            Get
+                Return ResourceManager.GetString("NonePokemon", resourceCulture)
             End Get
         End Property
         
