@@ -4,11 +4,9 @@ Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
 
 Public Class PsmdDir
     Implements IOpenableFile
-    Implements IContainer(Of PokemonDataInfo)
-    Implements IContainer(Of Experience)
 
-    Public Property PokemonInfo As PokemonDataInfo Implements IContainer(Of PokemonDataInfo).Item
-    Public Property PokemonExpTable As Experience Implements IContainer(Of Experience).Item
+    Public Property PokemonInfo As PokemonDataInfo
+    Public Property PokemonExpTable As Experience
     Public Property LanguageFiles As Dictionary(Of String, FarcF5)
     Public Property DungeonFixedPokemon As FixedPokemon
     Public Property WazaData As WazaDataInfo

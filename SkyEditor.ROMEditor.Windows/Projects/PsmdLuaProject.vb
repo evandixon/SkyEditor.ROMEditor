@@ -1,6 +1,7 @@
 ﻿Imports System.Collections.Concurrent
 Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.Core.Windows.Processes
