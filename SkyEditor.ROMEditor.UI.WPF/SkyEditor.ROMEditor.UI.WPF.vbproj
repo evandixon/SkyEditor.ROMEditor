@@ -77,12 +77,12 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.4.0.4-CI6\lib\net46\SkyEditor.CodeEditor.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor, Version=4.0.4.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.4.0.4-CI7\lib\net46\SkyEditor.CodeEditor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor.UI.WPF, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.0.4-CI6\lib\net46\SkyEditor.CodeEditor.UI.WPF.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor.UI.WPF, Version=4.0.4.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.0.4-CI7\lib\net46\SkyEditor.CodeEditor.UI.WPF.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.0.6.102, Culture=neutral, processorArchitecture=MSIL">
