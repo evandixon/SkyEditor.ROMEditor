@@ -1,68 +1,20 @@
-﻿Imports System.Windows.Controls
-Imports ROMEditor.FileFormats.PSMD
+﻿Imports SkyEditor.CodeEditor
+Imports SkyEditor.ROMEditor.UI.WPF.ViewModels
 Imports SkyEditor.ROMEditor.Windows
 Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.Windows.Projects
 Imports SkyEditor.UI.WPF
 
 Public Class PsmdLuaLangIntegration
-    Inherits ObjectControl
+    Inherits DataBoundObjectControl
     Implements IDisposable
 
     Private Sub PsmdLuaLangIntegration_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         Me.Header = My.Resources.Language.Message
     End Sub
 
-    Public Overrides Async Sub RefreshDisplay()
-        With CurrentPluginManager.CurrentIOUIManager.GetOpenedFileProject(GetEditingObject) 'GetEditingObject(Of CodeFiles.LuaCodeFile)()
-            Dim messageFiles As New Dictionary(Of String, MessageBin)
-            For Each item In IO.Directory.GetDirectories(IO.Path.Combine(.GetRootDirectory, "Languages"), "*", IO.SearchOption.TopDirectoryOnly)
-                Dim msgfile = New MessageBin
-                Dim filename = "" 'IO.Path.Combine(item, IO.Path.GetFileNameWithoutExtension(GetEditingObject(Of CodeFiles.LuaCodeFile).Filename))
-
-                Dim exists As Boolean = False
-                If IO.File.Exists(filename) Then
-                    exists = True
-                ElseIf IO.File.Exists(filename & ".bin") Then
-                    filename &= ".bin"
-                    exists = True
-                End If
-
-                If exists Then
-                    Await msgfile.OpenFile(filename, CurrentPluginManager.CurrentIOProvider)
-                    messageFiles.Add(IO.Path.GetFileName(item), msgfile)
-                End If
-            Next
-
-            tcTabs.Items.Clear()
-            For Each item In messageFiles
-                Dim t As New TabItem
-                t.Header = item.Key
-                Dim p As New MessageBinEditor
-                AddHandler p.IsModifiedChanged, AddressOf Me.OnModified
-                t.Content = p
-                p.EditingObject = item.Value
-                tcTabs.Items.Add(t)
-            Next
-        End With
-        IsModified = False
-    End Sub
-
-    Public Overrides Sub UpdateObject()
-        For Each item As TabItem In tcTabs.Items
-            DirectCast(DirectCast(item.Content, MessageBinEditor).EditingObject, MessageBin).Save(CurrentPluginManager.CurrentIOProvider)
-        Next
-    End Sub
-
-    Public Overrides Function GetSupportedTypes() As IEnumerable(Of Type)
-        Return {} '{GetType(CodeFiles.LuaCodeFile)} '{GetType(Mods.ModSourceContainer)}
-    End Function
-
     Public Overrides Function GetSortOrder(CurrentType As Type, IsTab As Boolean) As Integer
         Return 1
-    End Function
-
-    Public Overrides Function SupportsObject(Obj As Object) As Boolean
-        Return CurrentPluginManager.CurrentIOUIManager.GetOpenedFileProject(Obj) IsNot Nothing
     End Function
 
     Private Sub OnModified(sender As Object, e As EventArgs)
@@ -70,7 +22,7 @@ Public Class PsmdLuaLangIntegration
     End Sub
 
     Private Async Sub btnAdd_Click(sender As Object, e As RoutedEventArgs) Handles btnAdd.Click
-        Dim p As Projects.PsmdLuaProject = CurrentPluginManager.CurrentIOUIManager.GetOpenedFileProject(GetEditingObject)
+        Dim p As Projects.PsmdLuaProject = CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(ObjectToEdit)
         Dim oldText As String = btnAdd.Content
         If Not p.IsLanguageLoaded Then
             btnAdd.IsEnabled = False
@@ -94,6 +46,20 @@ Public Class PsmdLuaLangIntegration
         '    DirectCast(item.Content, MessageBinEditor).Sort(matches)
         'Next
     End Sub
+
+    Public Overrides Property ObjectToEdit As Object
+        Get
+            Return MyBase.ObjectToEdit
+        End Get
+        Set(value As Object)
+            MyBase.ObjectToEdit = value
+
+            tcTabs.Items.Clear()
+            For Each item In DirectCast(value, PsmdLuaLangIntegrationViewModel).MessageTabs
+                tcTabs.Items.Add(item)
+            Next
+        End Set
+    End Property
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

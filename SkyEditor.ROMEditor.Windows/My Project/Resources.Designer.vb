@@ -81,11 +81,41 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to &lt;PMD2&gt;
+        '''  &lt;!--=======================================================================--&gt;
+        '''  &lt;!--PPMDU Configuration File--&gt;
+        '''  &lt;!--=======================================================================--&gt;
+        '''  &lt;!--This file is meant to contain all the data that the program uses --&gt;
+        '''  &lt;!--at runtime that could be considered version specific, or that might--&gt;
+        '''  &lt;!--change at one point.--&gt;
+        '''  
+        '''  &lt;!--Layout:--&gt;
+        '''  &lt;!--Its made of the following structure this far : --&gt;
+        '''  &lt;!--&lt;PMD2&gt;--&gt;
+        '''  &lt;!--  &lt;GameEditions / [rest of string was truncated]&quot;;.
+        '''</summary>
+        Friend ReadOnly Property pmd2data() As String
+            Get
+                Return ResourceManager.GetString("pmd2data", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized resource of type System.Byte[].
         '''</summary>
         Friend ReadOnly Property ppmd_pxcomp() As Byte()
             Get
                 Dim obj As Object = ResourceManager.GetObject("ppmd_pxcomp", resourceCulture)
+                Return CType(obj,Byte())
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Byte[].
+        '''</summary>
+        Friend ReadOnly Property ppmd_statsutil() As Byte()
+            Get
+                Dim obj As Object = ResourceManager.GetObject("ppmd_statsutil", resourceCulture)
                 Return CType(obj,Byte())
             End Get
         End Property

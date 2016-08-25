@@ -16,10 +16,11 @@ Namespace Projects
                 patchers = New List(Of FilePatcher)
             End If
             Dim MSPatcher As New FilePatcher()
+            Dim patcherPath = GetType(Message_FARC_Patcher.FarcF5).Assembly.Location
             With MSPatcher
-                .CreatePatchProgram = "MessageFARCPatcher.exe"
+                .CreatePatchProgram = patcherPath
                 .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
-                .ApplyPatchProgram = "MessageFARCPatcher.exe"
+                .ApplyPatchProgram = patcherPath
                 .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
                 .MergeSafe = True
                 .PatchExtension = "msgFarcT5"
