@@ -123,7 +123,7 @@ Namespace Projects
                     Dim nds As New GenericNDSRom
                     Await nds.OpenFile(fullPath, CurrentPluginManager.CurrentIOProvider)
                     AddHandler nds.UnpackProgress, Sub(sender As Object, e As UnpackProgressEventArgs)
-                                                       Me.BuildProgress = e.Progress
+                                                       Me.BuildProgress = nds.GetExtractionProgress
                                                    End Sub
                     Await nds.Unpack(GetRawFilesDir, CurrentPluginManager.CurrentIOProvider)
                     Setting("System") = "NDS"

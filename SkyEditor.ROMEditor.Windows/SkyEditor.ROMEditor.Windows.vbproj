@@ -317,6 +317,7 @@
     <None Include="packages.config" />
     <Content Include="App.ico" />
     <Content Include="Resources\ctrtool.exe" />
+    <Content Include="Resources\pmd2scriptdata.xml" />
     <Content Include="Resources\ppmd_pxcomp.exe" />
     <None Include="Resources\ppmd_statsutil.exe" />
     <Content Include="Resources\ppmd_unpx.exe" />

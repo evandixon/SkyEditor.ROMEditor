@@ -91,6 +91,27 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to &lt;PMD2&gt;
+        '''  &lt;!-- Contains reference data from the game --&gt;
+        '''  &lt;ScriptData&gt;
+        '''    
+        '''    &lt;!--Common to all 3--&gt;
+        '''    &lt;Game id=&quot;EoS_NA&quot; id2=&quot;EoS_EU&quot; id3=&quot;EoS_JP&quot;&gt;
+        '''    
+        '''      &lt;!--**********************************************--&gt;
+        '''      &lt;!--Game Variables Data--&gt;
+        '''      &lt;!--**********************************************--&gt;
+        '''      &lt;GameVariablesTable&gt;
+        '''        &lt;GameVar type=&quot;8&quot; unk1=&quot;2&quot; memoffset=&quot;  0x0&quot; bitshift=&quot;0x0&quot; unk3=&quot;  0x1&quot; unk4=&quot;0x1&quot; name=&quot;VERSION&quot; /&gt;
+        '''        &lt;GameVar type=&quot;8&quot; unk1=&quot;2&quot; memoffset=&quot;  0x4&quot;  [rest of string was truncated]&quot;;.
+        '''</summary>
+        Friend ReadOnly Property pmd2scriptdata() As String
+            Get
+                Return ResourceManager.GetString("pmd2scriptdata", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized resource of type System.Byte[].
         '''</summary>
         Friend ReadOnly Property ppmd_pxcomp() As Byte()
