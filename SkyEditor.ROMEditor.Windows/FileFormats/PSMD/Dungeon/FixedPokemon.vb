@@ -8,7 +8,6 @@ Namespace FileFormats.PSMD.Dungeon
 
         Public Class PokemonEntry
             Private Property Data As Byte()
-            <Obsolete> Private Property AllWords As UInt16()
             Public Property PokemonID As Int16
             Public Property Move1 As UInt16
             Public Property Move2 As UInt16
@@ -48,12 +47,6 @@ Namespace FileFormats.PSMD.Dungeon
             End Function
             Public Sub New(RawData As Byte())
                 Data = RawData
-
-                ReDim Me.AllWords(24)
-
-                For count = 0 To RawData.Length - 2 Step 2
-                    AllWords(count / 2) = BitConverter.ToUInt16(RawData, count)
-                Next
 
                 PokemonID = BitConverter.ToInt16(RawData, 0)
                 HPBoost = BitConverter.ToInt16(RawData, 2)

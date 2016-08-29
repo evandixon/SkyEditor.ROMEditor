@@ -8,7 +8,7 @@ Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
 Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
 Imports SkyEditor.ROMEditor.Windows.Projects
 
-Namespace ViewModels
+Namespace PSMD.ViewModels
     Public Class PsmdLuaLangIntegrationViewModel
         Inherits GenericViewModel(Of LuaCodeFile)
         Implements INotifyModified

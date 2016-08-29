@@ -188,9 +188,6 @@
     <Compile Include="Explorers\StringParameterEditor.xaml.vb">
       <DependentUpon>StringParameterEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FlashcartManager.xaml.vb">
-      <DependentUpon>FlashcartManager.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Language.Designer.vb">
       <DependentUpon>Language.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -211,7 +208,8 @@
     <Compile Include="ObjectControls\MessageBinEntryEditor.xaml.vb">
       <DependentUpon>MessageBinEntryEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ObjectControls\ModpackInfoControl.xaml.vb">
+    <Compile Include="ViewModels\ModpackInfoViewModel.vb" />
+    <Compile Include="Views\ModpackInfoControl.xaml.vb">
       <DependentUpon>ModpackInfoControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ObjectControls\NDSModSrcEditor.xaml.vb">
@@ -221,14 +219,8 @@
       <DependentUpon>PersonalityTest.xaml</DependentUpon>
     </Compile>
     <Compile Include="PSMD\ViewModels\CteImageViewModel.vb" />
-    <Compile Include="Views\PsmdLuaLangIntegration.xaml.vb">
+    <Compile Include="PSMD\Views\PsmdLuaLangIntegration.xaml.vb">
       <DependentUpon>PsmdLuaLangIntegration.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Explorers\SSBStringDictionaryEditor.xaml.vb">
-      <DependentUpon>SSBStringDictionaryEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Explorers\SSBStringEditor.xaml.vb">
-      <DependentUpon>SSBStringEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="ObjectControls\ThreeDSModPackControl.xaml.vb">
       <DependentUpon>ThreeDSModPackControl.xaml</DependentUpon>
@@ -241,7 +233,7 @@
     <Compile Include="Explorers\SSBScriptEditor.xaml.vb">
       <DependentUpon>SSBScriptEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\PsmdLuaLangIntegrationViewModel.vb" />
+    <Compile Include="PSMD\ViewModels\PsmdLuaLangIntegrationViewModel.vb" />
     <Compile Include="Windows\GameCodeSelector.xaml.vb">
       <DependentUpon>GameCodeSelector.xaml</DependentUpon>
     </Compile>
@@ -266,10 +258,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FlashcartManager.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="PSMD\Views\CteImageControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -286,7 +274,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ObjectControls\ModpackInfoControl.xaml">
+    <Page Include="Views\ModpackInfoControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -298,15 +286,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\PsmdLuaLangIntegration.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Explorers\SSBStringDictionaryEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Explorers\SSBStringEditor.xaml">
+    <Page Include="PSMD\Views\PsmdLuaLangIntegration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
