@@ -420,4 +420,13 @@ evandixon (Personality test, bgp files)</value>
   <data name="PNGImages" xml:space="preserve">
     <value>PNG Images</value>
   </data>
+  <data name="Build3DS" xml:space="preserve">
+    <value>Build 3DS</value>
+  </data>
+  <data name="BuildCIA" xml:space="preserve">
+    <value>Build CIA</value>
+  </data>
+  <data name="BuildHans" xml:space="preserve">
+    <value>Build HANS</value>
+  </data>
 </root>

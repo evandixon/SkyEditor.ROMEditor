@@ -1,29 +1,30 @@
-﻿<skywpf:ObjectControl x:Class="ObjectControls.NDSModSrcEditor"
+﻿<skywpf:DataBoundObjectControl x:Class="Views.GenericModProjectMetadataViewModel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:skywpf="clr-namespace:SkyEditor.UI.WPF;assembly=SkyEditor.UI.WPF"
+             xmlns:vm="clr-namespace:SkyEditor.ROMEditor.UI.WPF.ViewModels"
              xmlns:res="clr-namespace:SkyEditor.ROMEditor.UI.WPF.My.Resources"
              mc:Ignorable="d"
+             TargetType="{x:Type vm:GenericModProjectMetadataViewModel}"
+             Header="{x:Static res:Language.ModInfo}"
+             SortOrder="1"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
     <UniformGrid Columns="2" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300">
             <Label Content="{x:Static res:Language.ModName}" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
-            <TextBox x:Name="txtModName" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
+            <TextBox Text="{Binding ModName, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
 
             <Label Content="{x:Static res:Language.Author}" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
-            <TextBox x:Name="txtAuthor" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
+            <TextBox Text="{Binding ModAuthor, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
 
             <Label Content="{x:Static res:Language.Description}" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
-            <TextBox x:Name="txtDescription" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
+            <TextBox Text="{Binding ModDescription, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
 
             <Label Content="{x:Static res:Language.Version}" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
-            <TextBox x:Name="txtVersion" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
-
-            <Label Content="{x:Static res:Language.UpdateUrl}" Height="25" VerticalContentAlignment="Top" Visibility="Collapsed" HorizontalAlignment="Stretch"/>
-            <TextBox x:Name="txtUpdateUrl" Height="25" VerticalContentAlignment="Top" Visibility="Collapsed" HorizontalAlignment="Stretch"/>
+            <TextBox Text="{Binding ModVersion, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
 
         </UniformGrid>
     </Grid>
-</skywpf:ObjectControl>
+</skywpf:DataBoundObjectControl>

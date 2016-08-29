@@ -199,31 +199,27 @@
     <Compile Include="PSMD\Views\CteImageControl.xaml.vb">
       <DependentUpon>CteImageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Explorers\item_p_Editor.xaml.vb">
-      <DependentUpon>item_p_Editor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ObjectControls\MessageBinEditor.xaml.vb">
       <DependentUpon>MessageBinEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ObjectControls\MessageBinEntryEditor.xaml.vb">
-      <DependentUpon>MessageBinEntryEditor.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="ViewModels\DSModPackProject3DSBuildOptionsViewModel.vb" />
     <Compile Include="ViewModels\ModpackInfoViewModel.vb" />
+    <Compile Include="ViewModels\GenericModProjectMetadataViewModel.vb" />
     <Compile Include="Views\ModpackInfoControl.xaml.vb">
       <DependentUpon>ModpackInfoControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ObjectControls\NDSModSrcEditor.xaml.vb">
-      <DependentUpon>NDSModSrcEditor.xaml</DependentUpon>
+    <Compile Include="Views\GenericModProjectMetadataView.xaml.vb">
+      <DependentUpon>GenericModProjectMetadataView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Explorers\PersonalityTest.xaml.vb">
+    <Compile Include="Explorers\Views\PersonalityTest.xaml.vb">
       <DependentUpon>PersonalityTest.xaml</DependentUpon>
     </Compile>
     <Compile Include="PSMD\ViewModels\CteImageViewModel.vb" />
     <Compile Include="PSMD\Views\PsmdLuaLangIntegration.xaml.vb">
       <DependentUpon>PsmdLuaLangIntegration.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ObjectControls\ThreeDSModPackControl.xaml.vb">
-      <DependentUpon>ThreeDSModPackControl.xaml</DependentUpon>
+    <Compile Include="Views\DSModPackProject3DSBuildOptionsView.xaml.vb">
+      <DependentUpon>DSModPackProject3DSBuildOptionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="PluginDefinition.vb" />
     <Compile Include="ROM.vb" />
@@ -262,15 +258,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Explorers\item_p_Editor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="ObjectControls\MessageBinEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ObjectControls\MessageBinEntryEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -278,11 +266,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ObjectControls\NDSModSrcEditor.xaml">
+    <Page Include="Views\GenericModProjectMetadataView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Explorers\PersonalityTest.xaml">
+    <Page Include="Explorers\Views\PersonalityTest.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -290,7 +278,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ObjectControls\ThreeDSModPackControl.xaml">
+    <Page Include="Views\DSModPackProject3DSBuildOptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -146,6 +146,33 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Build 3DS.
+        '''</summary>
+        Public Shared ReadOnly Property Build3DS() As String
+            Get
+                Return ResourceManager.GetString("Build3DS", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Build CIA.
+        '''</summary>
+        Public Shared ReadOnly Property BuildCIA() As String
+            Get
+                Return ResourceManager.GetString("BuildCIA", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Build HANS.
+        '''</summary>
+        Public Shared ReadOnly Property BuildHans() As String
+            Get
+                Return ResourceManager.GetString("BuildHans", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Calm Female:.
         '''</summary>
         Public Shared ReadOnly Property CalmFemale() As String

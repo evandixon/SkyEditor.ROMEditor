@@ -1,12 +1,12 @@
-﻿<local:DataBoundObjectControl
+﻿<skyWPF:DataBoundObjectControl x:Class="Explorers.Views.PersonalityTest"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:SkyEditor.UI.WPF;assembly=SkyEditor.UI.WPF"
+             xmlns:skyWPF="clr-namespace:SkyEditor.UI.WPF;assembly=SkyEditor.UI.WPF"
              xmlns:res="clr-namespace:SkyEditor.ROMEditor.UI.WPF.My.Resources"
              xmlns:saveEditor="clr-namespace:SkyEditor.SaveEditor;assembly=SkyEditor.SaveEditor"
-             xmlns:explorers="clr-namespace:SkyEditor.ROMEditor.Windows.FileFormats.Explorers;assembly=SkyEditor.ROMEditor.Windows" x:Class="Explorers.PersonalityTest"
+             xmlns:explorers="clr-namespace:SkyEditor.ROMEditor.Windows.FileFormats.Explorers;assembly=SkyEditor.ROMEditor.Windows"
              TargetType="{x:Type explorers:PersonalityTestContainer}"
              mc:Ignorable="d">
     <Grid x:Name="grid1">
@@ -231,4 +231,4 @@
             </TabItem>
         </TabControl>
     </Grid>
-</local:DataBoundObjectControl>
+</skyWPF:DataBoundObjectControl>

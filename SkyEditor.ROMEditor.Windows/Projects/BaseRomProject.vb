@@ -9,6 +9,9 @@ Namespace Projects
     Public Class BaseRomProject
         Inherits Project
 
+        Public Const System3DS = "3DS"
+        Public Const SystemNDS = "NDS"
+
         Public Property RomSystem As String
             Get
                 Return Setting("System")
@@ -83,10 +86,10 @@ Namespace Projects
             Dim mode As String = Nothing
             Dim fullPath = Me.GetProjectItemByPath("/BaseRom").GetFilename
 
-            If Me.Settings.GetSetting("System") IsNot Nothing Then
-                If Me.Setting("System") = "NDS" Then
+            If Not String.IsNullOrEmpty(Me.RomSystem) Then
+                If Me.RomSystem = SystemNDS Then
                     mode = "nds"
-                ElseIf Me.Setting("System") = "3DS" Then
+                ElseIf Me.RomSystem = System3DS Then
                     mode = "3ds"
                 End If
             End If
@@ -126,8 +129,8 @@ Namespace Projects
                                                        Me.BuildProgress = nds.GetExtractionProgress
                                                    End Sub
                     Await nds.Unpack(GetRawFilesDir, CurrentPluginManager.CurrentIOProvider)
-                    Setting("System") = "NDS"
-                    Setting("GameCode") = nds.GameCode
+                    Me.RomSystem = SystemNDS
+                    Me.GameCode = nds.GameCode
                     nds.Dispose()
                 Case "3ds"
                     IsBuildProgressIndeterminate = True
@@ -135,8 +138,8 @@ Namespace Projects
                     threeDS.IsReadOnly = True
                     Await threeDS.OpenFile(fullPath, CurrentPluginManager.CurrentIOProvider)
                     Await threeDS.Unpack(GetRawFilesDir, CurrentPluginManager.CurrentIOProvider)
-                    Setting("System") = "3DS"
-                    Setting("GameCode") = threeDS.TitleID
+                    Me.RomSystem = System3DS
+                    Me.GameCode = threeDS.TitleID
                     threeDS.Dispose()
                 Case "cxi"
                     IsBuildProgressIndeterminate = True
@@ -144,8 +147,8 @@ Namespace Projects
                     threeDS.IsReadOnly = True
                     Await threeDS.OpenFile(fullPath, CurrentPluginManager.CurrentIOProvider)
                     Await threeDS.Unpack(GetRawFilesDir, CurrentPluginManager.CurrentIOProvider)
-                    Setting("System") = "3DS"
-                    Setting("GameCode") = threeDS.TitleID
+                    Me.RomSystem = "3DS"
+                    Me.GameCode = threeDS.TitleID
                     threeDS.Dispose()
             End Select
 
