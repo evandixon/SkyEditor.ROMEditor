@@ -7,9 +7,8 @@ Imports SkyEditor.Core.Windows.Processes
 Namespace Projects
     Public Class DSModPackProject
         Inherits Project
-        Implements IContainer(Of ModpackInfo)
 
-        Public Property Info As ModpackInfo Implements IContainer(Of ModpackInfo).Item
+        Public Property Info As ModpackInfo
             Get
                 Return Me.Setting("ModpackInfo")
             End Get

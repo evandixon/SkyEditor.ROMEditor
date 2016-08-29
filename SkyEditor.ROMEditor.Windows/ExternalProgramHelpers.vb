@@ -67,6 +67,27 @@
         Return path
     End Function
 
+    Public Function GetStatsUtilPath() As String
+        Dim dataPath = IO.Path.Combine(GetToolsDir, "pmd2data.xml")
+        If Not IO.File.Exists(dataPath) Then
+            IO.File.WriteAllText(dataPath, My.Resources.pmd2data)
+            ToDelete.Add(dataPath)
+        End If
+
+        Dim scriptDataPath = IO.Path.Combine(GetToolsDir, "pmd2scriptdata.xml")
+        If Not IO.File.Exists(scriptDataPath) Then
+            IO.File.WriteAllText(scriptDataPath, My.Resources.pmd2scriptdata)
+            ToDelete.Add(scriptDataPath)
+        End If
+
+        Dim path = IO.Path.Combine(GetToolsDir, "ppmd_statsutil.exe")
+        If Not IO.File.Exists(path) Then
+            IO.File.WriteAllBytes(path, My.Resources.ppmd_statsutil)
+            ToDelete.Add(path)
+        End If
+        Return path
+    End Function
+
 #End Region
 
 #Region "Run"
@@ -77,19 +98,23 @@
     ''' <param name="arguments"></param>
     ''' <returns></returns>
     Public Async Function RunCtrTool(arguments As String) As Task
-        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetCtrToolPath, arguments)
+        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetCtrToolPath, arguments).ConfigureAwait(False)
     End Function
 
     Public Async Function RunVgmStream(arguments As String) As Task
-        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetVgmStreamPath, arguments)
+        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetVgmStreamPath, arguments).ConfigureAwait(False)
     End Function
 
     Public Async Function RunPPMDUnPX(arguments As String) As Task
-        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetPPMDUnPXPath, arguments)
+        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgram(GetPPMDUnPXPath, arguments).ConfigureAwait(False)
     End Function
 
     Public Async Function RunPPMDPXComp(arguments As String) As Task
         Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgramNoOutput(GetPPMDPXCompPath, arguments).ConfigureAwait(False)
+    End Function
+
+    Public Async Function RunPPMDStatsUtil(arguments As String) As Task
+        Await SkyEditor.Core.Windows.Processes.ConsoleApp.RunProgramNoOutput(GetStatsUtilPath, arguments).ConfigureAwait(False)
     End Function
 
 #End Region

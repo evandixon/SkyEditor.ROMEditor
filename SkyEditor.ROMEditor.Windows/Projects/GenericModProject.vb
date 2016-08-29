@@ -423,7 +423,7 @@ Namespace Projects
                                                           Dim newF As String = IO.Path.Combine(currentFiles, Item.Trim("\"))
                                                           Dim patchFile As String = IO.Path.Combine(modTempFiles, Item.Trim("\") & "." & patcher.PatchExtension.Trim("*").Trim("."))
 
-                                                          Await ConsoleApp.RunProgram(patcher.CreatePatchProgram, String.Format(patcher.CreatePatchArguments, oldF, newF, patchFile))
+                                                          Await ConsoleApp.RunProgramNoOutput(patcher.CreatePatchProgram, String.Format(patcher.CreatePatchArguments, oldF, newF, patchFile)).ConfigureAwait(False)
                                                           patchMade = True
                                                           Exit For
                                                       End If
@@ -443,7 +443,7 @@ Namespace Projects
                                                       IO.File.Copy(oldFile, oldFileTemp, True)
                                                       IO.File.Copy(newFile, newFileTemp, True)
                                                       Dim path = IO.Path.Combine(EnvironmentPaths.GetResourceDirectory, "xdelta", "xdelta3.exe")
-                                                      Await ConsoleApp.RunProgram(IO.Path.Combine(EnvironmentPaths.GetResourceDirectory, "xdelta", "xdelta3.exe"), String.Format("-e -s ""{0}"" ""{1}"" ""{2}""", $"oldFile-{tmpVal}.bin", $"newFile-{tmpVal}.bin", $"patch-{tmpVal}.xdelta"))
+                                                      Await ConsoleApp.RunProgramNoOutput(IO.Path.Combine(EnvironmentPaths.GetResourceDirectory, "xdelta", "xdelta3.exe"), String.Format("-e -s ""{0}"" ""{1}"" ""{2}""", $"oldFile-{tmpVal}.bin", $"newFile-{tmpVal}.bin", $"patch-{tmpVal}.xdelta")).ConfigureAwait(False)
                                                       IO.File.Copy(deltaFileTemp, deltaFile)
                                                       IO.File.Delete(deltaFileTemp)
                                                       IO.File.Delete(oldFileTemp)

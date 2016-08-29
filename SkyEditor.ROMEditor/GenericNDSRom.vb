@@ -393,7 +393,7 @@ Public Class GenericNDSRom
         Next
         'Todo: read the relationship between directories and files
         Dim out As New FilenameTable
-        out.Name = "Data"
+        out.Name = "data"
         BuildFNT(out, root, rootDirectories)
         Return out
     End Function

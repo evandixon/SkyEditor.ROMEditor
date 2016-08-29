@@ -67,7 +67,7 @@ Namespace Explorers
             Return {GetType(SSB)}
         End Function
 
-        Public Overrides Function IsBackupControl(Obj As Object) As Boolean
+        Public Overrides Function IsBackupControl() As Boolean
             'This is now a backup control, since strings and constants are being merged with the commands
             Return True
         End Function

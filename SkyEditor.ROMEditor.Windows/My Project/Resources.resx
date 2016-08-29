@@ -139,4 +139,13 @@
   <data name="PSMD_Move_Name_Hashes" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PSMD Move Name Hashes.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="pmd2data" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pmd2data.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ppmd_statsutil" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ppmd_statsutil.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="pmd2scriptdata" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pmd2scriptdata.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>
