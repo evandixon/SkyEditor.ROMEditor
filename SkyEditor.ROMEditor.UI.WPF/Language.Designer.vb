@@ -101,6 +101,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Bitmap Images.
+        '''</summary>
+        Public Shared ReadOnly Property BitmapImages() As String
+            Get
+                Return ResourceManager.GetString("BitmapImages", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Bold Female:.
         '''</summary>
         Public Shared ReadOnly Property BoldFemale() As String
@@ -376,6 +385,33 @@ Namespace My.Resources
         Public Shared ReadOnly Property LonelyMale() As String
             Get
                 Return ResourceManager.GetString("LonelyMale", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to _Image.
+        '''</summary>
+        Public Shared ReadOnly Property MenuImage() As String
+            Get
+                Return ResourceManager.GetString("MenuImage", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to _Export.
+        '''</summary>
+        Public Shared ReadOnly Property MenuImageExport() As String
+            Get
+                Return ResourceManager.GetString("MenuImageExport", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to _Import.
+        '''</summary>
+        Public Shared ReadOnly Property MenuImageImport() As String
+            Get
+                Return ResourceManager.GetString("MenuImageImport", resourceCulture)
             End Get
         End Property
         
@@ -712,6 +748,15 @@ Namespace My.Resources
         Public Shared ReadOnly Property PluginName() As String
             Get
                 Return ResourceManager.GetString("PluginName", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to PNG Images.
+        '''</summary>
+        Public Shared ReadOnly Property PNGImages() As String
+            Get
+                Return ResourceManager.GetString("PNGImages", resourceCulture)
             End Get
         End Property
         

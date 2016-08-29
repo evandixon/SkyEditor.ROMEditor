@@ -5,23 +5,9 @@ Namespace FileFormats.PSMD
     Public Class CteImage
         Inherits GenericFile
         Implements IOpenableFile
-        Implements INotifyModified
         Implements IDetectableFileType
 
-        Public Event ContainedImageUpdated(sender As Object, e As EventArgs)
-        Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
-
         Public Property ContainedImage As Bitmap
-            Get
-                Return _containedImage
-            End Get
-            Set(value As Bitmap)
-                _containedImage = value
-                RaiseEvent Modified(Me, New EventArgs)
-                RaiseEvent ContainedImageUpdated(Me, New EventArgs)
-            End Set
-        End Property
-        Dim _containedImage As Bitmap
 
         Private Property ImageFormat As Integer
 

@@ -405,4 +405,19 @@ evandixon (Personality test, bgp files)</value>
   <data name="Spanish" xml:space="preserve">
     <value>Spanish</value>
   </data>
+  <data name="BitmapImages" xml:space="preserve">
+    <value>Bitmap Images</value>
+  </data>
+  <data name="MenuImage" xml:space="preserve">
+    <value>_Image</value>
+  </data>
+  <data name="MenuImageExport" xml:space="preserve">
+    <value>_Export</value>
+  </data>
+  <data name="MenuImageImport" xml:space="preserve">
+    <value>_Import</value>
+  </data>
+  <data name="PNGImages" xml:space="preserve">
+    <value>PNG Images</value>
+  </data>
 </root>

@@ -6,7 +6,7 @@ Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
 Namespace MenuActions
     Public Class BGPImageExport
         Inherits MenuAction
-        Private WithEvents SaveFileDialog1 As System.Windows.Forms.SaveFileDialog
+        Private WithEvents SaveFileDialog1 As SaveFileDialog
         Public Overrides Function SupportedTypes() As IEnumerable(Of TypeInfo)
             Return {GetType(BGP).GetTypeInfo}
         End Function
@@ -16,11 +16,11 @@ Namespace MenuActions
                     Dim format As System.Drawing.Imaging.ImageFormat
                     Select Case SaveFileDialog1.FilterIndex
                         Case 0
-                            format = Drawing.Imaging.ImageFormat.Png
+                            format = System.Drawing.Imaging.ImageFormat.Png
                         Case 1
-                            format = Drawing.Imaging.ImageFormat.Bmp
+                            format = System.Drawing.Imaging.ImageFormat.Bmp
                         Case Else
-                            format = Drawing.Imaging.ImageFormat.Png
+                            format = System.Drawing.Imaging.ImageFormat.Png
                     End Select
                     Dim image = Await item.GetImage
                     image.Save(SaveFileDialog1.FileName, format)

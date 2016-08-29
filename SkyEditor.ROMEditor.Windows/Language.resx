@@ -120,23 +120,11 @@
   <data name="AllFiles" xml:space="preserve">
     <value>All Files</value>
   </data>
-  <data name="BitmapImages" xml:space="preserve">
-    <value>Bitmap Images</value>
-  </data>
   <data name="ConvertingStreams" xml:space="preserve">
     <value>Converting streams...</value>
   </data>
   <data name="FarcLoadingExtract" xml:space="preserve">
     <value>Extracting files...</value>
-  </data>
-  <data name="MenuImage" xml:space="preserve">
-    <value>_Image</value>
-  </data>
-  <data name="MenuImageExport" xml:space="preserve">
-    <value>_Export</value>
-  </data>
-  <data name="MenuImageImport" xml:space="preserve">
-    <value>_Import</value>
   </data>
   <data name="MenuUtilities" xml:space="preserve">
     <value>_Utilities</value>
@@ -155,9 +143,6 @@ evandixon (Personality test, bgp files)</value>
   </data>
   <data name="PluginName" xml:space="preserve">
     <value>ROM Editor</value>
-  </data>
-  <data name="PNGImages" xml:space="preserve">
-    <value>PNG Images</value>
   </data>
   <data name="PSMDSoundTrackAlbum" xml:space="preserve">
     <value>Pokémon Super Mystery Dungeon</value>
