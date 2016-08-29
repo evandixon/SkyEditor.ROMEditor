@@ -81,7 +81,7 @@ Namespace FileFormats.Explorers
                                                                "0032_SIGH.png",
                                                                "0034_STUNNED.png"}
 
-            Dim runner As New AsyncFor("Fixing missing portraits...")
+            Dim runner As New AsyncFor
             Dim directories = IO.Directory.GetDirectories(UnpackDirectory)
             Dim delegateAction As New AsyncFor.ForEachItem(Of String)(Sub(directory As String)
                                                                           For j As Integer = 1 To faces.Length - 1

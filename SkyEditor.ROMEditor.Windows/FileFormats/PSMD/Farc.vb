@@ -89,7 +89,7 @@ Namespace FileFormats.PSMD
         ''' </summary>
         ''' <param name="Directory">Directory to extract the FARC to.</param>
         Public Async Function Extract(Directory As String, Optional UseDictionary As Boolean = True) As Task
-            Dim asyncFor As New AsyncFor(My.Resources.Language.FarcLoadingExtract)
+            Dim asyncFor As New AsyncFor
             Dim dic As Dictionary(Of UInteger, String)
             If UseDictionary Then
                 dic = GetFileDictionary()

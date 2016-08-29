@@ -144,7 +144,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim dir = IO.Path.Combine(Me.GetRootDirectory, "Languages")
             If IO.Directory.Exists(dir) Then
                 Dim langDirs = IO.Directory.GetDirectories(dir)
-                Dim f1 As New AsyncFor(My.Resources.Language.LoadingLanguages)
+                Dim f1 As New AsyncFor
                 f1.BatchSize = langDirs.Length
                 _languageLoadTask = f1.RunForEach(Async Function(Item As String)
                                                       Dim lang = IO.Path.GetFileNameWithoutExtension(Item)
