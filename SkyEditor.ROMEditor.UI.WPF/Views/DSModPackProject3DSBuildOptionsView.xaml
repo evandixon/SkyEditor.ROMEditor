@@ -12,8 +12,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <CheckBox Checked="{Binding Output3DSFile}" Content="{x:Static res:Language.Build3DS}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <CheckBox Checked="{Binding OutputCIAFile}" Content="{x:Static res:Language.BuildCIA}" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Visibility="Collapsed"/>
-        <CheckBox Checked="{Binding OutputHANS}" Content="{x:Static res:Language.BuildHans}" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+        <CheckBox IsChecked="{Binding Output3DSFile}" Content="{x:Static res:Language.Build3DS}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <CheckBox IsChecked="{Binding OutputCIAFile}" Content="{x:Static res:Language.BuildCIA}" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Visibility="Collapsed"/>
+        <CheckBox IsChecked="{Binding OutputHANS}" Content="{x:Static res:Language.BuildHans}" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
     </Grid>
 </skywpf:DataBoundObjectControl>

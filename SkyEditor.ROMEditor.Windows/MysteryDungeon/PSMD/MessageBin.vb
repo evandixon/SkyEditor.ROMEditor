@@ -39,12 +39,6 @@ Namespace MysteryDungeon.PSMD
         ''' <returns>The games' scripts refer to the strings by this hash.</returns>
         Public Property Strings As ObservableCollection(Of MessageBinStringEntry) ' Dictionary(Of Integer, String)
 
-        Public Sub AddBlankEntry(ID As UInteger)
-            Dim newEntry = New MessageBinStringEntry With {.Hash = ID}
-            Strings.Add(newEntry)
-            RaiseEvent EntryAdded(Me, New EntryAddedEventArgs With {.NewID = ID})
-        End Sub
-
         Public Overrides Sub CreateFile(Name As String, FileContents() As Byte)
             MyBase.CreateFile(Name, FileContents)
 
