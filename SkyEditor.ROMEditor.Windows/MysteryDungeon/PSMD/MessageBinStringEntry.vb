@@ -3,30 +3,14 @@ Imports SkyEditor.Core.Utilities
 
 Namespace MysteryDungeon.PSMD
     Public Class MessageBinStringEntry
-        Implements INotifyPropertyChanged
+        Public Sub New()
+            Me.Entry = ""
+            Me.Unknown = 0
+        End Sub
+
         Friend Property Pointer As Integer
         Public Property Entry As String
-            Get
-                Return _entry
-            End Get
-            Set(value As String)
-                _entry = value
-                RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Entry)))
-            End Set
-        End Property
-        Dim _entry As String
-
         Public Property Hash As UInteger
-            Get
-                Return _hash
-            End Get
-            Set(value As UInteger)
-                _hash = value
-                RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Hash)))
-            End Set
-        End Property
-        Dim _hash As UInteger
-
         Public Property HashSigned As Integer
             Get
                 Return BitConverter.ToInt32(BitConverter.GetBytes(Hash), 0)
@@ -37,21 +21,10 @@ Namespace MysteryDungeon.PSMD
         End Property
 
         Public Property Unknown As UInteger
-            Get
-                Return _unknown
-            End Get
-            Set(value As UInteger)
-                _unknown = value
-                RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Unknown)))
-            End Set
-        End Property
-        Dim _unknown As UInteger
 
         Public Overrides Function ToString() As String
             Return BitConverter.ToInt32(BitConverter.GetBytes(Hash), 0).ToString & ": " & Entry
         End Function
-
-        Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
         Public Function GetStringBytes() As Byte()
             Dim output As New List(Of Byte)
@@ -81,9 +54,6 @@ Namespace MysteryDungeon.PSMD
             Return output.ToArray
         End Function
 
-        Public Sub New()
-            Me.Entry = ""
-            Me.Unknown = 0
-        End Sub
+
     End Class
 End Namespace

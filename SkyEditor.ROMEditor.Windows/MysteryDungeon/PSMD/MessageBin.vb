@@ -13,8 +13,6 @@ Namespace MysteryDungeon.PSMD
     Public Class MessageBin
         Inherits Sir0
         Implements IOpenableFile
-        Implements ComponentModel.INotifyPropertyChanged
-        Implements INotifyModified
 
         Public Class EntryAddedEventArgs
             Inherits EventArgs
@@ -33,9 +31,7 @@ Namespace MysteryDungeon.PSMD
             Strings = New ObservableCollection(Of MessageBinStringEntry)
         End Sub
 
-        Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
         Public Event EntryAdded(sender As Object, e As EntryAddedEventArgs)
-        Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
 
         ''' <summary>
         ''' Matches string hashes to the strings contained in the file.
@@ -45,11 +41,8 @@ Namespace MysteryDungeon.PSMD
 
         Public Sub AddBlankEntry(ID As UInteger)
             Dim newEntry = New MessageBinStringEntry With {.Hash = ID}
-            AddHandler newEntry.PropertyChanged, AddressOf Entry_PropertyChanged
             Strings.Add(newEntry)
-            RaiseEvent Modified(Me, New EventArgs)
             RaiseEvent EntryAdded(Me, New EntryAddedEventArgs With {.NewID = ID})
-            RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Strings)))
         End Sub
 
         Public Overrides Sub CreateFile(Name As String, FileContents() As Byte)
@@ -106,7 +99,6 @@ Namespace MysteryDungeon.PSMD
                 Loop Until doEnd
 
                 Dim newEntry = New MessageBinStringEntry With {.Hash = stringHash, .Entry = s.ToString.Trim, .Unknown = unk, .Pointer = stringPointer}
-                AddHandler newEntry.PropertyChanged, AddressOf Entry_PropertyChanged
                 Strings.Add(newEntry)
             Next
         End Sub
@@ -125,16 +117,9 @@ Namespace MysteryDungeon.PSMD
                 'We're skipping reading the string, since this function only loads the IDs
 
                 Dim newEntry = New MessageBinStringEntry With {.Hash = stringHash, .Entry = "", .Unknown = unk}
-                AddHandler newEntry.PropertyChanged, AddressOf Entry_PropertyChanged
                 Strings.Add(newEntry)
             Next
         End Function
-
-        Private Sub Entry_PropertyChanged(sender As Object, e As EventArgs)
-            If Strings.Contains(sender) Then
-                RaiseEvent Modified(Me, New EventArgs)
-            End If
-        End Sub
 
         Public Overrides Sub Save(Destination As String, provider As IOProvider)
             Me.RelativePointers.Clear()

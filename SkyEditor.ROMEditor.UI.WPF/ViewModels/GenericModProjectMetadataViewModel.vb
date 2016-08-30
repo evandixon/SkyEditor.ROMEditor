@@ -18,8 +18,8 @@ Namespace ViewModels
                 Return Model.ModName
             End Get
             Set(value As String)
-                If Not value = Model.ModName Then
-                    value = Model.ModName
+                If Not Model.ModName = value Then
+                    Model.ModName = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(ModName)))
                 End If
             End Set
@@ -30,8 +30,8 @@ Namespace ViewModels
                 Return Model.ModDescription
             End Get
             Set(value As String)
-                If Not value = Model.ModDescription Then
-                    value = Model.ModDescription
+                If Not Model.ModDescription = value Then
+                    Model.ModDescription = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(ModDescription)))
                 End If
             End Set
@@ -42,8 +42,8 @@ Namespace ViewModels
                 Return Model.ModAuthor
             End Get
             Set(value As String)
-                If Not value = Model.ModAuthor Then
-                    value = Model.ModAuthor
+                If Not Model.ModAuthor = value Then
+                    Model.ModAuthor = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(ModAuthor)))
                 End If
             End Set
@@ -54,8 +54,8 @@ Namespace ViewModels
                 Return Model.ModVersion
             End Get
             Set(value As String)
-                If Not value = Model.ModVersion Then
-                    value = Model.ModVersion
+                If Not Model.ModVersion = value Then
+                    Model.ModVersion = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(ModVersion)))
                 End If
             End Set

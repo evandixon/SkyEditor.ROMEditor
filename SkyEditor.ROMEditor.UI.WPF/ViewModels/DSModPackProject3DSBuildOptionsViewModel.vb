@@ -17,8 +17,8 @@ Namespace ViewModels
                 Return Model.Output3DSFile
             End Get
             Set(value As Boolean)
-                If Not value = Model.Output3DSFile Then
-                    value = Model.Output3DSFile
+                If Not Model.Output3DSFile = value Then
+                    Model.Output3DSFile = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Output3DSFile)))
                 End If
             End Set
@@ -29,8 +29,8 @@ Namespace ViewModels
                 Return Model.OutputCIAFile
             End Get
             Set(value As Boolean)
-                If Not value = Model.OutputCIAFile Then
-                    value = Model.OutputCIAFile
+                If Not Model.OutputCIAFile = value Then
+                    Model.OutputCIAFile = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(OutputCIAFile)))
                 End If
             End Set
@@ -41,8 +41,8 @@ Namespace ViewModels
                 Return Model.OutputHans
             End Get
             Set(value As Boolean)
-                If Not value = Model.OutputHans Then
-                    value = Model.OutputHans
+                If Not Model.OutputHans = value Then
+                    Model.OutputHans = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(OutputHANS)))
                 End If
             End Set

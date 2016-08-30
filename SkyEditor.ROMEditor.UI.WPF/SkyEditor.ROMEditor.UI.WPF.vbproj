@@ -196,10 +196,11 @@
     <Compile Include="MenuActions\BGPImageExport.vb" />
     <Compile Include="MenuActions\CteImageExport.vb" />
     <Compile Include="MenuActions\CteImageImport.vb" />
+    <Compile Include="PSMD\ViewModels\MessageBinViewModel.vb" />
     <Compile Include="PSMD\Views\CteImageControl.xaml.vb">
       <DependentUpon>CteImageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ObjectControls\MessageBinEditor.xaml.vb">
+    <Compile Include="PSMD\Views\MessageBinEditor.xaml.vb">
       <DependentUpon>MessageBinEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\DSModPackProject3DSBuildOptionsViewModel.vb" />
@@ -223,9 +224,6 @@
     </Compile>
     <Compile Include="PluginDefinition.vb" />
     <Compile Include="ROM.vb" />
-    <Compile Include="DeploySetup.xaml.vb">
-      <DependentUpon>DeploySetup.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Explorers\SSBScriptEditor.xaml.vb">
       <DependentUpon>SSBScriptEditor.xaml</DependentUpon>
     </Compile>
@@ -258,7 +256,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ObjectControls\MessageBinEditor.xaml">
+    <Page Include="PSMD\Views\MessageBinEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -279,10 +277,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DSModPackProject3DSBuildOptionsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DeploySetup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -348,6 +342,9 @@
       <Project>{b7f1e33d-ede9-42ba-8932-6cca5891d2e0}</Project>
       <Name>SkyEditor.ROMEditor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ObjectControls\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

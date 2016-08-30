@@ -17,8 +17,8 @@ Namespace ViewModels
                 Return Model.Name
             End Get
             Set(value As String)
-                If Not value = Model.Name Then
-                    value = Model.Name
+                If Not Model.Name = value Then
+                    Model.Name = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Name)))
                 End If
             End Set
@@ -29,8 +29,8 @@ Namespace ViewModels
                 Return Model.ShortName
             End Get
             Set(value As String)
-                If Not value = Model.ShortName Then
-                    value = Model.ShortName
+                If Not Model.ShortName = value Then
+                    Model.ShortName = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(ShortName)))
                 End If
             End Set
@@ -41,8 +41,8 @@ Namespace ViewModels
                 Return Model.Author
             End Get
             Set(value As String)
-                If Not value = Model.Author Then
-                    value = Model.Author
+                If Not Model.Author = value Then
+                    Model.Author = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Author)))
                 End If
             End Set
@@ -53,8 +53,8 @@ Namespace ViewModels
                 Return Model.Version
             End Get
             Set(value As String)
-                If Not value = Model.Version Then
-                    value = Model.Version
+                If Not Model.Version = value Then
+                    Model.Version = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Version)))
                 End If
             End Set
@@ -65,8 +65,8 @@ Namespace ViewModels
                 Return Model.System
             End Get
             Set(value As String)
-                If Not value = Model.System Then
-                    value = Model.System
+                If Not Model.System = value Then
+                    Model.System = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(System)))
                 End If
             End Set
@@ -77,8 +77,8 @@ Namespace ViewModels
                 Return Model.GameCode
             End Get
             Set(value As String)
-                If Not value = Model.GameCode Then
-                    value = Model.GameCode
+                If Not Model.GameCode = value Then
+                    Model.GameCode = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(GameCode)))
                 End If
             End Set

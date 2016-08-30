@@ -29,7 +29,7 @@ Namespace PSMD.Views
             End If
             Dim id As UInteger = Await p.GetNewLanguageID
             For Each item As TabItem In tcTabs.Items
-                DirectCast(DirectCast(item.Content, MessageBinEditor).EditingObject, MessageBin).AddBlankEntry(id)
+                DirectCast(DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit, MessageBinViewModel).AddBlankEntry(id)
             Next
             btnAdd.IsEnabled = True
             btnAdd.Content = oldText
@@ -42,7 +42,7 @@ Namespace PSMD.Views
                 matches.Add(CInt(item.Value))
             Next
             For Each item As TabItem In tcTabs.Items
-                DirectCast(item.Content, MessageBinEditor).Sort(matches)
+                DirectCast(DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit, MessageBinViewModel).Sort(matches)
             Next
         End Sub
 
@@ -72,8 +72,8 @@ Namespace PSMD.Views
                         For Each item As TabItem In tcTabs.Items
                             If item.Content IsNot Nothing AndAlso TypeOf item.Content Is ObjectControlPlaceholder Then
                                 DirectCast(item.Content, ObjectControlPlaceholder).Dispose()
-                            ElseIf item.Content IsNot Nothing AndAlso TypeOf item.Content Is MessageBinEditor AndAlso DirectCast(item.Content, MessageBinEditor).EditingObject IsNot Nothing AndAlso TypeOf DirectCast(item.Content, MessageBinEditor).EditingObject Is IDisposable Then
-                                DirectCast(item.Content, MessageBinEditor).EditingObject.Dispose()
+                            ElseIf item.Content IsNot Nothing AndAlso TypeOf item.Content Is MessageBinEditor AndAlso DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit IsNot Nothing AndAlso TypeOf DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit Is IDisposable Then
+                                DirectCast(DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit, IDisposable).Dispose()
                             End If
                         Next
                     End If

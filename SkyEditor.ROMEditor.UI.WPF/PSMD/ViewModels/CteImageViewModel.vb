@@ -18,8 +18,8 @@ Namespace PSMD.ViewModels
                 Return Model.ContainedImage
             End Get
             Set(value As Bitmap)
-                If value IsNot Model.ContainedImage Then
-                    value = Model.ContainedImage
+                If Model.ContainedImage IsNot value Then
+                    Model.ContainedImage = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(ContainedImage)))
                     RaiseEvent Modified(Me, New EventArgs)
                 End If

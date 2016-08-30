@@ -1,12 +1,10 @@
 ﻿Imports System.Collections.ObjectModel
 Imports System.IO
 Imports SkyEditor.CodeEditor
-Imports SkyEditor.Core
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
 Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
-Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.UI.WPF
 
 Namespace PSMD.ViewModels
     Public Class PsmdLuaLangIntegrationViewModel
@@ -48,10 +46,13 @@ Namespace PSMD.ViewModels
             For Each item In messageFiles
                 Dim t As New TabItem
                 t.Header = item.Key
-                Dim p As New MessageBinEditor
-                AddHandler p.IsModifiedChanged, AddressOf Me.OnModified
+                Dim m As New MessageBinViewModel
+                m.SetPluginManager(CurrentPluginManager)
+                m.SetModel(item)
+                AddHandler m.Modified, AddressOf Me.OnModified
+                Dim p As New ObjectControlPlaceholder
                 t.Content = p
-                p.EditingObject = item.Value
+                p.ObjectToEdit = item.Value
                 MessageTabs.Add(t)
             Next
         End Sub
@@ -60,7 +61,7 @@ Namespace PSMD.ViewModels
             MyBase.UpdateModel(model)
 
             For Each item As TabItem In MessageTabs
-                DirectCast(DirectCast(item.Content, MessageBinEditor).EditingObject, MessageBin).Save(CurrentPluginManager.CurrentIOProvider)
+                DirectCast(DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit, MessageBinViewModel).Save(CurrentPluginManager.CurrentIOProvider)
             Next
         End Sub
 
