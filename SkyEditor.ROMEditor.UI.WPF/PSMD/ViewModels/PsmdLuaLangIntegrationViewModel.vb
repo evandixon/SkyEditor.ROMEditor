@@ -44,15 +44,18 @@ Namespace PSMD.ViewModels
 
             MessageTabs = New ObservableCollection(Of TabItem)
             For Each item In messageFiles
-                Dim t As New TabItem
-                t.Header = item.Key
                 Dim m As New MessageBinViewModel
                 m.SetPluginManager(CurrentPluginManager)
-                m.SetModel(item)
+                m.SetModel(item.Value)
                 AddHandler m.Modified, AddressOf Me.OnModified
+
                 Dim p As New ObjectControlPlaceholder
+                p.CurrentPluginManager = Me.CurrentPluginManager
+                p.ObjectToEdit = m
+
+                Dim t As New TabItem
+                t.Header = item.Key
                 t.Content = p
-                p.ObjectToEdit = item.Value
                 MessageTabs.Add(t)
             Next
         End Sub

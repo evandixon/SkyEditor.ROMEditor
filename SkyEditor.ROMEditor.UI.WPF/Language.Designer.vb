@@ -860,6 +860,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Reset.
+        '''</summary>
+        Public Shared ReadOnly Property Reset() As String
+            Get
+                Return ResourceManager.GetString("Reset", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to ROM Selector.
         '''</summary>
         Public Shared ReadOnly Property ROMSelector() As String

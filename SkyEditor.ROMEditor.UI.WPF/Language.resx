@@ -429,4 +429,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="BuildHans" xml:space="preserve">
     <value>Build HANS</value>
   </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
 </root>
