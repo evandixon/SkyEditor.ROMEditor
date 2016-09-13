@@ -29,7 +29,6 @@ Namespace Projects.Mods
             Dim BACKdir As String = IO.Path.Combine(projectDir, "Backgrounds")
             Me.CreateDirectory("Backgrounds")
             Dim backFiles = IO.Directory.GetFiles(IO.Path.Combine(sourceDir, "Data", "BACK"), "*.bgp")
-            Dim toAdd As New ConcurrentBag(Of AddExistingFileBatchOperation)
             Dim f As New AsyncFor
             AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
                                                    Me.BuildProgress = e.Progress
@@ -44,10 +43,9 @@ Namespace Projects.Mods
                                        End If
                                        image.Save(newFilename, Drawing.Imaging.ImageFormat.Bmp)
                                        IO.File.Copy(newFilename, newFilename & ".original")
-                                       toAdd.Add(New AddExistingFileBatchOperation With {.ActualFilename = newFilename, .ParentPath = "Backgrounds"})
+                                       Me.AddExistingFile("Backgrounds", newFilename, CurrentPluginManager.CurrentIOProvider)
                                    End Using
                                End Function, backFiles)
-            Await Me.RecreateRootWithExistingFiles(toAdd, CurrentPluginManager.CurrentIOProvider)
 
             'Stop loading
             Me.BuildProgress = 1

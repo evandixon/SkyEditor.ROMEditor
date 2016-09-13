@@ -280,12 +280,10 @@ Namespace MysteryDungeon.PSMD.Projects
             '                    End Function, filesToOpen)
 
             If AddScriptsToProject Then
-                Dim batchAdd As New List(Of Project.AddExistingFileBatchOperation)
                 For Each item In filesToOpen
                     Dim d = IO.Path.GetDirectoryName(item).Replace(scriptDestination, "script")
-                    batchAdd.Add(New Project.AddExistingFileBatchOperation With {.ParentPath = d, .ActualFilename = item})
+                    Me.AddExistingFile(d, item, CurrentPluginManager.CurrentIOProvider)
                 Next
-                Await Me.RecreateRootWithExistingFiles(batchAdd, CurrentPluginManager.CurrentIOProvider)
             End If
 
             BuildProgress = 1

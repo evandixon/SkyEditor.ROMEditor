@@ -83,12 +83,12 @@ Namespace MenuActions
         End Class
 
         Public Overrides Function SupportedTypes() As IEnumerable(Of TypeInfo)
-            Return {GetType(SolutionNode).GetTypeInfo}
+            Return {GetType(BaseRomProject).GetTypeInfo}
         End Function
 
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
-            If TypeOf Obj Is SolutionNode AndAlso DirectCast(Obj, SolutionNode).Item IsNot Nothing AndAlso TypeOf DirectCast(Obj, SolutionNode).Item Is BaseRomProject Then
-                Dim proj As BaseRomProject = DirectCast(Obj, SolutionNode).Item
+            If TypeOf Obj Is BaseRomProject Then
+                Dim proj As BaseRomProject = Obj
                 Dim psmd As New Regex(GameStrings.PSMDCode)
 
                 Return proj.RomSystem = "3DS" AndAlso psmd.IsMatch(proj.GameCode)
@@ -98,9 +98,8 @@ Namespace MenuActions
         End Function
 
         Public Overrides Async Sub DoAction(Targets As IEnumerable(Of Object))
-            For Each node As SolutionNode In Targets
-                If SupportsObject(node) Then
-                    Dim project As BaseRomProject = DirectCast(node, SolutionNode).Item
+            For Each project As BaseRomProject In Targets
+                If SupportsObject(project) Then
                     Dim sourceDir As String = IO.Path.Combine(project.GetRawFilesDir, "romfs", "sound", "stream")
                     Dim destDir As String = IO.Path.Combine(project.GetRootDirectory, "Soundtrack")
 

@@ -32,11 +32,9 @@ Namespace Projects.Mods
             Await k.ApplyMissingPortraitFix(portraitDir)
 
             'Add files to project
-            Dim toAdd As New List(Of AddExistingFileBatchOperation)
             For Each item In IO.Directory.GetFiles(portraitDir, "*", IO.SearchOption.AllDirectories)
-                toAdd.Add(New AddExistingFileBatchOperation With {.ActualFilename = item, .ParentPath = IO.Path.GetDirectoryName(item).Replace(portraitDir, IO.Path.Combine("Pokemon", "Portraits"))})
+                Me.AddExistingFile(IO.Path.GetDirectoryName(item).Replace(portraitDir, IO.Path.Combine("Pokemon", "Portraits")), item, CurrentPluginManager.CurrentIOProvider)
             Next
-            Await Me.RecreateRootWithExistingFiles(toAdd, CurrentPluginManager.CurrentIOProvider)
 
             'Stop loading
             Me.BuildProgress = 1

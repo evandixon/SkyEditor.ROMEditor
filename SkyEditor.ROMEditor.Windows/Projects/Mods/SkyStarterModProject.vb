@@ -79,7 +79,7 @@ Namespace Projects.Mods
             Dim personalityTest As New ObjectFile(Of PersonalityTestContainer)(CurrentPluginManager.CurrentIOProvider)
             personalityTest.ContainedObject = New PersonalityTestContainer(overlay13)
             personalityTest.Save(IO.Path.Combine(projDir, "Starter Pokemon"), CurrentPluginManager.CurrentIOProvider)
-            Await Me.RecreateRootWithExistingFiles({New AddExistingFileBatchOperation With {.ActualFilename = IO.Path.Combine(projDir, "Starter Pokemon"), .ParentPath = ""}}, CurrentPluginManager.CurrentIOProvider)
+            Me.AddExistingFile("", IO.Path.Combine(projDir, "Starter Pokemon"), CurrentPluginManager.CurrentIOProvider)
 
             Me.BuildProgress = 1
             Me.IsBuildProgressIndeterminate = False

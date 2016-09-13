@@ -24,7 +24,6 @@ Namespace Projects.Mods
             Me.BuildProgress = 0
 
             Dim backFiles = IO.Directory.GetFiles(IO.Path.Combine(rawFilesDir, "romfs"), "*.img", IO.SearchOption.AllDirectories)
-            Dim toAdd As New List(Of Project.AddExistingFileBatchOperation)
             Dim f As New AsyncFor
             AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
                                                    Me.BuildProgress = e.Progress
@@ -41,11 +40,9 @@ Namespace Projects.Mods
                                        IO.File.Copy(newFilename, newFilename & ".original")
 
                                        Dim internalDir = IO.Path.GetDirectoryName(Item).Replace(rawFilesDir, "").Replace("\romfs", "")
-                                       toAdd.Add(New AddExistingFileBatchOperation With {.ActualFilename = newFilename, .ParentPath = internalDir})
+                                       Me.AddExistingFile(internalDir, newFilename, CurrentPluginManager.CurrentIOProvider)
                                    End Using
                                End Function, backFiles)
-
-            Await Me.RecreateRootWithExistingFiles(toAdd, CurrentPluginManager.CurrentIOProvider)
 
             Me.BuildProgress = 1
             Me.BuildStatusMessage = My.Resources.Language.Complete

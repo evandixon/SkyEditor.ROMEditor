@@ -31,7 +31,7 @@ Namespace Projects
         End Property
 
         Public Overrides Function CanBuild() As Boolean
-            Return (Me.GetProjectItemByPath("/BaseRom") IsNot Nothing)
+            Return (Me.GetItem("/BaseRom") IsNot Nothing)
         End Function
 
         Public Overrides Function CanCreateDirectory(Path As String) As Boolean
@@ -48,7 +48,7 @@ Namespace Projects
 
         Public Overrides Function CanAddExistingFile(Path As String) As Boolean
             'Only if it's the root, and there isn't already a file named BaseRom.
-            Return (Path.Replace("\", "/").TrimStart("/") = "") AndAlso (Me.GetProjectItemByPath("/BaseRom") Is Nothing)
+            Return (Path.Replace("\", "/").TrimStart("/") = "") AndAlso (Me.GetItem("/BaseRom") Is Nothing)
         End Function
 
         Public Overrides Function CanDeleteFile(FilePath As String) As Boolean
@@ -66,9 +66,9 @@ Namespace Projects
             End Select
         End Function
 
-        Protected Overrides Function GetImportedFilePath(ParentProjectPath As String, FullFilename As String) As Object
-            Return "BaseRom"
-        End Function
+        'Protected Overrides Function GetImportedFilePath(ParentProjectPath As String, FullFilename As String) As Object
+        '    Return "BaseRom"
+        'End Function
 
         Private Async Sub BaseRomProject_FileAdded(sender As Object, e As ProjectFileAddedEventArgs) Handles Me.FileAdded
             'Calling DoBuild directly would result in the solution not raising the build event, which is needed for SolutionBuildProgress
@@ -84,7 +84,7 @@ Namespace Projects
 
         Private Async Function DoBuild() As Task
             Dim mode As String = Nothing
-            Dim fullPath = Me.GetProjectItemByPath("/BaseRom").GetFilename
+            Dim fullPath = Me.GetItem("/BaseRom").GetFilename
 
             If Not String.IsNullOrEmpty(Me.RomSystem) Then
                 If Me.RomSystem = SystemNDS Then
@@ -152,7 +152,7 @@ Namespace Projects
                     threeDS.Dispose()
             End Select
 
-            Dim filename = Me.GetProjectItemByPath("/BaseRom").GetFilename
+            Dim filename = Me.GetFilename("/BaseRom")
             DeleteFile("/BaseRom")
             File.Delete(filename)
 
