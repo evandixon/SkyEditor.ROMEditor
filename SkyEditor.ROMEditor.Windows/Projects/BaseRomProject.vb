@@ -66,9 +66,9 @@ Namespace Projects
             End Select
         End Function
 
-        'Protected Overrides Function GetImportedFilePath(ParentProjectPath As String, FullFilename As String) As Object
-        '    Return "BaseRom"
-        'End Function
+        Protected Overrides Function GetImportedFilePath(ParentProjectPath As String, FullFilename As String) As String
+            Return "/BaseRom"
+        End Function
 
         Private Async Sub BaseRomProject_FileAdded(sender As Object, e As ProjectFileAddedEventArgs) Handles Me.FileAdded
             'Calling DoBuild directly would result in the solution not raising the build event, which is needed for SolutionBuildProgress
