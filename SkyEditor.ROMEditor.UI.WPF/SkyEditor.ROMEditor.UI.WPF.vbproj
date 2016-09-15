@@ -98,6 +98,10 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SkyEditor.UI.WPF, Version=4.0.6.65, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.UI.WPF.4.0.6-CI65\lib\net46\SkyEditor.UI.WPF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -330,10 +334,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SkyEditor.UI.WPF\SkyEditor.UI.WPF\SkyEditor.UI.WPF.vbproj">
-      <Project>{00afce08-71b5-4bf9-9155-c017f8151419}</Project>
-      <Name>SkyEditor.UI.WPF</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SkyEditor.ROMEditor.Windows\SkyEditor.ROMEditor.Windows.vbproj">
       <Project>{f05c12e8-eab7-4b9e-a8d2-d21b80c1a646}</Project>
       <Name>SkyEditor.ROMEditor.Windows</Name>
