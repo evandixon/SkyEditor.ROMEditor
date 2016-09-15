@@ -106,7 +106,7 @@ Namespace MysteryDungeon.PSMD.Projects
                 .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
                 .MergeSafe = True
                 .PatchExtension = "msgFarcT5"
-                .FilePath = ".*message_?.*\.bin"
+                .FilePath = ".*message_?[A-Za-z]*\.bin"
             End With
             patchers.Add(MSPatcher)
             Return patchers

@@ -415,8 +415,8 @@ Namespace Projects
                                                           If patcher IsNot Nothing AndAlso Not patchers.Contains(patcher) Then
                                                               patchers.Add(patcher)
                                                           End If
-                                                          If Not IO.Directory.Exists(IO.Path.Combine(modTempFiles, Item.Trim("\"))) Then
-                                                              IO.Directory.CreateDirectory(IO.Path.Combine(modTempFiles, Item.Trim("\")))
+                                                          If Not IO.Directory.Exists(IO.Path.GetDirectoryName(IO.Path.Combine(modTempFiles, Item.Trim("\")))) Then
+                                                              IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(IO.Path.Combine(modTempFiles, Item.Trim("\"))))
                                                           End If
 
                                                           Dim oldF As String = IO.Path.Combine(sourceRoot, Item.Trim("\"))
