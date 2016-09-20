@@ -17,11 +17,9 @@ Namespace Projects
             End Using
 
             'Add files to project
-            Dim toAdd As New List(Of AddExistingFileBatchOperation)
             For Each item In IO.Directory.GetFiles(outputDir, "*.xml", IO.SearchOption.AllDirectories)
-                toAdd.Add(New AddExistingFileBatchOperation With {.ActualFilename = item, .ParentPath = IO.Path.GetDirectoryName(item).Replace(outputDir, "")})
+                Me.AddExistingFile(IO.Path.GetDirectoryName(item).Replace(outputDir, ""), item, CurrentPluginManager.CurrentIOProvider)
             Next
-            Await Me.RecreateRootWithExistingFiles(toAdd, CurrentPluginManager.CurrentIOProvider)
         End Function
 
         Protected Overrides Async Function DoBuild() As Task

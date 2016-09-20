@@ -21,15 +21,9 @@ Public Class unluac
         Instance.BeginOutputReadLine()
     End Sub
 
-    Private Async Function WaitForExit() As Task
-        Await Task.Run(New Action(Sub()
-                                      Instance.WaitForExit()
-                                  End Sub))
-    End Function
-
-    Public Async Function Decompile() As Task(Of String)
+    Public Function Decompile() As String
         Start()
-        Await WaitForExit()
+        Instance.WaitForExit()
         Return Output.ToString
     End Function
 
@@ -40,8 +34,8 @@ Public Class unluac
     Private WithEvents Instance As Process
     Private Property Output As New Text.StringBuilder
 
-    Public Shared Async Function DecompileToFile(SourceFilename As String, DestinationFilename As String) As Task
+    Public Shared Sub DecompileToFile(SourceFilename As String, DestinationFilename As String)
         Dim un As New unluac(SourceFilename)
-        IO.File.WriteAllText(DestinationFilename, Await un.Decompile)
-    End Function
+        IO.File.WriteAllText(DestinationFilename, un.Decompile)
+    End Sub
 End Class

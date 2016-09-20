@@ -10,7 +10,7 @@ Namespace Projects.Mods
         Protected Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
             IO.File.Copy(EnvironmentPaths.GetResourceName("pk3DS.exe"), IO.Path.Combine(GetRootDirectory, "pk3DS.exe"))
-            Await Me.AddExistingFile("", IO.Path.Combine(GetRootDirectory, "pk3DS.exe"), CurrentPluginManager.CurrentIOProvider)
+            Me.AddExistingFile("", IO.Path.Combine(GetRootDirectory, "pk3DS.exe"), CurrentPluginManager.CurrentIOProvider)
             IO.File.WriteAllText(IO.Path.Combine(GetRootDirectory, "config.ini"), IO.Path.GetFileName(Me.GetRawFilesDir))
         End Function
     End Class

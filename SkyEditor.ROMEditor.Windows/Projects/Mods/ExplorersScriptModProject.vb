@@ -20,11 +20,9 @@ Namespace Projects.Mods
             Dim sourceDir = GetRawFilesDir()
 
             Dim scriptFiles = IO.Directory.GetFiles(IO.Path.Combine(sourceDir, "Data", "SCRIPT"), "*", IO.SearchOption.AllDirectories)
-            Dim toAdd As New List(Of AddExistingFileBatchOperation)
             For Each item In scriptFiles
-                toAdd.Add(New AddExistingFileBatchOperation With {.ActualFilename = item, .ParentPath = IO.Path.GetDirectoryName(item).Replace(projectDir, "")})
+                Me.AddExistingFile(IO.Path.GetDirectoryName(item).Replace(projectDir, ""), item, CurrentPluginManager.CurrentIOProvider)
             Next
-            Await Me.RecreateRootWithExistingFiles(toAdd, CurrentPluginManager.CurrentIOProvider)
 
             Me.BuildProgress = 1
             Me.IsBuildProgressIndeterminate = False

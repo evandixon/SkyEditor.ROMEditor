@@ -39,12 +39,12 @@ Namespace MysteryDungeon.PSMD.Projects
             Await MyBase.Initialize()
 
             'Add fixed_pokemon to project
-            Await Me.RecreateRootWithExistingFiles({New AddExistingFileBatchOperation With {.ParentPath = "", .ActualFilename = IO.Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin")}}, CurrentPluginManager.CurrentIOProvider)
+            Me.AddExistingFile("", IO.Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), CurrentPluginManager.CurrentIOProvider)
         End Function
 
         Protected Overrides Async Function DoBuild() As Task
             'Open fixed_pokemon
-            Dim fpFilename = Me.GetProjectItemByPath("fixed_pokemon.bin").GetFilename
+            Dim fpFilename = Me.GetItem("/fixed_pokemon.bin").GetFilename
             Dim fixedPokemon As New FixedPokemon()
             Await fixedPokemon.OpenFile(fpFilename, Me.CurrentPluginManager.CurrentIOProvider)
             IO.File.Copy(fpFilename, IO.Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), True)

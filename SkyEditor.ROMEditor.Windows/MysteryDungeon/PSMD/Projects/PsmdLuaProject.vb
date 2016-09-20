@@ -106,7 +106,7 @@ Namespace MysteryDungeon.PSMD.Projects
                 .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
                 .MergeSafe = True
                 .PatchExtension = "msgFarcT5"
-                .FilePath = ".*message_?.*\.bin"
+                .FilePath = ".*message_?[A-Za-z]*\.bin"
             End With
             patchers.Add(MSPatcher)
             Return patchers
@@ -246,15 +246,15 @@ Namespace MysteryDungeon.PSMD.Projects
                                                    Me.BuildProgress = e.Progress
                                                End Sub
 
-            'f.BatchSize = Environment.ProcessorCount * 2
+            f.BatchSize = Environment.ProcessorCount * 2
 
-            Await f.RunForEach(Async Function(Item As String) As Task
+            Await f.RunForEach(Sub(Item As String)
                                    Dim dest = Item.Replace(scriptSource, scriptDestination)
                                    If Not IO.Directory.Exists(IO.Path.GetDirectoryName(dest)) Then
                                        IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(dest))
                                    End If
 
-                                   Await unluac.DecompileToFile(Item, dest)
+                                   unluac.DecompileToFile(Item, dest)
                                    IO.File.Copy(dest, dest & ".original")
                                    filesToOpen.Add(dest)
 
@@ -262,7 +262,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                    'Dim d = IO.Path.GetDirectoryName(dest).Replace(scriptDestination, "script")
                                    'Me.CreateDirectory(d)
                                    'Await Me.AddExistingFile(d, Item, False)
-                               End Function, IO.Directory.GetFiles(scriptSource, "*.lua", IO.SearchOption.AllDirectories))
+                               End Sub, IO.Directory.GetFiles(scriptSource, "*.lua", IO.SearchOption.AllDirectories))
 
             'Me.BuildStatusMessage = My.Resources.Language.LoadingAddingFiles
             'Me.BuildProgress = 0
@@ -280,12 +280,10 @@ Namespace MysteryDungeon.PSMD.Projects
             '                    End Function, filesToOpen)
 
             If AddScriptsToProject Then
-                Dim batchAdd As New List(Of Project.AddExistingFileBatchOperation)
                 For Each item In filesToOpen
                     Dim d = IO.Path.GetDirectoryName(item).Replace(scriptDestination, "script")
-                    batchAdd.Add(New Project.AddExistingFileBatchOperation With {.ParentPath = d, .ActualFilename = item})
+                    Me.AddExistingFile(d, item, CurrentPluginManager.CurrentIOProvider)
                 Next
-                Await Me.RecreateRootWithExistingFiles(batchAdd, CurrentPluginManager.CurrentIOProvider)
             End If
 
             BuildProgress = 1
