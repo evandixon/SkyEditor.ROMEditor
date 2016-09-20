@@ -398,24 +398,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to _Utilities.
-        '''</summary>
-        Friend Shared ReadOnly Property MenuUtilities() As String
-            Get
-                Return ResourceManager.GetString("MenuUtilities", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Export _Soundtrack.
-        '''</summary>
-        Friend Shared ReadOnly Property MenuUtilitiesExportSoundtrack() As String
-            Get
-                Return ResourceManager.GetString("MenuUtilitiesExportSoundtrack", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized string similar to Nintendo DS ROMs.
         '''</summary>
         Friend Shared ReadOnly Property NDSRomFile() As String

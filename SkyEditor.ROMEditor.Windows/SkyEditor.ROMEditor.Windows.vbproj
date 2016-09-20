@@ -196,6 +196,7 @@
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
     <Compile Include="Makerom.vb" />
+    <Compile Include="MysteryDungeon\PSMD\PSMDSoundtrackConverter.vb" />
     <Compile Include="Projects\PpmduStatsUtilProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\IPsmdMessageBinProject.vb" />
     <Compile Include="Projects\Mods\ExplorersScriptModProject.vb" />
@@ -255,7 +256,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Portrait.vb" />
-    <Compile Include="MenuActions\PsmdSoundtrackAction.vb" />
     <Compile Include="Projects\Mods\GtiImage2dProject.vb" />
     <Compile Include="Projects\Mods\KaomadoProject.vb" />
     <Compile Include="Projects\Mods\Pk3DSModProject.vb" />

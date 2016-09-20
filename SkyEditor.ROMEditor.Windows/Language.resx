@@ -126,12 +126,6 @@
   <data name="FarcLoadingExtract" xml:space="preserve">
     <value>Extracting files...</value>
   </data>
-  <data name="MenuUtilities" xml:space="preserve">
-    <value>_Utilities</value>
-  </data>
-  <data name="MenuUtilitiesExportSoundtrack" xml:space="preserve">
-    <value>Export _Soundtrack</value>
-  </data>
   <data name="PluginAuthor" xml:space="preserve">
     <value />
   </data>

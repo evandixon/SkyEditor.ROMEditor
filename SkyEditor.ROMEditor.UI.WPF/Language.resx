@@ -432,4 +432,10 @@ evandixon (Personality test, bgp files)</value>
   <data name="Reset" xml:space="preserve">
     <value>Reset</value>
   </data>
+  <data name="MenuUtilities" xml:space="preserve">
+    <value>_Utilities</value>
+  </data>
+  <data name="MenuUtilitiesExportSoundtrack" xml:space="preserve">
+    <value>Export _Soundtrack</value>
+  </data>
 </root>

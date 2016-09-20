@@ -196,6 +196,7 @@
     <Compile Include="MenuActions\BGPImageExport.vb" />
     <Compile Include="MenuActions\CteImageExport.vb" />
     <Compile Include="MenuActions\CteImageImport.vb" />
+    <Compile Include="MenuActions\PsmdSoundtrackAction.vb" />
     <Compile Include="PSMD\ViewModels\MessageBinViewModel.vb" />
     <Compile Include="PSMD\Views\CteImageControl.xaml.vb">
       <DependentUpon>CteImageControl.xaml</DependentUpon>
