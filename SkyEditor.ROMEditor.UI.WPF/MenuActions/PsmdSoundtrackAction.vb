@@ -1,37 +1,30 @@
-﻿Imports System.IO
-Imports System.Reflection
-Imports System.Text.RegularExpressions
-Imports MediaToolkit
-Imports MediaToolkit.Model
-Imports MediaToolkit.Options
-Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.Projects
+﻿Imports System.Reflection
 Imports SkyEditor.Core.UI
-Imports SkyEditor.Core.Utilities
-Imports SkyEditor.Core.Windows
 Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
 Imports SkyEditor.ROMEditor.Windows.Projects
-Imports TagLib
+Imports SkyEditor.UI.WPF
+Imports SkyEditor.UI.WPF.ViewModels.Projects
 
 Namespace MenuActions
     Public Class PsmdSoundtrackMenuAction
         Inherits MenuAction
 
         Public Overrides Function SupportedTypes() As IEnumerable(Of TypeInfo)
-            Return {GetType(BaseRomProject).GetTypeInfo}
+            Return {GetType(SolutionHeiarchyItemViewModel).GetTypeInfo}
         End Function
 
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
-            If TypeOf Obj Is BaseRomProject Then
-                Return PSMDSoundtrackConverter.SupportsProject(Obj)
+            If TypeOf Obj Is SolutionHeiarchyItemViewModel Then
+                Dim vm As SolutionHeiarchyItemViewModel = Obj
+                Return Not vm.IsDirectory AndAlso PSMDSoundtrackConverter.SupportsProject(vm.GetNodeProject)
             Else
                 Return False
             End If
         End Function
 
         Public Overrides Async Sub DoAction(Targets As IEnumerable(Of Object))
-            For Each project As BaseRomProject In Targets
-                Await PSMDSoundtrackConverter.Convert(project)
+            For Each project As SolutionHeiarchyItemViewModel In Targets
+                Await PSMDSoundtrackConverter.Convert(project.GetNodeProject)
             Next
         End Sub
 
