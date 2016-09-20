@@ -196,6 +196,7 @@
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
     <Compile Include="Makerom.vb" />
+    <Compile Include="MysteryDungeon\PSMD\PSMDSoundtrackConverter.vb" />
     <Compile Include="Projects\PpmduStatsUtilProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\IPsmdMessageBinProject.vb" />
     <Compile Include="Projects\Mods\ExplorersScriptModProject.vb" />
