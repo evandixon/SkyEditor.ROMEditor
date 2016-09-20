@@ -16,7 +16,7 @@ Namespace MenuActions
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
             If TypeOf Obj Is SolutionHeiarchyItemViewModel Then
                 Dim vm As SolutionHeiarchyItemViewModel = Obj
-                Return Not vm.IsDirectory AndAlso PSMDSoundtrackConverter.SupportsProject(vm.GetNodeProject)
+                Return Not vm.IsDirectory AndAlso TypeOf vm.GetNodeProject Is BaseRomProject AndAlso PSMDSoundtrackConverter.SupportsProject(vm.GetNodeProject)
             Else
                 Return False
             End If
