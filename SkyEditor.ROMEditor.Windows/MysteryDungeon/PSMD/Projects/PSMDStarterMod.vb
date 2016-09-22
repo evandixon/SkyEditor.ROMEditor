@@ -44,7 +44,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Protected Overrides Async Function DoBuild() As Task
             'Open fixed_pokemon
-            Dim fpFilename = Me.GetItem("/fixed_pokemon.bin").GetFilename
+            Dim fpFilename = Me.GetItem("fixed_pokemon.bin").GetFilename
             Dim fixedPokemon As New FixedPokemon()
             Await fixedPokemon.OpenFile(fpFilename, Me.CurrentPluginManager.CurrentIOProvider)
             IO.File.Copy(fpFilename, IO.Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), True)
