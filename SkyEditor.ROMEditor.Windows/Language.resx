@@ -258,4 +258,10 @@ evandixon (Personality test, bgp files)</value>
     <value>(None)</value>
     <comment>The string representing Pokemon ID 0.</comment>
   </data>
+  <data name="GTISoundTrackAlbum" xml:space="preserve">
+    <value>Pokémon Mystery Dungeon: Gates to Infinity</value>
+  </data>
+  <data name="GTISoundTrackArtist" xml:space="preserve">
+    <value>Chunsoft</value>
+  </data>
 </root>

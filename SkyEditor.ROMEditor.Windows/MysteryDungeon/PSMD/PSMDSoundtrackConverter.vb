@@ -77,19 +77,34 @@ Namespace MysteryDungeon.PSMD
 
         Public Shared Function SupportsProject(project As BaseRomProject) As Boolean
             Dim psmd As New Regex(GameStrings.PSMDCode)
+            Dim gti As New Regex(GameStrings.GTICode)
 
-            Return project.RomSystem = "3DS" AndAlso psmd.IsMatch(project.GameCode)
+            Return project.RomSystem = "3DS" AndAlso (psmd.IsMatch(project.GameCode) OrElse gti.IsMatch(project.GameCode))
         End Function
 
         Public Shared Async Function Convert(project As BaseRomProject) As Task
+            Dim psmd As New Regex(GameStrings.PSMDCode)
+            Dim gti As New Regex(GameStrings.GTICode)
             If SupportsProject(project) Then
                 Dim sourceDir As String = IO.Path.Combine(project.GetRawFilesDir, "romfs", "sound", "stream")
                 Dim destDir As String = IO.Path.Combine(project.GetRootDirectory, "Soundtrack")
 
                 'Todo: do error checks on input file
                 Dim trackNames As New Dictionary(Of String, String)
-                If IO.File.Exists(EnvironmentPaths.GetResourceName("PSMD English Soundtrack.txt")) Then
-                    Dim lines = IO.File.ReadAllLines(EnvironmentPaths.GetResourceName("PSMD English Soundtrack.txt"))
+                Dim isPSMD As Boolean
+                Dim isGTI As Boolean
+                Dim trackList As String
+                If psmd.IsMatch(project.GameCode) Then
+                    trackList = "PSMD English Soundtrack.txt"
+                    isGTI = False
+                    isPSMD = True
+                ElseIf gti.IsMatch(project.GameCode) Then
+                    trackList = "GTI English Soundtrack.txt"
+                    isGTI = True
+                    isPSMD = False
+                End If
+                If IO.File.Exists(EnvironmentPaths.GetResourceName(trackList)) Then
+                    Dim lines = IO.File.ReadAllLines(EnvironmentPaths.GetResourceName(trackList))
                     For Each item In lines
                         Dim parts = item.Split("=".ToCharArray, 2)
                         If parts.Count = 2 Then
@@ -113,10 +128,17 @@ Namespace MysteryDungeon.PSMD
                     Dim f As New AsyncFor '(My.Resources.Language.ConvertingStreams)
                     f.BatchSize = Environment.ProcessorCount * 2
                     Await f.RunForEach(Async Function(Item As String) As Task
-                                           Dim source = IO.Path.Combine(sourceDir, Item) & ".dspadpcm.bcstm"
+                                           Dim source = IO.Path.Combine(sourceDir, Item)
 
                                            'Create the wav
-                                           Dim destinationWav = source.Replace(sourceDir, destDir).Replace("dspadpcm.bcstm", "wav")
+                                           Dim destinationWav As String '= source.Replace(sourceDir, destDir)
+                                           If isGTI Then
+                                               source &= ".bcstm"
+                                               destinationWav = source.Replace(sourceDir, destDir).Replace("bcstm", "wav")
+                                           ElseIf isPSMD Then
+                                               source &= "dspadpcm.bcstm"
+                                               destinationWav = source.Replace(sourceDir, destDir).Replace("dspadpcm.bcstm", "wav")
+                                           End If
 
                                            Dim filename = IO.Path.GetFileNameWithoutExtension(destinationWav)
 
@@ -147,13 +169,24 @@ Namespace MysteryDungeon.PSMD
                                            Using abs As New FileAbstraction(destinationMp3)
                                                Dim t As New TagLib.Mpeg.AudioFile(abs)
                                                With t.Tag
-                                                   .Album = My.Resources.Language.PSMDSoundTrackAlbum
-                                                   .AlbumArtists = {My.Resources.Language.PSMDSoundTrackArtist}
+                                                   If isPSMD Then
+                                                       .Album = My.Resources.Language.PSMDSoundTrackAlbum
+                                                       .AlbumArtists = {My.Resources.Language.PSMDSoundTrackArtist}
 #Disable Warning
-                                                   'Disabling warning because this tag needs to be set to ensure compatibility, like with Windows Explorer and Windows Media Player.
-                                                   .Artists = {My.Resources.Language.PSMDSoundTrackArtist}
+                                                       'Disabling warning because this tag needs to be set to ensure compatibility, like with Windows Explorer and Windows Media Player.
+                                                       .Artists = {My.Resources.Language.PSMDSoundTrackArtist}
 #Enable Warning
-                                                   .Year = 2015
+                                                       .Year = 2015
+                                                   ElseIf isGTI Then
+                                                       .Album = My.Resources.Language.GTISoundTrackAlbum
+                                                       .AlbumArtists = {My.Resources.Language.GTISoundTrackArtist}
+#Disable Warning
+                                                       'Disabling warning because this tag needs to be set to ensure compatibility, like with Windows Explorer and Windows Media Player.
+                                                       .Artists = {My.Resources.Language.GTISoundTrackArtist}
+#Enable Warning
+                                                       .Year = 2015
+                                                   End If
+
                                                    Dim filenameParts = trackNames(filename).Split(" ".ToCharArray, 2)
                                                    If filenameParts.Count = 2 Then
                                                        If IsNumeric(filenameParts(0)) Then

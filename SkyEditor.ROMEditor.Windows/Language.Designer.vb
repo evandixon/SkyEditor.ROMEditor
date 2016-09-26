@@ -191,6 +191,24 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Pokémon Mystery Dungeon: Gates to Infinity.
+        '''</summary>
+        Friend Shared ReadOnly Property GTISoundTrackAlbum() As String
+            Get
+                Return ResourceManager.GetString("GTISoundTrackAlbum", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Chunsoft.
+        '''</summary>
+        Friend Shared ReadOnly Property GTISoundTrackArtist() As String
+            Get
+                Return ResourceManager.GetString("GTISoundTrackArtist", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Adding files....
         '''</summary>
         Friend Shared ReadOnly Property LoadingAddingFiles() As String
