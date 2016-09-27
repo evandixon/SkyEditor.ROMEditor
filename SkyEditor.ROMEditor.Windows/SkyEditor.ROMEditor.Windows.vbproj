@@ -200,7 +200,7 @@
     <Compile Include="Windows\GameStrings.vb" />
     <Compile Include="Windows\FileFormats\Animations\AnimatedSprite.vb" />
     <Compile Include="Windows\FileFormats\Animations\Frame.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\BGP.vb" />
+    <Compile Include="MysteryDungeon\Explorers\BGP.vb" />
     <Compile Include="Windows\FileFormats\Animations\AnimData.vb" />
     <Compile Include="Windows\FileFormats\Explorers\DecompressedFile.vb" />
     <Compile Include="Windows\FileFormats\Explorers\item_p.vb" />

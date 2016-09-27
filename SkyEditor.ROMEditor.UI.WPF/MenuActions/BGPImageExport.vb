@@ -1,7 +1,7 @@
 ﻿Imports System.Reflection
 Imports System.Windows.Forms
 Imports SkyEditor.Core.UI
-Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
+Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 
 Namespace MenuActions
     Public Class BGPImageExport
@@ -10,7 +10,7 @@ Namespace MenuActions
         Public Overrides Function SupportedTypes() As IEnumerable(Of TypeInfo)
             Return {GetType(BGP).GetTypeInfo}
         End Function
-        Public Overrides Async Sub DoAction(Targets As IEnumerable(Of Object))
+        Public Overrides Sub DoAction(Targets As IEnumerable(Of Object))
             For Each item As BGP In Targets
                 If SaveFileDialog1.ShowDialog = DialogResult.OK Then
                     Dim format As System.Drawing.Imaging.ImageFormat
@@ -22,8 +22,7 @@ Namespace MenuActions
                         Case Else
                             format = System.Drawing.Imaging.ImageFormat.Png
                     End Select
-                    Dim image = Await item.GetImage
-                    image.Save(SaveFileDialog1.FileName, format)
+                    item.GetImage.Save(SaveFileDialog1.FileName, format)
                 End If
             Next
         End Sub

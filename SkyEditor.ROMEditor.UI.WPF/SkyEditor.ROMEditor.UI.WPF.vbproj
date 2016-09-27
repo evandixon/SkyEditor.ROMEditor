@@ -188,6 +188,7 @@
     <Compile Include="Explorers\StringParameterEditor.xaml.vb">
       <DependentUpon>StringParameterEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Explorers\ViewModels\CteImageViewModel.vb" />
     <Compile Include="Language.Designer.vb">
       <DependentUpon>Language.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -198,8 +199,8 @@
     <Compile Include="MenuActions\CteImageImport.vb" />
     <Compile Include="MenuActions\PsmdSoundtrackAction.vb" />
     <Compile Include="PSMD\ViewModels\MessageBinViewModel.vb" />
-    <Compile Include="PSMD\Views\CteImageControl.xaml.vb">
-      <DependentUpon>CteImageControl.xaml</DependentUpon>
+    <Compile Include="Explorers\Views\BGPControl.xaml.vb">
+      <DependentUpon>BGPControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="PSMD\Views\MessageBinEditor.xaml.vb">
       <DependentUpon>MessageBinEditor.xaml</DependentUpon>
@@ -253,7 +254,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PSMD\Views\CteImageControl.xaml">
+    <Page Include="Explorers\Views\BGPControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

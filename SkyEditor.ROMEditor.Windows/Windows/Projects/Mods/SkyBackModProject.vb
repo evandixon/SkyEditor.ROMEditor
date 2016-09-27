@@ -1,6 +1,7 @@
 ﻿Imports System.Collections.Concurrent
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
 
 Namespace Windows.Projects.Mods
@@ -36,12 +37,11 @@ Namespace Windows.Projects.Mods
             Await f.RunForEach(Async Function(Item As String) As Task
                                    Using b As New BGP
                                        Await b.OpenFile(Item, CurrentPluginManager.CurrentIOProvider)
-                                       Dim image = Await b.GetImage
                                        Dim newFilename = IO.Path.Combine(BACKdir, IO.Path.GetFileNameWithoutExtension(Item) & ".bmp")
                                        If Not IO.Directory.Exists(IO.Path.GetDirectoryName(newFilename)) Then
                                            IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(newFilename))
                                        End If
-                                       image.Save(newFilename, Drawing.Imaging.ImageFormat.Bmp)
+                                       b.GetImage.Save(newFilename, Drawing.Imaging.ImageFormat.Bmp)
                                        IO.File.Copy(newFilename, newFilename & ".original")
                                        Me.AddExistingFile("Backgrounds", newFilename, CurrentPluginManager.CurrentIOProvider)
                                    End Using

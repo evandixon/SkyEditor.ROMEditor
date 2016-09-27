@@ -1,7 +1,8 @@
 ﻿Imports System.Drawing
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
 
-Namespace Windows.FileFormats.Explorers
+Namespace MysteryDungeon.Explorers
     Public Class BGP
         Inherits DecompressedFile
 
@@ -314,11 +315,9 @@ Namespace Windows.FileFormats.Explorers
         End Function
 
         Dim _image As Bitmap
-        Public Async Function GetImage() As Task(Of Bitmap)
+        Public Function GetImage() As Bitmap
             If _image Is Nothing Then
-                _image = Await Task.Run(Function()
-                                            Return ProcessMapping(MapData, ChunkData, PaletteData)
-                                        End Function)
+                _image = ProcessMapping(MapData, ChunkData, PaletteData)
             End If
             Return _image
         End Function
