@@ -98,8 +98,8 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.UI.WPF, Version=4.0.6.70, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.UI.WPF.4.0.6-CI70\lib\net46\SkyEditor.UI.WPF.dll</HintPath>
+    <Reference Include="SkyEditor.UI.WPF, Version=4.0.6.72, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.UI.WPF.4.0.6-CI72\lib\net46\SkyEditor.UI.WPF.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />

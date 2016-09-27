@@ -290,15 +290,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Converting Soundtrack....
-        '''</summary>
-        Friend Shared ReadOnly Property LoadingConvertingSoundtrack() As String
-            Get
-                Return ResourceManager.GetString("LoadingConvertingSoundtrack", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized string similar to Converting Soundtrack ({0} of {1}).
         '''</summary>
         Friend Shared ReadOnly Property LoadingConvertingSoundtrackXofY() As String

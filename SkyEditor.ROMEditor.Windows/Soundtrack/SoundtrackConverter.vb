@@ -149,7 +149,7 @@ Namespace Soundtrack
                 IO.File.Delete(item)
             Next
 
-            Me.Message = My.Resources.Language.LoadingConvertingSoundtrack
+            Me.Message = String.Format(My.Resources.Language.LoadingConvertingSoundtrackXofY, 0, soundtrackDefinition.Tracks.Count)
             Me.Progress = 0
             Me.IsCompleted = False
             Me.IsIndeterminate = False
@@ -172,8 +172,7 @@ Namespace Soundtrack
                                                                         Replace(Item.OriginalName, Item.GetFilename(soundtrackDefinition.MaxTrackNumber))
 
                                        'Remove bad characters
-                                       'Todo: make it not remove colon from C:
-                                       For Each c In "!?,:".ToCharArray
+                                       For Each c In "!?,".ToCharArray
                                            destinationWav = destinationWav.Replace(c, "")
                                        Next
                                        destinationWav = destinationWav.Replace("é", "e")
@@ -183,35 +182,41 @@ Namespace Soundtrack
                                        'Create the wav file
                                        Await vgmstream.RunVGMStream(vgmPath, source, destinationWav)
 
-                                       'Convert to mp3
-                                       Using e As New Engine(True)
-                                           Dim wav As New MediaFile(destinationWav)
-                                           Dim mp3 As New MediaFile(destinationMp3)
-                                           Dim options = New ConversionOptions
-                                           options.AudioSampleRate = AudioSampleRate.Hz48000
-                                           e.Convert(wav, mp3, options)
-                                       End Using
+                                       'Check to see if the conversion completed successfully
+                                       If IO.File.Exists(destinationWav) Then
+                                           'Convert to mp3
+                                           Using e As New Engine(True)
+                                               Dim wav As New MediaFile(destinationWav)
+                                               Dim mp3 As New MediaFile(destinationMp3)
+                                               Dim options = New ConversionOptions
+                                               options.AudioSampleRate = AudioSampleRate.Hz48000
+                                               e.Convert(wav, mp3, options)
+                                           End Using
 
-                                       IO.File.Delete(destinationWav)
+                                           IO.File.Delete(destinationWav)
 
-                                       'Add the tag
-                                       Using abs As New FileAbstraction(destinationMp3)
-                                           Dim t As New TagLib.Mpeg.AudioFile(abs)
-                                           With t.Tag
-                                               .Album = soundtrackDefinition.AlbumName
-                                               .AlbumArtists = {soundtrackDefinition.AlbumArtist}
-                                               .Title = Item.TrackName
-                                               .Track = Item.TrackNumber
-                                               .Year = soundtrackDefinition.Year
+                                           'Add the tag
+                                           Using abs As New FileAbstraction(destinationMp3)
+                                               Dim t As New TagLib.Mpeg.AudioFile(abs)
+                                               With t.Tag
+                                                   .Album = soundtrackDefinition.AlbumName
+                                                   .AlbumArtists = {soundtrackDefinition.AlbumArtist}
+                                                   .Title = Item.TrackName
+                                                   .Track = Item.TrackNumber
+                                                   .Year = soundtrackDefinition.Year
 #Disable Warning
-                                               'Disabling warning because this tag needs to be set to ensure compatibility, like with Windows Explorer and Windows Media Player.
-                                               .Artists = {soundtrackDefinition.AlbumArtist}
+                                                   'Disabling warning because this tag needs to be set to ensure compatibility, like with Windows Explorer and Windows Media Player.
+                                                   .Artists = {soundtrackDefinition.AlbumArtist}
 #Enable Warning
-                                           End With
-                                           t.Save()
-                                       End Using
+                                               End With
+                                               t.Save()
+                                           End Using
+                                       Else
+                                           'Todo: log error somehow
+                                       End If
                                    End Function, soundtrackDefinition.Tracks)
             End Using
+            IsCompleted = True
         End Sub
 
     End Class

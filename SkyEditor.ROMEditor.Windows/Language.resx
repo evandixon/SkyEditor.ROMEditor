@@ -120,9 +120,6 @@
   <data name="AllFiles" xml:space="preserve">
     <value>All Files</value>
   </data>
-  <data name="LoadingConvertingSoundtrack" xml:space="preserve">
-    <value>Converting Soundtrack...</value>
-  </data>
   <data name="FarcLoadingExtract" xml:space="preserve">
     <value>Extracting files...</value>
   </data>

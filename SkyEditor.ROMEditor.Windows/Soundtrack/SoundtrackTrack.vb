@@ -9,7 +9,7 @@
             Dim parts = destinationFilename.Split(" ".ToCharArray, 2)
             If IsNumeric(parts(0)) Then
                 TrackNumber = CInt(parts(0))
-                If parts.Length > 2 Then
+                If parts.Length > 1 Then
                     TrackName = parts(1)
                 Else
                     TrackName = String.Empty
@@ -41,7 +41,7 @@
         ''' <returns>The filename of the converted track.</returns>
         ''' <remarks>If <see cref="TrackNumber"/> is 1, <see cref="TrackName"/> is "Track", and <paramref name="maxTrackNumber"/> is 99, then this function will return "01 Track".</remarks>
         Public Function GetFilename(maxTrackNumber As Integer) As String
-            Return TrackNumber.ToString.PadLeft(maxTrackNumber.ToString.Length, "0"c) & " " & TrackName
+            Return TrackNumber.ToString.PadLeft(maxTrackNumber.ToString.Length, "0"c) & " " & TrackName.Replace(":", "")
         End Function
     End Class
 End Namespace

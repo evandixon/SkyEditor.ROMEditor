@@ -20,7 +20,7 @@ Namespace Soundtrack
                 converter.StartConvert(project, definition, destDir)
                 Return converter
             ElseIf gti.IsMatch(project.GameCode) Then
-                Dim definition = SoundtrackDefinition.FromDictionaryString(My.Resources.SoundtrackLists.PSMD, My.Resources.Language.GTISoundTrackAlbum, My.Resources.Language.GTISoundTrackArtist, 2013, IO.Path.Combine("romfs", "sound", "stream"), "bcstm", "3DS", GameStrings.GTICode)
+                Dim definition = SoundtrackDefinition.FromDictionaryString(My.Resources.SoundtrackLists.GTI, My.Resources.Language.GTISoundTrackAlbum, My.Resources.Language.GTISoundTrackArtist, 2013, IO.Path.Combine("romfs", "sound", "stream"), "bcstm", "3DS", GameStrings.GTICode)
                 Dim converter As New SoundtrackConverter
                 converter.StartConvert(project, definition, destDir)
                 Return converter
