@@ -225,7 +225,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Windows\Portrait.vb" />
     <Compile Include="Windows\Projects\Mods\GtiImage2dProject.vb" />
     <Compile Include="Windows\Projects\Mods\KaomadoProject.vb" />
     <Compile Include="Windows\Projects\Mods\Pk3DSModProject.vb" />
@@ -294,7 +293,7 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="Windows\packages.config" />
+    <None Include="packages.config" />
     <Content Include="Windows\App.ico" />
     <Content Include="Resources\ctrtool.exe" />
     <Content Include="Resources\pmd2scriptdata.xml" />
