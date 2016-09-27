@@ -83,15 +83,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Converting streams....
-        '''</summary>
-        Friend Shared ReadOnly Property ConvertingStreams() As String
-            Get
-                Return ResourceManager.GetString("ConvertingStreams", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized string similar to CTE Image Files.
         '''</summary>
         Friend Shared ReadOnly Property CTEImageFiles() As String
@@ -295,6 +286,24 @@ Namespace My.Resources
         Friend Shared ReadOnly Property LoadingConvertingPersonalityTest() As String
             Get
                 Return ResourceManager.GetString("LoadingConvertingPersonalityTest", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Converting Soundtrack....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingConvertingSoundtrack() As String
+            Get
+                Return ResourceManager.GetString("LoadingConvertingSoundtrack", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Converting Soundtrack ({0} of {1}).
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingConvertingSoundtrackXofY() As String
+            Get
+                Return ResourceManager.GetString("LoadingConvertingSoundtrackXofY", resourceCulture)
             End Get
         End Property
         

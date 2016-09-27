@@ -120,8 +120,8 @@
   <data name="AllFiles" xml:space="preserve">
     <value>All Files</value>
   </data>
-  <data name="ConvertingStreams" xml:space="preserve">
-    <value>Converting streams...</value>
+  <data name="LoadingConvertingSoundtrack" xml:space="preserve">
+    <value>Converting Soundtrack...</value>
   </data>
   <data name="FarcLoadingExtract" xml:space="preserve">
     <value>Extracting files...</value>
@@ -263,5 +263,8 @@ evandixon (Personality test, bgp files)</value>
   </data>
   <data name="GTISoundTrackArtist" xml:space="preserve">
     <value>Chunsoft</value>
+  </data>
+  <data name="LoadingConvertingSoundtrackXofY" xml:space="preserve">
+    <value>Converting Soundtrack ({0} of {1})</value>
   </data>
 </root>

@@ -2,6 +2,7 @@
 Imports SkyEditor.Core.UI
 Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
 Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.ROMEditor.Windows.Soundtrack
 Imports SkyEditor.UI.WPF
 Imports SkyEditor.UI.WPF.ViewModels.Projects
 
@@ -16,15 +17,15 @@ Namespace MenuActions
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
             If TypeOf Obj Is SolutionHeiarchyItemViewModel Then
                 Dim vm As SolutionHeiarchyItemViewModel = Obj
-                Return Not vm.IsDirectory AndAlso TypeOf vm.GetNodeProject Is BaseRomProject AndAlso PSMDSoundtrackConverter.SupportsProject(vm.GetNodeProject)
+                Return Not vm.IsDirectory AndAlso TypeOf vm.GetNodeProject Is BaseRomProject AndAlso ConversionManager.SupportsProject(vm.GetNodeProject)
             Else
                 Return False
             End If
         End Function
 
-        Public Overrides Async Sub DoAction(Targets As IEnumerable(Of Object))
+        Public Overrides Sub DoAction(Targets As IEnumerable(Of Object))
             For Each project As SolutionHeiarchyItemViewModel In Targets
-                Await PSMDSoundtrackConverter.Convert(project.GetNodeProject)
+                CurrentPluginManager.CurrentIOUIManager.ShowLoading(ConversionManager.StartConversion(project.GetNodeProject))
             Next
         End Sub
 

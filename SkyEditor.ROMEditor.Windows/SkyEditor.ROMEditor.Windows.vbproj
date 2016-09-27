@@ -196,7 +196,6 @@
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
     <Compile Include="Makerom.vb" />
-    <Compile Include="MysteryDungeon\PSMD\PSMDSoundtrackConverter.vb" />
     <Compile Include="Projects\PpmduStatsUtilProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\IPsmdMessageBinProject.vb" />
     <Compile Include="Projects\Mods\ExplorersScriptModProject.vb" />
@@ -266,6 +265,15 @@
     <Compile Include="Roms\Generic3DSRom.vb" />
     <Compile Include="romTool3ds.vb" />
     <Compile Include="SkyRomProject.vb" />
+    <Compile Include="Soundtrack\ConversionManager.vb" />
+    <Compile Include="Soundtrack\SoundtrackConverter.vb" />
+    <Compile Include="Soundtrack\SoundtrackDefinition.vb" />
+    <Compile Include="Soundtrack\SoundtrackLists.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SoundtrackLists.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Soundtrack\SoundtrackTrack.vb" />
     <Compile Include="SsbCommandNames.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -291,6 +299,11 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Soundtrack\SoundtrackLists.resx">
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SoundtrackLists.Designer.vb</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SsbCommandNames.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
@@ -323,9 +336,7 @@
     <Content Include="SkyEditor.ROMEditor.Windows\3DS Builder.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\GTI English Soundtrack.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="Resources\Soundtrack\en\GTI.txt" />
     <Content Include="SkyEditor.ROMEditor.Windows\lua\bin2c5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -359,9 +370,7 @@
     <Content Include="SkyEditor.ROMEditor.Windows\MessageFARCPatcher.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\PSMD English Soundtrack.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="Resources\Soundtrack\en\PSMD.txt" />
     <Content Include="SkyEditor.ROMEditor.Windows\rom_tool.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
