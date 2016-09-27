@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.ConsoleCommands
+Imports SkyEditor.ROMEditor.MysteryDungeon
 
 Namespace Windows.ConsoleCommands
     Public Class Sir0Ptrs
@@ -8,7 +9,7 @@ Namespace Windows.ConsoleCommands
             If Arguments.Length > 0 Then
                 If IO.File.Exists(Arguments(0)) Then
                     Dim pointers As New Dictionary(Of UInt32, UInt32)
-                    Using f As New FileFormats.Sir0
+                    Using f As New Sir0
                         f.IsReadOnly = True
                         Await f.OpenFile(Arguments(0), CurrentPluginManager.CurrentIOProvider)
                         Dim offset As UInt32 = 0

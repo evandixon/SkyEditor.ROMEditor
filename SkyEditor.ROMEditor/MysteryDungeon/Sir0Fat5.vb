@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats
+Namespace MysteryDungeon
     Public Class Sir0Fat5
         Inherits Sir0
         Implements IOpenableFile
@@ -55,7 +55,7 @@ Namespace Windows.FileFormats
                     Dim filenameLength = Me.Int32(DataOffset + (count + 1) * 12 + 0) - filenameOffset
                     info.Filename = Me.ReadUnicodeString(filenameOffset, filenameLength / 2)
                 Else
-                    info.Filename = Hex(filenameOffset).PadLeft(8, "0"c)
+                    info.Filename = Conversion.Hex(filenameOffset).PadLeft(8, "0"c)
                 End If
                 FileData.Add(info)
             Next

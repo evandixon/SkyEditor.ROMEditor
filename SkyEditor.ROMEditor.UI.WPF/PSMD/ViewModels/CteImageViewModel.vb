@@ -2,7 +2,7 @@
 Imports System.Drawing
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace PSMD.ViewModels
     Public Class CteImageViewModel

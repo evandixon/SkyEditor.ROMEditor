@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats.PSMD
+Namespace MysteryDungeon.PSMD
     Public Class FlowData
         Inherits Sir0
 
@@ -60,7 +60,6 @@ Namespace Windows.FileFormats.PSMD
             For Each item In d2
                 s2.AppendLine(item)
             Next
-            Console.WriteLine()
         End Function
 
         Public Sub New()

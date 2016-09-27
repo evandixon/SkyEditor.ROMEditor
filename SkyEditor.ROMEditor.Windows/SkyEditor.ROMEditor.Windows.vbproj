@@ -135,7 +135,6 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Windows\BasicIniFile.vb" />
     <Compile Include="Windows\ConsoleCommands\MessageFarcFilenameAnalysis.vb" />
     <Compile Include="Windows\ConsoleCommands\NameListResearcher.vb" />
     <Compile Include="Windows\ConsoleCommands\PackFarc.vb" />
@@ -143,11 +142,6 @@
     <Compile Include="Windows\ConsoleCommands\PSMDLangSearch.vb" />
     <Compile Include="Windows\ConsoleCommands\Sir0Ptrs.vb" />
     <Compile Include="Windows\ExternalProgramHelpers.vb" />
-    <Compile Include="Windows\FarcFilenames.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FarcFilenames.resx</DependentUpon>
-    </Compile>
     <Compile Include="Windows\FileFormats\CTR\Level3Header.vb" />
     <Compile Include="Windows\FileFormats\CTR\RomFs.vb" />
     <Compile Include="Windows\FileFormats\CTR\RomFSHeader.vb" />
@@ -175,21 +169,9 @@
     <Compile Include="Windows\FileFormats\Explorers\Script\ConstantCommandParameter.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\MultiLangStringCommandParameter.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\StringCommandParameter.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\ActDataInfo.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\ActHitCountTableDataInfo.vb" />
     <Compile Include="Windows\FileFormats\Explorers\ExplorersSir0.vb" />
     <Compile Include="Windows\FileFormats\Explorers\mappa.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\ActXlWaza.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\DungeonDataInfo.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\Experience.vb" />
     <Compile Include="Windows\FileFormats\Explorers\MonsterMDFile.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\Dungeon\FixedPokemon.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\FlowData.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\ItemDataInfo.vb" />
-    <Compile Include="Windows\MysteryDungeon\PSMD\MessageBinStringEntry.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\PokemonDataInfo.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\Pokemon\ActorDataInfo.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\WazaDataInfo.vb" />
     <Compile Include="Windows\Language.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -211,13 +193,7 @@
     <Compile Include="Windows\DSIconTool.vb" />
     <Compile Include="Windows\Projects\DSModPackProject.vb" />
     <Compile Include="Windows\DSModSolution.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\DatabaseBin.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\Farc.vb" />
     <Compile Include="Windows\FileFormats\Explorers\item_s_p.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\JukeboxBin.vb" />
-    <Compile Include="Windows\MysteryDungeon\PSMD\MessageBin.vb" />
-    <Compile Include="Windows\FileFormats\Sir0.vb" />
-    <Compile Include="Windows\FileFormats\Sir0Fat5.vb" />
     <Compile Include="Windows\FileFormats\Explorers\TableDatItemList.vb" />
     <Compile Include="Windows\FilePatcher.vb" />
     <Compile Include="Windows\GameCodeRegistry.vb" />
@@ -232,7 +208,7 @@
     <Compile Include="Windows\FileFormats\Explorers\LanguageString.vb" />
     <Compile Include="Windows\Projects\GenericModProject.vb" />
     <Compile Include="Windows\Java.vb" />
-    <Compile Include="Windows\FileFormats\PSMD\CteImage.vb" />
+    <Compile Include="MysteryDungeon\PSMD\CteImage.vb" />
     <Compile Include="Windows\ModJson.vb" />
     <Compile Include="Windows\ModpackInfo.vb" />
     <Compile Include="Windows\Mods\GenericSkyMod.vb" />
@@ -283,12 +259,6 @@
     <Compile Include="Windows\vgmstream.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Windows\FarcFilenames.resx">
-      <CustomToolNamespace>My.Resources</CustomToolNamespace>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>FarcFilenames.Designer.vb</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Windows\Language.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -331,8 +301,6 @@
     <Content Include="Resources\ppmd_pxcomp.exe" />
     <None Include="Resources\ppmd_statsutil.exe" />
     <Content Include="Resources\ppmd_unpx.exe" />
-    <Content Include="Resources\PSMD Move Name Hashes.txt" />
-    <Content Include="Resources\PSMD Pokemon Name Hashes.txt" />
     <Content Include="Resources\PSMDStarterIntroScript.lua" />
     <Content Include="SkyEditor.ROMEditor.Windows\3DS Builder.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

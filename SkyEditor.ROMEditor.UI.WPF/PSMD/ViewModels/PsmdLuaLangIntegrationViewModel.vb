@@ -3,6 +3,7 @@ Imports System.IO
 Imports SkyEditor.CodeEditor
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
 Imports SkyEditor.UI.WPF
 

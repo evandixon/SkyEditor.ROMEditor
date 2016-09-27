@@ -1,9 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.Utilities
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Dungeon
-Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
-
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
 Namespace Windows
     <Obsolete> Public Class PsmdDir
         Implements IOpenableFile
@@ -17,8 +14,6 @@ Namespace Windows
         Public Property ActXlData As ActXlWaza
         Public Property ActHitCountData As ActHitCountTableDataInfo
         Public Property ItemData As ItemDataInfo
-
-        Protected Property PokemonNameHashes As List(Of Integer)
         Public Property PokemonNames As List(Of String)
         Protected Property CommonLanguages As Dictionary(Of String, MessageBin)
 
@@ -64,22 +59,8 @@ Namespace Windows
             DungeonFixedPokemon.EnableInMemoryLoad = True
             Await DungeonFixedPokemon.OpenFile(IO.Path.Combine(RootDirectory, "romfs", "dungeon", "fixed_pokemon.bin"), Provider)
 
-            PokemonNameHashes = New List(Of Integer)
-            For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf)
-                Dim trimmed = item.Trim
-                If IsNumeric(item.Trim(trimmed)) Then
-                    PokemonNameHashes.Add(trimmed)
-                Else
-                    Throw New Exception($"Invalid resource item: ""{trimmed}""")
-                End If
-            Next
-
             Dim en = GetEnglishCommon()
-            PokemonNames = New List(Of String)
-            PokemonNames.Add("-----")
-            For Each item In PokemonNameHashes
-                PokemonNames.Add(((From s In en.Strings Where s.HashSigned = item).First).Entry)
-            Next
+            PokemonNames = en.GetCommonPokemonNames.Values.ToList
 
             WazaData = New WazaDataInfo
             Await WazaData.OpenFile(IO.Path.Combine(RootDirectory, "romfs", "pokemon", "waza_data_info.bin"), Provider)

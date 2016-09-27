@@ -1,14 +1,13 @@
-﻿Imports System.ComponentModel
-Imports SkyEditor.Core.Utilities
+﻿Imports SkyEditor.Core
 
-Namespace Windows.MysteryDungeon.PSMD
+Namespace MysteryDungeon.PSMD
     Public Class MessageBinStringEntry
         Public Sub New()
             Me.Entry = ""
             Me.Unknown = 0
         End Sub
 
-        Friend Property Pointer As Integer
+        Public Property Pointer As Integer
         Public Property Entry As String
         Public Property Hash As UInteger
         Public Property HashSigned As Integer
@@ -38,7 +37,7 @@ Namespace Windows.MysteryDungeon.PSMD
                         If item = "\"c AndAlso Entry.Length > count + 4 Then
                             Dim escapeString1 As String = Entry(count + 1) & Entry(count + 2)
                             Dim escapeString2 As String = Entry(count + 3) & Entry(count + 4)
-                            If Hex.IsHex(escapeString1) AndAlso Hex.IsHex(escapeString2) Then
+                            If Utilities.Hex.IsHex(escapeString1) AndAlso Utilities.Hex.IsHex(escapeString2) Then
                                 output.Add(Byte.Parse(escapeString2, Globalization.NumberStyles.HexNumber))
                                 output.Add(Byte.Parse(escapeString1, Globalization.NumberStyles.HexNumber))
                                 skip += 4

@@ -1,4 +1,4 @@
-﻿Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+﻿Imports Message_FARC_Patcher
 
 Namespace Windows.MysteryDungeon.PSMD.Projects
     Public Interface IPsmdMessageBinProject

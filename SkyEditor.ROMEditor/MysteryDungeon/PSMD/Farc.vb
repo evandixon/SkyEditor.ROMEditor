@@ -1,8 +1,7 @@
 ﻿Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.Core.Windows
 
-Namespace Windows.FileFormats.PSMD
+Namespace MysteryDungeon.PSMD
     ''' <summary>
     ''' Models a type 5 FARC file, one that does not contain embedded filenames.
     ''' </summary>
@@ -54,7 +53,7 @@ Namespace Windows.FileFormats.PSMD
             'Only works on Farc files without filenames.
             Dim dic = GetFileDictionary()
 
-            Dim hash As UInteger? = (From kv In dic Where String.Compare(Filename, kv.Value, True, Globalization.CultureInfo.InvariantCulture) = 0 Select kv.Key).FirstOrDefault
+            Dim hash As UInteger? = (From kv In dic Where String.Compare(Filename, kv.Value, StringComparison.OrdinalIgnoreCase) = 0 Select kv.Key).FirstOrDefault
             If hash IsNot Nothing Then
                 Dim info = (From i In Header.FileData Where i.FilenamePointer = hash).FirstOrDefault
                 If info IsNot Nothing Then
@@ -88,7 +87,7 @@ Namespace Windows.FileFormats.PSMD
         ''' Extracts the FARC to the given directory.
         ''' </summary>
         ''' <param name="Directory">Directory to extract the FARC to.</param>
-        Public Async Function Extract(Directory As String, Optional UseDictionary As Boolean = True) As Task
+        Public Async Function Extract(Directory As String, provider As IOProvider, Optional UseDictionary As Boolean = True) As Task
             Dim asyncFor As New AsyncFor
             Dim dic As Dictionary(Of UInteger, String)
             If UseDictionary Then
@@ -107,7 +106,7 @@ Namespace Windows.FileFormats.PSMD
                                       Else
                                           filename = fileHash.ToString 'Count.ToString
                                       End If
-                                      IO.File.WriteAllBytes(IO.Path.Combine(Directory, filename), GetFileData(Count))
+                                      provider.WriteAllBytes(IO.Path.Combine(Directory, filename), GetFileData(Count))
                                   End Sub, 0, FileCount - 1)
         End Function
 
@@ -142,14 +141,14 @@ Namespace Windows.FileFormats.PSMD
         End Function
 
         Public Shared Function Pack(SourceDirectory As String, DestinationFarcFilename As String, provider As IOProvider) As Task
-            If IO.File.Exists(DestinationFarcFilename) Then
-                IO.File.Delete(DestinationFarcFilename)
+            If provider.FileExists(DestinationFarcFilename) Then
+                provider.DeleteFile(DestinationFarcFilename)
             End If
 
             'Only works for FARC files that lack filenames
             Dim header As New Sir0Fat5
             header.CreateFile("")
-            Dim fileNames = IO.Directory.GetFiles(SourceDirectory)
+            Dim fileNames = provider.GetFiles(SourceDirectory, "*", True)
             'Dim fileData As New GenericFile({})
             Dim fileData As New List(Of Byte)
             Dim filenameDic = GetReverseFileDictionary(DestinationFarcFilename, provider)
@@ -158,7 +157,7 @@ Namespace Windows.FileFormats.PSMD
                 Dim entry As New Sir0Fat5.FileInfo
                 entry.DataOffset = fileData.Count
                 entry.FilenamePointer = item.Value
-                Dim current = IO.File.ReadAllBytes(IO.Path.Combine(SourceDirectory, item.Key))
+                Dim current = provider.ReadAllBytes(IO.Path.Combine(SourceDirectory, item.Key))
                 entry.DataLength = current.Length
                 'Using file As New GenericFile(IO.Path.Combine(SourceDirectory, item.Key), True)
                 '    entry.DataLength = file.Length
@@ -188,11 +187,7 @@ Namespace Windows.FileFormats.PSMD
             '    End If
             'Next
 
-            Dim tempName As String = Guid.NewGuid.ToString
-            header.Save(EnvironmentPaths.GetResourceName(tempName & ".tmp"), provider)
-            header.Dispose()
-            Dim headerData = IO.File.ReadAllBytes(EnvironmentPaths.GetResourceName(tempName & ".tmp"))
-            IO.File.Delete(EnvironmentPaths.GetResourceName(tempName & ".tmp"))
+            Dim headerData = header.GetRawData
 
             Dim archiveBytes As New List(Of Byte)
             'Dim archive As New FarcF5
@@ -237,11 +232,11 @@ Namespace Windows.FileFormats.PSMD
             archiveBytes.AddRange(headerData)
             archiveBytes.AddRange(fileData.ToArray)
 
-            IO.File.WriteAllBytes(DestinationFarcFilename, archiveBytes.ToArray)
+            provider.WriteAllBytes(DestinationFarcFilename, archiveBytes.ToArray)
 
 
             'archive.Dispose()
-            Return Task.CompletedTask
+            Return Task.FromResult(0)
         End Function
 
 #Region "IDisposable Support"

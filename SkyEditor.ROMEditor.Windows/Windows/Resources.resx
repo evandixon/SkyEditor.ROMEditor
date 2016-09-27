@@ -124,9 +124,6 @@
   <data name="vgmstream" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\vgmstream.zip;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="PSMD_Pokemon_Name_Hashes" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\PSMD Pokemon Name Hashes.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="ppmd_unpx" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ppmd_unpx.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -135,9 +132,6 @@
   </data>
   <data name="PSMDStarterIntroScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PSMDStarterIntroScript.lua;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="PSMD_Move_Name_Hashes" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\PSMD Move Name Hashes.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="pmd2data" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pmd2data.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

@@ -1,4 +1,6 @@
-﻿Namespace Windows.FileFormats.Explorers
+﻿Imports SkyEditor.ROMEditor.MysteryDungeon
+
+Namespace Windows.FileFormats.Explorers
     ''' <summary>
     ''' Variant of the SIR0 container that uses 0xAA as the block padding byte.
     ''' </summary>

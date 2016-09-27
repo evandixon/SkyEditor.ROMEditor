@@ -2,7 +2,7 @@
 Imports System.Reflection
 Imports System.Windows.Forms
 Imports SkyEditor.Core.UI
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace MenuActions
     Public Class CteImageImport

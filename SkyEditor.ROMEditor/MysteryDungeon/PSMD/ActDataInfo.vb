@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats.PSMD
+Namespace MysteryDungeon.PSMD
     Public Class ActDataInfo
         Implements IOpenableFile
         Public Class ActDataInfoEntry

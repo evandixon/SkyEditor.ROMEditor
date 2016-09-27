@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats.PSMD
+Namespace MysteryDungeon.PSMD
     Public Class DungeonDataInfo
         Implements IOpenableFile
         Private Const EntryLength As Integer = &H18

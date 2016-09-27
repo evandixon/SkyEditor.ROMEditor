@@ -2,7 +2,7 @@
 Imports SkyEditor.Core.ConsoleCommands
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace Windows.ConsoleCommands
     Public Class MessageFarcFilenameAnalysis
@@ -18,7 +18,7 @@ Namespace Windows.ConsoleCommands
                         'Extract the farc
                         Dim f As New FarcF5
                         Await f.OpenFile(Arguments(0), CurrentPluginManager.CurrentIOProvider)
-                        Await f.Extract(tmpDirectory, False)
+                        Await f.Extract(tmpDirectory, CurrentPluginManager.CurrentIOProvider, False)
 
 
                         Dim farcFiles = IO.Directory.GetFiles(tmpDirectory)

@@ -1,7 +1,8 @@
 ﻿Imports System.Text
+Imports Portable.Text
 Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats.PSMD.Pokemon
+Namespace MysteryDungeon.PSMD.Pokemon
     ''' <summary>
     ''' Models the pokemon_actor_data_info.bin file in PSMD ROMs.
     ''' </summary>
@@ -82,7 +83,7 @@ Namespace Windows.FileFormats.PSMD.Pokemon
 
                 Footer = f.RawData(f.Length - &H40, &H40)
             End Using
-            Return Task.CompletedTask
+            Return Task.FromResult(0)
         End Function
 
         Public Sub Save(Destination As String, provider As IOProvider) Implements ISavableAs.Save

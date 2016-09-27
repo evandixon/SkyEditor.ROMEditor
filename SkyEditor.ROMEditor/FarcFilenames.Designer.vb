@@ -12,6 +12,7 @@ Option Strict On
 Option Explicit On
 
 Imports System
+Imports System.Reflection
 
 Namespace My.Resources
     
@@ -43,7 +44,7 @@ Namespace My.Resources
         Friend Shared ReadOnly Property ResourceManager() As Global.System.Resources.ResourceManager
             Get
                 If Object.ReferenceEquals(resourceMan, Nothing) Then
-                    Dim temp As Global.System.Resources.ResourceManager = New Global.System.Resources.ResourceManager("SkyEditor.ROMEditor.FarcFilenames", GetType(FarcFilenames).Assembly)
+                    Dim temp As Global.System.Resources.ResourceManager = New Global.System.Resources.ResourceManager("SkyEditor.ROMEditor.FarcFilenames", GetType(FarcFilenames).GetTypeInfo.Assembly)
                     resourceMan = temp
                 End If
                 Return resourceMan

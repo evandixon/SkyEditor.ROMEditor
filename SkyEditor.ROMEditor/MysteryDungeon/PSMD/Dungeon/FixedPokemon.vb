@@ -1,7 +1,7 @@
 ﻿Imports System.IO
 Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats.PSMD.Dungeon
+Namespace MysteryDungeon.PSMD.Dungeon
     Public Class FixedPokemon
         Inherits Sir0
         Implements IDetectableFileType

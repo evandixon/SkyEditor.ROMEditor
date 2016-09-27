@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats
+Namespace MysteryDungeon
     Public Class Sir0
         Inherits GenericFile
         Implements IOpenableFile
@@ -103,7 +103,7 @@ Namespace Windows.FileFormats
             ProcessData()
         End Function
 
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Private Sub DoPreSave()
             'The header and relative pointers must be set by child classes
 
             Me.RawData(0, 4) = {&H53, &H49, &H52, &H30}
@@ -154,6 +154,10 @@ Namespace Windows.FileFormats
             While Not Length Mod 16 = 0
                 Length += 1
             End While
+        End Sub
+
+        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+            DoPreSave()
 
             MyBase.Save(Destination, provider)
 
@@ -161,6 +165,13 @@ Namespace Windows.FileFormats
             'To change it back to a good working size, we'll reload the SIR0 portions.
             ProcessData()
         End Sub
+
+        Public Function GetRawData() As Byte()
+            DoPreSave()
+            Dim data = RawData
+            ProcessData()
+            Return data
+        End Function
 
         Private Sub ProcessData()
             RelativePointers = New List(Of Integer)

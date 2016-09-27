@@ -78,7 +78,42 @@
     <Import Include="Windows.UI.Xaml.Media.Imaging" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicIniFile.vb" />
+    <Compile Include="Conversion.vb" />
     <Compile Include="GenericNDSRom.vb" />
+    <Compile Include="Language.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Language.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="MysteryDungeon\PSMD\ActDataInfo.vb" />
+    <Compile Include="MysteryDungeon\PSMD\ActHitCountTableDataInfo.vb" />
+    <Compile Include="MysteryDungeon\PSMD\ActXlWaza.vb" />
+    <Compile Include="MysteryDungeon\PSMD\DatabaseBin.vb" />
+    <Compile Include="MysteryDungeon\PSMD\DungeonDataInfo.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Dungeon\FixedPokemon.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Experience.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Farc.vb" />
+    <Compile Include="FarcFilenames.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FarcFilenames.resx</DependentUpon>
+    </Compile>
+    <Compile Include="MysteryDungeon\PSMD\FlowData.vb" />
+    <Compile Include="MysteryDungeon\PSMD\ItemDataInfo.vb" />
+    <Compile Include="MysteryDungeon\PSMD\JukeboxBin.vb" />
+    <Compile Include="MysteryDungeon\PSMD\MessageBin.vb" />
+    <Compile Include="MysteryDungeon\PSMD\MessageBinStringEntry.vb" />
+    <Compile Include="MysteryDungeon\PSMD\PokemonDataInfo.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Pokemon\ActorDataInfo.vb" />
+    <Compile Include="MysteryDungeon\PSMD\WazaDataInfo.vb" />
+    <Compile Include="MysteryDungeon\Sir0.vb" />
+    <Compile Include="MysteryDungeon\Sir0Fat5.vb" />
     <Compile Include="PluginDefinition.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="UnpackProgressEventArgs.vb" />
@@ -103,6 +138,31 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MysteryDungeon\Explorers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Language.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Language.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>PublicVbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FarcFilenames.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FarcFilenames.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\MysteryDungeon\PSMD Move Name Hashes.txt" />
+    <Content Include="Resources\MysteryDungeon\PSMD Pokemon Name Hashes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

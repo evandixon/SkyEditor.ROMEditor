@@ -1,11 +1,7 @@
-﻿Imports System.Collections.ObjectModel
-Imports System.ComponentModel
-Imports System.Text
-Imports SkyEditor.Core.IO
+﻿Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.ROMEditor.Windows.FileFormats
 
-Namespace Windows.MysteryDungeon.PSMD
+Namespace MysteryDungeon.PSMD
     ''' <summary>
     ''' Models a .bin file in the message directory of PMD: GTI and PSMD.
     ''' </summary>
@@ -80,7 +76,7 @@ Namespace Windows.MysteryDungeon.PSMD
                         s.Append(Conversion.Hex(cRaw(0)).PadLeft(2, "0"c))
                         j += 1
                     Else
-                        Dim c = e.GetString(cRaw)
+                        Dim c = e.GetString(cRaw, 0, cRaw.Length)
 
                         If (GenericArrayOperations(Of Byte).ArraysEqual(cRaw, {0, 0})) Then
                             doEnd = True
@@ -163,7 +159,8 @@ Namespace Windows.MysteryDungeon.PSMD
             Dim pokemonNameHashes As New List(Of Integer)
             For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf)
                 Dim trimmed = item.Trim
-                If IsNumeric(item.Trim(trimmed)) Then
+                Dim hash As Integer
+                If Integer.TryParse(trimmed, hash) Then
                     pokemonNameHashes.Add(trimmed)
                 Else
                     Throw New Exception($"Invalid resource item: ""{trimmed}""")
@@ -191,7 +188,8 @@ Namespace Windows.MysteryDungeon.PSMD
             Dim pokemonNameHashes As New List(Of Integer)
             For Each item In My.Resources.PSMD_Move_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf)
                 Dim trimmed = item.Trim
-                If IsNumeric(item.Trim(trimmed)) Then
+                Dim hash As Integer
+                If Integer.TryParse(trimmed, hash) Then
                     pokemonNameHashes.Add(trimmed)
                 Else
                     Throw New Exception($"Invalid resource item: ""{trimmed}""")

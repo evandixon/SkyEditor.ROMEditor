@@ -425,15 +425,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to (None).
-        '''</summary>
-        Friend Shared ReadOnly Property NonePokemon() As String
-            Get
-                Return ResourceManager.GetString("NonePokemon", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized string similar to .
         '''</summary>
         Friend Shared ReadOnly Property PluginAuthor() As String

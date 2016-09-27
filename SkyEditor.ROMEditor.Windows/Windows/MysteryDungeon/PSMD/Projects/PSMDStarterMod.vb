@@ -1,10 +1,9 @@
 ﻿Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Dungeon
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Pokemon
-Imports SkyEditor.ROMEditor.Windows.Projects.Mods
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
 
 Namespace Windows.MysteryDungeon.PSMD.Projects
     ''' <summary>

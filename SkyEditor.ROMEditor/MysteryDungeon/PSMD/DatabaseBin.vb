@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats.PSMD
+Namespace MysteryDungeon.PSMD
     Public Class DatabaseBin
         Implements IOpenableFile
 
@@ -32,7 +32,7 @@ Namespace Windows.FileFormats.PSMD
                         Dim c As String
                         Do
                             cRaw = f.RawData(entryPointer + j * 2, 2)
-                            c = e.GetString(cRaw)
+                            c = e.GetString(cRaw, 0, cRaw.Length)
 
                             If Not c = vbNullChar Then
                                 s.Append(c)

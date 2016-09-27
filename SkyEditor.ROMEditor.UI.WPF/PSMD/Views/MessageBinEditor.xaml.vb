@@ -1,9 +1,4 @@
-﻿Imports System.Collections.ObjectModel
-Imports System.ComponentModel
-Imports System.Timers
-Imports System.Windows.Controls
-Imports System.Windows.Forms
-Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
+﻿Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.UI.WPF
 
 Namespace PSMD.Views

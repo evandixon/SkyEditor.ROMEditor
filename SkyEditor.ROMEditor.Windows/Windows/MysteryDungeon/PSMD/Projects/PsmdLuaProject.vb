@@ -1,11 +1,10 @@
-﻿Imports System.Collections.Concurrent
-Imports System.IO
+﻿Imports System.IO
 Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.Core.Windows.Processes
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.ROMEditor.Windows.Projects
 
 Namespace Windows.MysteryDungeon.PSMD.Projects
@@ -185,7 +184,7 @@ Namespace Windows.MysteryDungeon.PSMD.Projects
 
                                    Dim farc As New FarcF5
                                    Await farc.OpenFile(item, CurrentPluginManager.CurrentIOProvider)
-                                   Await farc.Extract(destDir)
+                                   Await farc.Extract(destDir, CurrentPluginManager.CurrentIOProvider)
                                End Function, languageFileNames)
 
             'GTI style

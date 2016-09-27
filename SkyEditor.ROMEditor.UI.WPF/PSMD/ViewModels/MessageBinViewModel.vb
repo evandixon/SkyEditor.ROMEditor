@@ -1,10 +1,9 @@
 ﻿Imports System.Collections.ObjectModel
 Imports System.ComponentModel
-Imports System.ServiceModel
 Imports System.Timers
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
-Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace PSMD.ViewModels
     Public Class MessageBinViewModel
@@ -191,7 +190,7 @@ Namespace PSMD.ViewModels
                 Await searchTask
             End If
             'Start a new async task
-            searchTask = Task.Run(Sub() RunSearch(searchText))
+            searchTask = Task.Run(Sub() RunSearch(SearchText))
         End Sub
 
 

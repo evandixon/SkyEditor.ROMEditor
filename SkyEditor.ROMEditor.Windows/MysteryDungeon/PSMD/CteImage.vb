@@ -1,7 +1,7 @@
 ﻿Imports System.Drawing
 Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats.PSMD
+Namespace MysteryDungeon.PSMD
     Public Class CteImage
         Inherits GenericFile
         Implements IOpenableFile

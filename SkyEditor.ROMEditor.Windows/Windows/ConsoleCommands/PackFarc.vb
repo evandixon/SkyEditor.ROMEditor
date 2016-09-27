@@ -1,5 +1,5 @@
 ﻿Imports SkyEditor.Core.ConsoleCommands
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace Windows.ConsoleCommands
     Public Class PackFarc
