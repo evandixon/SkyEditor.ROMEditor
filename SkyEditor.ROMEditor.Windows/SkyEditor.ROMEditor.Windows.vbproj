@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F05C12E8-EAB7-4B9E-A8D2-D21B80C1A646}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>SkyEditor.ROMEditor.Windows</RootNamespace>
+    <RootNamespace>SkyEditor.ROMEditor</RootNamespace>
     <AssemblyName>SkyEditor.ROMEditor.Windows</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
@@ -135,185 +135,186 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasicIniFile.vb" />
-    <Compile Include="ConsoleCommands\MessageFarcFilenameAnalysis.vb" />
-    <Compile Include="ConsoleCommands\NameListResearcher.vb" />
-    <Compile Include="ConsoleCommands\PackFarc.vb" />
-    <Compile Include="ConsoleCommands\PSMDExpTableCsv.vb" />
-    <Compile Include="ConsoleCommands\PSMDLangSearch.vb" />
-    <Compile Include="ConsoleCommands\Sir0Ptrs.vb" />
-    <Compile Include="ExternalProgramHelpers.vb" />
-    <Compile Include="FarcFilenames.Designer.vb">
+    <Compile Include="Windows\BasicIniFile.vb" />
+    <Compile Include="Windows\ConsoleCommands\MessageFarcFilenameAnalysis.vb" />
+    <Compile Include="Windows\ConsoleCommands\NameListResearcher.vb" />
+    <Compile Include="Windows\ConsoleCommands\PackFarc.vb" />
+    <Compile Include="Windows\ConsoleCommands\PSMDExpTableCsv.vb" />
+    <Compile Include="Windows\ConsoleCommands\PSMDLangSearch.vb" />
+    <Compile Include="Windows\ConsoleCommands\Sir0Ptrs.vb" />
+    <Compile Include="Windows\ExternalProgramHelpers.vb" />
+    <Compile Include="Windows\FarcFilenames.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FarcFilenames.resx</DependentUpon>
     </Compile>
-    <Compile Include="FileFormats\CTR\Level3Header.vb" />
-    <Compile Include="FileFormats\CTR\RomFs.vb" />
-    <Compile Include="FileFormats\CTR\RomFSHeader.vb" />
-    <Compile Include="FileFormats\Explorers\PersonalityTestContainer.vb" />
-    <Compile Include="FileFormats\Explorers\Script\CommandParameterAttribute.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\BasicTalkCommand.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\BgmFadeIn.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\CaseText.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\CaseTextDefault.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\Delay.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\FadeTopBg.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\GotoCommandRaw.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\GotoLabel.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\GroupLabel.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\ImagePos.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\ISingleStringParamCommand.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\LoadBottomPic.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\LoadTopPic.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\NoParamCommand.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\SwitchTalk.vb" />
-    <Compile Include="FileFormats\Explorers\Script\GotoTarget.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\LogicalCommand.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\MonologueCommand.vb" />
-    <Compile Include="FileFormats\Explorers\Script\Commands\RawCommand.vb" />
-    <Compile Include="FileFormats\Explorers\Script\ConstantCommandParameter.vb" />
-    <Compile Include="FileFormats\Explorers\Script\MultiLangStringCommandParameter.vb" />
-    <Compile Include="FileFormats\Explorers\Script\StringCommandParameter.vb" />
-    <Compile Include="FileFormats\PSMD\ActDataInfo.vb" />
-    <Compile Include="FileFormats\PSMD\ActHitCountTableDataInfo.vb" />
-    <Compile Include="FileFormats\Explorers\ExplorersSir0.vb" />
-    <Compile Include="FileFormats\Explorers\mappa.vb" />
-    <Compile Include="FileFormats\PSMD\ActXlWaza.vb" />
-    <Compile Include="FileFormats\PSMD\DungeonDataInfo.vb" />
-    <Compile Include="FileFormats\PSMD\Experience.vb" />
-    <Compile Include="FileFormats\Explorers\MonsterMDFile.vb" />
-    <Compile Include="FileFormats\PSMD\Dungeon\FixedPokemon.vb" />
-    <Compile Include="FileFormats\PSMD\FlowData.vb" />
-    <Compile Include="FileFormats\PSMD\ItemDataInfo.vb" />
-    <Compile Include="MysteryDungeon\PSMD\MessageBinStringEntry.vb" />
-    <Compile Include="FileFormats\PSMD\PokemonDataInfo.vb" />
-    <Compile Include="FileFormats\PSMD\Pokemon\ActorDataInfo.vb" />
-    <Compile Include="FileFormats\PSMD\WazaDataInfo.vb" />
-    <Compile Include="Language.Designer.vb">
+    <Compile Include="Windows\FileFormats\CTR\Level3Header.vb" />
+    <Compile Include="Windows\FileFormats\CTR\RomFs.vb" />
+    <Compile Include="Windows\FileFormats\CTR\RomFSHeader.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\PersonalityTestContainer.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\CommandParameterAttribute.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\BasicTalkCommand.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\BgmFadeIn.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\CaseText.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\CaseTextDefault.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\Delay.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\FadeTopBg.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\GotoCommandRaw.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\GotoLabel.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\GroupLabel.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\ImagePos.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\ISingleStringParamCommand.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\LoadBottomPic.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\LoadTopPic.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\NoParamCommand.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\SwitchTalk.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\GotoTarget.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\LogicalCommand.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\MonologueCommand.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\Commands\RawCommand.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\ConstantCommandParameter.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\MultiLangStringCommandParameter.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\StringCommandParameter.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\ActDataInfo.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\ActHitCountTableDataInfo.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\ExplorersSir0.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\mappa.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\ActXlWaza.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\DungeonDataInfo.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\Experience.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\MonsterMDFile.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\Dungeon\FixedPokemon.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\FlowData.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\ItemDataInfo.vb" />
+    <Compile Include="Windows\MysteryDungeon\PSMD\MessageBinStringEntry.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\PokemonDataInfo.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\Pokemon\ActorDataInfo.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\WazaDataInfo.vb" />
+    <Compile Include="Windows\Language.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
-    <Compile Include="Makerom.vb" />
-    <Compile Include="Projects\PpmduStatsUtilProject.vb" />
-    <Compile Include="MysteryDungeon\PSMD\Projects\IPsmdMessageBinProject.vb" />
-    <Compile Include="Projects\Mods\ExplorersScriptModProject.vb" />
-    <Compile Include="MysteryDungeon\PSMD\Projects\PSMDStarterMod.vb" />
-    <Compile Include="PsmdDir.vb" />
-    <Compile Include="FileFormats\Explorers\Script\CommandGroup.vb" />
-    <Compile Include="FileFormats\Explorers\Script\SSA.vb" />
-    <Compile Include="FileFormats\CTR\Smdh.vb" />
-    <Compile Include="FileFormats\Explorers\Script\SSB.vb" />
-    <Compile Include="Projects\BaseRomProject.vb" />
-    <Compile Include="ConsoleCommands\BatchCteConvert.vb" />
-    <Compile Include="ConsoleCommands\ImportLanguage.vb" />
-    <Compile Include="DSIconTool.vb" />
-    <Compile Include="Projects\DSModPackProject.vb" />
-    <Compile Include="DSModSolution.vb" />
-    <Compile Include="FileFormats\PSMD\DatabaseBin.vb" />
-    <Compile Include="FileFormats\PSMD\Farc.vb" />
-    <Compile Include="FileFormats\Explorers\item_s_p.vb" />
-    <Compile Include="FileFormats\PSMD\JukeboxBin.vb" />
-    <Compile Include="MysteryDungeon\PSMD\MessageBin.vb" />
-    <Compile Include="FileFormats\Sir0.vb" />
-    <Compile Include="FileFormats\Sir0Fat5.vb" />
-    <Compile Include="FileFormats\Explorers\TableDatItemList.vb" />
-    <Compile Include="FilePatcher.vb" />
-    <Compile Include="GameCodeRegistry.vb" />
-    <Compile Include="GameStrings.vb" />
-    <Compile Include="FileFormats\Animations\AnimatedSprite.vb" />
-    <Compile Include="FileFormats\Animations\Frame.vb" />
-    <Compile Include="FileFormats\Explorers\BGP.vb" />
-    <Compile Include="FileFormats\Animations\AnimData.vb" />
-    <Compile Include="FileFormats\Explorers\DecompressedFile.vb" />
-    <Compile Include="FileFormats\Explorers\item_p.vb" />
-    <Compile Include="FileFormats\Explorers\Kaomado.vb" />
-    <Compile Include="FileFormats\Explorers\LanguageString.vb" />
-    <Compile Include="Projects\GenericModProject.vb" />
-    <Compile Include="Java.vb" />
-    <Compile Include="FileFormats\PSMD\CteImage.vb" />
-    <Compile Include="ModJson.vb" />
-    <Compile Include="ModpackInfo.vb" />
-    <Compile Include="Mods\GenericSkyMod.vb" />
-    <Compile Include="FileFormats\Explorers\Overlay13.vb" />
-    <Compile Include="FileFormats\Explorers\waza_p.vb" />
-    <Compile Include="PluginDefinition.vb" />
+    <Compile Include="Windows\Makerom.vb" />
+    <Compile Include="Windows\Projects\PpmduStatsUtilProject.vb" />
+    <Compile Include="Windows\MysteryDungeon\PSMD\Projects\IPsmdMessageBinProject.vb" />
+    <Compile Include="Windows\Projects\Mods\ExplorersScriptModProject.vb" />
+    <Compile Include="Windows\MysteryDungeon\PSMD\Projects\PSMDStarterMod.vb" />
+    <Compile Include="Windows\PsmdDir.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\CommandGroup.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\SSA.vb" />
+    <Compile Include="Windows\FileFormats\CTR\Smdh.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\SSB.vb" />
+    <Compile Include="Windows\Projects\BaseRomProject.vb" />
+    <Compile Include="Windows\ConsoleCommands\BatchCteConvert.vb" />
+    <Compile Include="Windows\ConsoleCommands\ImportLanguage.vb" />
+    <Compile Include="Windows\DSIconTool.vb" />
+    <Compile Include="Windows\Projects\DSModPackProject.vb" />
+    <Compile Include="Windows\DSModSolution.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\DatabaseBin.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\Farc.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\item_s_p.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\JukeboxBin.vb" />
+    <Compile Include="Windows\MysteryDungeon\PSMD\MessageBin.vb" />
+    <Compile Include="Windows\FileFormats\Sir0.vb" />
+    <Compile Include="Windows\FileFormats\Sir0Fat5.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\TableDatItemList.vb" />
+    <Compile Include="Windows\FilePatcher.vb" />
+    <Compile Include="Windows\GameCodeRegistry.vb" />
+    <Compile Include="Windows\GameStrings.vb" />
+    <Compile Include="Windows\FileFormats\Animations\AnimatedSprite.vb" />
+    <Compile Include="Windows\FileFormats\Animations\Frame.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\BGP.vb" />
+    <Compile Include="Windows\FileFormats\Animations\AnimData.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\DecompressedFile.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\item_p.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Kaomado.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\LanguageString.vb" />
+    <Compile Include="Windows\Projects\GenericModProject.vb" />
+    <Compile Include="Windows\Java.vb" />
+    <Compile Include="Windows\FileFormats\PSMD\CteImage.vb" />
+    <Compile Include="Windows\ModJson.vb" />
+    <Compile Include="Windows\ModpackInfo.vb" />
+    <Compile Include="Windows\Mods\GenericSkyMod.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\Overlay13.vb" />
+    <Compile Include="Windows\FileFormats\Explorers\waza_p.vb" />
+    <Compile Include="Windows\PluginDefinition.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
-    </Compile>
-    <Compile Include="My Project\Resources.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="My Project\Settings.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Portrait.vb" />
-    <Compile Include="Projects\Mods\GtiImage2dProject.vb" />
-    <Compile Include="Projects\Mods\KaomadoProject.vb" />
-    <Compile Include="Projects\Mods\Pk3DSModProject.vb" />
-    <Compile Include="Projects\Mods\SkyBackModProject.vb" />
-    <Compile Include="Projects\Mods\SkyStarterModProject.vb" />
-    <Compile Include="MysteryDungeon\PSMD\Projects\PsmdLuaProject.vb" />
-    <Compile Include="Roms\Cxi3DSRom.vb" />
-    <Compile Include="Roms\Generic3DSRom.vb" />
-    <Compile Include="romTool3ds.vb" />
-    <Compile Include="SkyRomProject.vb" />
-    <Compile Include="Soundtrack\ConversionManager.vb" />
-    <Compile Include="Soundtrack\SoundtrackConverter.vb" />
-    <Compile Include="Soundtrack\SoundtrackDefinition.vb" />
-    <Compile Include="Soundtrack\SoundtrackLists.Designer.vb">
+    <Compile Include="Windows\Portrait.vb" />
+    <Compile Include="Windows\Projects\Mods\GtiImage2dProject.vb" />
+    <Compile Include="Windows\Projects\Mods\KaomadoProject.vb" />
+    <Compile Include="Windows\Projects\Mods\Pk3DSModProject.vb" />
+    <Compile Include="Windows\Projects\Mods\SkyBackModProject.vb" />
+    <Compile Include="Windows\Projects\Mods\SkyStarterModProject.vb" />
+    <Compile Include="Windows\MysteryDungeon\PSMD\Projects\PsmdLuaProject.vb" />
+    <Compile Include="Windows\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Roms\Cxi3DSRom.vb" />
+    <Compile Include="Windows\Roms\Generic3DSRom.vb" />
+    <Compile Include="Windows\romTool3ds.vb" />
+    <Compile Include="Windows\SkyRomProject.vb" />
+    <Compile Include="Windows\Soundtrack\ConversionManager.vb" />
+    <Compile Include="Windows\Soundtrack\SoundtrackConverter.vb" />
+    <Compile Include="Windows\Soundtrack\SoundtrackDefinition.vb" />
+    <Compile Include="Windows\Soundtrack\SoundtrackLists.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SoundtrackLists.resx</DependentUpon>
     </Compile>
-    <Compile Include="Soundtrack\SoundtrackTrack.vb" />
-    <Compile Include="SsbCommandNames.Designer.vb">
+    <Compile Include="Windows\Soundtrack\SoundtrackTrack.vb" />
+    <Compile Include="Windows\SsbCommandNames.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SsbCommandNames.resx</DependentUpon>
     </Compile>
-    <Compile Include="unluac.vb" />
-    <Compile Include="vgmstream.vb" />
+    <Compile Include="Windows\unluac.vb" />
+    <Compile Include="Windows\vgmstream.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FarcFilenames.resx">
+    <EmbeddedResource Include="Windows\FarcFilenames.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FarcFilenames.Designer.vb</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Language.resx">
+    <EmbeddedResource Include="Windows\Language.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Language.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="My Project\Resources.resx">
+    <EmbeddedResource Include="Windows\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Soundtrack\SoundtrackLists.resx">
+    <EmbeddedResource Include="Windows\Soundtrack\SoundtrackLists.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SoundtrackLists.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="SsbCommandNames.resx">
+    <EmbeddedResource Include="Windows\SsbCommandNames.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SsbCommandNames.Designer.vb</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <Compile Include="FileFormats\Explorers\Script\SSB.SkyCommandFactory.vb" />
+    <None Include="Windows\app.config" />
+    <Compile Include="Windows\FileFormats\Explorers\Script\SSB.SkyCommandFactory.vb" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -323,8 +324,8 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="packages.config" />
-    <Content Include="App.ico" />
+    <None Include="Windows\packages.config" />
+    <Content Include="Windows\App.ico" />
     <Content Include="Resources\ctrtool.exe" />
     <Content Include="Resources\pmd2scriptdata.xml" />
     <Content Include="Resources\ppmd_pxcomp.exe" />
@@ -381,7 +382,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\vgmstream.zip" />
-    <None Include="SkyEditor.ROMEditor.Windows.nuspec" />
+    <None Include="Windows\SkyEditor.ROMEditor.Windows.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj">
