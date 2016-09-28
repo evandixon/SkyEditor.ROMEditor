@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats.Explorers
+Namespace MysteryDungeon.Explorers
     Public Class waza_p
         Inherits GenericFile
         Implements IOpenableFile

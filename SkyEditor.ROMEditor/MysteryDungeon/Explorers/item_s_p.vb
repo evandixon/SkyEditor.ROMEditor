@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats.Explorers
+Namespace MysteryDungeon.Explorers
     <Obsolete("Needs rewriting")> Public Class item_s_p
         Inherits GenericFile
         Public Structure Item

@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.Utilities
 
-Namespace Windows.FileFormats.Explorers
+Namespace MysteryDungeon.Explorers
     Public Class MonsterMDEntry
         Dim entityID As UInt16
         Dim unk_02 As UInt16

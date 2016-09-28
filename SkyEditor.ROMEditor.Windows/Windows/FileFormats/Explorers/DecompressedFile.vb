@@ -6,19 +6,18 @@ Namespace Windows.FileFormats.Explorers
     Public Class DecompressedFile
         Inherits GenericFile
 
+        Public Sub New()
+            Me.EnableInMemoryLoad = True
+            IsAT4PX = False
+        End Sub
+
         Protected Property IsAT4PX As Boolean
 
-        Public Shared Async Function RunDecompress(sourceFilename As String, destinationFilename As String) As Task
-            Using external As New ExternalProgramManager
-                Await external.RunPPMDUnPX(String.Format("""{0}"" ""{1}""", sourceFilename, destinationFilename))
-            End Using
-        End Function
-
-        Public Shared Async Function RunCompress(sourceFilename As String, destinationFilename As String) As Task
-            Using external As New ExternalProgramManager
-                'Todo: specify encryption
-                Await external.RunPPMDPXComp(String.Format("""{0}"" ""{1}""", sourceFilename, destinationFilename)).ConfigureAwait(False)
-            End Using
+        Public Overrides Async Function OpenFile(filename As String, provider As IOProvider) As Task
+            Dim tempFilename = provider.GetTempFilename
+            Await RunDecompress(filename, tempFilename)
+            Await MyBase.OpenFile(tempFilename, provider)
+            Me.OriginalFilename = filename
         End Function
 
         ''' <summary>
@@ -36,16 +35,18 @@ Namespace Windows.FileFormats.Explorers
             Me.OriginalFilename = Path
         End Sub
 
-        Public Overrides Async Function OpenFile(filename As String, provider As IOProvider) As Task
-            Dim tempFilename = provider.GetTempFilename
-            Await RunDecompress(filename, tempFilename)
-            Await MyBase.OpenFile(tempFilename, provider)
-            Me.OriginalFilename = filename
+        Public Shared Async Function RunDecompress(sourceFilename As String, destinationFilename As String) As Task
+            Using external As New ExternalProgramManager
+                Await external.RunPPMDUnPX(String.Format("""{0}"" ""{1}""", sourceFilename, destinationFilename))
+            End Using
         End Function
 
-        Public Sub New()
-            Me.EnableInMemoryLoad = True
-            IsAT4PX = False
-        End Sub
+        Public Shared Async Function RunCompress(sourceFilename As String, destinationFilename As String) As Task
+            Using external As New ExternalProgramManager
+                'Todo: specify encryption
+                Await external.RunPPMDPXComp(String.Format("""{0}"" ""{1}""", sourceFilename, destinationFilename)).ConfigureAwait(False)
+            End Using
+        End Function
+
     End Class
 End Namespace

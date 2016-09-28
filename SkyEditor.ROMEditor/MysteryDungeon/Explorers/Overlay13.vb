@@ -1,9 +1,16 @@
-﻿Namespace Windows.FileFormats.Explorers
+﻿Imports SkyEditor.Core.IO
+
+Namespace MysteryDungeon.Explorers
     ''' <summary>
     ''' The overlay that controls the personality test.
     ''' </summary>
     ''' <remarks></remarks>
     Public Class Overlay13
+        Public Sub New(Filename As String, provider As IOProvider)
+            Me.Filename = Filename
+            RawData = provider.ReadAllBytes(Filename)
+        End Sub
+
         Public Property Filename As String
         Public Property RawData As Byte()
 #Region "RawIDs"
@@ -596,12 +603,8 @@
             End If
         End Function
 
-        Public Sub New(Filename As String)
-            Me.Filename = Filename
-            RawData = IO.File.ReadAllBytes(Filename)
-        End Sub
-        Public Sub Save()
-            IO.File.WriteAllBytes(Filename, RawData)
+        Public Sub Save(provider As IOProvider)
+            provider.WriteAllBytes(Filename, RawData)
         End Sub
 
     End Class

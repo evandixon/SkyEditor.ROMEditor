@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 
-Namespace Windows.FileFormats.Explorers
+Namespace MysteryDungeon.Explorers
     Public Class item_p
         Inherits GenericFile
         Implements IOpenableFile

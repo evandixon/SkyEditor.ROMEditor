@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.ROMEditor.MysteryDungeon
 
-Namespace Windows.FileFormats.Explorers
+Namespace MysteryDungeon.Explorers
     Public Class mappa
         Inherits Sir0
     End Class

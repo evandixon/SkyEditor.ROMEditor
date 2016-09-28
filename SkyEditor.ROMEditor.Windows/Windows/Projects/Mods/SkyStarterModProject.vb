@@ -1,5 +1,7 @@
 ﻿Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
+Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
+Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers.ViewModels
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
 
 Namespace Windows.Projects.Mods
@@ -75,7 +77,7 @@ Namespace Windows.Projects.Mods
 
             'Convert Personality Test
             Me.BuildStatusMessage = My.Resources.Language.LoadingConvertingPersonalityTest
-            Dim overlay13 As New Overlay13(IO.Path.Combine(rawDir, "Overlay", "overlay_0013.bin"))
+            Dim overlay13 As New Overlay13(IO.Path.Combine(rawDir, "Overlay", "overlay_0013.bin"), CurrentPluginManager.CurrentIOProvider)
             Dim personalityTest As New ObjectFile(Of PersonalityTestContainer)(CurrentPluginManager.CurrentIOProvider)
             personalityTest.ContainedObject = New PersonalityTestContainer(overlay13)
             personalityTest.Save(IO.Path.Combine(projDir, "Starter Pokemon"), CurrentPluginManager.CurrentIOProvider)
@@ -93,10 +95,10 @@ Namespace Windows.Projects.Mods
             'Convert Personality Test
             Dim personalityTest As ObjectFile(Of PersonalityTestContainer) = Nothing
             If IO.File.Exists(IO.Path.Combine(projDir, "Starter Pokemon")) Then
-                Dim overlay13 As New Overlay13(IO.Path.Combine(rawDir, "Overlay", "overlay_0013.bin"))
+                Dim overlay13 As New Overlay13(IO.Path.Combine(rawDir, "Overlay", "overlay_0013.bin"), CurrentPluginManager.CurrentIOProvider)
                 personalityTest = New ObjectFile(Of PersonalityTestContainer)(CurrentPluginManager.CurrentIOProvider, IO.Path.Combine(projDir, "Starter Pokemon"))
                 personalityTest.ContainedObject.UpdateOverlay(overlay13)
-                overlay13.Save()
+                overlay13.Save(CurrentPluginManager.CurrentIOProvider)
             End If
 
 

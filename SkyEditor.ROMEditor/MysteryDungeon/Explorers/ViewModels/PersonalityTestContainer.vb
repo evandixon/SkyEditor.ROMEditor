@@ -1,6 +1,4 @@
-﻿Imports System.ComponentModel
-
-Namespace Windows.FileFormats.Explorers
+﻿Namespace MysteryDungeon.Explorers.ViewModels
     ''' <summary>
     ''' Stores the starter data from Overlay13.
     ''' </summary>

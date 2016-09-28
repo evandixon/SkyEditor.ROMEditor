@@ -91,6 +91,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="MysteryDungeon\Explorers\ExplorersSir0.vb" />
+    <Compile Include="MysteryDungeon\Explorers\item_p.vb" />
+    <Compile Include="MysteryDungeon\Explorers\item_s_p.vb" />
+    <Compile Include="MysteryDungeon\Explorers\LanguageString.vb" />
+    <Compile Include="MysteryDungeon\Explorers\mappa.vb" />
+    <Compile Include="MysteryDungeon\Explorers\MonsterMDFile.vb" />
+    <Compile Include="MysteryDungeon\Explorers\Overlay13.vb" />
+    <Compile Include="MysteryDungeon\Explorers\TableDatItemList.vb" />
+    <Compile Include="MysteryDungeon\Explorers\ViewModels\PersonalityTestContainer.vb" />
+    <Compile Include="MysteryDungeon\Explorers\waza_p.vb" />
     <Compile Include="MysteryDungeon\PSMD\ActDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\ActHitCountTableDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\ActXlWaza.vb" />
@@ -139,9 +149,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MysteryDungeon\Explorers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Language.resx">
       <Generator>ResXFileCodeGenerator</Generator>

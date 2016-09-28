@@ -6,7 +6,7 @@
              xmlns:skyWPF="clr-namespace:SkyEditor.UI.WPF;assembly=SkyEditor.UI.WPF"
              xmlns:res="clr-namespace:SkyEditor.ROMEditor.UI.WPF.My.Resources"
              xmlns:saveEditor="clr-namespace:SkyEditor.SaveEditor;assembly=SkyEditor.SaveEditor"
-             xmlns:explorers="clr-namespace:SkyEditor.ROMEditor.Windows.FileFormats.Explorers;assembly=SkyEditor.ROMEditor.Windows"
+             xmlns:explorers="clr-namespace:SkyEditor.ROMEditor.MysteryDungeon.Explorers.ViewModels;assembly=SkyEditor.ROMEditor"
              TargetType="{x:Type explorers:PersonalityTestContainer}"
              mc:Ignorable="d">
     <Grid x:Name="grid1">

@@ -1,7 +1,8 @@
 ﻿Imports System.Text
 Imports SkyEditor.Core.IO
+Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers.ViewModels
 
-Namespace Windows.FileFormats.Explorers
+Namespace MysteryDungeon.Explorers
     Public Class LanguageString
         Inherits GenericFile
         Implements IOpenableFile
@@ -53,9 +54,9 @@ Namespace Windows.FileFormats.Explorers
 
         Public Property Items As List(Of String)
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
-            Await MyBase.OpenFile(Filename, Provider)
-            Dim bytes = IO.File.ReadAllBytes(Filename)
+        Public Overrides Async Function OpenFile(filename As String, provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+            Await MyBase.OpenFile(filename, provider)
+            Dim bytes = provider.ReadAllBytes(filename)
 
             Items = New List(Of String)
 
@@ -69,7 +70,7 @@ Namespace Windows.FileFormats.Explorers
                 Dim s As New StringBuilder
                 'Read the null-terminated string
                 While bytes(endOffset) <> 0
-                    s.Append(e.GetString({RawData(endOffset)}))
+                    s.Append(e.GetString({RawData(endOffset)}, 0, 1))
                     endOffset += 1
                 End While
                 Items(count / 4) = s.ToString

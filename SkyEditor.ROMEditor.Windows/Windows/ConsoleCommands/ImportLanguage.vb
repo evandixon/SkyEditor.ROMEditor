@@ -1,5 +1,6 @@
 ﻿Imports SkyEditor.Core.ConsoleCommands
 Imports SkyEditor.Core.Windows
+Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
 
 Namespace Windows.ConsoleCommands

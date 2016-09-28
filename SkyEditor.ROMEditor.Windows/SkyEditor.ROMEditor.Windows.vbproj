@@ -145,7 +145,6 @@
     <Compile Include="Windows\FileFormats\CTR\Level3Header.vb" />
     <Compile Include="Windows\FileFormats\CTR\RomFs.vb" />
     <Compile Include="Windows\FileFormats\CTR\RomFSHeader.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\PersonalityTestContainer.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\CommandParameterAttribute.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\Commands\BasicTalkCommand.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\Commands\BgmFadeIn.vb" />
@@ -169,9 +168,6 @@
     <Compile Include="Windows\FileFormats\Explorers\Script\ConstantCommandParameter.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\MultiLangStringCommandParameter.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\StringCommandParameter.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\ExplorersSir0.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\mappa.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\MonsterMDFile.vb" />
     <Compile Include="Windows\Language.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -193,8 +189,6 @@
     <Compile Include="Windows\DSIconTool.vb" />
     <Compile Include="Windows\Projects\DSModPackProject.vb" />
     <Compile Include="Windows\DSModSolution.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\item_s_p.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\TableDatItemList.vb" />
     <Compile Include="Windows\FilePatcher.vb" />
     <Compile Include="Windows\GameCodeRegistry.vb" />
     <Compile Include="Windows\GameStrings.vb" />
@@ -203,17 +197,13 @@
     <Compile Include="MysteryDungeon\Explorers\BGP.vb" />
     <Compile Include="Windows\FileFormats\Animations\AnimData.vb" />
     <Compile Include="Windows\FileFormats\Explorers\DecompressedFile.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\item_p.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Kaomado.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\LanguageString.vb" />
     <Compile Include="Windows\Projects\GenericModProject.vb" />
     <Compile Include="Windows\Java.vb" />
     <Compile Include="MysteryDungeon\PSMD\CteImage.vb" />
     <Compile Include="Windows\ModJson.vb" />
     <Compile Include="Windows\ModpackInfo.vb" />
     <Compile Include="Windows\Mods\GenericSkyMod.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\Overlay13.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\waza_p.vb" />
     <Compile Include="Windows\PluginDefinition.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
