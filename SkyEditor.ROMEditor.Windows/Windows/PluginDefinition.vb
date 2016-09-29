@@ -33,6 +33,7 @@ Namespace Windows
         'End Sub
 
         Public Overrides Sub Load(Manager As SkyEditor.Core.PluginManager)
+            Manager.LoadRequiredPlugin(New SkyEditor.ROMEditor.PluginDefinition, Me)
             'Manager.RegisterIOFilter("*.nds", PluginHelper.GetLanguageItem("Nintendo DS ROM"))
             Manager.CurrentIOUIManager.RegisterIOFilter("*.img", My.Resources.Language.CTEImageFiles)
 
