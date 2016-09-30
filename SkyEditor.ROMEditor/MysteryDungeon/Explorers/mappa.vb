@@ -107,6 +107,16 @@ Namespace MysteryDungeon.Explorers
 #End Region
 
         Public Class DungeonBalance
+            Public Sub New()
+                Floors = New List(Of FloorBalance)
+            End Sub
+            Public Property Floors As List(Of FloorBalance)
+        End Class
+
+        Public Class FloorBalance
+            Public Sub New()
+                PokemonSpawns = New List(Of PokemonSpawn)
+            End Sub
             Public Property PokemonSpawns As List(Of PokemonSpawn)
         End Class
 
@@ -127,10 +137,13 @@ Namespace MysteryDungeon.Explorers
             'Item Spawns
             Dim ptr5 As Integer = BitConverter.ToInt32(Header, &H10)
             'Each pointer points to a 50 byte (0x32) entry
+
+            'Consolidate everything that was just read
+            ProcessBlocks()
         End Function
 
         Private Sub LoadFloorIndex(pointerBlockPointer As Integer)
-            RawFloorIndexes = New List(Of FloorIndex())
+            RawFloorIndexes = New List(Of List(Of FloorIndex))
 
             Dim currentPointerOffset = pointerBlockPointer 'Pointer to the currently processing pointer
             Dim entryPointer As Integer = Me.Int32(currentPointerOffset) 'Pointer to the currently processing entry
@@ -164,8 +177,8 @@ Namespace MysteryDungeon.Explorers
                 Loop
 
                 'Add current entry buffer to list of processed entries
-                RawFloorIndexes.Add(floorEntries.ToArray)
-                floorEntries.Clear()
+                RawFloorIndexes.Add(floorEntries)
+                floorEntries = New List(Of FloorIndex)
 
                 If entryPointer >= pointerBlockPointer Then
                     'Stop after the last empty spawn entry
@@ -179,7 +192,7 @@ Namespace MysteryDungeon.Explorers
         End Sub
 
         Private Sub LoadPokemonSpawns(pointerBlockPointer As Integer)
-            RawPokemonSpawns = New List(Of PokemonSpawn())
+            RawPokemonSpawns = New List(Of List(Of PokemonSpawn))
 
             Dim currentPointerOffset = pointerBlockPointer 'Pointer to the currently processing pointer
             Dim entryPointer As Integer = Me.Int32(currentPointerOffset) 'Pointer to the currently processing entry
@@ -200,8 +213,8 @@ Namespace MysteryDungeon.Explorers
                 Loop
 
                 'Add current entry buffer to the list of processed entries
-                RawPokemonSpawns.Add(spawnEntries.ToArray)
-                spawnEntries.Clear()
+                RawPokemonSpawns.Add(spawnEntries)
+                spawnEntries = New List(Of PokemonSpawn)
 
                 If entryPointer >= pointerBlockPointer Then
                     'Stop after the last empty spawn entry
@@ -214,8 +227,31 @@ Namespace MysteryDungeon.Explorers
             Loop
         End Sub
 
-        Private Property RawFloorIndexes As List(Of FloorIndex())
-        Private Property RawPokemonSpawns As List(Of PokemonSpawn())
+        Private Sub ProcessBlocks()
+            Dungeons = New List(Of DungeonBalance)
+
+            For Each dungeon In RawFloorIndexes
+                Dim dungeonEntry As New DungeonBalance
+
+                For Each floor In dungeon
+                    Dim floorEntry As New FloorBalance
+
+                    'Pokemon spawns
+                    For Each spawn In RawPokemonSpawns(floor.PokemonSpawnIndex)
+                        floorEntry.PokemonSpawns.Add(spawn)
+                    Next
+
+                    dungeonEntry.Floors.Add(floorEntry)
+                Next
+
+                Dungeons.Add(dungeonEntry)
+            Next
+        End Sub
+
+        Public Property Dungeons As List(Of DungeonBalance)
+
+        Private Property RawFloorIndexes As List(Of List(Of FloorIndex))
+        Private Property RawPokemonSpawns As List(Of List(Of PokemonSpawn))
 
     End Class
 End Namespace
