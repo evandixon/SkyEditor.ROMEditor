@@ -15,6 +15,88 @@ Namespace MysteryDungeon.Explorers
         'Content Header
         'SIR0 footer
 
+        Public Enum FloorStructure As Byte
+            ''' <summary>
+            ''' Medium-Large (Biggest 6 x 4)
+            ''' </summary>
+            MediumLarge = 0
+
+            ''' <summary>
+            ''' Small (Biggest 2 x 3)
+            ''' </summary>
+            Small = 1
+
+            ''' <summary>
+            ''' One-Room Monster House
+            ''' </summary>
+            OneRoomMonsterHouse = 2
+
+            ''' <summary>
+            ''' Outer Square (Long hallway around edges of map with 8 rooms inside)
+            ''' </summary>
+            OuterSquare = 3
+
+            ''' <summary>
+            ''' CrossRoads (3 rooms at top and bottom and 2 rooms at left and right side with a string of hallways in the middle of the map connecting the rooms)
+            ''' </summary>
+            CrossRoads = 4
+
+            ''' <summary>
+            ''' Two-Room (One of them has a Monster House)
+            ''' </summary>
+            TwoRoom = 5
+
+            ''' <summary>
+            ''' Line (1 horizontal straight line of 5 rooms)
+            ''' </summary>
+            Line = 6
+
+            ''' <summary>
+            ''' Cross (5 Rooms in form of Cross; 3 x 3 with Top Left, Top Right, Bottom Left, and Bottom Right Room missing)
+            ''' </summary>
+            Cross = 7
+
+            ''' <summary>
+            ''' Small-Medium (Biggest 4 x 2)
+            ''' </summary>
+            SmallMedium4x2 = 8
+
+            ''' <summary>
+            ''' "Beetle" (1 Giant Room in middle of map with 3 vertical rooms to the left of it and to the right of it)
+            ''' </summary>
+            Beetle = 9
+
+            ''' <summary>
+            ''' Outer Rooms (All Rooms at edge of map; Biggest 6 x 4 with no rooms in the middle)
+            ''' </summary>
+            OuterRooms = &HA
+
+            ''' <summary>
+            ''' Small-Medium (Biggest 3 x 3)
+            ''' </summary>
+            SmallMedium3x3 = &HB
+
+            ''' <summary>
+            ''' Medium-Large (Biggest 6 x 4)
+            ''' </summary>
+            MediumLarge2 = &HC
+
+            ''' <summary>
+            ''' Medium-Large (Biggest 6 x 4)
+            ''' </summary>
+            MediumLarge3 = &HD
+
+            ''' <summary>
+            ''' Medium-Large (Biggest 6 x 4)
+            ''' </summary>
+            MediumLarge4 = &HE
+
+            ''' <summary>
+            ''' Medium-Large (Biggest 6 x 4)
+            ''' </summary>
+            MediumLarge5 = &HF
+        End Enum
+
 #Region "Structures"
         Public Structure FloorIndex
             '00-01	Attribute Index
@@ -66,6 +148,74 @@ Namespace MysteryDungeon.Explorers
             Public Function IsDefault() As Boolean
                 Return AttributeIndex = 0 AndAlso PokemonSpawnIndex = 0 AndAlso TrapSpawnIndex = 0 AndAlso ItemSpawnIndex = 0 AndAlso KeckleonShopIndex = 0 AndAlso MonsterHouseItemIndex = 0 AndAlso BuriedItemIndex = 0 AndAlso Unknown1 = 0 AndAlso Unknown2 = 0
             End Function
+        End Structure
+
+        Public Structure FloorAttribute
+            Public Sub New(rawData As Byte())
+                Layout = rawData(0)
+                Unknown1 = rawData(1)
+                TerrainAppearance = rawData(2)
+                MusicIndex = rawData(3)
+                Weather = rawData(4)
+                Unknown5 = rawData(5)
+                InitialPokemonDensity = rawData(6)
+                KeckleonShopPercentage = rawData(7)
+                MonsterHousePercentage = rawData(8)
+                Flag9 = rawData(9)
+                UnknownA = rawData(&HA)
+                FlagB = rawData(&HB)
+                RoomsWithWaterIndex = rawData(&HC)
+                FlagD = rawData(&HD)
+                FlagE = rawData(&HE)
+                ItemDensity = rawData(&HF)
+                TrapDensity = rawData(&H10)
+                FloorCounter = rawData(&H11)
+                EventIndex = rawData(&H12)
+                Unknown13 = rawData(&H13)
+                BuriedItemDensity = rawData(&H14)
+                WaterDensity = rawData(&H15)
+                DarknessLevel = rawData(&H16)
+                CoinMax = rawData(&H17)
+                Unknown18 = rawData(&H18)
+                Unknown19 = rawData(&H19)
+                Unknown1A = rawData(&H1A)
+                Flag1B = rawData(&H1B)
+                EnemyIQ = BitConverter.ToUInt16(rawData, &H1C)
+            End Sub
+
+            Public Function GetBytes() As Byte()
+                Throw New NotImplementedException
+            End Function
+
+            Public Property Layout As FloorStructure
+            Public Property Unknown1 As Byte
+            Public Property TerrainAppearance As Byte
+            Public Property MusicIndex As Byte
+            Public Property Weather As Byte
+            Public Property Unknown5 As Byte
+            Public Property InitialPokemonDensity As Byte
+            Public Property KeckleonShopPercentage As Byte
+            Public Property MonsterHousePercentage As Byte
+            Public Property Flag9 As Byte
+            Public Property UnknownA As Byte
+            Public Property FlagB As Byte
+            Public Property RoomsWithWaterIndex As Byte
+            Public Property FlagD As Byte
+            Public Property FlagE As Byte
+            Public Property ItemDensity As Byte
+            Public Property TrapDensity As Byte
+            Public Property FloorCounter As Byte
+            Public Property EventIndex As Byte
+            Public Property Unknown13 As Byte
+            Public Property BuriedItemDensity As Byte
+            Public Property WaterDensity As Byte
+            Public Property DarknessLevel As Byte
+            Public Property CoinMax As Byte 'Steps of 40
+            Public Property Unknown18 As Byte
+            Public Property Unknown19 As Byte
+            Public Property Unknown1A As Byte
+            Public Property Flag1B As Byte
+            Public Property EnemyIQ As UInt16
         End Structure
 
         Public Structure PokemonSpawn
@@ -127,7 +277,10 @@ Namespace MysteryDungeon.Explorers
             Dim floorIndexPointerBlockStart As Integer = BitConverter.ToInt32(Header, 0)
             LoadFloorIndex(floorIndexPointerBlockStart)
 
-            Dim ptr2 As Integer = BitConverter.ToInt32(Header, 4) 'Block of data, Floor Attribute Data, 32 byte entries
+            'Attribute Data
+            Dim attributeBlockPointer As Integer = BitConverter.ToInt32(Header, 4)
+            LoadAttributeData(attributeBlockPointer)
+
             Dim ptr3 As Integer = BitConverter.ToInt32(Header, 8) 'Block of pointers
 
             'Pokemon Spawns
@@ -189,6 +342,10 @@ Namespace MysteryDungeon.Explorers
                     entryPointer = Me.Int32(currentPointerOffset)
                 End If
             Loop
+        End Sub
+
+        Private Sub LoadAttributeData(attributeBlockPointer As Integer)
+32 byte entries
         End Sub
 
         Private Sub LoadPokemonSpawns(pointerBlockPointer As Integer)
