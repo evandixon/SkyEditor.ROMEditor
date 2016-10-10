@@ -30,7 +30,7 @@ Namespace Windows.Roms
 
         Public Overridable ReadOnly Property TitleID As String
             Get
-                Return Conversion.Hex(BitConverter.ToUInt64(RawData(&H108, 8), 0)).PadLeft(16, "0"c)
+                Return Microsoft.VisualBasic.Conversion.Hex(BitConverter.ToUInt64(RawData(&H108, 8), 0)).PadLeft(16, "0"c)
             End Get
         End Property
 
