@@ -510,6 +510,57 @@ Namespace MysteryDungeon.Explorers
 
 #End Region
 
+#Region "Save"
+        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+
+            'TODO: convert Dungeons to the raw properties
+
+            Me.RelativePointers.Clear()
+            Me.RelativePointers.Add(4)
+            Me.RelativePointers.Add(4)
+
+            'Floor Data section
+            '- Section pointer in header
+            Dim rootFloorIndexPointer As Integer = &H10
+            Dim rootFloorPointerBuffer = BitConverter.GetBytes(rootFloorIndexPointer)
+            For i = 0 To 3
+                Header(0 + i) = rootFloorPointerBuffer(i)
+            Next
+
+            '- Data and pointer blocks
+            Dim currentFloorPointer As Integer = rootFloorIndexPointer
+            Dim floorIndexData As New List(Of Byte)
+            Dim floorIndexPointers As New List(Of Byte)
+            For Each dungeon In RawFloorIndexes
+                'Write null entry
+                For count = 1 To &H18
+                    floorIndexData.Add(0)
+                Next
+                floorIndexPointers.AddRange(BitConverter.GetBytes(currentFloorPointer))
+                currentFloorPointer += &H18
+
+                For Each floor In dungeon
+                    floorIndexData.AddRange(floor.GetBytes)
+                    currentFloorPointer += &H18
+                Next
+            Next
+
+            '- Write blocks to file
+            RawData(rootFloorIndexPointer, floorIndexData.Count) = floorIndexData.ToArray()
+            RawData(rootFloorIndexPointer + floorIndexData.Count, floorIndexPointers.Count) = floorIndexPointers.ToArray
+
+            'Section 2
+            Dim rootSection2IndexPointer As Integer = rootFloorIndexPointer + floorIndexData.Count + floorIndexPointers.Count
+
+
+            'TODO: write the rest of the sections
+            Throw New NotImplementedException
+
+
+            MyBase.Save(Destination, provider)
+        End Sub
+#End Region
+
         Public Property Dungeons As List(Of DungeonBalance)
 
         Private Property RawFloorIndexes As List(Of List(Of FloorIndex))
