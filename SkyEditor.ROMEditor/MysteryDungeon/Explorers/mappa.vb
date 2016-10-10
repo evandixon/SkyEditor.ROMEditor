@@ -519,7 +519,9 @@ Namespace MysteryDungeon.Explorers
             Me.RelativePointers.Add(4)
             Me.RelativePointers.Add(4)
 
+            ' ----------
             'Floor Data section
+            ' ----------
             '- Section pointer in header
             Dim rootFloorIndexPointer As Integer = &H10
             Dim rootFloorPointerBuffer = BitConverter.GetBytes(rootFloorIndexPointer)
@@ -536,6 +538,7 @@ Namespace MysteryDungeon.Explorers
                 For count = 1 To &H18
                     floorIndexData.Add(0)
                 Next
+                ' TODO: write SIR0 pointer offsets
                 floorIndexPointers.AddRange(BitConverter.GetBytes(currentFloorPointer))
                 currentFloorPointer += &H18
 
@@ -549,8 +552,27 @@ Namespace MysteryDungeon.Explorers
             RawData(rootFloorIndexPointer, floorIndexData.Count) = floorIndexData.ToArray()
             RawData(rootFloorIndexPointer + floorIndexData.Count, floorIndexPointers.Count) = floorIndexPointers.ToArray
 
-            'Section 2
-            Dim rootSection2IndexPointer As Integer = rootFloorIndexPointer + floorIndexData.Count + floorIndexPointers.Count
+            ' ----------
+            'Floor Attributes - no pointer block
+            ' ----------
+            Dim floorAttributeData As New List(Of Byte)
+            Dim rootAttributeIndexPointer As Integer = rootFloorIndexPointer + floorIndexData.Count + floorIndexPointers.Count
+
+            '- Section pointer in head
+            Dim rootAttributePointerBuffer = BitConverter.GetBytes(rootAttributeIndexPointer)
+            For i = 0 To 3
+                Header(4 + i) = rootAttributePointerBuffer(i)
+            Next
+
+            '- Data
+            For Each item In RawAttributeData
+                floorAttributeData.AddRange(item.GetBytes)
+            Next
+
+            '- Write blocks to file
+            RawData(rootAttributeIndexPointer, floorAttributeData.Count) = floorAttributeData.ToArray
+
+            Dim rootItemSpawnPointer = rootAttributeIndexPointer + floorAttributeData.Count
 
 
             'TODO: write the rest of the sections
