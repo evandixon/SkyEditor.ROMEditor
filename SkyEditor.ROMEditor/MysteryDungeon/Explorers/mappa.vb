@@ -184,7 +184,37 @@ Namespace MysteryDungeon.Explorers
             End Sub
 
             Public Function GetBytes() As Byte()
-                Throw New NotImplementedException
+                Dim out As New List(Of Byte)(32)
+                out.Add(Layout)
+                out.Add(Unknown1)
+                out.Add(TerrainAppearance)
+                out.Add(MusicIndex)
+                out.Add(Weather)
+                out.Add(Unknown5)
+                out.Add(InitialPokemonDensity)
+                out.Add(KeckleonShopPercentage)
+                out.Add(MonsterHousePercentage)
+                out.Add(Flag9)
+                out.Add(UnknownA)
+                out.Add(FlagB)
+                out.Add(RoomsWithWaterIndex)
+                out.Add(FlagD)
+                out.Add(FlagE)
+                out.Add(ItemDensity)
+                out.Add(TrapDensity)
+                out.Add(FloorCounter)
+                out.Add(EventIndex)
+                out.Add(Unknown13)
+                out.Add(BuriedItemDensity)
+                out.Add(WaterDensity)
+                out.Add(DarknessLevel)
+                out.Add(CoinMax)
+                out.Add(Unknown18)
+                out.Add(Unknown19)
+                out.Add(Unknown1A)
+                out.Add(Flag1B)
+                out.AddRange(BitConverter.GetBytes(EnemyIQ))
+                Return out.ToArray
             End Function
 
             Public Property Layout As FloorStructure
@@ -268,28 +298,30 @@ Namespace MysteryDungeon.Explorers
                 PokemonSpawns = New List(Of PokemonSpawn)
             End Sub
             Public Property PokemonSpawns As List(Of PokemonSpawn)
+            Public Property Attributes As FloorAttribute
         End Class
+
+#Region "Open"
 
         Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task
             Await MyBase.OpenFile(Filename, Provider)
 
-            'Floor Indexes
+            'Load pointers
             Dim floorIndexPointerBlockStart As Integer = BitConverter.ToInt32(Header, 0)
-            LoadFloorIndex(floorIndexPointerBlockStart)
-
-            'Attribute Data
             Dim attributeBlockPointer As Integer = BitConverter.ToInt32(Header, 4)
-            LoadAttributeData(attributeBlockPointer)
-
-            Dim ptr3 As Integer = BitConverter.ToInt32(Header, 8) 'Block of pointers
-
-            'Pokemon Spawns
+            Dim itemSpawnPointerBlockPointer As Integer = BitConverter.ToInt32(Header, 8)
             Dim spawnPointerBlockStart As Integer = BitConverter.ToInt32(Header, &HC) 'Block of pointers
-            LoadPokemonSpawns(spawnPointerBlockStart)
-
-            'Item Spawns
             Dim ptr5 As Integer = BitConverter.ToInt32(Header, &H10)
-            'Each pointer points to a 50 byte (0x32) entry
+
+            Dim pkmSpawnPtr1 As Integer = Me.Int32(spawnPointerBlockStart)
+            Dim itemSpawnPtr1 As Integer = Me.Int32(itemSpawnPointerBlockPointer)
+
+            'Load sections
+            LoadFloorIndex(floorIndexPointerBlockStart)
+            LoadAttributeData(attributeBlockPointer, pkmSpawnPtr1)
+            LoadItemSpawns(itemSpawnPointerBlockPointer)
+            LoadPokemonSpawns(spawnPointerBlockStart)
+            LoadBlock5(ptr5, itemSpawnPtr1)
 
             'Consolidate everything that was just read
             ProcessBlocks()
@@ -344,8 +376,50 @@ Namespace MysteryDungeon.Explorers
             Loop
         End Sub
 
-        Private Sub LoadAttributeData(attributeBlockPointer As Integer)
-32 byte entries
+        Private Sub LoadAttributeData(attributeBlockPointer As Integer, nextPointer As Integer)
+            RawAttributeData = New List(Of FloorAttribute)
+            For count = attributeBlockPointer To nextPointer - 1 Step 32
+                RawAttributeData.Add(New FloorAttribute(RawData(count, 32)))
+            Next
+        End Sub
+
+        Private Sub LoadItemSpawns(pointerBlockPointer As Integer)
+            'Parse the pointers in the pointer block
+            Dim pointers As New List(Of Integer)
+            Dim pointerPtr As Integer = pointerBlockPointer
+            Do
+                Dim pointer = Me.Int32(pointerPtr)
+                pointerPtr += 4
+
+                If pointer = &HAAAAAAAA OrElse pointer = 0 Then
+                    Exit Do 'We've reached padding.
+                ElseIf pointerPtr = Me.HeaderOffset Then
+                    'The next pointer is in the header, which is outside of this block
+                    pointers.Add(pointer) 'The current pointer is good
+                    Exit Do 'But stop looking for them
+                Else
+                    pointers.Add(pointer)
+                End If
+            Loop
+
+            'Read the item spawn data
+            SuperRawItemSpawnData = New List(Of Byte())
+            For count = 0 To pointers.Count - 1
+                Dim currentItemPointer = pointers(count)
+                Dim nextItemPointer As Integer
+
+                If count < pointers.Count - 1 Then
+                    'Compare to next pointer to determine length
+                    nextItemPointer = pointers(count + 1)
+                Else
+                    'Compare to start of pointer block to determine length
+                    nextItemPointer = pointerBlockPointer
+                End If
+
+                Dim length = nextItemPointer - currentItemPointer
+
+                SuperRawItemSpawnData.Add(RawData(currentItemPointer, length))
+            Next
         End Sub
 
         Private Sub LoadPokemonSpawns(pointerBlockPointer As Integer)
@@ -384,6 +458,33 @@ Namespace MysteryDungeon.Explorers
             Loop
         End Sub
 
+        Private Sub LoadBlock5(pointerBlockPointer As Integer, pointerBlockEnd As Integer)
+            'Parse the pointers in the pointer block
+            Dim pointers As New List(Of Integer)
+            For count = pointerBlockPointer To pointerBlockEnd - 1 Step 4
+                pointers.Add(Me.Int32(count))
+            Next
+
+            'Read the item spawn data
+            SuperRawBlock5 = New List(Of Byte())
+            For count = 0 To pointers.Count - 1
+                Dim currentItemPointer = pointers(count)
+                Dim nextItemPointer As Integer
+
+                If count < pointers.Count - 1 Then
+                    'Compare to next pointer to determine length
+                    nextItemPointer = pointers(count + 1)
+                Else
+                    'Compare to start of pointer block to determine length
+                    nextItemPointer = pointerBlockPointer
+                End If
+
+                Dim length = nextItemPointer - currentItemPointer
+
+                SuperRawBlock5.Add(RawData(currentItemPointer, length))
+            Next
+        End Sub
+
         Private Sub ProcessBlocks()
             Dungeons = New List(Of DungeonBalance)
 
@@ -392,6 +493,8 @@ Namespace MysteryDungeon.Explorers
 
                 For Each floor In dungeon
                     Dim floorEntry As New FloorBalance
+
+                    floorEntry.Attributes = RawAttributeData(floor.AttributeIndex)
 
                     'Pokemon spawns
                     For Each spawn In RawPokemonSpawns(floor.PokemonSpawnIndex)
@@ -405,10 +508,16 @@ Namespace MysteryDungeon.Explorers
             Next
         End Sub
 
+#End Region
+
         Public Property Dungeons As List(Of DungeonBalance)
 
         Private Property RawFloorIndexes As List(Of List(Of FloorIndex))
+        Private Property RawAttributeData As List(Of FloorAttribute)
         Private Property RawPokemonSpawns As List(Of List(Of PokemonSpawn))
+        Private Property SuperRawItemSpawnData As List(Of Byte())
+        Private Property SuperRawBlock5 As List(Of Byte())
+
 
     End Class
 End Namespace
