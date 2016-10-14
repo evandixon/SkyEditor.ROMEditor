@@ -166,6 +166,14 @@ Namespace MysteryDungeon
             ProcessData()
         End Sub
 
+        Public Overrides Function GetDefaultExtension() As String
+            Return ".bin"
+        End Function
+
+        Public Overrides Function GetSupportedExtensions() As IEnumerable(Of String)
+            Return {".bin"}
+        End Function
+
         Public Function GetRawData() As Byte()
             DoPreSave()
             Dim data = RawData
