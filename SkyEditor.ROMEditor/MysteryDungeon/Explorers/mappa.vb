@@ -587,8 +587,6 @@ Namespace MysteryDungeon.Explorers
             Next
 
             '- Write blocks to file
-            'RawData(rootFloorIndexPointer, floorIndexData.Count) = floorIndexData.ToArray()
-            'RawData(rootFloorIndexPointer + floorIndexData.Count, floorIndexPointers.Count) = floorIndexPointers.ToArray
             dataBlock.AddRange(floorIndexData)
             dataBlock.AddRange(floorIndexPointers)
 
@@ -610,7 +608,6 @@ Namespace MysteryDungeon.Explorers
             Next
 
             '- Write blocks to file
-            'RawData(rootAttributeIndexPointer, floorAttributeData.Count) = floorAttributeData.ToArray
             dataBlock.AddRange(floorAttributeData)
 
             '- Section pointer in head
@@ -655,8 +652,6 @@ Namespace MysteryDungeon.Explorers
             Next
 
             '- Write blocks to file
-            'RawData(rootPkmSpawnPointer, pkmSpawnData.Count) = pkmSpawnData.ToArray
-            'RawData(rootPkmSpawnPointer + pkmSpawnData.Count, pkmSpawnPointers.Count) = pkmSpawnPointers.ToArray
             dataBlock.AddRange(pkmSpawnData)
             dataBlock.AddRange(pkmSpawnPointers)
 
@@ -695,8 +690,6 @@ Namespace MysteryDungeon.Explorers
             Next
 
             '- Write blocks to file
-            'RawData(rootDataBlockCPointer, dataBlockCData.Count) = dataBlockCData.ToArray
-            'RawData(rootDataBlockCPointer + dataBlockCData.Count, dataBlockCPointers.Count) = dataBlockCPointers.ToArray
             dataBlock.AddRange(dataBlockCData)
             dataBlock.AddRange(dataBlockCPointers)
 
@@ -734,8 +727,6 @@ Namespace MysteryDungeon.Explorers
             Next
 
             '- Write blocks to file
-            'RawData(rootItemSpawnPointer, itemSpawnData.Count) = itemSpawnData.ToArray
-            'RawData(rootItemSpawnPointer + itemSpawnData.Count, itemSpawnPointers.Count) = itemSpawnPointers.ToArray
             dataBlock.AddRange(itemSpawnData)
             dataBlock.AddRange(itemSpawnPointers)
 
