@@ -41,12 +41,18 @@ Namespace MysteryDungeon
         End Property
 
         ''' <summary>
+        ''' Length of the padding at the end of the header.
+        ''' </summary>
+        ''' <returns></returns>
+        Private Property HeaderPadding As Integer
+
+        ''' <summary>
         ''' Length of the sub header
         ''' </summary>
         ''' <returns></returns>
         Private ReadOnly Property HeaderLength As Integer
             Get
-                Return PointerOffset - HeaderOffset
+                Return PointerOffset - HeaderOffset - HeaderPadding
             End Get
         End Property
 
@@ -120,6 +126,7 @@ Namespace MysteryDungeon
             'Pad the footer
             While Not Length Mod 16 = 0
                 Length += 1
+                RawData(Me.Length - 1) = PaddingByte
             End While
 
             'Write the pointers
@@ -153,6 +160,7 @@ Namespace MysteryDungeon
 
             While Not Length Mod 16 = 0
                 Length += 1
+                RawData(Me.Length - 1) = PaddingByte
             End While
         End Sub
 
@@ -185,6 +193,15 @@ Namespace MysteryDungeon
             RelativePointers = New List(Of Integer)
             HeaderOffset = Me.Int32(&H4)
             PointerOffset = Me.Int32(&H8)
+
+            'Adjust header length to ignore padding
+            For i = HeaderOffset + HeaderLength - 1 To HeaderOffset Step -1
+                If RawData(i) = PaddingByte Then
+                    HeaderPadding += 1
+                Else
+                    Exit For
+                End If
+            Next
             Header = RawData(HeaderOffset, HeaderLength)
 
             Dim isConstructing As Boolean = False

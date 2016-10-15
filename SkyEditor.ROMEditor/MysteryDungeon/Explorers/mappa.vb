@@ -3,7 +3,7 @@ Imports SkyEditor.ROMEditor.MysteryDungeon
 
 Namespace MysteryDungeon.Explorers
     Public Class mappa
-        Inherits Sir0
+        Inherits ExplorersSir0
 
         'File map:
         'SIR0 header
@@ -543,6 +543,8 @@ Namespace MysteryDungeon.Explorers
 #Region "Save"
         Public Overrides Sub Save(Destination As String, provider As IOProvider)
 
+            Dim dataBlock As New List(Of Byte)
+
             'UnProcessBlocks()
 
             Me.RelativePointers.Clear()
@@ -554,7 +556,6 @@ Namespace MysteryDungeon.Explorers
             ' ----------
 
             Dim rootFloorIndexPointer As Integer = &H10
-            Me.Length = &H10
 
             '- Data and pointer blocks
             Dim currentFloorPointer As Integer = rootFloorIndexPointer
@@ -586,8 +587,10 @@ Namespace MysteryDungeon.Explorers
             Next
 
             '- Write blocks to file
-            RawData(rootFloorIndexPointer, floorIndexData.Count) = floorIndexData.ToArray()
-            RawData(rootFloorIndexPointer + floorIndexData.Count, floorIndexPointers.Count) = floorIndexPointers.ToArray
+            'RawData(rootFloorIndexPointer, floorIndexData.Count) = floorIndexData.ToArray()
+            'RawData(rootFloorIndexPointer + floorIndexData.Count, floorIndexPointers.Count) = floorIndexPointers.ToArray
+            dataBlock.AddRange(floorIndexData)
+            dataBlock.AddRange(floorIndexPointers)
 
             '- Section pointer in header
             Dim rootFloorPointerBuffer = BitConverter.GetBytes(rootFloorIndexPointer + floorIndexData.Count)
@@ -607,7 +610,8 @@ Namespace MysteryDungeon.Explorers
             Next
 
             '- Write blocks to file
-            RawData(rootAttributeIndexPointer, floorAttributeData.Count) = floorAttributeData.ToArray
+            'RawData(rootAttributeIndexPointer, floorAttributeData.Count) = floorAttributeData.ToArray
+            dataBlock.AddRange(floorAttributeData)
 
             '- Section pointer in head
             Dim rootAttributePointerBuffer = BitConverter.GetBytes(rootAttributeIndexPointer)
@@ -651,8 +655,10 @@ Namespace MysteryDungeon.Explorers
             Next
 
             '- Write blocks to file
-            RawData(rootPkmSpawnPointer, pkmSpawnData.Count) = pkmSpawnData.ToArray
-            RawData(rootPkmSpawnPointer + pkmSpawnData.Count, pkmSpawnPointers.Count) = pkmSpawnPointers.ToArray
+            'RawData(rootPkmSpawnPointer, pkmSpawnData.Count) = pkmSpawnData.ToArray
+            'RawData(rootPkmSpawnPointer + pkmSpawnData.Count, pkmSpawnPointers.Count) = pkmSpawnPointers.ToArray
+            dataBlock.AddRange(pkmSpawnData)
+            dataBlock.AddRange(pkmSpawnPointers)
 
             '- Section pointer in header
 
@@ -689,8 +695,10 @@ Namespace MysteryDungeon.Explorers
             Next
 
             '- Write blocks to file
-            RawData(rootDataBlockCPointer, dataBlockCData.Count) = dataBlockCData.ToArray
-            RawData(rootDataBlockCPointer + dataBlockCData.Count, dataBlockCPointers.Count) = dataBlockCPointers.ToArray
+            'RawData(rootDataBlockCPointer, dataBlockCData.Count) = dataBlockCData.ToArray
+            'RawData(rootDataBlockCPointer + dataBlockCData.Count, dataBlockCPointers.Count) = dataBlockCPointers.ToArray
+            dataBlock.AddRange(dataBlockCData)
+            dataBlock.AddRange(dataBlockCPointers)
 
             '- Section pointer in header
             Dim rootDataBlockCBuffer = BitConverter.GetBytes(rootDataBlockCPointer + dataBlockCData.Count)
@@ -726,8 +734,10 @@ Namespace MysteryDungeon.Explorers
             Next
 
             '- Write blocks to file
-            RawData(rootItemSpawnPointer, itemSpawnData.Count) = itemSpawnData.ToArray
-            RawData(rootItemSpawnPointer + itemSpawnData.Count, itemSpawnPointers.Count) = itemSpawnPointers.ToArray
+            'RawData(rootItemSpawnPointer, itemSpawnData.Count) = itemSpawnData.ToArray
+            'RawData(rootItemSpawnPointer + itemSpawnData.Count, itemSpawnPointers.Count) = itemSpawnPointers.ToArray
+            dataBlock.AddRange(itemSpawnData)
+            dataBlock.AddRange(itemSpawnPointers)
 
             '- Section pointer in head
             Dim rootItemSpawnBuffer = BitConverter.GetBytes(rootItemSpawnPointer + itemSpawnData.Count)
@@ -735,14 +745,23 @@ Namespace MysteryDungeon.Explorers
                 Header(&H8 + i) = rootItemSpawnBuffer(i)
             Next
 
+            'Padd data block
+            Dim paddingLength As Integer = 0
+            While dataBlock.Count Mod &H10 <> 0
+                dataBlock.Add(PaddingByte)
+                paddingLength += 1
+            End While
+
             'SIR0 pointers for header
-            'TODO: don't hard-code
-            Dim paddingLength As Integer = 8
             RelativePointers.Add(4 + paddingLength)
             RelativePointers.Add(4)
             RelativePointers.Add(4)
             RelativePointers.Add(4)
             RelativePointers.Add(4)
+            RelativePointers.Add(0) ' In original file, possibly a terminator
+
+            Me.Length = &H10 + dataBlock.Count
+            Me.RawData(&H10, dataBlock.Count) = dataBlock.ToArray
 
             'Finish
             MyBase.Save(Destination, provider)
