@@ -305,6 +305,7 @@ Namespace MysteryDungeon.Explorers
             End Sub
             Public Property PokemonSpawns As List(Of PokemonSpawn)
             Public Property Attributes As FloorAttribute
+            Public Property RawIndex As FloorIndex
         End Class
 
         ''' <summary>
@@ -318,6 +319,8 @@ Namespace MysteryDungeon.Explorers
 
                 For Each floor In dungeon
                     Dim floorEntry As New FloorBalance
+
+                    floorEntry.RawIndex = floor
 
                     floorEntry.Attributes = RawAttributeData(floor.AttributeIndex)
 
@@ -337,20 +340,28 @@ Namespace MysteryDungeon.Explorers
         ''' Processes <see cref="Dungeons"/> to set raw properties.
         ''' </summary>
         Private Sub UnProcessBlocks()
-            Throw New NotImplementedException
-
-
             RawPokemonSpawns.Clear()
             RawAttributeData.Clear()
             RawFloorIndexes.Clear()
 
             For Each dungeon In Dungeons
+                Dim dungeonIndex As New List(Of FloorIndex)
 
                 For Each floor In dungeon.Floors
+                    Dim index = floor.RawIndex
 
+                    'Todo: check for existing
+                    RawPokemonSpawns.Add(floor.PokemonSpawns)
+                    index.PokemonSpawnIndex = RawPokemonSpawns.Count - 1
 
+                    'Todo: check for existing
+                    RawAttributeData.Add(floor.Attributes)
+                    index.AttributeIndex = RawAttributeData.Count - 1
+
+                    dungeonIndex.Add(index)
                 Next
 
+                RawFloorIndexes.Add(dungeonIndex)
             Next
         End Sub
 
@@ -545,7 +556,7 @@ Namespace MysteryDungeon.Explorers
 
             Dim dataBlock As New List(Of Byte)
 
-            'UnProcessBlocks()
+            UnProcessBlocks()
 
             Me.RelativePointers.Clear()
             Me.RelativePointers.Add(4)
