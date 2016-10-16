@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="SkyEditor.ROMEditor.nuspec" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
