@@ -9,5 +9,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>ROM Editor for Sky Editor</description>
     <copyright>Copyright 2016</copyright>
+    <dependencies>
+      <dependency id="SkyEditor.ROMEditor" />
+    </dependencies>
   </metadata>
 </package>
