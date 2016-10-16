@@ -3,7 +3,7 @@ Imports SkyEditor.ROMEditor.MysteryDungeon
 
 Namespace MysteryDungeon.Explorers
     Public Class mappa
-        Inherits Sir0
+        Inherits ExplorersSir0
 
         'File map:
         'SIR0 header
@@ -181,6 +181,8 @@ Namespace MysteryDungeon.Explorers
                 Unknown1A = rawData(&H1A)
                 Flag1B = rawData(&H1B)
                 EnemyIQ = BitConverter.ToUInt16(rawData, &H1C)
+                Unknown1E = rawData(&H1E)
+                Unknown1F = rawData(&H1F)
             End Sub
 
             Public Function GetBytes() As Byte()
@@ -214,6 +216,8 @@ Namespace MysteryDungeon.Explorers
                 out.Add(Unknown1A)
                 out.Add(Flag1B)
                 out.AddRange(BitConverter.GetBytes(EnemyIQ))
+                out.Add(Unknown1E)
+                out.Add(Unknown1F)
                 Return out.ToArray
             End Function
 
@@ -246,6 +250,8 @@ Namespace MysteryDungeon.Explorers
             Public Property Unknown1A As Byte
             Public Property Flag1B As Byte
             Public Property EnemyIQ As UInt16
+            Public Property Unknown1E As Byte
+            Public Property Unknown1F As Byte
         End Structure
 
         Public Structure PokemonSpawn
@@ -299,7 +305,65 @@ Namespace MysteryDungeon.Explorers
             End Sub
             Public Property PokemonSpawns As List(Of PokemonSpawn)
             Public Property Attributes As FloorAttribute
+            Public Property RawIndex As FloorIndex
         End Class
+
+        ''' <summary>
+        ''' Processes raw properties to set <see cref="Dungeons"/>.
+        ''' </summary>
+        Private Sub ProcessBlocks()
+            Dungeons = New List(Of DungeonBalance)
+
+            For Each dungeon In RawFloorIndexes
+                Dim dungeonEntry As New DungeonBalance
+
+                For Each floor In dungeon
+                    Dim floorEntry As New FloorBalance
+
+                    floorEntry.RawIndex = floor
+
+                    floorEntry.Attributes = RawAttributeData(floor.AttributeIndex)
+
+                    'Pokemon spawns
+                    For Each spawn In RawPokemonSpawns(floor.PokemonSpawnIndex)
+                        floorEntry.PokemonSpawns.Add(spawn)
+                    Next
+
+                    dungeonEntry.Floors.Add(floorEntry)
+                Next
+
+                Dungeons.Add(dungeonEntry)
+            Next
+        End Sub
+
+        ''' <summary>
+        ''' Processes <see cref="Dungeons"/> to set raw properties.
+        ''' </summary>
+        Private Sub UnProcessBlocks()
+            RawPokemonSpawns.Clear()
+            RawAttributeData.Clear()
+            RawFloorIndexes.Clear()
+
+            For Each dungeon In Dungeons
+                Dim dungeonIndex As New List(Of FloorIndex)
+
+                For Each floor In dungeon.Floors
+                    Dim index = floor.RawIndex
+
+                    'Todo: check for existing
+                    RawPokemonSpawns.Add(floor.PokemonSpawns)
+                    index.PokemonSpawnIndex = RawPokemonSpawns.Count - 1
+
+                    'Todo: check for existing
+                    RawAttributeData.Add(floor.Attributes)
+                    index.AttributeIndex = RawAttributeData.Count - 1
+
+                    dungeonIndex.Add(index)
+                Next
+
+                RawFloorIndexes.Add(dungeonIndex)
+            Next
+        End Sub
 
 #Region "Open"
 
@@ -485,29 +549,225 @@ Namespace MysteryDungeon.Explorers
             Next
         End Sub
 
-        Private Sub ProcessBlocks()
-            Dungeons = New List(Of DungeonBalance)
+#End Region
 
+#Region "Save"
+        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+
+            Dim dataBlock As New List(Of Byte)
+
+            UnProcessBlocks()
+
+            Me.RelativePointers.Clear()
+            Me.RelativePointers.Add(4)
+            Me.RelativePointers.Add(4)
+
+            ' ----------
+            'Floor Data section
+            ' ----------
+
+            Dim rootFloorIndexPointer As Integer = &H10
+
+            '- Data and pointer blocks
+            Dim currentFloorPointer As Integer = rootFloorIndexPointer
+            Dim floorIndexData As New List(Of Byte)
+            Dim floorIndexPointers As New List(Of Byte)
             For Each dungeon In RawFloorIndexes
-                Dim dungeonEntry As New DungeonBalance
-
-                For Each floor In dungeon
-                    Dim floorEntry As New FloorBalance
-
-                    floorEntry.Attributes = RawAttributeData(floor.AttributeIndex)
-
-                    'Pokemon spawns
-                    For Each spawn In RawPokemonSpawns(floor.PokemonSpawnIndex)
-                        floorEntry.PokemonSpawns.Add(spawn)
-                    Next
-
-                    dungeonEntry.Floors.Add(floorEntry)
+                'Write null entry
+                For count = 1 To &H12
+                    floorIndexData.Add(0)
                 Next
 
-                Dungeons.Add(dungeonEntry)
-            Next
-        End Sub
+                'Write pointer
+                floorIndexPointers.AddRange(BitConverter.GetBytes(currentFloorPointer))
+                currentFloorPointer += &H12
 
+                For Each floor In dungeon
+                    floorIndexData.AddRange(floor.GetBytes)
+                    currentFloorPointer += &H12
+                Next
+            Next
+
+            '- Write SIR0 pointer offsets
+            For count = 0 To RawFloorIndexes.Count - 1
+                If count = 0 Then
+                    RelativePointers.Add(8 + floorIndexData.Count)
+                Else
+                    RelativePointers.Add(4)
+                End If
+            Next
+
+            '- Write blocks to file
+            dataBlock.AddRange(floorIndexData)
+            dataBlock.AddRange(floorIndexPointers)
+
+            '- Section pointer in header
+            Dim rootFloorPointerBuffer = BitConverter.GetBytes(rootFloorIndexPointer + floorIndexData.Count)
+            For i = 0 To 3
+                Header(0 + i) = rootFloorPointerBuffer(i)
+            Next
+
+            ' ----------
+            'Floor Attributes - no pointer block
+            ' ----------
+            Dim floorAttributeData As New List(Of Byte)
+            Dim rootAttributeIndexPointer As Integer = rootFloorIndexPointer + floorIndexData.Count + floorIndexPointers.Count
+
+            '- Data
+            For Each item In RawAttributeData
+                floorAttributeData.AddRange(item.GetBytes)
+            Next
+
+            '- Write blocks to file
+            dataBlock.AddRange(floorAttributeData)
+
+            '- Section pointer in head
+            Dim rootAttributePointerBuffer = BitConverter.GetBytes(rootAttributeIndexPointer)
+            For i = 0 To 3
+                Header(4 + i) = rootAttributePointerBuffer(i)
+            Next
+
+            '----------
+            ' Pokemon Spawns
+            '----------
+            Dim rootPkmSpawnPointer As Integer = rootAttributeIndexPointer + floorAttributeData.Count
+
+            '- Data and pointer blocks
+            Dim currentPkmSpawnPointer As Integer = rootPkmSpawnPointer
+            Dim pkmSpawnData As New List(Of Byte)
+            Dim pkmSpawnPointers As New List(Of Byte)
+
+            For Each dungeon In RawPokemonSpawns
+                'Write pointer
+                pkmSpawnPointers.AddRange(BitConverter.GetBytes(currentPkmSpawnPointer))
+                currentPkmSpawnPointer += 8
+
+                For Each floor In dungeon
+                    pkmSpawnData.AddRange(floor.GetBytes)
+                    currentPkmSpawnPointer += 8
+                Next
+
+                'Write null entry
+                For count = 1 To 8
+                    pkmSpawnData.Add(0)
+                Next
+            Next
+
+            '- Write SIR0 pointer offsets
+            For count = 0 To (pkmSpawnPointers.Count / 4) - 1
+                If count = 0 Then
+                    RelativePointers.Add(floorAttributeData.Count + pkmSpawnData.Count + 4)
+                Else
+                    RelativePointers.Add(4)
+                End If
+            Next
+
+            '- Write blocks to file
+            dataBlock.AddRange(pkmSpawnData)
+            dataBlock.AddRange(pkmSpawnPointers)
+
+            '- Section pointer in header
+
+            Dim rootPkmSpawnBuffer = BitConverter.GetBytes(rootPkmSpawnPointer + pkmSpawnData.Count)
+            For i = 0 To 3
+                Header(&HC + i) = rootPkmSpawnBuffer(i)
+            Next
+
+            '----------
+            ' Data Block C
+            '----------
+            Dim rootDataBlockCPointer = rootPkmSpawnPointer + pkmSpawnData.Count + pkmSpawnPointers.Count
+
+            '- Data and pointer blocks
+            Dim currentDataBlockCPointer As Integer = rootDataBlockCPointer
+            Dim dataBlockCData As New List(Of Byte)
+            Dim dataBlockCPointers As New List(Of Byte)
+            For Each item In SuperRawBlock5
+                'Write pointer
+                dataBlockCPointers.AddRange(BitConverter.GetBytes(currentDataBlockCPointer))
+                currentDataBlockCPointer += item.Length
+
+                'Write data
+                dataBlockCData.AddRange(item)
+            Next
+
+            '- Write SIR0 pointer offsets
+            For count = 0 To (dataBlockCPointers.Count / 4) - 1
+                If count = 0 Then
+                    RelativePointers.Add(dataBlockCData.Count + 4)
+                Else
+                    RelativePointers.Add(4)
+                End If
+            Next
+
+            '- Write blocks to file
+            dataBlock.AddRange(dataBlockCData)
+            dataBlock.AddRange(dataBlockCPointers)
+
+            '- Section pointer in header
+            Dim rootDataBlockCBuffer = BitConverter.GetBytes(rootDataBlockCPointer + dataBlockCData.Count)
+            For i = 0 To 3
+                Header(&H10 + i) = rootDataBlockCBuffer(i)
+            Next
+
+            '----------
+            ' Item spawns
+            '----------
+            Dim rootItemSpawnPointer = rootDataBlockCPointer + dataBlockCData.Count + dataBlockCPointers.Count
+
+            '- Data and pointer blocks
+            Dim currentItemSpawnPointer As Integer = rootItemSpawnPointer
+            Dim itemSpawnData As New List(Of Byte)
+            Dim itemSpawnPointers As New List(Of Byte)
+            For Each item In SuperRawItemSpawnData
+                'Write pointer
+                itemSpawnPointers.AddRange(BitConverter.GetBytes(currentItemSpawnPointer))
+                currentItemSpawnPointer += item.Length
+
+                'Write data
+                itemSpawnData.AddRange(item)
+            Next
+
+            '- Write SIR0 pointer offsets
+            For count = 0 To (itemSpawnPointers.Count / 4) - 1
+                If count = 0 Then
+                    RelativePointers.Add(itemSpawnData.Count + 4)
+                Else
+                    RelativePointers.Add(4)
+                End If
+            Next
+
+            '- Write blocks to file
+            dataBlock.AddRange(itemSpawnData)
+            dataBlock.AddRange(itemSpawnPointers)
+
+            '- Section pointer in head
+            Dim rootItemSpawnBuffer = BitConverter.GetBytes(rootItemSpawnPointer + itemSpawnData.Count)
+            For i = 0 To 3
+                Header(&H8 + i) = rootItemSpawnBuffer(i)
+            Next
+
+            'Padd data block
+            Dim paddingLength As Integer = 0
+            While dataBlock.Count Mod &H10 <> 0
+                dataBlock.Add(PaddingByte)
+                paddingLength += 1
+            End While
+
+            'SIR0 pointers for header
+            RelativePointers.Add(4 + paddingLength)
+            RelativePointers.Add(4)
+            RelativePointers.Add(4)
+            RelativePointers.Add(4)
+            RelativePointers.Add(4)
+            RelativePointers.Add(0) ' In original file, possibly a terminator
+
+            Me.Length = &H10 + dataBlock.Count
+            Me.RawData(&H10, dataBlock.Count) = dataBlock.ToArray
+
+            'Finish
+            MyBase.Save(Destination, provider)
+        End Sub
 #End Region
 
         Public Property Dungeons As List(Of DungeonBalance)
