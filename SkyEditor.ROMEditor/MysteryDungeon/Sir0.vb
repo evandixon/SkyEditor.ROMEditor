@@ -195,13 +195,15 @@ Namespace MysteryDungeon
             PointerOffset = Me.Int32(&H8)
 
             'Adjust header length to ignore padding
-            For i = HeaderOffset + HeaderLength - 1 To HeaderOffset Step -1
-                If RawData(i) = PaddingByte Then
-                    HeaderPadding += 1
-                Else
-                    Exit For
-                End If
-            Next
+            If PaddingByte > 0 Then 'Check this so we don't accidentally remove a valid 0 value
+                For i = HeaderOffset + HeaderLength - 1 To HeaderOffset Step -1
+                    If RawData(i) = PaddingByte Then
+                        HeaderPadding += 1
+                    Else
+                        Exit For
+                    End If
+                Next
+            End If
             Header = RawData(HeaderOffset, HeaderLength)
 
             Dim isConstructing As Boolean = False
