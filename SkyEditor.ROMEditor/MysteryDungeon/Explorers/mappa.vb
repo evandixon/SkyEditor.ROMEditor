@@ -345,7 +345,7 @@ Namespace MysteryDungeon.Explorers
         End Sub
 
         Private Sub LoadAttributeData(attributeBlockPointer As Integer)
-32 byte entries
+            '32 byte entries
         End Sub
 
         Private Sub LoadPokemonSpawns(pointerBlockPointer As Integer)

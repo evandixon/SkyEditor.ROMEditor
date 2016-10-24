@@ -9,6 +9,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor.Windows
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor.UI.WPF", "SkyEditor.ROMEditor.UI.WPF\SkyEditor.ROMEditor.UI.WPF.vbproj", "{4E3861A8-1669-4328-90FC-86D76B0FC0B6}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TempTest", "TempTest\TempTest.vbproj", "{BDBF4C2A-F70E-4CF3-88FC-AC9062B724A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,14 @@ Global
 		{4E3861A8-1669-4328-90FC-86D76B0FC0B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4E3861A8-1669-4328-90FC-86D76B0FC0B6}.Release|x86.ActiveCfg = Release|Any CPU
 		{4E3861A8-1669-4328-90FC-86D76B0FC0B6}.Release|x86.Build.0 = Release|Any CPU
+		{BDBF4C2A-F70E-4CF3-88FC-AC9062B724A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDBF4C2A-F70E-4CF3-88FC-AC9062B724A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDBF4C2A-F70E-4CF3-88FC-AC9062B724A5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BDBF4C2A-F70E-4CF3-88FC-AC9062B724A5}.Debug|x86.Build.0 = Debug|Any CPU
+		{BDBF4C2A-F70E-4CF3-88FC-AC9062B724A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDBF4C2A-F70E-4CF3-88FC-AC9062B724A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDBF4C2A-F70E-4CF3-88FC-AC9062B724A5}.Release|x86.ActiveCfg = Release|Any CPU
+		{BDBF4C2A-F70E-4CF3-88FC-AC9062B724A5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,8 +2,6 @@
 Imports SkyEditor.Core
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Windows
-Imports SkyEditor.Core.Windows.Processes
-Imports SkyEditor.ROMEditor
 
 Namespace Windows.Roms
     Public Class Generic3DSRom
@@ -30,7 +28,7 @@ Namespace Windows.Roms
 
         Public Overridable ReadOnly Property TitleID As String
             Get
-                Return Conversion.Hex(BitConverter.ToUInt64(RawData(&H108, 8), 0)).PadLeft(16, "0"c)
+                Return Microsoft.VisualBasic.Conversion.Hex(BitConverter.ToUInt64(RawData(&H108, 8), 0)).PadLeft(16, "0"c)
             End Get
         End Property
 

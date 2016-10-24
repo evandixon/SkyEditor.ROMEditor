@@ -135,6 +135,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MysteryDungeon\Explorers\PPMDU\PPMD_Pokemon_EU.vb" />
     <Compile Include="Windows\ConsoleCommands\MessageFarcFilenameAnalysis.vb" />
     <Compile Include="Windows\ConsoleCommands\NameListResearcher.vb" />
     <Compile Include="Windows\ConsoleCommands\PackFarc.vb" />
