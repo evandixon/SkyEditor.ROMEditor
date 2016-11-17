@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>SkyEditor.ROMEditor.Windows</id>
+    <version>$version$</version>
+    <title>SkyEditor.ROMEditor.Windows</title>
+    <authors>evandixon</authors>
+    <owners>evandixon</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>ROM Editor for Sky Editor</description>
+    <copyright>Copyright 2016</copyright>
+    <dependencies>
+      <dependency id="SkyEditor.ROMEditor" />
+    </dependencies>
+  </metadata>
+</package>

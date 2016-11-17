@@ -1,0 +1,19 @@
+﻿<skywpf:DataBoundObjectControl x:Class="Views.DSModPackProject3DSBuildOptionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:skywpf="clr-namespace:SkyEditor.UI.WPF;assembly=SkyEditor.UI.WPF"
+             xmlns:vm="clr-namespace:SkyEditor.ROMEditor.UI.WPF.ViewModels"
+             xmlns:res="clr-namespace:SkyEditor.ROMEditor.UI.WPF.My.Resources"
+             TargetType="{x:Type vm:DSModPackProject3DSBuildOptionsViewModel}"
+             Header="{x:Static res:Language.ThreeDSBuildOptions}"
+             SortOrder="2"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <CheckBox IsChecked="{Binding Output3DSFile}" Content="{x:Static res:Language.Build3DS}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <CheckBox IsChecked="{Binding OutputCIAFile}" Content="{x:Static res:Language.BuildCIA}" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Visibility="Collapsed"/>
+        <CheckBox IsChecked="{Binding OutputHANS}" Content="{x:Static res:Language.BuildHans}" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+    </Grid>
+</skywpf:DataBoundObjectControl>

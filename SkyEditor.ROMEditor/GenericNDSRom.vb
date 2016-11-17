@@ -393,7 +393,7 @@ Public Class GenericNDSRom
         Next
         'Todo: read the relationship between directories and files
         Dim out As New FilenameTable
-        out.Name = "Data"
+        out.Name = "data"
         BuildFNT(out, root, rootDirectories)
         Return out
     End Function
@@ -524,7 +524,7 @@ Public Class GenericNDSRom
             Await y7Task
         End If
         '-Extract overlays
-        Dim overlay9 = StartExtractOverlay(fat, ParseArm9OverlayTable, IO.Path.Combine(TargetDir, "overlay"), Provider)
+        Dim overlay9 = ExtractOverlay(fat, ParseArm9OverlayTable, IO.Path.Combine(TargetDir, "overlay"), Provider)
 
         If Me.IsThreadSafe Then
             ExtractionTasks.Add(overlay9)
@@ -532,7 +532,7 @@ Public Class GenericNDSRom
             Await overlay9
         End If
 
-        Dim overlay7 = StartExtractOverlay(fat, ParseArm7OverlayTable, IO.Path.Combine(TargetDir, "overlay7"), Provider)
+        Dim overlay7 = ExtractOverlay(fat, ParseArm7OverlayTable, IO.Path.Combine(TargetDir, "overlay7"), Provider)
 
         If Me.IsThreadSafe Then
             ExtractionTasks.Add(overlay7)
@@ -551,65 +551,58 @@ Public Class GenericNDSRom
         Else
             Await iconTask
         End If
-        Await StartExtractFiles(fat, GetFNT, TargetDir, Provider)
+
+        '- Extract files
+        Dim filesExtraction = ExtractFiles(fat, GetFNT, TargetDir, Provider)
+        If Me.IsThreadSafe Then
+            ExtractionTasks.Add(filesExtraction)
+        Else
+            Await filesExtraction
+        End If
+
         'Wait for everything to finish
         Await Task.WhenAll(ExtractionTasks)
     End Function
 
     ''' <summary>
-    ''' Queues file extraction tasks if the file is thread safe, otherwise, extracts files one at a time.
+    ''' Extracts contained files if the file is thread safe, otherwise, extracts files one at a time.
     ''' </summary>
     ''' <param name="FAT"></param>
     ''' <param name="Root"></param>
     ''' <param name="TargetDir"></param>
     ''' <returns></returns>
-    Private Async Function StartExtractFiles(FAT As List(Of FileAllocationEntry), Root As FilenameTable, TargetDir As String, Provider As IOProvider) As Task
+    Private Async Function ExtractFiles(FAT As List(Of FileAllocationEntry), Root As FilenameTable, TargetDir As String, Provider As IOProvider) As Task
         Dim dest As String = IO.Path.Combine(TargetDir, Root.Name)
         Dim f As New AsyncFor
         f.RunSynchronously = Not Me.IsThreadSafe
         f.BatchSize = Root.Children.Count
-        Dim task = (f.RunForEach(Async Function(Item As FilenameTable) As Task
-                                     If Item.IsDirectory Then
-                                         Await StartExtractFiles(FAT, Item, dest, Provider)
-                                     Else
-                                         Dim entry = FAT(Item.FileIndex)
-                                         Dim parentDir = IO.Path.GetDirectoryName(IO.Path.Combine(dest, Item.Name))
-                                         If Not Provider.DirectoryExists(parentDir) Then
-                                             Provider.CreateDirectory(parentDir)
-                                         End If
-                                         Provider.WriteAllBytes(IO.Path.Combine(dest, Item.Name), RawData(entry.Offset, entry.EndAddress - entry.Offset))
-                                         System.Threading.Interlocked.Increment(CurrentExtractProgress)
-                                     End If
-                                 End Function, Root.Children))
-        If Me.IsThreadSafe Then
-            'Then let it keep running while we go and add more
-            ExtractionTasks.Add(task)
-        Else
-            'If it's not thread safe, then we must wait until it's finished, in order to avoid weirdness.
-            Await task
-        End If
+        Await (f.RunForEach(Async Function(Item As FilenameTable) As Task
+                                If Item.IsDirectory Then
+                                    Await ExtractFiles(FAT, Item, dest, Provider)
+                                Else
+                                    Dim entry = FAT(Item.FileIndex)
+                                    Dim parentDir = IO.Path.GetDirectoryName(IO.Path.Combine(dest, Item.Name))
+                                    If Not Provider.DirectoryExists(parentDir) Then
+                                        Provider.CreateDirectory(parentDir)
+                                    End If
+                                    Provider.WriteAllBytes(IO.Path.Combine(dest, Item.Name), RawData(entry.Offset, entry.EndAddress - entry.Offset))
+                                    System.Threading.Interlocked.Increment(CurrentExtractProgress)
+                                End If
+                            End Function, Root.Children))
     End Function
 
-    Private Async Function StartExtractOverlay(FAT As List(Of FileAllocationEntry), OverlayTable As List(Of OverlayTableEntry), TargetDir As String, Provider As IOProvider) As Task
+    Private Async Function ExtractOverlay(FAT As List(Of FileAllocationEntry), OverlayTable As List(Of OverlayTableEntry), TargetDir As String, Provider As IOProvider) As Task
         If OverlayTable.Count > 0 AndAlso Not Provider.DirectoryExists(TargetDir) Then
             Provider.CreateDirectory(TargetDir)
         End If
         Dim f As New AsyncFor
         f.RunSynchronously = Not Me.IsThreadSafe
         f.BatchSize = OverlayTable.Count
-        Dim task = (f.RunForEach(Sub(Item As OverlayTableEntry)
-                                     Dim dest = IO.Path.Combine(TargetDir, "overlay_" & Item.OverlayID.ToString.PadLeft(4, "0"c) & ".bin")
-                                     Dim entry = FAT(Item.FileID)
-                                     Provider.WriteAllBytes(dest, RawData(entry.Offset, entry.EndAddress - entry.Offset))
-                                 End Sub, OverlayTable))
-
-        If Me.IsThreadSafe Then
-            'Then let it keep running while we go and add more
-            ExtractionTasks.Add(task)
-        Else
-            'If it's not thread safe, then we must wait until it's finished, in order to avoid weirdness.
-            Await task
-        End If
+        Await f.RunForEach(Sub(Item As OverlayTableEntry)
+                               Dim dest = IO.Path.Combine(TargetDir, "overlay_" & Item.OverlayID.ToString.PadLeft(4, "0"c) & ".bin")
+                               Dim entry = FAT(Item.FileID)
+                               Provider.WriteAllBytes(dest, RawData(entry.Offset, entry.EndAddress - entry.Offset))
+                           End Sub, OverlayTable)
     End Function
 
     ''' <summary>
