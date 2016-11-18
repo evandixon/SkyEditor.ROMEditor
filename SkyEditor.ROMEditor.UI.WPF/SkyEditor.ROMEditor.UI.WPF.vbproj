@@ -53,6 +53,14 @@
       <HintPath>..\packages\AurelienRibon.Ui.SyntaxHighlightBox.2.0.2\lib\NET40\AurelienRibon.Ui.SyntaxHighlightBox.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.0\lib\net46\DotNet3dsSoundtrackConverter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DotNet3dsToolkit, Version=1.4.1.13, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsToolkit.1.4.1\lib\net46\DotNet3dsToolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
       <Private>True</Private>
@@ -73,6 +81,10 @@
       <HintPath>..\packages\ListViewDragDropManager.1.1.0.0\lib\net45\ListViewDragDropManager.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MediaToolkit, Version=1.2.1.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaToolkit.1.2.1\lib\net20\MediaToolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -85,21 +97,20 @@
       <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.0.7\lib\net46\SkyEditor.CodeEditor.UI.WPF.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.Core, Version=4.0.7.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.0.7\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
+    <Reference Include="SkyEditor.Core, Version=4.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.4.0.8-async001\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.Core.Windows, Version=4.0.7.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.Windows.4.0.7\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
+    <Reference Include="SkyEditor.Core.Windows, Version=4.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.Windows.4.0.8-async001\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.SaveEditor, Version=4.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SkyEditor.SaveEditor, Version=4.0.5.12, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.0.5\lib\portable45-net45+win8\SkyEditor.SaveEditor.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.UI.WPF, Version=4.0.7.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.UI.WPF.4.0.7\lib\net46\SkyEditor.UI.WPF.dll</HintPath>
+    <Reference Include="SkyEditor.UI.WPF, Version=4.0.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.UI.WPF.4.0.8-async001\lib\net46\SkyEditor.UI.WPF.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
@@ -112,6 +123,10 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="TagLib.Portable, Version=2.2.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>..\packages\TagLib.Portable.1.0.4\lib\portable-net45+win+wpa81+wp8+MonoAndroid10+xamarinios10+MonoTouch10\TagLib.Portable.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -176,18 +191,6 @@
     <Import Include="System.Windows.Navigation" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Explorers\SingleStringParameterCommandEditor.xaml.vb">
-      <DependentUpon>SingleStringParameterCommandEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Explorers\SsbScriptToolbar.xaml.vb">
-      <DependentUpon>SsbScriptToolbar.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Explorers\MultiLangStringParameterEditor.xaml.vb">
-      <DependentUpon>MultiLangStringParameterEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Explorers\StringParameterEditor.xaml.vb">
-      <DependentUpon>StringParameterEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Explorers\ViewModels\CteImageViewModel.vb" />
     <Compile Include="Language.Designer.vb">
       <DependentUpon>Language.resx</DependentUpon>
@@ -226,9 +229,6 @@
     </Compile>
     <Compile Include="PluginDefinition.vb" />
     <Compile Include="ROM.vb" />
-    <Compile Include="Explorers\SSBScriptEditor.xaml.vb">
-      <DependentUpon>SSBScriptEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="PSMD\ViewModels\PsmdLuaLangIntegrationViewModel.vb" />
     <Compile Include="Windows\GameCodeSelector.xaml.vb">
       <DependentUpon>GameCodeSelector.xaml</DependentUpon>
@@ -238,22 +238,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Explorers\SingleStringParameterCommandEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Explorers\SsbScriptToolbar.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Explorers\MultiLangStringParameterEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Explorers\StringParameterEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Explorers\Views\BGPControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -281,10 +265,6 @@
     <Page Include="Views\DSModPackProject3DSBuildOptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Explorers\SSBScriptEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\GameCodeSelector.xaml">
       <Generator>MSBuild:Compile</Generator>

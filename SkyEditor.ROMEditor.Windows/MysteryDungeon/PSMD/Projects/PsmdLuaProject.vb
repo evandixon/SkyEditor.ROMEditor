@@ -5,9 +5,10 @@ Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.Core.Windows.Processes
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
+Imports SkyEditor.ROMEditor.Windows
 Imports SkyEditor.ROMEditor.Windows.Projects
 
-Namespace Windows.MysteryDungeon.PSMD.Projects
+Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
     ''' A mod project that allows editing the scripts and associated language files of PSMD and GTI.
     ''' </summary>
@@ -96,7 +97,7 @@ Namespace Windows.MysteryDungeon.PSMD.Projects
             If patchers Is Nothing Then
                 patchers = New List(Of FilePatcher)
             End If
-            Dim MSPatcher As New FilePatcher()
+            Dim msPatcher As New FilePatcher()
             Dim patcherPath = GetType(Message_FARC_Patcher.FarcF5).Assembly.Location
             With MSPatcher
                 .CreatePatchProgram = patcherPath
@@ -115,13 +116,13 @@ Namespace Windows.MysteryDungeon.PSMD.Projects
             Return LanguageLoadTask IsNot Nothing AndAlso LanguageLoadTask.IsCompleted
         End Function
 
-        Public Async Function GetNewLanguageID() As Task(Of UInteger)
+        Public Async Function GetNewLanguageId() As Task(Of UInteger)
             'Note: with the current system of logging every ID in use, excessively large numbers of IDs in use will cause the computer to run out of memory.
             'If this happens, we won't be able to store the IDs in memory, and we will instead need to check everything one file at a time.
             'Chances are this won't be a problem.  GTI contains something over 5,000,000 strings.  Just the IDs will take about 20MB of RAM, which should be easy to come by.
             'This could only be a problem because the range of IDs is 0 to UInt32.MaxValue, and besides storage space, there's no technical limitations to having that many strings.
 
-            Dim newID As Integer = 0
+            Dim newId As Integer = 0
 
             If LanguageLoadTask Is Nothing Then
                 LoadLanguageIDs()
@@ -145,27 +146,25 @@ Namespace Windows.MysteryDungeon.PSMD.Projects
                 Dim langDirs = IO.Directory.GetDirectories(dir)
                 Dim f1 As New AsyncFor
                 f1.BatchSize = langDirs.Length
-                _languageLoadTask = f1.RunForEach(Async Function(Item As String)
-                                                      Dim lang = IO.Path.GetFileNameWithoutExtension(Item)
-
+                _languageLoadTask = f1.RunForEach(Async Function(item As String) As Task
                                                       Dim f2 As New AsyncFor
-                                                      Await f2.RunForEach(Async Function(File As String) As Task
+                                                      Await f2.RunForEach(Async Function(file As String) As Task
                                                                               Using msg As New MessageBin(True)
-                                                                                  Await msg.OpenFileOnlyIDs(File, CurrentPluginManager.CurrentIOProvider)
+                                                                                  Await msg.OpenFileOnlyIDs(file, CurrentPluginManager.CurrentIOProvider)
 
                                                                                   For Each entry In msg.Strings
                                                                                       ExistingLanguageIds.Add(entry.Hash)
                                                                                   Next
                                                                               End Using
-                                                                          End Function, IO.Directory.GetFiles(Item))
+                                                                          End Function, Directory.GetFiles(item))
                                                   End Function, langDirs)
             End If
         End Sub
 
         Private Async Function StartExtractLanguages() As Task
             'PSMD style
-            Dim languageNameRegex As New Text.RegularExpressions.Regex(".*message_?(.*)\.bin", RegexOptions.IgnoreCase)
-            Dim languageFileNames = IO.Directory.GetFiles(IO.Path.Combine(Me.GetRawFilesDir, "romfs"), "message*.bin", IO.SearchOption.TopDirectoryOnly)
+            Dim languageNameRegex As New Regex(".*message_?(.*)\.bin", RegexOptions.IgnoreCase)
+            Dim languageFileNames = Directory.GetFiles(IO.Path.Combine(Me.GetRawFilesDir, "romfs"), "message*.bin", IO.SearchOption.TopDirectoryOnly)
             Dim f As New AsyncFor
             AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
                                                    Me.BuildProgress = e.Progress
@@ -188,8 +187,8 @@ Namespace Windows.MysteryDungeon.PSMD.Projects
                                End Function, languageFileNames)
 
             'GTI style
-            Dim languageDirNameRegex As New Text.RegularExpressions.Regex(".*message_?(.*)", RegexOptions.IgnoreCase)
-            Dim languageDirFilenames = IO.Directory.GetDirectories(IO.Path.Combine(Me.GetRawFilesDir, "romfs"), "message*", IO.SearchOption.TopDirectoryOnly)
+            Dim languageDirNameRegex As New Regex(".*message_?(.*)", RegexOptions.IgnoreCase)
+            Dim languageDirFilenames = Directory.GetDirectories(IO.Path.Combine(Me.GetRawFilesDir, "romfs"), "message*", IO.SearchOption.TopDirectoryOnly)
             Dim f2 As New AsyncFor
             AddHandler f2.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
                                                     Me.BuildProgress = e.Progress
