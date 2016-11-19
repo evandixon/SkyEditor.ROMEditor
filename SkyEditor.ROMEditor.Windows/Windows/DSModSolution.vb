@@ -1,4 +1,5 @@
 ﻿Imports System.Reflection
+Imports DS_ROM_Patcher
 Imports SkyEditor.Core
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects

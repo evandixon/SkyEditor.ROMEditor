@@ -127,7 +127,6 @@
     <Compile Include="MysteryDungeon\Sir0Fat5.vb" />
     <Compile Include="PluginDefinition.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
-    <Compile Include="UnpackProgressEventArgs.vb" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">

@@ -92,25 +92,25 @@ Namespace MysteryDungeon.PSMD.Projects
         End Function
 #End Region
 
-        Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)
-            Dim patchers = New List(Of FilePatcher)
-            If patchers Is Nothing Then
-                patchers = New List(Of FilePatcher)
-            End If
-            Dim msPatcher As New FilePatcher()
-            Dim patcherPath = GetType(Message_FARC_Patcher.FarcF5).Assembly.Location
-            With MSPatcher
-                .CreatePatchProgram = patcherPath
-                .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
-                .ApplyPatchProgram = patcherPath
-                .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
-                .MergeSafe = True
-                .PatchExtension = "msgFarcT5"
-                .FilePath = ".*message_?[A-Za-z]*\.bin"
-            End With
-            patchers.Add(MSPatcher)
-            Return patchers
-        End Function
+        'Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)
+        '    Dim patchers = New List(Of FilePatcher)
+        '    If patchers Is Nothing Then
+        '        patchers = New List(Of FilePatcher)
+        '    End If
+        '    Dim msPatcher As New FilePatcher()
+        '    Dim patcherPath = GetType(Message_FARC_Patcher.FarcF5).Assembly.Location
+        '    With MSPatcher
+        '        .CreatePatchProgram = patcherPath
+        '        .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
+        '        .ApplyPatchProgram = patcherPath
+        '        .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
+        '        .MergeSafe = True
+        '        .PatchExtension = "msgFarcT5"
+        '        .FilePath = ".*message_?[A-Za-z]*\.bin"
+        '    End With
+        '    patchers.Add(MSPatcher)
+        '    Return patchers
+        'End Function
 
         Public Function IsLanguageLoaded() As Boolean
             Return LanguageLoadTask IsNot Nothing AndAlso LanguageLoadTask.IsCompleted

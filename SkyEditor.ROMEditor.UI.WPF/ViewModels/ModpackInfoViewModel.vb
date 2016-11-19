@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports DS_ROM_Patcher
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
 Imports SkyEditor.ROMEditor.Windows

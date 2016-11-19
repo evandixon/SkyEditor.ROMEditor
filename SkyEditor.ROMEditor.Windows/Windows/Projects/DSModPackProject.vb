@@ -1,4 +1,5 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports DS_ROM_Patcher
+Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
@@ -12,7 +13,7 @@ Namespace Windows.Projects
             Get
                 Return Me.Setting("ModpackInfo")
             End Get
-            Set(value As ModpackInfo)
+            Set
                 Me.Setting("ModpackInfo") = value
             End Set
         End Property
@@ -21,7 +22,7 @@ Namespace Windows.Projects
             Get
                 Return Me.Setting("BaseRomProject")
             End Get
-            Set(value As String)
+            Set
                 Me.Setting("BaseRomProject") = value
             End Set
         End Property
@@ -33,7 +34,7 @@ Namespace Windows.Projects
                 End If
                 Return Me.Setting("Output3DSFile")
             End Get
-            Set(value As Boolean)
+            Set
                 Me.Setting("Output3DSFile") = value
             End Set
         End Property
@@ -93,17 +94,17 @@ Namespace Windows.Projects
             Return IO.Path.Combine(IO.Path.GetDirectoryName(Me.Filename), "Output")
         End Function
 
-        Public Overridable Function GetBaseRomFilename(Solution As Solution) As String
+        Public Overridable Function GetBaseRomFilename(solution As Solution) As String
             Dim p As BaseRomProject = Solution.GetProjectsByName(BaseRomProject).FirstOrDefault
             Return p.GetRawFilesDir
             ' Return p.GetProjectItemByPath("/BaseRom").GetFilename
         End Function
 
-        Public Overridable Function GetBaseRomSystem(Solution As Solution) As String
+        Public Overridable Function GetBaseRomSystem(solution As Solution) As String
             Dim p As BaseRomProject = Solution.GetProjectsByName(BaseRomProject).FirstOrDefault
             Return p.RomSystem
         End Function
-        Public Overridable Function GetBaseGameCode(Solution As Solution) As String
+        Public Overridable Function GetBaseGameCode(solution As Solution) As String
             Dim p As BaseRomProject = Solution.GetProjectsByName(BaseRomProject).FirstOrDefault
             Return p.GameCode
         End Function
@@ -122,89 +123,82 @@ Namespace Windows.Projects
         End Function
 
         Protected Async Function DoBuild() As Task
-            Const patcherVersion As String = "alpha 4"
-            Dim modpackDir = GetModPackDir()
-            Dim modpackModsDir = GetModsDir()
-            Dim modpackToolsDir = GetToolsDir()
-            Dim modpackToolsPatchersDir = GetPatchersDir()
-            Dim modsSourceDir = GetSourceModsDir()
+            Throw New NotImplementedException()
+            'Const patcherVersion As String = "alpha 4"
+            'Dim modpackDir = GetModPackDir()
+            'Dim modpackModsDir = GetModsDir()
+            'Dim modpackToolsDir = GetToolsDir()
+            'Dim modpackToolsPatchersDir = GetPatchersDir()
+            'Dim modsSourceDir = GetSourceModsDir()
 
-            Await FileSystem.ReCreateDirectory(modpackDir, CurrentPluginManager.CurrentIOProvider)
+            'Await FileSystem.ReCreateDirectory(modpackDir, CurrentPluginManager.CurrentIOProvider)
 
-            If Not IO.Directory.Exists(modpackModsDir) Then
-                IO.Directory.CreateDirectory(modpackModsDir)
-            End If
-            If Not IO.Directory.Exists(modpackToolsDir) Then
-                IO.Directory.CreateDirectory(modpackToolsDir)
-            End If
-            If Not IO.Directory.Exists(modpackToolsPatchersDir) Then
-                IO.Directory.CreateDirectory(modpackToolsPatchersDir)
-            End If
-            If Not IO.Directory.Exists(modsSourceDir) Then
-                IO.Directory.CreateDirectory(modsSourceDir)
-            End If
+            'If Not IO.Directory.Exists(modpackModsDir) Then
+            '    IO.Directory.CreateDirectory(modpackModsDir)
+            'End If
+            'If Not IO.Directory.Exists(modpackToolsDir) Then
+            '    IO.Directory.CreateDirectory(modpackToolsDir)
+            'End If
+            'If Not IO.Directory.Exists(modpackToolsPatchersDir) Then
+            '    IO.Directory.CreateDirectory(modpackToolsPatchersDir)
+            'End If
+            'If Not IO.Directory.Exists(modsSourceDir) Then
+            '    IO.Directory.CreateDirectory(modsSourceDir)
+            'End If
 
-            Await FileSystem.ReCreateDirectory(OutputDir, CurrentPluginManager.CurrentIOProvider)
+            'Await FileSystem.ReCreateDirectory(OutputDir, CurrentPluginManager.CurrentIOProvider)
 
-            'Copy external mods
-            For Each item In IO.Directory.GetFiles(modsSourceDir)
-                Dim sourceFilename = item
-                Dim destFilename = IO.Path.Combine(modpackModsDir, IO.Path.GetFileName(sourceFilename))
-                IO.File.Copy(sourceFilename, destFilename, True)
-            Next
+            ''Copy external mods
+            'For Each item In IO.Directory.GetFiles(modsSourceDir)
+            '    Dim sourceFilename = item
+            '    Dim destFilename = IO.Path.Combine(modpackModsDir, IO.Path.GetFileName(sourceFilename))
+            '    IO.File.Copy(sourceFilename, destFilename, True)
+            'Next
 
-            'Copy mods from other projects
-            For Each item In Me.GetReferences(ParentSolution)
-                If TypeOf item Is GenericModProject Then
-                    Dim sourceFilename = DirectCast(item, GenericModProject).GetModOutputFilename(BaseRomProject)
-                    Dim destFilename = IO.Path.Combine(modpackModsDir, IO.Path.GetFileName(sourceFilename))
-                    If IO.File.Exists(sourceFilename) Then
-                        IO.File.Copy(sourceFilename, destFilename, True)
-                    End If
-                End If
-            Next
+            ''Copy mods from other projects
+            'For Each item In Me.GetReferences(ParentSolution)
+            '    If TypeOf item Is GenericModProject Then
+            '        Dim sourceFilename = DirectCast(item, GenericModProject).GetModOutputFilename(BaseRomProject)
+            '        Dim destFilename = IO.Path.Combine(modpackModsDir, IO.Path.GetFileName(sourceFilename))
+            '        If IO.File.Exists(sourceFilename) Then
+            '            IO.File.Copy(sourceFilename, destFilename, True)
+            '        End If
+            '    End If
+            'Next
 
-            Dim patchers As New List(Of FilePatcher)
-            '-Copy xdelta
-            'IO.File.Copy(PluginHelper.GetResourceName("xdelta/xdelta3.exe"), IO.Path.Combine(toolsDir, "xdelta3.exe"), True)
-            '-Ensure xdelta is registered as a patching program
-            Dim xdelta As New FilePatcher
-            xdelta.ApplyPatchProgram = IO.Path.Combine(EnvironmentPaths.GetResourceDirectory, "xdelta\xdelta3.exe")
-            xdelta.ApplyPatchArguments = "-d -n -s ""{0}"" ""{1}"" ""{2}"""
-            xdelta.MergeSafe = False
-            xdelta.PatchExtension = "xdelta"
-            patchers.Add(xdelta)
-            '-Copy patchers
-            IO.File.WriteAllText(IO.Path.Combine(modpackToolsDir, "patchers.json"), Json.Serialize(patchers))
-            For Each item In patchers
-                Dim patcherDestination = IO.Path.Combine(GetPatchersDir, IO.Path.GetFileName(item.ApplyPatchProgram))
-                If Not IO.Directory.Exists(IO.Path.GetDirectoryName(patcherDestination)) Then
-                    IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(patcherDestination))
-                End If
-                IO.File.Copy(item.ApplyPatchProgram, patcherDestination, True)
-                '--Copy Dependencies
-                If item.ApplyPatchDependencies IsNot Nothing Then
-                    For Each d In item.ApplyPatchDependencies
-                        If Not IO.Directory.Exists(IO.Path.GetDirectoryName(IO.Path.Combine(GetPatchersDir, d.Value))) Then
-                            IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(IO.Path.Combine(GetPatchersDir, d.Value)))
-                        End If
-                        IO.File.Copy(IO.Path.Combine(EnvironmentPaths.GetResourceDirectory, d.Key), IO.Path.Combine(GetPatchersDir, d.Value), True)
-                    Next
-                End If
-            Next
+            'Dim patchers As New List(Of FilePatcher)
 
-            CopyPatcherProgram(ParentSolution)
+            ''-Copy patchers
+            'IO.File.WriteAllText(IO.Path.Combine(modpackToolsDir, "patchers.json"), Json.Serialize(patchers))
+            'For Each item In patchers
+            '    Dim patcherDestination = IO.Path.Combine(GetPatchersDir, IO.Path.GetFileName(item.ApplyPatchProgram))
+            '    If Not IO.Directory.Exists(IO.Path.GetDirectoryName(patcherDestination)) Then
+            '        IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(patcherDestination))
+            '    End If
+            '    IO.File.Copy(item.ApplyPatchProgram, patcherDestination, True)
+            '    '--Copy Dependencies
+            '    If item.ApplyPatchDependencies IsNot Nothing Then
+            '        For Each d In item.ApplyPatchDependencies
+            '            If Not IO.Directory.Exists(IO.Path.GetDirectoryName(IO.Path.Combine(GetPatchersDir, d.Value))) Then
+            '                IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(IO.Path.Combine(GetPatchersDir, d.Value)))
+            '            End If
+            '            IO.File.Copy(IO.Path.Combine(EnvironmentPaths.GetResourceDirectory, d.Key), IO.Path.Combine(GetPatchersDir, d.Value), True)
+            '        Next
+            '    End If
+            'Next
 
-            'Update modpack info
-            Me.Info.GameCode = GetBaseGameCode(ParentSolution)
-            Me.Info.System = GetBaseRomSystem(ParentSolution)
-            If IO.File.Exists(GetLocalSmdhPath) Then
-                IO.File.Copy(GetLocalSmdhPath, IO.Path.Combine(modpackModsDir, "Modpack.smdh"), True)
-            End If
-            IO.File.WriteAllText(IO.Path.Combine(modpackModsDir, "Modpack Info"), Json.Serialize(Me.Info))
+            'CopyPatcherProgram(ParentSolution)
+
+            ''Update modpack info
+            'Me.Info.GameCode = GetBaseGameCode(ParentSolution)
+            'Me.Info.System = GetBaseRomSystem(ParentSolution)
+            'If IO.File.Exists(GetLocalSmdhPath) Then
+            '    IO.File.Copy(GetLocalSmdhPath, IO.Path.Combine(modpackModsDir, "Modpack.smdh"), True)
+            'End If
+            'IO.File.WriteAllText(IO.Path.Combine(modpackModsDir, "Modpack Info"), Json.Serialize(Me.Info))
 
             '-Zip it
-            Zip.Zip(modpackDir, IO.Path.Combine(OutputDir, Me.Info.Name & " " & Me.Info.Version & "-" & patcherVersion & ".zip"))
+            'Zip.Zip(modpackDir, IO.Path.Combine(OutputDir, Me.Info.Name & " " & Me.Info.Version & "-" & patcherVersion & ".zip"))
 
             'Apply patch
             Me.BuildProgress = 0.9
@@ -216,31 +210,31 @@ Namespace Windows.Projects
             Me.BuildStatusMessage = My.Resources.Language.Complete
         End Function
 
-        Public Overridable Sub CopyPatcherProgram(Solution As Solution)
-            Using external As New ExternalProgramManager
-                Select Case GetBaseRomSystem(Solution)
-                    Case "3DS"
-                        '-Copy ctrtool
-                        IO.File.Copy(external.GetCtrToolPath, IO.Path.Combine(GetToolsDir, "ctrtool.exe"), True)
-                        'IO.File.Copy(PluginHelper.GetResourceName("makerom.exe"), IO.Path.Combine(GetToolsDir, "makerom.exe"), True)
-                        'IO.File.Copy(PluginHelper.GetResourceName("rom_tool.exe"), IO.Path.Combine(GetToolsDir, "rom_tool.exe"), True)
-                        IO.File.Copy(EnvironmentPaths.GetResourceName("3DS Builder.exe"), IO.Path.Combine(GetToolsDir, "3DS Builder.exe"), True)
-                    Case "NDS"
-                        '-Copy ndstool
-                        IO.File.Copy(EnvironmentPaths.GetResourceName("ndstool.exe"), IO.Path.Combine(GetToolsDir, "ndstool.exe"), True)
-                    Case Else
-                        Throw New NotSupportedException(String.Format(My.Resources.Language.ErrorModPackTypeNotSupported, GetBaseRomSystem(Solution)))
-                End Select
+        'Public Overridable Sub CopyPatcherProgram(solution As Solution)
+        '    Using external As New ExternalProgramManager
+        '        Select Case GetBaseRomSystem(Solution)
+        '            Case "3DS"
+        '                '-Copy ctrtool
+        '                IO.File.Copy(external.GetCtrToolPath, IO.Path.Combine(GetToolsDir, "ctrtool.exe"), True)
+        '                'IO.File.Copy(PluginHelper.GetResourceName("makerom.exe"), IO.Path.Combine(GetToolsDir, "makerom.exe"), True)
+        '                'IO.File.Copy(PluginHelper.GetResourceName("rom_tool.exe"), IO.Path.Combine(GetToolsDir, "rom_tool.exe"), True)
+        '                IO.File.Copy(EnvironmentPaths.GetResourceName("3DS Builder.exe"), IO.Path.Combine(GetToolsDir, "3DS Builder.exe"), True)
+        '            Case "NDS"
+        '                '-Copy ndstool
+        '                IO.File.Copy(EnvironmentPaths.GetResourceName("ndstool.exe"), IO.Path.Combine(GetToolsDir, "ndstool.exe"), True)
+        '            Case Else
+        '                Throw New NotSupportedException(String.Format(My.Resources.Language.ErrorModPackTypeNotSupported, GetBaseRomSystem(Solution)))
+        '        End Select
 
-                '-Copy patching wizard
-                Dim patcherFilePath = GetType(DS_ROM_Patcher.PatcherCore).Assembly.Location
-                Dim sharpZipPath = GetType(ICSharpCode.SharpZipLib.SharpZipBaseException).Assembly.Location
-                IO.File.Copy(patcherFilePath, IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), True)
-                IO.File.Copy(sharpZipPath, IO.Path.Combine(GetModPackDir, "ICSharpCode.SharpZipLib.dll"), True)
-            End Using
-        End Sub
+        '        '-Copy patching wizard
+        '        Dim patcherFilePath = GetType(DS_ROM_Patcher.PatcherCore).Assembly.Location
+        '        Dim sharpZipPath = GetType(ICSharpCode.SharpZipLib.SharpZipBaseException).Assembly.Location
+        '        IO.File.Copy(patcherFilePath, IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), True)
+        '        IO.File.Copy(sharpZipPath, IO.Path.Combine(GetModPackDir, "ICSharpCode.SharpZipLib.dll"), True)
+        '    End Using
+        'End Sub
 
-        Public Overridable Async Function ApplyPatchAsync(Solution As Solution) As Task
+        Public Overridable Async Function ApplyPatchAsync(solution As Solution) As Task
             Select Case GetBaseRomSystem(Solution)
                 Case "3DS"
                     If Output3DSFile Then
