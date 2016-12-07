@@ -1,6 +1,6 @@
 ﻿Imports Message_FARC_Patcher
 
-Namespace Windows.MysteryDungeon.PSMD.Projects
+Namespace MysteryDungeon.PSMD.Projects
     Public Interface IPsmdMessageBinProject
         Function GetLanguageFile(name As String) As Task(Of MessageBin)
         Function GetPokemonNames() As Task(Of Dictionary(Of Integer, String))

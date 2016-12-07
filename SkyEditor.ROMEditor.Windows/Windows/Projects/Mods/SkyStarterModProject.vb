@@ -1,4 +1,5 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports DS_ROM_Patcher
+Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers.ViewModels
@@ -8,7 +9,7 @@ Namespace Windows.Projects.Mods
     Public Class SkyStarterModProject
         Inherits GenericModProject
 
-        Public Overrides Function GetFilesToCopy(Solution As Solution, BaseRomProjectName As String) As IEnumerable(Of String)
+        Public Overrides Function GetFilesToCopy(solution As Solution, baseRomProjectName As String) As IEnumerable(Of String)
             Return {IO.Path.Combine("overlay", "overlay_0013.bin"),
                     IO.Path.Combine("data", "MESSAGE", "text_e.str"),
                     IO.Path.Combine("data", "MESSAGE", "text_f.str"),
@@ -21,25 +22,25 @@ Namespace Windows.Projects.Mods
             Return {GameStrings.SkyCode}
         End Function
 
-        Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)
-            Dim patchers = New List(Of FilePatcher)
-            If patchers Is Nothing Then
-                patchers = New List(Of FilePatcher)
-            End If
-            Dim LSPatcher As New FilePatcher()
-            Dim lsFilePath = GetType(LanguageStringPatcher.LanguageString).Assembly.Location
-            With LSPatcher
-                .CreatePatchProgram = lsFilePath
-                .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
-                .ApplyPatchProgram = lsFilePath
-                .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
-                .MergeSafe = True
-                .PatchExtension = "textstrlsp"
-                .FilePath = ".*text_.\.str"
-            End With
-            patchers.Add(LSPatcher)
-            Return patchers
-        End Function
+        'Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)
+        '    Dim patchers = New List(Of FilePatcher)
+        '    If patchers Is Nothing Then
+        '        patchers = New List(Of FilePatcher)
+        '    End If
+        '    Dim LSPatcher As New FilePatcher()
+        '    Dim lsFilePath = GetType(LanguageStringPatcher.LanguageString).Assembly.Location
+        '    With LSPatcher
+        '        .CreatePatchProgram = lsFilePath
+        '        .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
+        '        .ApplyPatchProgram = lsFilePath
+        '        .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
+        '        .MergeSafe = True
+        '        .PatchExtension = "textstrlsp"
+        '        .FilePath = ".*text_.\.str"
+        '    End With
+        '    patchers.Add(LSPatcher)
+        '    Return patchers
+        'End Function
 
         Protected Overrides Async Function Initialize() As Task
             Await MyBase.Initialize

@@ -6,6 +6,7 @@ Imports SkyEditor.Core.Utilities
 Public Class GenericNDSRom
     Inherits GenericFile
     Implements IDetectableFileType
+    Implements IReportProgress
 
     Public Overrides Function GetDefaultExtension() As String
         Return "*.nds"
@@ -25,7 +26,8 @@ Public Class GenericNDSRom
 #End Region
 
 #Region "Events"
-    Public Event UnpackProgress(sender As Object, e As UnpackProgressEventArgs)
+    Public Event UnpackProgress(sender As Object, e As ProgressReportedEventArgs) Implements IReportProgress.ProgressChanged
+    Public Event Completed As IReportProgress.CompletedEventHandler Implements IReportProgress.Completed
 #End Region
 
 
@@ -571,12 +573,12 @@ Public Class GenericNDSRom
     ''' <param name="Root"></param>
     ''' <param name="TargetDir"></param>
     ''' <returns></returns>
-    Private Async Function ExtractFiles(FAT As List(Of FileAllocationEntry), Root As FilenameTable, TargetDir As String, Provider As IOProvider) As Task
+    Private Async Function ExtractFiles(fat As List(Of FileAllocationEntry), root As FilenameTable, targetDir As String, provider As IOProvider) As Task
         Dim dest As String = IO.Path.Combine(TargetDir, Root.Name)
         Dim f As New AsyncFor
         f.RunSynchronously = Not Me.IsThreadSafe
         f.BatchSize = Root.Children.Count
-        Await (f.RunForEach(Async Function(Item As FilenameTable) As Task
+        Await (f.RunForEach(Async Function(item As FilenameTable) As Task
                                 If Item.IsDirectory Then
                                     Await ExtractFiles(FAT, Item, dest, Provider)
                                 Else
@@ -591,14 +593,14 @@ Public Class GenericNDSRom
                             End Function, Root.Children))
     End Function
 
-    Private Async Function ExtractOverlay(FAT As List(Of FileAllocationEntry), OverlayTable As List(Of OverlayTableEntry), TargetDir As String, Provider As IOProvider) As Task
+    Private Async Function ExtractOverlay(fAT As List(Of FileAllocationEntry), overlayTable As List(Of OverlayTableEntry), targetDir As String, provider As IOProvider) As Task
         If OverlayTable.Count > 0 AndAlso Not Provider.DirectoryExists(TargetDir) Then
             Provider.CreateDirectory(TargetDir)
         End If
         Dim f As New AsyncFor
         f.RunSynchronously = Not Me.IsThreadSafe
         f.BatchSize = OverlayTable.Count
-        Await f.RunForEach(Sub(Item As OverlayTableEntry)
+        Await f.RunForEach(Sub(item As OverlayTableEntry)
                                Dim dest = IO.Path.Combine(TargetDir, "overlay_" & Item.OverlayID.ToString.PadLeft(4, "0"c) & ".bin")
                                Dim entry = FAT(Item.FileID)
                                Provider.WriteAllBytes(dest, RawData(entry.Offset, entry.EndAddress - entry.Offset))
@@ -615,7 +617,7 @@ Public Class GenericNDSRom
         End Get
         Set(value As Integer)
             _extractProgress = value
-            RaiseEvent UnpackProgress(Me, New UnpackProgressEventArgs With {.FilesExtracted = value, .TotalFiles = CurrentExtractMax, .Progress = GetExtractionProgress()})
+            RaiseEvent UnpackProgress(Me, New ProgressReportedEventArgs With {.IsIndeterminate = False, .Progress = ExtractionProgress})
         End Set
     End Property
     Dim _extractProgress As Integer
@@ -633,15 +635,35 @@ Public Class GenericNDSRom
     Private Property ExtractionTasks As ConcurrentBag(Of Task)
 
     ''' <summary>
-    ''' Gets the progress of the current unpacking process.
+    ''' The progress of the current unpacking process.
     ''' </summary>
     ''' <returns></returns>
-    Public Function GetExtractionProgress() As Single
-        Return CurrentExtractProgress / CurrentExtractMax
-    End Function
+    Public ReadOnly Property ExtractionProgress As Single Implements IReportProgress.Progress
+        Get
+            Return CurrentExtractProgress / CurrentExtractMax
+        End Get
+    End Property
+
+    Private ReadOnly Property IsExtractionIndeterminate As Boolean Implements IReportProgress.IsIndeterminate
+        Get
+            Return False
+        End Get
+    End Property
+
+    Private ReadOnly Property IsCompleted As Boolean Implements IReportProgress.IsCompleted
+        Get
+            Return CurrentExtractProgress = 1
+        End Get
+    End Property
+
+    Public ReadOnly Property Message As String Implements IReportProgress.Message
+        Get
+            Return Nothing
+        End Get
+    End Property
 #End Region
 
-    Public Overridable Function IsFileOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
+    Public Overridable Function IsFileOfType(file As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
         Return Task.FromResult(File.Length > &H15D AndAlso File.RawData(&H15C) = &H56 AndAlso File.RawData(&H15D) = &HCF)
     End Function
 

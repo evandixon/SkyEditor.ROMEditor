@@ -1,6 +1,5 @@
-﻿Imports SkyEditor.ROMEditor.UI.WPF.PSMD.ViewModels
-Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD
-Imports SkyEditor.ROMEditor.Windows.MysteryDungeon.PSMD.Projects
+﻿Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Projects
+Imports SkyEditor.ROMEditor.UI.WPF.PSMD.ViewModels
 Imports SkyEditor.UI.WPF
 
 Namespace PSMD.Views
@@ -12,7 +11,7 @@ Namespace PSMD.Views
             Me.Header = My.Resources.Language.Message
         End Sub
 
-        Public Overrides Function GetSortOrder(CurrentType As Type, IsTab As Boolean) As Integer
+        Public Overrides Function GetSortOrder(currentType As Type, isTab As Boolean) As Integer
             Return 1
         End Function
 
@@ -61,11 +60,11 @@ Namespace PSMD.Views
         End Property
 
 #Region "IDisposable Support"
-        Private disposedValue As Boolean ' To detect redundant calls
+        Private _disposedValue As Boolean ' To detect redundant calls
 
         ' IDisposable
         Protected Overridable Sub Dispose(disposing As Boolean)
-            If Not disposedValue Then
+            If Not _disposedValue Then
                 If disposing Then
                     ' TODO: dispose managed state (managed objects).
                     If tcTabs IsNot Nothing Then
@@ -82,7 +81,7 @@ Namespace PSMD.Views
                 ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
                 ' TODO: set large fields to null.
             End If
-            disposedValue = True
+            _disposedValue = True
         End Sub
 
         ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.

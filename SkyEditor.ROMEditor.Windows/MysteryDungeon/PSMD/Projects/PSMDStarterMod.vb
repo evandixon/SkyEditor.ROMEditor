@@ -5,11 +5,11 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
 
-Namespace Windows.MysteryDungeon.PSMD.Projects
+Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
     ''' Mod for PSMD that allows editing playable starter Pokémon.
     ''' </summary>
-    Public Class PSMDStarterMod
+    Public Class PsmdStarterMod
         Inherits PsmdLuaProject
 
         Public Sub New()
@@ -21,7 +21,7 @@ Namespace Windows.MysteryDungeon.PSMD.Projects
             Return {GameStrings.PSMDCode}
         End Function
 
-        Public Overrides Function GetFilesToCopy(Solution As Solution, BaseRomProjectName As String) As IEnumerable(Of String)
+        Public Overrides Function GetFilesToCopy(solution As Solution, baseRomProjectName As String) As IEnumerable(Of String)
             Return {IO.Path.Combine("romfs", "script"),
                     IO.Path.Combine("romfs", "message_en.bin"),
                     IO.Path.Combine("romfs", "message_fr.bin"),

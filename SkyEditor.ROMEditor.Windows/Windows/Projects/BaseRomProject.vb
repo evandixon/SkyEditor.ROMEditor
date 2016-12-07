@@ -2,6 +2,7 @@
 Imports SkyEditor.Core
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
+Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.ROMEditor
 
@@ -95,66 +96,39 @@ Namespace Windows.Projects
             End If
 
             If mode Is Nothing Then
-                Using f As New GenericFile
-                    Await f.OpenFile(fullPath, CurrentPluginManager.CurrentIOProvider)
-                    'Then we have to detect the ROM type
-                    Dim n As New GenericNDSRom
-                    If Await n.IsFileOfType(f) Then
-                        mode = "nds"
-                        n.Dispose()
-                    Else
-                        Dim three As New Roms.Generic3DSRom
-                        Dim cxi As New Roms.Cxi3DSRom
-                        If Await three.IsOfType(f) Then
-                            mode = "3ds"
-                            three.Dispose()
-                        ElseIf Await cxi.IsOfType(f) Then
-                            mode = "cxi"
-                        Else
-                            'This file is invalid, and we'll delete it.
-                            DeleteFile("/BaseRom")
-                            Exit Function
-                        End If
-                    End If
-                End Using
+                Select Case Await DotNet3dsToolkit.MetadataReader.GetSystem(fullPath)
+                    Case DotNet3dsToolkit.SystemType.NDS
+                        RomSystem = SystemNDS
+                    Case DotNet3dsToolkit.SystemType.ThreeDS
+                        RomSystem = System3DS
+                    Case Else
+                        'Todo: Replace with better exception
+                        Throw New NotSupportedException("File format not supported.")
+                End Select
             End If
 
             Me.BuildProgress = 0
             Me.BuildStatusMessage = My.Resources.Language.LoadingUnpacking
-            Select Case mode
-                Case "nds"
-                    Dim nds As New GenericNDSRom
-                    Await nds.OpenFile(fullPath, CurrentPluginManager.CurrentIOProvider)
-                    AddHandler nds.UnpackProgress, Sub(sender As Object, e As UnpackProgressEventArgs)
-                                                       Me.BuildProgress = nds.GetExtractionProgress
-                                                   End Sub
-                    Await nds.Unpack(GetRawFilesDir, CurrentPluginManager.CurrentIOProvider)
-                    Me.RomSystem = SystemNDS
-                    Me.GameCode = nds.GameCode
-                    nds.Dispose()
-                Case "3ds"
-                    IsBuildProgressIndeterminate = True
-                    Dim threeDS As New Roms.Generic3DSRom
-                    threeDS.IsReadOnly = True
-                    Await threeDS.OpenFile(fullPath, CurrentPluginManager.CurrentIOProvider)
-                    Await threeDS.Unpack(GetRawFilesDir, CurrentPluginManager.CurrentIOProvider)
-                    Me.RomSystem = System3DS
-                    Me.GameCode = threeDS.TitleID
-                    threeDS.Dispose()
-                Case "cxi"
-                    IsBuildProgressIndeterminate = True
-                    Dim threeDS As New Roms.Cxi3DSRom
-                    threeDS.IsReadOnly = True
-                    Await threeDS.OpenFile(fullPath, CurrentPluginManager.CurrentIOProvider)
-                    Await threeDS.Unpack(GetRawFilesDir, CurrentPluginManager.CurrentIOProvider)
-                    Me.RomSystem = "3DS"
-                    Me.GameCode = threeDS.TitleID
-                    threeDS.Dispose()
-            End Select
 
-            Dim filename = Me.GetFilename("/BaseRom")
+            Using unpacker As New DotNet3dsToolkit.Converter
+                Dim unpackProgressEventHandler = Sub(sender As Object, e As ProgressReportedEventArgs)
+                                                     Me.BuildProgress = e.Progress
+                                                     Me.BuildStatusMessage = e.Message
+                                                     Me.IsBuildProgressIndeterminate = e.IsIndeterminate
+                                                 End Sub
+
+                AddHandler unpacker.UnpackProgressed, unpackProgressEventHandler
+
+                Await unpacker.ExtractAuto(fullPath, GetRawFilesDir)
+
+                RemoveHandler unpacker.UnpackProgressed, unpackProgressEventHandler
+            End Using
+
+            GameCode = Await DotNet3dsToolkit.MetadataReader.GetGameID(GetRawFilesDir)
+
+            Dim baseromFilename = Me.GetFilename("/BaseRom")
             DeleteFile("/BaseRom")
-            File.Delete(filename)
+            File.Delete(baseromFilename)
 
             Me.IsBuildProgressIndeterminate = False
             Me.BuildProgress = 1
