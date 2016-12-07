@@ -265,7 +265,7 @@ Namespace Windows.Projects
                 AddHandler builder.BuildStatusChanged, AddressOf OnModBuilderProgressed
 
                 'Do the build
-                Await builder.DoBuild(GetRawFilesSourceDir(ParentSolution, sourceProjectName), GetRawFilesDir(), GetModOutputFilename(sourceProjectName), CurrentPluginManager.CurrentIOProvider)
+                Await builder.BuildMod(GetRawFilesSourceDir(ParentSolution, sourceProjectName), GetRawFilesDir(), GetModOutputFilename(sourceProjectName), CurrentPluginManager.CurrentIOProvider)
 
                 'Remove progress event handler
                 RemoveHandler builder.BuildStatusChanged, AddressOf OnModBuilderProgressed

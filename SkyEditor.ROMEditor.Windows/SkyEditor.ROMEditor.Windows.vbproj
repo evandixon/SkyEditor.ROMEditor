@@ -66,12 +66,12 @@
       <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.0\lib\net46\DotNet3dsSoundtrackConverter.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotNet3dsToolkit, Version=1.4.2.14, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsToolkit.1.4.2\lib\net46\DotNet3dsToolkit.dll</HintPath>
+    <Reference Include="DotNet3dsToolkit, Version=1.4.7.19, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsToolkit.1.4.7\lib\net46\DotNet3dsToolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DSPatcher, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DS-ROM-Patcher.1.0.0\lib\net46\DSPatcher.exe</HintPath>
+    <Reference Include="DSPatcher, Version=1.1.1.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DS-ROM-Patcher.1.1.1\lib\net46\DSPatcher.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
