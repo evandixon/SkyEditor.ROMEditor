@@ -15,7 +15,7 @@ Namespace MenuActions
             If TypeOf obj Is SolutionHeiarchyItemViewModel Then
                 Dim converter As New DotNet3dsSoundtrackConverter.SoundtrackConverter
                 Dim vm As SolutionHeiarchyItemViewModel = obj
-                Return Not vm.IsDirectory AndAlso TypeOf vm.GetNodeProject Is BaseRomProject AndAlso Await converter.CanConvert(vm.GetNodeProject.GetRootDirectory, Nothing)
+                Return Not vm.IsDirectory AndAlso TypeOf vm.GetNodeProject Is BaseRomProject AndAlso Await converter.CanConvert(vm.GetNodeProject.GetRootDirectory)
             Else
                 Return False
             End If

@@ -91,7 +91,7 @@ Namespace Windows.Projects
         ''' Gets the directory the modpack will be outputted to.
         ''' </summary>
         ''' <returns></returns>
-        Public Overridable Function OutputDir() As String
+        Public Overridable Function GetOutputDir() As String
             Return IO.Path.Combine(IO.Path.GetDirectoryName(Me.Filename), "Output")
         End Function
 
@@ -129,6 +129,15 @@ Namespace Windows.Projects
             'Dim modpackToolsDir = GetToolsDir()
             'Dim modpackToolsPatchersDir = GetPatchersDir()
             Dim modsSourceDir = GetSourceModsDir()
+            Dim outputDir = GetOutputDir()
+
+            'Create missing directories
+            If Not Directory.Exists(modsSourceDir)
+                Directory.CreateDirectory(modsSourceDir)
+            End If
+            If Not Directory.Exists(outputDir)
+                Directory.CreateDirectory(outputDir)
+            End If
 
             'Copy external mods
             For Each item In IO.Directory.GetFiles(modsSourceDir)
@@ -151,7 +160,7 @@ Namespace Windows.Projects
             ModBuilder.SaveModpackInfo(modpackDir, Me.Info)
 
             '-Zip it
-            ModBuilder.ZipModpack(modpackDir, Path.Combine(OutputDir, Me.Info.Name & " " & Me.Info.Version & ".zip"))
+            ModBuilder.ZipModpack(modpackDir, Path.Combine(outputDir, Me.Info.Name & " " & Me.Info.Version & ".zip"))
 
             'Apply patch
             Me.BuildProgress = 0.9
@@ -167,16 +176,16 @@ Namespace Windows.Projects
             Select Case GetBaseRomSystem(solution)
                 Case "3DS"
                     If Output3DSFile Then
-                        Await ConsoleApp.RunProgram(IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}""", GetBaseRomFilename(solution), IO.Path.Combine(OutputDir, "PatchedRom.3ds")))
+                        Await ConsoleApp.RunProgram(IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}""", GetBaseRomFilename(solution), IO.Path.Combine(GetOutputDir, "PatchedRom.3ds")))
                     End If
                     If OutputCIAFile Then
-                        Await ConsoleApp.RunProgram(IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}""", GetBaseRomFilename(solution), IO.Path.Combine(OutputDir, "PatchedRom.cia")))
+                        Await ConsoleApp.RunProgram(IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}""", GetBaseRomFilename(solution), IO.Path.Combine(GetOutputDir, "PatchedRom.cia")))
                     End If
                     If OutputHans Then
-                        Await ConsoleApp.RunProgram(IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -hans", GetBaseRomFilename(solution), IO.Path.Combine(OutputDir, "Hans SD")))
+                        Await ConsoleApp.RunProgram(IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -hans", GetBaseRomFilename(solution), IO.Path.Combine(GetOutputDir, "Hans SD")))
                     End If
                 Case "NDS"
-                    Await ConsoleApp.RunProgram(IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}""", GetBaseRomFilename(solution), IO.Path.Combine(OutputDir, "PatchedRom.nds")))
+                    Await ConsoleApp.RunProgram(IO.Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}""", GetBaseRomFilename(solution), IO.Path.Combine(GetOutputDir, "PatchedRom.nds")))
             End Select
         End Function
     End Class

@@ -247,28 +247,39 @@ Namespace Windows.Projects
         Protected Overridable Async Function DoBuild() As Task
             For Each sourceProjectName In Me.ProjectReferences
 
-                Dim builder As New ModBuilder
+                Dim sourceProject As Project = ParentSolution.GetProjectsByName(sourceProjectName).FirstOrDefault
 
-                'Set the custom patchers
-                builder.CustomFilePatchers = GetCustomFilePatchers.ToList
+                If sourceProject IsNot Nothing AndAlso TypeOf sourceProject Is BaseRomProject Then
+                    Dim builder As New ModBuilder
 
-                'Set metadata properties
-                builder.ModName = ModName
-                builder.ModVersion = ModVersion
-                builder.ModAuthor = ModAuthor
-                builder.ModDescription = ModDescription
-                builder.Homepage = Homepage
-                builder.ModDependenciesBefore = ModDependenciesBefore
-                builder.ModDependenciesAfter = ModDependenciesAfter
+                    'Set the custom patchers
+                    builder.CustomFilePatchers = GetCustomFilePatchers.ToList
 
-                'Set progress event handler
-                AddHandler builder.BuildStatusChanged, AddressOf OnModBuilderProgressed
+                    'Set metadata properties
+                    builder.ModName = ModName
+                    builder.ModVersion = ModVersion
+                    builder.ModAuthor = ModAuthor
+                    builder.ModDescription = ModDescription
+                    builder.Homepage = Homepage
+                    builder.ModDependenciesBefore = ModDependenciesBefore
+                    builder.ModDependenciesAfter = ModDependenciesAfter
+                    builder.GameCode = DirectCast(sourceProject, BaseRomProject).GameCode
 
-                'Do the build
-                Await builder.BuildMod(GetRawFilesSourceDir(ParentSolution, sourceProjectName), GetRawFilesDir(), GetModOutputFilename(sourceProjectName), CurrentPluginManager.CurrentIOProvider)
+                    'Set progress event handler
+                    AddHandler builder.BuildStatusChanged, AddressOf OnModBuilderProgressed
 
-                'Remove progress event handler
-                RemoveHandler builder.BuildStatusChanged, AddressOf OnModBuilderProgressed
+                    'Ensure parent directory exists
+                    Dim parentDir = IO.Path.GetDirectoryName(GetModOutputFilename(sourceProjectName))
+                    If Not IO.Directory.Exists(parentDir) Then
+                        IO.Directory.CreateDirectory(parentDir)
+                    End If
+
+                    'Do the build
+                    Await builder.BuildMod(GetRawFilesSourceDir(ParentSolution, sourceProjectName), GetRawFilesDir(), GetModOutputFilename(sourceProjectName), CurrentPluginManager.CurrentIOProvider)
+
+                    'Remove progress event handler
+                    RemoveHandler builder.BuildStatusChanged, AddressOf OnModBuilderProgressed
+                End If
 
             Next
             Me.BuildProgress = 1

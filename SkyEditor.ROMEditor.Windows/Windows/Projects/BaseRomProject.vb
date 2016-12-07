@@ -124,6 +124,8 @@ Namespace Windows.Projects
                 RemoveHandler unpacker.UnpackProgressed, unpackProgressEventHandler
             End Using
 
+            GameCode = Await DotNet3dsToolkit.MetadataReader.GetGameID(GetRawFilesDir)
+
             Dim baseromFilename = Me.GetFilename("/BaseRom")
             DeleteFile("/BaseRom")
             File.Delete(baseromFilename)
