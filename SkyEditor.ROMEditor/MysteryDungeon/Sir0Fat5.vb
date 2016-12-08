@@ -61,7 +61,7 @@ Namespace MysteryDungeon
             Next
         End Sub
 
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Protected Overrides Sub DoPreSave()
             'Only works for files without filenames
 
             'Reset pointers
@@ -89,8 +89,13 @@ Namespace MysteryDungeon
 
             Me.Header = headerData.ToArray
 
-
             Me.RelativePointers.Add(data.Count + 8)
+
+            MyBase.DoPreSave()
+        End Sub
+
+        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+            DoPreSave()
             MyBase.Save(Destination, provider)
         End Sub
 

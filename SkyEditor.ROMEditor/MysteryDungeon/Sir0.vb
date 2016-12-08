@@ -109,7 +109,7 @@ Namespace MysteryDungeon
             ProcessData()
         End Function
 
-        Private Sub DoPreSave()
+        Protected Overridable Sub DoPreSave()
             'The header and relative pointers must be set by child classes
 
             Me.RawData(0, 4) = {&H53, &H49, &H52, &H30}

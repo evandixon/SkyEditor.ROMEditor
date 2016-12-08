@@ -20,7 +20,7 @@ Namespace PSMD.Views
         End Sub
 
         Private Async Sub btnAdd_Click(sender As Object, e As RoutedEventArgs) Handles btnAdd.Click
-            Dim p As PsmdLuaProject = CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(ObjectToEdit)
+            Dim p As PsmdLuaProject = CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(DirectCast(ObjectToEdit, PsmdLuaLangIntegrationViewModel).Model)
             Dim oldText As String = btnAdd.Content
             If Not p.IsLanguageLoaded Then
                 btnAdd.IsEnabled = False
