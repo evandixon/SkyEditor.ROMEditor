@@ -23,25 +23,27 @@ Namespace Windows.Projects.Mods
             Return {GameStrings.SkyCode}
         End Function
 
-        'Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)
-        '    Dim patchers = New List(Of FilePatcher)
-        '    If patchers Is Nothing Then
-        '        patchers = New List(Of FilePatcher)
-        '    End If
-        '    Dim LSPatcher As New FilePatcher()
-        '    Dim lsFilePath = GetType(LanguageStringPatcher.LanguageString).Assembly.Location
-        '    With LSPatcher
-        '        .CreatePatchProgram = lsFilePath
-        '        .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
-        '        .ApplyPatchProgram = lsFilePath
-        '        .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
-        '        .MergeSafe = True
-        '        .PatchExtension = "textstrlsp"
-        '        .FilePath = ".*text_.\.str"
-        '    End With
-        '    patchers.Add(LSPatcher)
-        '    Return patchers
-        'End Function
+        Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)
+            Dim patchers = New List(Of FilePatcher)
+            If patchers Is Nothing Then
+                patchers = New List(Of FilePatcher)
+            End If
+            Dim LSPatcher As New FilePatcherJson()
+            Dim lsFilename = Path.GetFileName(GetType(LanguageStringPatcher.LanguageString).Assembly.Location)
+            Dim toolsDir = path.GetDirectoryName(GetType(LanguageStringPatcher.LanguageString).Assembly.Location)
+            With LSPatcher
+                .CreatePatchProgram = lsFilename
+                .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
+                .ApplyPatchProgram = lsFilename
+                .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
+                .IsPatchMergeSafe = True
+                .PatchExtension = "textstrlsp"
+                .FilePath = ".*text_.\.str"         
+                .Dependencies = New List(Of String)    
+            End With
+            patchers.Add(New FilePatcher(LSPatcher, toolsDir))
+            Return patchers
+        End Function
 
         Protected Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
