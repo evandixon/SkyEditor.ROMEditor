@@ -31,10 +31,11 @@ Namespace Windows.Projects.Mods
             Await Kaomado.RunUnpack(IO.Path.Combine(GetRawFilesDir, "data", "FONT", "kaomado.kao"), portraitDir)
             Await k.ApplyMissingPortraitFix(portraitDir)
 
-            'Add files to project
-            For Each item In IO.Directory.GetFiles(portraitDir, "*", IO.SearchOption.AllDirectories)
-                Me.AddExistingFile(IO.Path.GetDirectoryName(item).Replace(portraitDir, IO.Path.Combine("Pokemon", "Portraits")), item, CurrentPluginManager.CurrentIOProvider)
-            Next
+            ''Add files to project
+            ''Disabled because it takes too long
+            'For Each item In IO.Directory.GetFiles(portraitDir, "*", IO.SearchOption.AllDirectories)
+            '    Me.AddExistingFile(IO.Path.GetDirectoryName(item).Replace(portraitDir, IO.Path.Combine("Pokemon", "Portraits")), item, CurrentPluginManager.CurrentIOProvider)
+            'Next
 
             'Stop loading
             Me.BuildProgress = 1
