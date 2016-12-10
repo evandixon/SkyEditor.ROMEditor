@@ -574,37 +574,37 @@ Public Class GenericNDSRom
     ''' <param name="TargetDir"></param>
     ''' <returns></returns>
     Private Async Function ExtractFiles(fat As List(Of FileAllocationEntry), root As FilenameTable, targetDir As String, provider As IOProvider) As Task
-        Dim dest As String = IO.Path.Combine(TargetDir, Root.Name)
+        Dim dest As String = IO.Path.Combine(targetDir, root.Name)
         Dim f As New AsyncFor
         f.RunSynchronously = Not Me.IsThreadSafe
-        f.BatchSize = Root.Children.Count
+        f.BatchSize = root.Children.Count
         Await (f.RunForEach(Async Function(item As FilenameTable) As Task
-                                If Item.IsDirectory Then
-                                    Await ExtractFiles(FAT, Item, dest, Provider)
+                                If item.IsDirectory Then
+                                    Await ExtractFiles(fat, item, dest, provider)
                                 Else
-                                    Dim entry = FAT(Item.FileIndex)
-                                    Dim parentDir = IO.Path.GetDirectoryName(IO.Path.Combine(dest, Item.Name))
-                                    If Not Provider.DirectoryExists(parentDir) Then
-                                        Provider.CreateDirectory(parentDir)
+                                    Dim entry = fat(item.FileIndex)
+                                    Dim parentDir = IO.Path.GetDirectoryName(IO.Path.Combine(dest, item.Name))
+                                    If Not provider.DirectoryExists(parentDir) Then
+                                        provider.CreateDirectory(parentDir)
                                     End If
-                                    Provider.WriteAllBytes(IO.Path.Combine(dest, Item.Name), RawData(entry.Offset, entry.EndAddress - entry.Offset))
+                                    provider.WriteAllBytes(IO.Path.Combine(dest, item.Name), RawData(entry.Offset, entry.EndAddress - entry.Offset))
                                     System.Threading.Interlocked.Increment(CurrentExtractProgress)
                                 End If
-                            End Function, Root.Children))
+                            End Function, root.Children))
     End Function
 
     Private Async Function ExtractOverlay(fAT As List(Of FileAllocationEntry), overlayTable As List(Of OverlayTableEntry), targetDir As String, provider As IOProvider) As Task
-        If OverlayTable.Count > 0 AndAlso Not Provider.DirectoryExists(TargetDir) Then
-            Provider.CreateDirectory(TargetDir)
+        If overlayTable.Count > 0 AndAlso Not provider.DirectoryExists(targetDir) Then
+            provider.CreateDirectory(targetDir)
         End If
         Dim f As New AsyncFor
         f.RunSynchronously = Not Me.IsThreadSafe
-        f.BatchSize = OverlayTable.Count
+        f.BatchSize = overlayTable.Count
         Await f.RunForEach(Sub(item As OverlayTableEntry)
-                               Dim dest = IO.Path.Combine(TargetDir, "overlay_" & Item.OverlayID.ToString.PadLeft(4, "0"c) & ".bin")
-                               Dim entry = FAT(Item.FileID)
-                               Provider.WriteAllBytes(dest, RawData(entry.Offset, entry.EndAddress - entry.Offset))
-                           End Sub, OverlayTable)
+                               Dim dest = IO.Path.Combine(targetDir, "overlay_" & item.OverlayID.ToString.PadLeft(4, "0"c) & ".bin")
+                               Dim entry = fAT(item.FileID)
+                               provider.WriteAllBytes(dest, RawData(entry.Offset, entry.EndAddress - entry.Offset))
+                           End Sub, overlayTable)
     End Function
 
     ''' <summary>
@@ -658,13 +658,17 @@ Public Class GenericNDSRom
 
     Public ReadOnly Property Message As String Implements IReportProgress.Message
         Get
-            Return Nothing
+            If IsCompleted Then
+                Return My.Resources.Language.Complete
+            Else
+                Return My.Resources.Language.LoadingUnpacking
+            End If
         End Get
     End Property
 #End Region
 
     Public Overridable Function IsFileOfType(file As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
-        Return Task.FromResult(File.Length > &H15D AndAlso File.RawData(&H15C) = &H56 AndAlso File.RawData(&H15D) = &HCF)
+        Return Task.FromResult(file.Length > &H15D AndAlso file.RawData(&H15C) = &H56 AndAlso file.RawData(&H15D) = &HCF)
     End Function
 
 End Class
