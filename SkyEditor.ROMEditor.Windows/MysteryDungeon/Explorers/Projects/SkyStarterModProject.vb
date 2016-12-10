@@ -5,8 +5,9 @@ Imports SkyEditor.Core.Projects
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers.ViewModels
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
+Imports SkyEditor.ROMEditor.Windows.Projects
 
-Namespace Windows.Projects.Mods
+Namespace MysteryDungeon.Explorers.Projects
     Public Class SkyStarterModProject
         Inherits GenericModProject
 
@@ -30,7 +31,7 @@ Namespace Windows.Projects.Mods
             End If
             Dim LSPatcher As New FilePatcherJson()
             Dim lsFilename = Path.GetFileName(GetType(LanguageStringPatcher.LanguageString).Assembly.Location)
-            Dim toolsDir = path.GetDirectoryName(GetType(LanguageStringPatcher.LanguageString).Assembly.Location)
+            Dim toolsDir = Path.GetDirectoryName(GetType(LanguageStringPatcher.LanguageString).Assembly.Location)
             With LSPatcher
                 .CreatePatchProgram = lsFilename
                 .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
@@ -38,8 +39,8 @@ Namespace Windows.Projects.Mods
                 .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
                 .IsPatchMergeSafe = True
                 .PatchExtension = "textstrlsp"
-                .FilePath = ".*text_.\.str"         
-                .Dependencies = New List(Of String)    
+                .FilePath = ".*text_.\.str"
+                .Dependencies = New List(Of String)
             End With
             patchers.Add(New FilePatcher(LSPatcher, toolsDir))
             Return patchers

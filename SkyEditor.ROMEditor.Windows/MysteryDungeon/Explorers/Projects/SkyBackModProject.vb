@@ -1,10 +1,8 @@
-﻿Imports System.Collections.Concurrent
-Imports SkyEditor.Core.Projects
+﻿Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
-Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
+Imports SkyEditor.ROMEditor.Windows.Projects
 
-Namespace Windows.Projects.Mods
+Namespace MysteryDungeon.Explorers.Projects
     Public Class SkyBackModProject
         Inherits GenericModProject
 
@@ -28,7 +26,6 @@ Namespace Windows.Projects.Mods
             Dim sourceDir = GetRawFilesDir()
 
             Dim BACKdir As String = IO.Path.Combine(projectDir, "Backgrounds")
-            Me.CreateDirectory("Backgrounds")
             Dim backFiles = IO.Directory.GetFiles(IO.Path.Combine(sourceDir, "Data", "BACK"), "*.bgp")
             Dim f As New AsyncFor
             AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
@@ -37,13 +34,16 @@ Namespace Windows.Projects.Mods
             Await f.RunForEach(Async Function(Item As String) As Task
                                    Using b As New BGP
                                        Await b.OpenFile(Item, CurrentPluginManager.CurrentIOProvider)
+
                                        Dim newFilename = IO.Path.Combine(BACKdir, IO.Path.GetFileNameWithoutExtension(Item) & ".bmp")
                                        If Not IO.Directory.Exists(IO.Path.GetDirectoryName(newFilename)) Then
                                            IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(newFilename))
                                        End If
+
                                        b.GetImage.Save(newFilename, Drawing.Imaging.ImageFormat.Bmp)
                                        IO.File.Copy(newFilename, newFilename & ".original")
-                                       Me.AddExistingFile("Backgrounds", newFilename, CurrentPluginManager.CurrentIOProvider)
+
+                                       Me.AddExistingFileToPath("/" & IO.Path.GetFileName(newFilename), newFilename, Nothing, CurrentPluginManager.CurrentIOProvider)
                                    End Using
                                End Function, backFiles)
 
@@ -87,11 +87,6 @@ Namespace Windows.Projects.Mods
                     End If
 
                 Next
-            End If
-            'Cleanup
-            '-Data/Back/Decompressed
-            If IO.Directory.Exists(IO.Path.Combine(rawDir, "Data", "BACK", "Decompressed")) Then
-                IO.Directory.Delete(IO.Path.Combine(rawDir, "Data", "BACK", "Decompressed"), True)
             End If
 
             Await MyBase.DoBuild

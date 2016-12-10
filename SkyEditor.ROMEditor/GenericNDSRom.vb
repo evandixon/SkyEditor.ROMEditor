@@ -617,7 +617,7 @@ Public Class GenericNDSRom
         End Get
         Set(value As Integer)
             _extractProgress = value
-            RaiseEvent UnpackProgress(Me, New ProgressReportedEventArgs With {.IsIndeterminate = False, .Progress = ExtractionProgress})
+            RaiseEvent UnpackProgress(Me, New ProgressReportedEventArgs With {.IsIndeterminate = False, .Progress = ExtractionProgress, .Message = Message})
         End Set
     End Property
     Dim _extractProgress As Integer

@@ -473,6 +473,42 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to DS Modpack.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_DSModSolution() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_DSModSolution", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Portrait Mod.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_Explorers_Projects_KaomadoProject() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_Explorers_Projects_KaomadoProject", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Background Mod.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_Explorers_Projects_SkyBackModProject() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_Explorers_Projects_SkyBackModProject", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Starter Mod.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_Explorers_Projects_SkyStarterModProject() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_Explorers_Projects_SkyStarterModProject", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Nintendo 3DS ROMs.
         '''</summary>
         Friend Shared ReadOnly Property ThreeDSRomFile() As String

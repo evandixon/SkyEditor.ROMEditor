@@ -1,7 +1,8 @@
 ﻿Imports SkyEditor.Core.Projects
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
+Imports SkyEditor.ROMEditor.Windows.Projects
 
-Namespace Windows.Projects.Mods
+Namespace MysteryDungeon.Explorers.Projects
     Public Class KaomadoProject
         Inherits GenericModProject
 

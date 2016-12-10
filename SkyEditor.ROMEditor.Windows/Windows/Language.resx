@@ -260,4 +260,16 @@ evandixon (Personality test, bgp files)</value>
   <data name="LoadingConvertingSoundtrackXofY" xml:space="preserve">
     <value>Converting Soundtrack ({0} of {1})</value>
   </data>
+  <data name="SkyEditor_ROMEditor_DSModSolution" xml:space="preserve">
+    <value>DS Modpack</value>
+  </data>
+  <data name="SkyEditor_ROMEditor_MysteryDungeon_Explorers_Projects_KaomadoProject" xml:space="preserve">
+    <value>Portrait Mod</value>
+  </data>
+  <data name="SkyEditor_ROMEditor_MysteryDungeon_Explorers_Projects_SkyBackModProject" xml:space="preserve">
+    <value>Background Mod</value>
+  </data>
+  <data name="SkyEditor_ROMEditor_MysteryDungeon_Explorers_Projects_SkyStarterModProject" xml:space="preserve">
+    <value>Starter Mod</value>
+  </data>
 </root>
