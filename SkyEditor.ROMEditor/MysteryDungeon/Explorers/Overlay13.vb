@@ -1,4 +1,6 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports System.Reflection
+Imports SkyEditor.Core
+Imports SkyEditor.Core.IO
 
 Namespace MysteryDungeon.Explorers
     ''' <summary>
@@ -6,10 +8,34 @@ Namespace MysteryDungeon.Explorers
     ''' </summary>
     ''' <remarks></remarks>
     Public Class Overlay13
-        Public Sub New(Filename As String, provider As IOProvider)
-            Me.Filename = Filename
-            RawData = provider.ReadAllBytes(Filename)
+        Implements IDetectableFileType
+        Implements IOpenableFile        
+        Implements ISavable
+
+        Public Event FileSaved As ISavable.FileSavedEventHandler Implements ISavable.FileSaved
+
+        Public Sub New()
         End Sub
+
+        Public Sub New(filename As String, provider As IOProvider)
+            OpenFileInternal(filename, provider)
+        End Sub
+
+        Public Function OpenFile(filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+            OpenFileInternal(filename, Provider)
+            Return Task.FromResult(0)
+        End Function
+
+        Private Sub OpenFileInternal(filename As String, provider As IOProvider)
+            Me.Filename = filename
+            RawData = provider.ReadAllBytes(filename)
+        End Sub
+
+        Public Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
+            'Todo: Detect by something specific
+            Dim lowerFilename = Path.GetFileName(File.OriginalFilename).ToLower
+            Return Task.FromResult(lowerFilename = "overlay_0013.bin" OrElse lowerFilename = "starter pokemon")
+        End Function
 
         Public Property Filename As String
         Public Property RawData As Byte()
@@ -603,8 +629,9 @@ Namespace MysteryDungeon.Explorers
             End If
         End Function
 
-        Public Sub Save(provider As IOProvider)
+        Public Sub Save(provider As IOProvider) Implements ISavable.Save
             provider.WriteAllBytes(Filename, RawData)
+            RaiseEvent FileSaved(Me, New EventArgs)
         End Sub
 
     End Class
