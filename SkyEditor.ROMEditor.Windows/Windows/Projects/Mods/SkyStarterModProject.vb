@@ -89,9 +89,8 @@ Namespace Windows.Projects.Mods
             Dim rawDir = GetRawFilesDir()
             Dim projDir = GetRootDirectory()
 
-            'Copy Personality Test
-            Dim personalityTest As New PersonalityTestContainer(New Overlay13(Path.Combine(projDir, "Starter Pokemon"), CurrentPluginManager.CurrentIOProvider))
-            File.Copy(Path.Combine(projDir, "Starter Pokemon"), Path.Combine(rawDir, "Overlay", "overlay_0013.bin"), True)            
+            'Open Personality Test
+            Dim personalityTest As New PersonalityTestContainer(Await Me.GetFileByPath("/Starter Pokemon", CurrentPluginManager, AddressOf IOHelper.PickFirstDuplicateMatchSelector))
 
             'Convert Languages
             Dim languageDictionary As New Dictionary(Of String, String)
