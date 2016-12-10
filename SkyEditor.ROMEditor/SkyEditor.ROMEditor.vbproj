@@ -170,8 +170,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\MysteryDungeon\PSMD Move Name Hashes.txt" />
-    <Content Include="Resources\MysteryDungeon\PSMD Pokemon Name Hashes.txt" />
+    <None Include="Resources\MysteryDungeon\PSMD Move Name Hashes.txt" />
+    <None Include="Resources\MysteryDungeon\PSMD Pokemon Name Hashes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
