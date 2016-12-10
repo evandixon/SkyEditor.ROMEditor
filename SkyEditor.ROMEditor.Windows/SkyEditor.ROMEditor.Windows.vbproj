@@ -183,7 +183,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Projects\PpmduStatsUtilProject.vb" />
+    <Compile Include="MysteryDungeon\Explorers\Projects\PpmduStatsUtilProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\IPsmdMessageBinProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\PSMDStarterMod.vb" />
     <Compile Include="Windows\PsmdDir.vb" />
@@ -191,17 +191,17 @@
     <Compile Include="Windows\FileFormats\Explorers\Script\SSA.vb" />
     <Compile Include="Windows\FileFormats\CTR\Smdh.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\SSB.vb" />
-    <Compile Include="Windows\Projects\BaseRomProject.vb" />
+    <Compile Include="Projects\BaseRomProject.vb" />
     <Compile Include="Windows\ConsoleCommands\BatchCteConvert.vb" />
     <Compile Include="Windows\ConsoleCommands\ImportLanguage.vb" />
     <Compile Include="Windows\DSIconTool.vb" />
-    <Compile Include="Windows\Projects\DSModPackProject.vb" />
+    <Compile Include="Projects\DSModPackProject.vb" />
     <Compile Include="DSModSolution.vb" />
     <Compile Include="Windows\GameCodeRegistry.vb" />
     <Compile Include="MysteryDungeon\Explorers\BGP.vb" />
     <Compile Include="Windows\FileFormats\Explorers\DecompressedFile.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Kaomado.vb" />
-    <Compile Include="Windows\Projects\GenericModProject.vb" />
+    <Compile Include="Projects\GenericModProject.vb" />
     <Compile Include="Windows\Java.vb" />
     <Compile Include="MysteryDungeon\PSMD\CteImage.vb" />
     <Compile Include="Windows\Mods\GenericSkyMod.vb" />
@@ -216,9 +216,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Windows\Projects\Mods\GtiImage2dProject.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Projects\GtiImage2dProject.vb" />
     <Compile Include="MysteryDungeon\Explorers\Projects\KaomadoProject.vb" />
-    <Compile Include="Windows\Projects\Mods\Pk3DSModProject.vb" />
+    <Compile Include="Projects\Pk3DSModProject.vb" />
     <Compile Include="MysteryDungeon\Explorers\Projects\SkyBackModProject.vb" />
     <Compile Include="MysteryDungeon\Explorers\Projects\SkyStarterModProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\PsmdLuaProject.vb" />
@@ -338,6 +338,7 @@
       <Name>SkyEditor.ROMEditor</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

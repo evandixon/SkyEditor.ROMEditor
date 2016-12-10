@@ -200,6 +200,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Loading....
+        '''</summary>
+        Friend Shared ReadOnly Property Loading() As String
+            Get
+                Return ResourceManager.GetString("Loading", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Adding files....
         '''</summary>
         Friend Shared ReadOnly Property LoadingAddingFiles() As String
@@ -505,6 +514,33 @@ Namespace My.Resources
         Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_Explorers_Projects_SkyStarterModProject() As String
             Get
                 Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_Explorers_Projects_SkyStarterModProject", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Stats Util Project.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_Explporers_Projects_PpmduStatsUtilProject() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_Explporers_Projects_PpmduStatsUtilProject", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Modpack.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_Projects_DSModPackProject() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_Projects_DSModPackProject", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Generic Mod.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_Projects_GenericModProject() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_Projects_GenericModProject", resourceCulture)
             End Get
         End Property
         

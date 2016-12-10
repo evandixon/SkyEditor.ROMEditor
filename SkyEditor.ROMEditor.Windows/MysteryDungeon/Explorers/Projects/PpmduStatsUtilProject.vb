@@ -1,6 +1,7 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports SkyEditor.ROMEditor.Projects
+Imports SkyEditor.ROMEditor.Windows
 
-Namespace Windows.Projects
+Namespace MysteryDungeon.Explorers.Projects
     Public Class PpmduStatsUtilProject
         Inherits GenericModProject
 
@@ -12,20 +13,30 @@ Namespace Windows.Projects
             Await MyBase.Initialize()
 
             Dim outputDir = IO.Path.Combine(Me.GetRootDirectory)
+
+            Me.IsBuildProgressIndeterminate = True
+            Me.BuildStatusMessage = My.Resources.Language.Loading
+
             Using external As New ExternalProgramManager
-                Await external.RunPPMDStatsUtil($"-e -scripts -romroot ""{Me.GetRawFilesDir}"" ""{outputDir}""")
+
+                Await external.RunPPMDStatsUtil($"-e -pokemon -moves -items -scripts -romroot ""{Me.GetRawFilesDir}"" ""{outputDir}""")
+
             End Using
 
             'Add files to project
             For Each item In IO.Directory.GetFiles(outputDir, "*.xml", IO.SearchOption.AllDirectories)
                 Me.AddExistingFile(IO.Path.GetDirectoryName(item).Replace(outputDir, ""), item, CurrentPluginManager.CurrentIOProvider)
             Next
+
+            Me.BuildStatusMessage = My.Resources.Language.Complete
+            Me.BuildProgress = 1
+            Me.IsBuildProgressIndeterminate = False
         End Function
 
         Protected Overrides Async Function DoBuild() As Task
             Dim outputDir = IO.Path.Combine(Me.GetRootDirectory)
             Using external As New ExternalProgramManager
-                Await external.RunPPMDStatsUtil($"-i -scripts -romroot ""{Me.GetRawFilesDir}"" ""{outputDir}""")
+                Await external.RunPPMDStatsUtil($"-i -pokemon -moves -items -scripts -romroot ""{Me.GetRawFilesDir}"" ""{outputDir}""")
             End Using
             Await MyBase.DoBuild
         End Function

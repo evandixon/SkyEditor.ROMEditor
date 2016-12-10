@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.ROMEditor.Projects
 
 Namespace MysteryDungeon.Explorers.Projects
     Public Class SkyBackModProject

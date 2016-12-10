@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.Projects
+Imports SkyEditor.ROMEditor.Projects
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
-Imports SkyEditor.ROMEditor.Windows.Projects
 
 Namespace MysteryDungeon.Explorers.Projects
     Public Class KaomadoProject

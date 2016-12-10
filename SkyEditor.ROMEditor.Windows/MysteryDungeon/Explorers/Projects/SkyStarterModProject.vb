@@ -2,10 +2,8 @@
 Imports DS_ROM_Patcher
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
-Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers.ViewModels
-Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
-Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.ROMEditor.Projects
 
 Namespace MysteryDungeon.Explorers.Projects
     Public Class SkyStarterModProject

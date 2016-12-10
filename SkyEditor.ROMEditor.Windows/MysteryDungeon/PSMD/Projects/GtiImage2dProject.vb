@@ -1,8 +1,8 @@
 ﻿Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
+Imports SkyEditor.ROMEditor.Projects
 
-Namespace Windows.Projects.Mods
+Namespace MysteryDungeon.PSMD.Projects
     Public Class GtiImage2dProject
         Inherits GenericModProject
 

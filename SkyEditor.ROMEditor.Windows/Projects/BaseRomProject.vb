@@ -6,7 +6,7 @@ Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.ROMEditor
 
-Namespace Windows.Projects
+Namespace Projects
     Public Class BaseRomProject
         Inherits Project
 

@@ -1,9 +1,8 @@
 ﻿Imports System.Reflection
 Imports DS_ROM_Patcher
 Imports SkyEditor.Core
-Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
-Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.ROMEditor.Projects
 
 Public Class DSModSolution
     Inherits Solution

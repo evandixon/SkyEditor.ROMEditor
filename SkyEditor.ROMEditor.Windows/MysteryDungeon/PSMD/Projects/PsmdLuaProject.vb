@@ -5,9 +5,8 @@ Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.Core.Windows.Processes
-Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.ROMEditor.Windows
-Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.ROMEditor.Projects
 
 Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>

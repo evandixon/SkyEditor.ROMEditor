@@ -6,7 +6,7 @@ Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.Core.Windows.Processes
 
-Namespace Windows.Projects
+Namespace Projects
     Public Class DSModPackProject
         Inherits Project
 

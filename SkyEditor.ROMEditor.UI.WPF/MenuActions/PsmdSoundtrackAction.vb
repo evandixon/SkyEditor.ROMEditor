@@ -1,6 +1,6 @@
 ﻿Imports System.Reflection
 Imports SkyEditor.Core.UI
-Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.ROMEditor.Projects
 Imports SkyEditor.UI.WPF.ViewModels.Projects
 
 Namespace MenuActions

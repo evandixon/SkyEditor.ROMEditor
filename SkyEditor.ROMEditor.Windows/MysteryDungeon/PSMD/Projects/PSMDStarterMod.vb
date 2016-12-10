@@ -1,7 +1,6 @@
 ﻿Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
 
