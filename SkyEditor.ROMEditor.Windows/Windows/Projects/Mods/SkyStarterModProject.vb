@@ -78,8 +78,7 @@ Namespace Windows.Projects.Mods
             Next
 
             'Add Personality Test
-            File.Copy(Path.Combine(rawDir, "Overlay", "overlay_0013.bin"), Path.Combine(projDir, "Starter Pokemon"), True)
-            Me.AddExistingFile("", IO.Path.Combine(projDir, "Starter Pokemon"), CurrentPluginManager.CurrentIOProvider)
+            Me.AddExistingFileToPath("/Starter Pokemon", Path.Combine(rawDir, "Overlay", "overlay_0013.bin"), GetType(Overlay13), CurrentPluginManager.CurrentIOProvider)
 
             Me.BuildProgress = 1
             Me.IsBuildProgressIndeterminate = False

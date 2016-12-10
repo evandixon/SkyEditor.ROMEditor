@@ -8,9 +8,9 @@ Namespace MysteryDungeon.Explorers
     ''' </summary>
     ''' <remarks></remarks>
     Public Class Overlay13
-        Implements IDetectableFileType
         Implements IOpenableFile        
         Implements ISavable
+        Implements IOnDisk
 
         Public Event FileSaved As ISavable.FileSavedEventHandler Implements ISavable.FileSaved
 
@@ -31,14 +31,9 @@ Namespace MysteryDungeon.Explorers
             RawData = provider.ReadAllBytes(filename)
         End Sub
 
-        Public Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
-            'Todo: Detect by something specific
-            Dim lowerFilename = Path.GetFileName(File.OriginalFilename).ToLower
-            Return Task.FromResult(lowerFilename = "overlay_0013.bin" OrElse lowerFilename = "starter pokemon")
-        End Function
-
-        Public Property Filename As String
+        Public Property Filename As String Implements IOnDisk.Filename
         Public Property RawData As Byte()
+
 #Region "RawIDs"
         Public Property Partner01 As UInt16
             Get
@@ -592,6 +587,7 @@ Namespace MysteryDungeon.Explorers
         End Property
 
 #End Region
+
         ''' <summary>
         ''' Returns the rawID, subtracted by 600 if applicable
         ''' </summary>
