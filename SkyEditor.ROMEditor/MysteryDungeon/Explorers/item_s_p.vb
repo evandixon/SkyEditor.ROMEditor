@@ -1,8 +1,9 @@
 ﻿Imports SkyEditor.Core.IO
 
 Namespace MysteryDungeon.Explorers
-    <Obsolete("Needs rewriting")> Public Class item_s_p
-        Inherits GenericFile
+    Public Class item_s_p
+        Inherits ExplorersSir0
+
         Public Structure Item
             ''' <summary>
             ''' Rarity of the item (ex. *, **, ***).  Also controls whether the item affects a Pokemon or a Type.
@@ -37,66 +38,29 @@ Namespace MysteryDungeon.Explorers
 
         Public Property Items As List(Of Item)
 
-        Private Sub InitItems()
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task
+            Await MyBase.OpenFile(Filename, Provider)
+
             Items = New List(Of Item)
-            If Length >= 16 Then
-                Dim index = &H10
-                While index + 3 < Length
-                    Dim parameter = BitConverter.ToUInt16(RawData(index, 2), 0)
-                    If parameter = &H404 Then 'End of the file
-                        Exit While
-                    Else
-                        Dim id = BitConverter.ToUInt16(RawData(index + 2, 2), 0)
-                        Items.Add(New Item(parameter, id))
-                    End If
-                    index += 4
-                End While
-            End If
-        End Sub
+
+            For count = 0 To ContentHeader.Length - 1 Step 4
+                Dim item As New Item
+                item.Rarity = BitConverter.ToUInt16(ContentHeader, count + 0)
+                item.TargetID = BitConverter.ToUInt16(ContentHeader, count + 2)
+                Items.Add(item)
+            Next
+        End Function
+
         Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
-            Length = &HF0F '4 * Items.Count + 32
+            Dim out As New List(Of Byte)
 
-            'Write header
-            RawData(0) = &H53 'S
-            RawData(1) = &H49 'I
-            RawData(2) = &H52 'R
-            RawData(3) = &H30 '0
-            RawData(4) = &H0
-            RawData(5) = &H0
-            RawData(6) = &H0
-            RawData(7) = &H0
-            RawData(8) = &H0
-            RawData(9) = &HF 'Probably the last byte of the header, probably.
-            RawData(10) = &H0
-            RawData(11) = &H0
-            RawData(12) = &H0
-            RawData(13) = &H0
-            RawData(14) = &H0
-            RawData(15) = &H0
-
-            'Write body
-            For count = 0 To Math.Min(Items.Count - 1, 956)
-                RawData(15 + count, 2) = BitConverter.GetBytes(Items(count).Rarity)
-                RawData(15 + count + 2, 2) = BitConverter.GetBytes(Items(count).TargetID)
+            For Each item In Items
+                out.AddRange(BitConverter.GetBytes(item.Rarity))
+                out.AddRange(BitConverter.GetBytes(item.TargetID))
             Next
 
-            'Write footer
-            RawData(Length - 16) = &H53
-            RawData(Length - 15) = &H49
-            RawData(Length - 14) = &H52
-            RawData(Length - 13) = &H30
-            RawData(Length - 12) = &H0
-            RawData(Length - 11) = &H0
-            RawData(Length - 10) = &H0
-            RawData(Length - 9) = &H0
-            RawData(Length - 8) = &H0
-            RawData(Length - 7) = &HF
-            RawData(Length - 6) = &H0
-            RawData(Length - 5) = &H0
-            RawData(Length - 4) = &H0
-            RawData(Length - 3) = &H0
-            RawData(Length - 2) = &H0
-            RawData(Length - 1) = &H0
+            Me.ContentHeader = out.ToArray
+
             Await MyBase.Save(Destination, provider)
         End Function
     End Class
