@@ -172,6 +172,7 @@ Namespace MysteryDungeon
                     Next
                 End If
             Next
+            pointerSection.Add(0) 'Seems to mark the end of the pointers
 
             oldLength = Me.Length
             Me.Length += pointerSection.Count

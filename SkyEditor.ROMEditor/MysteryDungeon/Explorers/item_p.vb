@@ -169,15 +169,12 @@ Namespace MysteryDungeon.Explorers
             Items = New List(Of Item)
 
             For count As Integer = 0 To ContentHeader.Length - 1 Step 16
-                Items.Add(New Item(Me.RawData(count, 16)))
+                Items.Add(New Item(ContentHeader.Skip(count).Take(16).ToArray))
             Next
         End Sub
 
         Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Dim out As New List(Of Byte)
-            For count As Integer = 0 To 31
-                out.Add(RawData(count))
-            Next
 
             For Each item In Items
                 For count As Integer = 0 To 15

@@ -9,6 +9,21 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor.Windows
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor.UI.WPF", "SkyEditor.ROMEditor.UI.WPF\SkyEditor.ROMEditor.UI.WPF.vbproj", "{4E3861A8-1669-4328-90FC-86D76B0FC0B6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5788E15F-1D0E-44BD-9623-C7426B413CFF}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor.Tests", "Tests\SkyEditor.ROMEditor.Tests\SkyEditor.ROMEditor.Tests.vbproj", "{19F6F4C2-A2A8-4C78-8188-9A8859E3219D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AC4B9B61-DD76-4308-B12E-94BAE3D3BA90}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test ROMs", "Test ROMs", "{2BBCE536-3CB9-4953-A8C9-1F6A70322DD9}"
+	ProjectSection(SolutionItems) = preProject
+		Tests\Test ROMs\EoS-U-MD5 = Tests\Test ROMs\EoS-U-MD5
+		Tests\Test ROMs\eos-u.nds = Tests\Test ROMs\eos-u.nds
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,8 +56,20 @@ Global
 		{4E3861A8-1669-4328-90FC-86D76B0FC0B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4E3861A8-1669-4328-90FC-86D76B0FC0B6}.Release|x86.ActiveCfg = Release|Any CPU
 		{4E3861A8-1669-4328-90FC-86D76B0FC0B6}.Release|x86.Build.0 = Release|Any CPU
+		{19F6F4C2-A2A8-4C78-8188-9A8859E3219D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19F6F4C2-A2A8-4C78-8188-9A8859E3219D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19F6F4C2-A2A8-4C78-8188-9A8859E3219D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{19F6F4C2-A2A8-4C78-8188-9A8859E3219D}.Debug|x86.Build.0 = Debug|Any CPU
+		{19F6F4C2-A2A8-4C78-8188-9A8859E3219D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19F6F4C2-A2A8-4C78-8188-9A8859E3219D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19F6F4C2-A2A8-4C78-8188-9A8859E3219D}.Release|x86.ActiveCfg = Release|Any CPU
+		{19F6F4C2-A2A8-4C78-8188-9A8859E3219D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{19F6F4C2-A2A8-4C78-8188-9A8859E3219D} = {5788E15F-1D0E-44BD-9623-C7426B413CFF}
+		{2BBCE536-3CB9-4953-A8C9-1F6A70322DD9} = {5788E15F-1D0E-44BD-9623-C7426B413CFF}
 	EndGlobalSection
 EndGlobal
