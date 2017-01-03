@@ -1,10 +1,8 @@
 ﻿Imports PPMDU
 Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.Windows
-Imports SkyEditor.Core.Windows.Processes
 
-Namespace Windows.FileFormats.Explorers
-    Public Class DecompressedFile
+Namespace MysteryDungeon.Explorers
+    Public Class CompressedFile
         Inherits GenericFile
 
         Public Sub New()

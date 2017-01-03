@@ -202,7 +202,7 @@
     <Compile Include="DSModSolution.vb" />
     <Compile Include="Windows\GameCodeRegistry.vb" />
     <Compile Include="MysteryDungeon\Explorers\BGP.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\DecompressedFile.vb" />
+    <Compile Include="MysteryDungeon\Explorers\CompressedFile.vb" />
     <Compile Include="Projects\GenericModProject.vb" />
     <Compile Include="Windows\Java.vb" />
     <Compile Include="MysteryDungeon\PSMD\CteImage.vb" />
