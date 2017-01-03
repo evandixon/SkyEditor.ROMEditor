@@ -171,15 +171,15 @@ Namespace MysteryDungeon.PSMD
                 Entries.Add(New PokemonInfoEntry(RawData(count * entryLength, entryLength)))
             Next
         End Function
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Me.Length = Entries.Count * entryLength
 
             For count = 0 To Entries.Count - 1
                 RawData(count * entryLength, entryLength) = Entries(count).ToBytes
             Next
 
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
 
         Public Sub New()
             MyBase.New()

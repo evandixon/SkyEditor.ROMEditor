@@ -199,11 +199,11 @@ Namespace MysteryDungeon.Explorers
 
             Return out.ToArray
         End Function
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Dim buffer = GetBytes()
             Length = buffer.Length
             RawData(0, Length) = buffer
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
     End Class
 End Namespace

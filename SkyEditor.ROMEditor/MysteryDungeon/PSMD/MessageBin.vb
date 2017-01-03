@@ -111,7 +111,7 @@ Namespace MysteryDungeon.PSMD
             Next
         End Function
 
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Me.RelativePointers.Clear()
             'Sir0 header pointers
             Me.RelativePointers.Add(4)
@@ -146,8 +146,8 @@ Namespace MysteryDungeon.PSMD
             Me.RelativePointers.Add(&H10)
 
             'Let the general SIR0 stuff happen
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
 
         ''' <summary>
         ''' Gets the Pokemon names, if the current instance of <see cref="MessageBin"/> is the common file. 

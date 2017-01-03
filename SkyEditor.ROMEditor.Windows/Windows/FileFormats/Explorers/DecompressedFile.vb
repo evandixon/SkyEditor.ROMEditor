@@ -1,4 +1,5 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports PPMDU
+Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.Core.Windows.Processes
 
@@ -13,10 +14,17 @@ Namespace Windows.FileFormats.Explorers
 
         Protected Property IsAT4PX As Boolean
 
+        Protected Property TempFilename As String
+
         Public Overrides Async Function OpenFile(filename As String, provider As IOProvider) As Task
-            Dim tempFilename = provider.GetTempFilename
-            Await RunDecompress(filename, tempFilename)
-            Await MyBase.OpenFile(tempFilename, provider)
+            TempFilename = provider.GetTempFilename
+
+            Using external As New UtilityManager
+                Await external.UnPX(filename, TempFilename)
+            End Using
+
+            Await MyBase.OpenFile(TempFilename, provider)
+
             Me.OriginalFilename = filename
         End Function
 
@@ -24,28 +32,22 @@ Namespace Windows.FileFormats.Explorers
         ''' Saves and compresses the DecompressedFile.
         ''' </summary>
         ''' <remarks></remarks>
-        Public Overrides Sub Save(Path As String, provider As IOProvider)
-            Dim tempFilename = provider.GetTempFilename
-            If IsAT4PX Then
-                IO.File.Move(tempFilename, tempFilename & ".at4px")
-                tempFilename = tempFilename & ".at4px"
-            End If
-            MyBase.Save(tempFilename, provider)
-            RunCompress(tempFilename, Path).Wait()
-            Me.OriginalFilename = Path
-        End Sub
+        Public Overrides Async Function Save(filename As String, provider As IOProvider) As Task
 
-        Public Shared Async Function RunDecompress(sourceFilename As String, destinationFilename As String) As Task
-            Using external As New ExternalProgramManager
-                Await external.RunPPMDUnPX(String.Format("""{0}"" ""{1}""", sourceFilename, destinationFilename))
-            End Using
-        End Function
+            Await MyBase.Save(TempFilename, provider)
 
-        Public Shared Async Function RunCompress(sourceFilename As String, destinationFilename As String) As Task
-            Using external As New ExternalProgramManager
-                'Todo: specify encryption
-                Await external.RunPPMDPXComp(String.Format("""{0}"" ""{1}""", sourceFilename, destinationFilename)).ConfigureAwait(False)
+            Using external As New UtilityManager
+                Dim format As PXFormat
+                If IsAT4PX Then
+                    format = PXFormat.AT4PX
+                Else
+                    format = PXFormat.PKDPX
+                End If
+
+                Await external.DoPX(TempFilename, filename, format)
             End Using
+
+            Me.OriginalFilename = filename
         End Function
 
     End Class

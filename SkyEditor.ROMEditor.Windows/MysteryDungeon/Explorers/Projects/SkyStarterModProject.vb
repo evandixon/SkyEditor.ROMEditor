@@ -73,7 +73,7 @@ Namespace MysteryDungeon.Explorers.Projects
                         Await langString.OpenFile(IO.Path.Combine(rawDir, "Data", "MESSAGE", item.Key), CurrentPluginManager.CurrentIOProvider)
                         Dim langList As New ObjectFile(Of List(Of String))(CurrentPluginManager.CurrentIOProvider)
                         langList.ContainedObject = langString.Items
-                        langList.Save(IO.Path.Combine(projDir, "Languages", item.Value), CurrentPluginManager.CurrentIOProvider)
+                        Await langList.Save(IO.Path.Combine(projDir, "Languages", item.Value), CurrentPluginManager.CurrentIOProvider)
                     End Using
                 End If
             Next
@@ -112,7 +112,7 @@ Namespace MysteryDungeon.Explorers.Projects
                             langString.UpdatePersonalityTestResult(personalityTest)
                         End If
 
-                        langString.Save(IO.Path.Combine(rawDir, "Data", "MESSAGE", item.Key), CurrentPluginManager.CurrentIOProvider)
+                        Await langString.Save(IO.Path.Combine(rawDir, "Data", "MESSAGE", item.Key), CurrentPluginManager.CurrentIOProvider)
                     End Using
                 End If
             Next

@@ -82,7 +82,7 @@ Namespace MysteryDungeon.Explorers.Projects
 
                     If includeInPack Then
                         Using img = BGP.ConvertFromBitmap(Drawing.Bitmap.FromFile(background))
-                            img.Save(IO.Path.Combine(rawDir, "Data", "BACK", IO.Path.GetFileNameWithoutExtension(background) & ".bgp"), CurrentPluginManager.CurrentIOProvider)
+                            Await img.Save(IO.Path.Combine(rawDir, "Data", "BACK", IO.Path.GetFileNameWithoutExtension(background) & ".bgp"), CurrentPluginManager.CurrentIOProvider)
                         End Using
                     End If
 

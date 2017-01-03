@@ -103,20 +103,20 @@
       <HintPath>..\packages\ppmdu-wrapper.1.0.0\lib\net46\ppmdu-wrapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor, Version=4.0.7.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.4.0.7\lib\net46\SkyEditor.CodeEditor.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor, Version=4.0.13.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.4.0.13\lib\net46\SkyEditor.CodeEditor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.Core, Version=4.0.11.13, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.0.11\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
+    <Reference Include="SkyEditor.Core, Version=4.0.13.15, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.4.0.13\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.Core.Windows, Version=4.0.11.13, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.Windows.4.0.11\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
+    <Reference Include="SkyEditor.Core.Windows, Version=4.0.13.15, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.Windows.4.0.13\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.SaveEditor, Version=4.0.11.5, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.SaveEditor.4.0.11\lib\portable45-net45+win8\SkyEditor.SaveEditor.dll</HintPath>
+    <Reference Include="SkyEditor.SaveEditor, Version=4.0.13.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.SaveEditor.4.0.13\lib\portable45-net45+win8\SkyEditor.SaveEditor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -158,7 +158,6 @@
     <Compile Include="Windows\ConsoleCommands\PSMDExpTableCsv.vb" />
     <Compile Include="Windows\ConsoleCommands\PSMDLangSearch.vb" />
     <Compile Include="Windows\ConsoleCommands\Sir0Ptrs.vb" />
-    <Compile Include="Windows\ExternalProgramHelpers.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\CommandParameterAttribute.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\Commands\BasicTalkCommand.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\Commands\BgmFadeIn.vb" />
@@ -204,7 +203,6 @@
     <Compile Include="Windows\GameCodeRegistry.vb" />
     <Compile Include="MysteryDungeon\Explorers\BGP.vb" />
     <Compile Include="Windows\FileFormats\Explorers\DecompressedFile.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\Kaomado.vb" />
     <Compile Include="Projects\GenericModProject.vb" />
     <Compile Include="Windows\Java.vb" />
     <Compile Include="MysteryDungeon\PSMD\CteImage.vb" />
@@ -257,6 +255,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\PSMDStarterIntroScript.lua" />
     <None Include="Windows\app.config" />
     <Compile Include="Windows\FileFormats\Explorers\Script\SSB.SkyCommandFactory.vb" />
     <None Include="My Project\Application.myapp">
@@ -272,11 +271,6 @@
     <Content Include="Resources\MysteryDungeon\PSMD Move Name Hashes.txt" />
     <Content Include="Resources\MysteryDungeon\PSMD Pokemon Name Hashes.txt" />
     <Content Include="Windows\App.ico" />
-    <Content Include="Resources\pmd2scriptdata.xml" />
-    <Content Include="Resources\ppmd_pxcomp.exe" />
-    <None Include="Resources\ppmd_statsutil.exe" />
-    <Content Include="Resources\ppmd_unpx.exe" />
-    <Content Include="Resources\PSMDStarterIntroScript.lua" />
     <Content Include="SkyEditor.ROMEditor.Windows\lua\bin2c5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -328,10 +322,6 @@
     <Content Include="SkyEditor.ROMEditor.Windows\pokenames.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\ppmd_kaoutil.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\ppmd_kaoutil.txt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />

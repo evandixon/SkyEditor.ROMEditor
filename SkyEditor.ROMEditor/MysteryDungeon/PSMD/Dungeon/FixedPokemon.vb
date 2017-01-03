@@ -116,7 +116,7 @@ Namespace MysteryDungeon.PSMD.Dungeon
             Next
         End Function
 
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Me.RelativePointers.Clear()
             'Sir0 header pointers
             Me.RelativePointers.Add(4)
@@ -148,8 +148,8 @@ Namespace MysteryDungeon.PSMD.Dungeon
             Me.Header = headerBytes.ToArray
 
             'Let the general SIR0 stuff happen
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
 
         Public Overrides Async Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
             'Check to see if it's a SIR0 file named "fixed_pokemon.bin"

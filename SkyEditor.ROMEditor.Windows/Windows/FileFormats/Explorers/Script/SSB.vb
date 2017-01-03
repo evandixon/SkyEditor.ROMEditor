@@ -303,7 +303,7 @@ Namespace Windows.FileFormats.Explorers.Script
             Return $"Goto-{LabelIndex}"
         End Function
 
-        Public Sub Save(Filename As String, provider As IOProvider) Implements ISavableAs.Save
+        Public Function Save(Filename As String, provider As IOProvider) As Task Implements ISavableAs.Save
             RaiseEvent FileSaving(Me, New EventArgs)
 
             'Preprocess the constants and strings
@@ -498,11 +498,12 @@ Namespace Windows.FileFormats.Explorers.Script
 
             provider.WriteAllBytes(Filename, out.ToArray)
             RaiseEvent FileSaved(Me, New EventArgs)
-        End Sub
+            Return Task.CompletedTask
+        End Function
 
-        Public Sub Save(provider As IOProvider) Implements ISavable.Save
-            Save(Me.Filename, provider)
-        End Sub
+        Public Async Function Save(provider As IOProvider) As Task Implements ISavable.Save
+            Await Save(Me.Filename, provider)
+        End Function
 
         Public Function GetDefaultExtension() As String Implements ISavableAs.GetDefaultExtension
             Return "ssb"

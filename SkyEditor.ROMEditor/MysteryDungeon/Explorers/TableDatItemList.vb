@@ -27,7 +27,7 @@ Namespace MysteryDungeon.Explorers
                 Next
             End If
         End Sub
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Me.Length = 2 + (Items.Count * 4)
             RawData(0, 2) = BitConverter.GetBytes(Items.Count)
             For count As Integer = 0 To Items.Count - 1
@@ -38,8 +38,8 @@ Namespace MysteryDungeon.Explorers
                 End If
                 RawData(count * 4 + 2, 2) = BitConverter.GetBytes(Items(count).ItemID)
             Next
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
     End Class
 
 End Namespace

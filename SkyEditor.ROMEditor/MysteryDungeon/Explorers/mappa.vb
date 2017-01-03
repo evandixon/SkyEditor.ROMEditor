@@ -552,7 +552,7 @@ Namespace MysteryDungeon.Explorers
 #End Region
 
 #Region "Save"
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
 
             Dim dataBlock As New List(Of Byte)
 
@@ -766,8 +766,8 @@ Namespace MysteryDungeon.Explorers
             Me.RawData(&H10, dataBlock.Count) = dataBlock.ToArray
 
             'Finish
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
 #End Region
 
         Public Property Dungeons As List(Of DungeonBalance)

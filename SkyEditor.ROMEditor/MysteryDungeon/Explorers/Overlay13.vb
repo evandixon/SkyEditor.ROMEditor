@@ -625,10 +625,11 @@ Namespace MysteryDungeon.Explorers
             End If
         End Function
 
-        Public Sub Save(provider As IOProvider) Implements ISavable.Save
+        Public Function Save(provider As IOProvider) As Task Implements ISavable.Save
             provider.WriteAllBytes(Filename, RawData)
             RaiseEvent FileSaved(Me, New EventArgs)
-        End Sub
+            Return Task.FromResult(0)
+        End Function
 
     End Class
 

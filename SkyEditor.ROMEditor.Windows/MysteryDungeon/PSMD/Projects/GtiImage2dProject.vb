@@ -79,7 +79,7 @@ Namespace MysteryDungeon.PSMD.Projects
                     Dim img As New CteImage
                     Await img.OpenFile(IO.Path.Combine(rawFilesDir, "romfs", IO.Path.GetDirectoryName(background).Replace(sourceDir, ""), IO.Path.GetFileNameWithoutExtension(background) & ".img"), CurrentPluginManager.CurrentIOProvider)
                     img.ContainedImage = Drawing.Image.FromFile(background)
-                    img.Save(CurrentPluginManager.CurrentIOProvider)
+                    Await img.Save(CurrentPluginManager.CurrentIOProvider)
                     img.Dispose()
                 End If
 

@@ -164,7 +164,7 @@ Namespace MysteryDungeon.PSMD.Projects
             actorInfo.GetEntryByName("HARIMARON_H").PokemonID = starter766
             actorInfo.GetEntryByName("FOKKO_H").PokemonID = starter769
             actorInfo.GetEntryByName("KEROMATSU_H").PokemonID = starter772
-            actorInfo.Save(CurrentPluginManager.CurrentIOProvider)
+            Await actorInfo.Save(CurrentPluginManager.CurrentIOProvider)
 
             'Replace intro sequence with custom script
             ' -- TODO: Figure out how to patch this without storing a modified copy
@@ -212,7 +212,7 @@ Namespace MysteryDungeon.PSMD.Projects
                             langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200004, .Entry = "Setting Hero..."})
                             langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200005, .Entry = "Setting Partner..."})
                         End If
-                        langFile.Save(CurrentPluginManager.CurrentIOProvider)
+                        Await langFile.Save(CurrentPluginManager.CurrentIOProvider)
                     End Using
                 End If
             Next
@@ -296,7 +296,7 @@ Namespace MysteryDungeon.PSMD.Projects
                         Await charchoiceFile.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "charchoice"), CurrentPluginManager.CurrentIOProvider)
                         Dim charchoiceEntry = charchoiceFile.Strings.Where(Function(x) x.HashSigned = charchoice.Value).Single
                         charchoiceEntry.Entry = String.Format(charchoiceLanguageTemplate.Value, pokemonNames(pokemonID))
-                        charchoiceFile.Save(CurrentPluginManager.CurrentIOProvider)
+                        Await charchoiceFile.Save(CurrentPluginManager.CurrentIOProvider)
                     Next
                 End If
             Next

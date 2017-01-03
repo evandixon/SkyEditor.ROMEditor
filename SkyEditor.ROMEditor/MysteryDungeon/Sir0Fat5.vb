@@ -94,10 +94,10 @@ Namespace MysteryDungeon
             MyBase.DoPreSave()
         End Sub
 
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             DoPreSave()
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
 
 
         Public Sub New()

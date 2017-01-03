@@ -1,4 +1,5 @@
-﻿Imports SkyEditor.ROMEditor.Projects
+﻿Imports PPMDU
+Imports SkyEditor.ROMEditor.Projects
 Imports SkyEditor.ROMEditor.Windows
 
 Namespace MysteryDungeon.Explorers.Projects
@@ -17,10 +18,14 @@ Namespace MysteryDungeon.Explorers.Projects
             Me.IsBuildProgressIndeterminate = True
             Me.BuildStatusMessage = My.Resources.Language.Loading
 
-            Using external As New ExternalProgramManager
-
-                Await external.RunPPMDStatsUtil($"-e -pokemon -moves -items -scripts -romroot ""{Me.GetRawFilesDir}"" ""{outputDir}""")
-
+            Using external As New UtilityManager
+                Dim options As New StatsUtilOptions
+                options.IsImport = False
+                options.EnablePokemon = True
+                options.EnableMoves = True
+                options.EnableItems = True
+                options.EnableScripts = True
+                Await external.RunStatsUtil(GetRawFilesDir, outputDir, options)
             End Using
 
             'Add files to project
@@ -35,9 +40,17 @@ Namespace MysteryDungeon.Explorers.Projects
 
         Protected Overrides Async Function DoBuild() As Task
             Dim outputDir = IO.Path.Combine(Me.GetRootDirectory)
-            Using external As New ExternalProgramManager
-                Await external.RunPPMDStatsUtil($"-i -pokemon -moves -items -scripts -romroot ""{Me.GetRawFilesDir}"" ""{outputDir}""")
+
+            Using external As New UtilityManager
+                Dim options As New StatsUtilOptions
+                options.IsImport = True
+                options.EnablePokemon = True
+                options.EnableMoves = True
+                options.EnableItems = True
+                options.EnableScripts = True
+                Await external.RunStatsUtil(GetRawFilesDir, outputDir, options)
             End Using
+
             Await MyBase.DoBuild
         End Function
     End Class

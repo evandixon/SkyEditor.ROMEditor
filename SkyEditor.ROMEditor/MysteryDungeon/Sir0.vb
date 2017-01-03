@@ -164,15 +164,15 @@ Namespace MysteryDungeon
             End While
         End Sub
 
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             DoPreSave()
 
-            MyBase.Save(Destination, provider)
+            Await MyBase.Save(Destination, provider)
 
             'Saving multiple times like this will make the second time fail, because the file length is changing.  
             'To change it back to a good working size, we'll reload the SIR0 portions.
             ProcessData()
-        End Sub
+        End Function
 
         Public Overrides Function GetDefaultExtension() As String
             Return ".bin"

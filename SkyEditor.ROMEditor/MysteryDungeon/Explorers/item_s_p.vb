@@ -53,7 +53,7 @@ Namespace MysteryDungeon.Explorers
                 End While
             End If
         End Sub
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Length = &HF0F '4 * Items.Count + 32
 
             'Write header
@@ -97,7 +97,7 @@ Namespace MysteryDungeon.Explorers
             RawData(Length - 3) = &H0
             RawData(Length - 2) = &H0
             RawData(Length - 1) = &H0
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
     End Class
 End Namespace
