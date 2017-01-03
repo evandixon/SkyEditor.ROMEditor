@@ -268,60 +268,54 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="packages.config" />
-    <Content Include="Resources\MysteryDungeon\PSMD Move Name Hashes.txt" />
-    <Content Include="Resources\MysteryDungeon\PSMD Pokemon Name Hashes.txt" />
+    <None Include="Resources\MysteryDungeon\PSMD Move Name Hashes.txt" />
+    <None Include="Resources\MysteryDungeon\PSMD Pokemon Name Hashes.txt" />
     <Content Include="Windows\App.ico" />
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\bin2c5.1.exe">
+    <None Include="SkyEditor.ROMEditor.Windows\lua\bin2c5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\lua5.1.dll">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\lua5.1.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\lua5.1.exe">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\lua5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\lua51.dll">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\lua51.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\luac5.1.exe">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\luac5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcm80.dll">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcm80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcp80.dll">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcp80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcr80.dll">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcr80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\wlua5.1.exe">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\wlua5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\rom_tool.exe">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\rom_tool.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\unluac.jar">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\unluac.jar">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\Microsoft.VC80.CRT.manifest">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\Microsoft.VC80.CRT.manifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
     <None Include="Windows\SkyEditor.ROMEditor.Windows.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SkyEditor.ROMEditor.Windows\dsicontool.exe">
+    <None Include="SkyEditor.ROMEditor.Windows\dsicontool.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\facenames.txt">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\pk3DS.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\pk3DS.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\pokenames.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />

@@ -2,9 +2,10 @@
 
 Namespace MysteryDungeon.Explorers
     Public Class item_p
-        Inherits GenericFile
+        Inherits ExplorersSir0
         Implements IOpenableFile
         Public Property Items As List(Of Item)
+
         Public Class Item
             Public Property RawData As Byte()
             Public Property Index As Integer
@@ -154,55 +155,38 @@ Namespace MysteryDungeon.Explorers
                 SpecificItems = &HF
             End Enum
         End Class
+
         Public Sub New()
-            MyBase.New
+            AutoAddSir0HeaderRelativePointers = True
         End Sub
+
         Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
             ProcessRawData()
         End Function
+
         Private Sub ProcessRawData()
             Items = New List(Of Item)
-            For count As Integer = &H20 To Me.Length * 16 - 17 Step 16
-                If BitConverter.ToUInt16(RawData(count, 2), 0) = &H404 Then
-                    Exit For
-                End If
+
+            For count As Integer = 0 To ContentHeader.Length - 1 Step 16
                 Items.Add(New Item(Me.RawData(count, 16)))
             Next
         End Sub
-        Public Function GetBytes() As Byte()
+
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Dim out As New List(Of Byte)
             For count As Integer = 0 To 31
                 out.Add(RawData(count))
             Next
+
             For Each item In Items
                 For count As Integer = 0 To 15
                     out.Add(item.RawData(count))
                 Next
             Next
-            out.Add(4)
-            out.Add(4)
-            out.Add(0)
-            out.Add(&HAA)
-            out.Add(&HAA)
-            out.Add(&HAA)
-            out.Add(&HAA)
-            out.Add(&HAA)
-            out.Add(&HAA)
-            out.Add(&HAA)
-            out.Add(&HAA)
-            out.Add(&HAA)
-            out.Add(&HAA)
-            out.Add(&HAA)
-            out.Add(&HAA)
-            out.Add(&HAA)
 
-            Return out.ToArray
-        End Function
-        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
-            Dim buffer = GetBytes()
-            Length = buffer.Length
-            RawData(0, Length) = buffer
+            ContentHeader = out.ToArray
+
             Await MyBase.Save(Destination, provider)
         End Function
     End Class
