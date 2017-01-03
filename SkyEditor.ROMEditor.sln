@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test ROMs", "Test ROMs", "{2BBCE536-3CB9-4953-A8C9-1F6A70322DD9}"
 	ProjectSection(SolutionItems) = preProject
+		Tests\Test ROMs\BRT-U-MD5 = Tests\Test ROMs\BRT-U-MD5
+		Tests\Test ROMs\brt-u.nds = Tests\Test ROMs\brt-u.nds
 		Tests\Test ROMs\EoS-U-MD5 = Tests\Test ROMs\EoS-U-MD5
 		Tests\Test ROMs\eos-u.nds = Tests\Test ROMs\eos-u.nds
 	EndProjectSection

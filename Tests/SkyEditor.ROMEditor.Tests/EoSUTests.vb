@@ -9,9 +9,9 @@ Imports SkyEditor.Core.Windows.Providers
 Imports SkyEditor.ROMEditor
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 
-<TestClass()> Public Class EosTests
+<TestClass()> Public Class EoSUTests
 
-    Private Const EosTestCategory As String = "EOS Files"
+    Private Const EosTestCategory As String = "EOS (U) Files"
 
     'Files for all tests
     Dim romFilename As String = "eos-u.nds"

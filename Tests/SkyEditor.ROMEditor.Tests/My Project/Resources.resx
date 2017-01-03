@@ -124,4 +124,10 @@
   <data name="EoS_U_MD5" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Test ROMs\EoS-U-MD5;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="brt_u" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Test ROMs\brt-u.nds;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BRT_U_MD5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Test ROMs\BRT-U-MD5;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
