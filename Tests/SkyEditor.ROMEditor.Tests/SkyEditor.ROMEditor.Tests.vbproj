@@ -70,6 +70,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -140,6 +141,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SkyEditor.ROMEditor.Windows\SkyEditor.ROMEditor.Windows.vbproj">
+      <Project>{F05C12E8-EAB7-4B9E-A8D2-D21B80C1A646}</Project>
+      <Name>SkyEditor.ROMEditor.Windows</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj">
       <Project>{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}</Project>
       <Name>SkyEditor.ROMEditor</Name>

@@ -2,6 +2,7 @@
 Imports System.Security.Cryptography
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Windows.Providers
+Imports SkyEditor.ROMEditor
 Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
 
 <TestClass> Public Class BRTUTests
@@ -54,5 +55,22 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
         Dim sample = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "sample.sbin"), True, provider)
         Dim system = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "system.sbin"), True, provider)
         Dim titlemenu = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "titlemenu.sbin"), True, provider)
+    End Sub
+
+    <TestMethod> <TestCategory("Temporary Test")> Public Sub MonsterTest()
+        Dim monster As New SBin
+        monster.OpenFile(Path.Combine(romDir, "data", "monster.sbin"), provider).Wait()
+
+        For Each item In monster.Files.Where(Function(x) x.Key.StartsWith("kao"))
+            Dim kao As New KaoFile
+            kao.Initialize(item.Value).Wait()
+            For count = 0 To kao.Portraits.Count - 1
+                Dim targetFilename = Path.Combine("portraits", item.Key, count & ".png")
+                If Not Directory.Exists(Path.GetDirectoryName(targetFilename)) Then
+                    Directory.CreateDirectory(Path.GetDirectoryName(targetFilename))
+                End If
+                kao.Portraits(count)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
+            Next
+        Next
     End Sub
 End Class
