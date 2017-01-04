@@ -1,12 +1,7 @@
 ﻿Imports System.IO
 Imports System.Security.Cryptography
-Imports System.Text
-Imports Microsoft.VisualStudio.TestTools.UnitTesting
 Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.TestComponents
-Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows.Providers
-Imports SkyEditor.ROMEditor
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 
 <TestClass()> Public Class EoSUTests
@@ -50,42 +45,8 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
         End If
     End Sub
 
-    Protected Function GetAndTestFile(Of T As IOpenableFile)(filePath As String, enableResaveTest As Boolean) As T
-        Dim tempFilename As String = provider.GetTempFilename
-        Dim originalData = provider.ReadAllBytes(filePath)
-
-        'Part 1: Basic Open and Save test
-
-        'Open the file
-        Dim testFile = ReflectionHelpers.CreateInstance(GetType(T))
-        testFile.OpenFile(filePath, provider).Wait()
-
-        If enableResaveTest AndAlso TypeOf testFile Is ISavableAs Then
-            'Save the file
-            testFile.Save(tempFilename, provider).Wait()
-
-            'Ensure the data is the same
-            Dim newData = provider.ReadAllBytes(tempFilename)
-            Assert.AreEqual(originalData.Length, newData.Length, "Length of file altered with no logical changes")
-            For count = 0 To originalData.Length - 1
-                Assert.AreEqual(originalData(count), newData(count), "Data altered starting at index " & count)
-            Next
-        End If
-
-        'Cleanup
-        If TypeOf testFile Is IDisposable Then
-            testFile.Dispose()
-        End If
-        provider.DeleteFile(tempFilename)
-
-        'Part 2: More advanced tests (handled by calling function)
-        testFile = ReflectionHelpers.CreateInstance(GetType(T))
-        testFile.OpenFile(filePath, provider).Wait()
-        Return testFile
-    End Function
-
     <TestMethod> <TestCategory(EosTestCategory)> Public Sub Overlay13()
-        Dim testFile = GetAndTestFile(Of Overlay13)(Path.Combine(romDir, "overlay", "overlay_0013.bin"), True)
+        Dim testFile = TestHelpers.GetAndTestFile(Of Overlay13)(Path.Combine(romDir, "overlay", "overlay_0013.bin"), True, provider)
         'Starters
         'Bulbasaur
         Assert.AreEqual(CUShort(1), testFile.LonelyMale, "Incorrect starter for Lonely Male")
@@ -185,42 +146,42 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> Public Sub item_p()
-        Using testFile = GetAndTestFile(Of item_p)(Path.Combine(romDir, "data", "balance", "item_p.bin"), True)
+        Using testFile = TestHelpers.GetAndTestFile(Of item_p)(Path.Combine(romDir, "data", "balance", "item_p.bin"), True, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(1400, testFile.Items.Count, "Incorrect number of items")
         End Using
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> Public Sub item_s_p()
-        Using testFile = GetAndTestFile(Of item_s_p)(Path.Combine(romDir, "data", "balance", "item_s_p.bin"), True)
+        Using testFile = TestHelpers.GetAndTestFile(Of item_s_p)(Path.Combine(romDir, "data", "balance", "item_s_p.bin"), True, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(956, testFile.Items.Count, "Incorrect number of items")
         End Using
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> Public Sub LanguageString()
-        Using testFile = GetAndTestFile(Of LanguageString)(Path.Combine(romDir, "data", "message", "text_e.str"), True)
+        Using testFile = TestHelpers.GetAndTestFile(Of LanguageString)(Path.Combine(romDir, "data", "message", "text_e.str"), True, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(18451, testFile.Items.Count, "Incorrect number of items")
         End Using
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> Public Sub mappa_s()
-        Using testFile = GetAndTestFile(Of mappa)(Path.Combine(romDir, "data", "balance", "mappa_s.bin"), False)
+        Using testFile = TestHelpers.GetAndTestFile(Of mappa)(Path.Combine(romDir, "data", "balance", "mappa_s.bin"), False, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(100, testFile.Dungeons.Count, "Incorrect number of items")
         End Using
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> Public Sub mappa_t()
-        Using testFile = GetAndTestFile(Of mappa)(Path.Combine(romDir, "data", "balance", "mappa_t.bin"), False)
+        Using testFile = TestHelpers.GetAndTestFile(Of mappa)(Path.Combine(romDir, "data", "balance", "mappa_t.bin"), False, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(64, testFile.Dungeons.Count, "Incorrect number of items")
         End Using
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> Public Sub mappa_y()
-        Using testFile = GetAndTestFile(Of mappa)(Path.Combine(romDir, "data", "balance", "mappa_y.bin"), False)
+        Using testFile = TestHelpers.GetAndTestFile(Of mappa)(Path.Combine(romDir, "data", "balance", "mappa_y.bin"), False, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(64, testFile.Dungeons.Count, "Incorrect number of items")
         End Using

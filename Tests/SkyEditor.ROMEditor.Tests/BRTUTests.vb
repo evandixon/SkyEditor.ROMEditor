@@ -1,10 +1,12 @@
-﻿Imports System.Security.Cryptography
+﻿Imports System.IO
+Imports System.Security.Cryptography
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Windows.Providers
+Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
 
-Public Class BRTUTests
+<TestClass> Public Class BRTUTests
 
-    Private Const EosTestCategory As String = "BRT (U) Files"
+    Private Const Category As String = "BRT (U) Files"
 
     'Files for all tests
     Dim romFilename As String = "brt-u.nds"
@@ -24,7 +26,7 @@ Public Class BRTUTests
                 End If
             End Using
 
-            provider.WriteAllBytes(romFilename, My.Resources.eos_u)
+            provider.WriteAllBytes(romFilename, My.Resources.brt_u)
             Using nds As New GenericNDSRom
                 nds.OpenFile(romFilename, provider).Wait()
                 nds.Unpack(romDir, provider).Wait()
@@ -41,5 +43,16 @@ Public Class BRTUTests
         If provider.DirectoryExists(romDir) Then
             provider.DeleteDirectory(romDir)
         End If
+    End Sub
+
+    <TestMethod> <TestCategory(Category)> Public Sub SBinFileFormat()
+        Dim dungeon = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "dungeon.sbin"), True, provider)
+        Dim effect = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "effect.sbin"), True, provider)
+        Dim ground = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "ground.sbin"), True, provider)
+        Dim monster = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "monster.sbin"), True, provider)
+        Dim ornament = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "ornament.sbin"), True, provider)
+        Dim sample = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "sample.sbin"), True, provider)
+        Dim system = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "system.sbin"), True, provider)
+        Dim titlemenu = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "titlemenu.sbin"), True, provider)
     End Sub
 End Class
