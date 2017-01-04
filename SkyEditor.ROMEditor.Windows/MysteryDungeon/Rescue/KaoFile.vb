@@ -7,6 +7,13 @@ Imports SkyEditor.ROMEditor.MysteryDungeon
 
 Public Class KaoFile
     Inherits Sir0
+    Implements IDisposable
+
+    Public Sub New()
+        ThingsToDispose = New List(Of IDisposable)
+    End Sub
+
+    Protected Property ThingsToDispose As List(Of IDisposable)
 
     Public Property Portraits As List(Of Bitmap)
 
@@ -39,11 +46,15 @@ Public Class KaoFile
         sections.Add(RawData(pointers.Last, HeaderOffset - pointers.Last))
 
         '====================
-        'Part 2: Parse the palette
+        'Part 2: Parse the palettes
         '====================
-        Dim palette As New List(Of Color)
-        For count = 0 To sections(0).Length - 1 Step 4
-            palette.Add(Color.FromArgb(sections(0)(count + 0), sections(0)(count + 1), sections(0)(count + 2)))
+        Dim palettes As New List(Of List(Of Color))
+        For i = 0 To sections.Count - 1 Step 2
+            Dim palette As New List(Of Color)
+            For count = 0 To sections(i).Length - 1 Step 4
+                palette.Add(Color.FromArgb(sections(i)(count + 0), sections(i)(count + 1), sections(i)(count + 2)))
+            Next
+            palettes.Add(palette)
         Next
 
         '====================
@@ -51,45 +62,48 @@ Public Class KaoFile
         '====================
 
         'Add placeholders to avoid threading issues further on
-        For count = 0 To sections.Count - 2
+        For count = 0 To sections.Count - 2 Step 2
             Portraits.Add(Nothing)
         Next
 
         'Decompress each portrait
         Dim manager As New UtilityManager
         Await manager.UnPX("", "") 'Ensure files are written
-            Dim tasks As New List(Of Task)
-            For count = 1 To sections.Count - 1
-                Dim countInner = count
-                tasks.Add(Task.Run(Async Function() As Task
+        Dim tasks As New List(Of Task)
+        For count = 0 To sections.Count - 1 Step 2
+            Dim countInner = count
+            tasks.Add(Task.Run(Async Function() As Task
 
-                                       'Create a temporary file
-                                       Dim tempCompressed = Path.GetTempFileName
-                                       File.WriteAllBytes(tempCompressed, sections(countInner))
+                                   'Create a temporary file
+                                   Dim tempCompressed = Path.GetTempFileName
+                                   File.WriteAllBytes(tempCompressed, sections(countInner + 1))
 
-                                       'Decompress the file
-                                       Dim tempDecompressed = Path.GetTempFileName
-                                       Await manager.UnPX(tempCompressed, tempDecompressed)
+                                   'Decompress the file
+                                   Dim tempDecompressed = Path.GetTempFileName
+                                   Await manager.UnPX(tempCompressed, tempDecompressed)
 
-                                       'Read the decompressed file
-                                       Dim fileData = File.ReadAllBytes(tempDecompressed)
+                                   'Read the decompressed file
+                                   Dim fileData = File.ReadAllBytes(tempDecompressed)
 
-                                       'Cleanup
-                                       File.Delete(tempCompressed)
-                                       File.Delete(tempDecompressed)
+                                   'Cleanup
+                                   File.Delete(tempCompressed)
+                                   File.Delete(tempDecompressed)
 
-                                       'Build the bitmap
-                                       If fileData.Length > 0 Then
-                                           Portraits(countInner - 1) = BuildBitmap(palette, fileData)
-                                       End If
+                                   'Build the bitmap
+                                   If fileData.Length > 0 Then
+                                       Dim paletteIndex = Math.Floor(countInner / 2)
+                                       Portraits(paletteIndex) = BuildBitmap(palettes(paletteIndex), fileData)
+                                   End If
 
-                                   End Function))
-            Next
-            Await Task.WhenAll(tasks)
+                               End Function))
+        Next
+        Await Task.WhenAll(tasks)
+
         Try
             manager.Dispose()
         Catch ex As Exception
-
+            'Failed to dispose; try again when the current object is disposed
+            ThingsToDispose.Add(manager)
         End Try
 
     End Function
@@ -165,6 +179,13 @@ Public Class KaoFile
     Protected Overrides Sub DoPreSave()
         Throw New NotImplementedException
         MyBase.DoPreSave()
+    End Sub
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        MyBase.Dispose(disposing)
+        For Each item In ThingsToDispose
+            item.Dispose()
+        Next
     End Sub
 
 End Class

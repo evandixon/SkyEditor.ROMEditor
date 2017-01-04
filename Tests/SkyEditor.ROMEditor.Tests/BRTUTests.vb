@@ -71,6 +71,7 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
                 End If
                 kao.Portraits(count)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
             Next
+            kao.Dispose()
         Next
     End Sub
 End Class
