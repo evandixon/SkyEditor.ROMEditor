@@ -187,4 +187,18 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
         End Using
     End Sub
 
+    <TestMethod> <TestCategory("Temporary Test")> Public Sub KaomadoTest()
+        Dim kao As New Kaomado
+        kao.OpenFile(Path.Combine(romDir, "data", "font", "kaomado.kao"), provider).Wait()
+        For pokemon = 0 To kao.Portraits.Count - 1
+            For portrait = 0 To kao.Portraits(pokemon).Count - 1
+                Dim targetFilename = Path.Combine("portraits-eos", pokemon, portrait & ".png")
+                If Not Directory.Exists(Path.GetDirectoryName(targetFilename)) Then
+                    Directory.CreateDirectory(Path.GetDirectoryName(targetFilename))
+                End If
+                kao.Portraits(pokemon)(portrait)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
+            Next
+        Next
+    End Sub
+
 End Class

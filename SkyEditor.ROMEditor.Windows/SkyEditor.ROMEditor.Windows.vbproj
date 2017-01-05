@@ -152,7 +152,9 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MysteryDungeon\Explorers\Kaomado.vb" />
     <Compile Include="MysteryDungeon\Rescue\KaoFile.vb" />
+    <Compile Include="Utilities\GraphicsHelpers.vb" />
     <Compile Include="Windows\ConsoleCommands\MessageFarcFilenameAnalysis.vb" />
     <Compile Include="Windows\ConsoleCommands\NameListResearcher.vb" />
     <Compile Include="Windows\ConsoleCommands\PackFarc.vb" />

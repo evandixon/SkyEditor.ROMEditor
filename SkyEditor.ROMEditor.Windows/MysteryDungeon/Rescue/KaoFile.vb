@@ -4,6 +4,7 @@ Imports PPMDU
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon
+Imports SkyEditor.ROMEditor.Utilities
 
 Public Class KaoFile
     Inherits Sir0
@@ -92,7 +93,7 @@ Public Class KaoFile
                                    'Build the bitmap
                                    If fileData.Length > 0 Then
                                        Dim paletteIndex = Math.Floor(countInner / 2)
-                                       Portraits(paletteIndex) = BuildBitmap(palettes(paletteIndex), fileData)
+                                       Portraits(paletteIndex) = GraphicsHelpers.BuildPokemonPortraitBitmap(palettes(paletteIndex), fileData)
                                    End If
 
                                End Function))
@@ -106,69 +107,6 @@ Public Class KaoFile
             ThingsToDispose.Add(manager)
         End Try
 
-    End Function
-
-    Private Function DrawTile(TileSize As Integer, pixels As List(Of Byte), palette As List(Of Color), pixelOffset As Integer) As Bitmap
-        If TileSize = 2 Then
-            Dim output As New Bitmap(2, 2)
-            output.SetPixel(0, 1, palette(pixels(pixelOffset + 0)))
-            output.SetPixel(1, 1, palette(pixels(pixelOffset + 1)))
-            output.SetPixel(0, 0, palette(pixels(pixelOffset + 2)))
-            output.SetPixel(1, 0, palette(pixels(pixelOffset + 3)))
-            Return output
-        Else
-            Dim output As New Bitmap(TileSize, TileSize)
-            Dim g = Graphics.FromImage(output)
-            Dim half As Integer = TileSize / 2
-            Dim childPixelCount As Integer = (TileSize / 2) ^ 2
-            g.DrawImage(DrawTile(TileSize / 2, pixels, palette, pixelOffset + childPixelCount * 0), New Point(0, half))
-            g.DrawImage(DrawTile(TileSize / 2, pixels, palette, pixelOffset + childPixelCount * 1), New Point(half, half))
-            g.DrawImage(DrawTile(TileSize / 2, pixels, palette, pixelOffset + childPixelCount * 2), New Point(0, 0))
-            g.DrawImage(DrawTile(TileSize / 2, pixels, palette, pixelOffset + childPixelCount * 3), New Point(half, 0))
-            g.Save()
-            Return output
-        End If
-    End Function
-
-    Private Function BuildBitmap(palette As List(Of Color), data As Byte()) As Bitmap
-        Dim tiles As New List(Of Bitmap)
-
-        Dim colors As New List(Of Byte)
-        For Each b In data
-            colors.Add((b) And &HF)
-            colors.Add((b >> 4) And &HF)
-        Next
-
-        'Build Tiles
-        For count = 0 To 24
-            Dim i As New Bitmap(8, 8)
-            Dim g As Graphics = Graphics.FromImage(i)
-
-            'Dim colorIndex = count * 64
-            For y As Byte = 0 To 7
-                For x As Byte = 0 To 7
-                    If colors.Count <= count * 64 + y * 8 + x Then
-                        Throw New BadImageFormatException("The tile size is too small.")
-                    End If
-                    g.FillRectangle(New SolidBrush(palette(colors(count * 64 + y * 8 + x))), x, y, 1, 1)
-                    'colorIndex += 1
-                Next
-            Next
-            g.Save()
-            tiles.Add(i)
-            'tiles.Add(DrawTile(8, colors, palette, count * 64))
-        Next
-
-        'Arrange Tiles
-        Dim portrait As New Bitmap(40, 40)
-        Dim portraitGraphics = Graphics.FromImage(portrait)
-        For x As Byte = 0 To 4
-            For y As Byte = 0 To 4
-                portraitGraphics.DrawImage(tiles(y * 5 + x), x * 8, y * 8)
-            Next
-        Next
-        portraitGraphics.Save()
-        Return portrait
     End Function
 
     Public Overrides Async Function OpenFile(filename As String, provider As IOProvider) As Task

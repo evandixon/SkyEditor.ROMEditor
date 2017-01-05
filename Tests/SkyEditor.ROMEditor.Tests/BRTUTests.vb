@@ -65,7 +65,7 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
             Dim kao As New KaoFile
             kao.Initialize(item.Value).Wait()
             For count = 0 To kao.Portraits.Count - 1
-                Dim targetFilename = Path.Combine("portraits", item.Key, count & ".png")
+                Dim targetFilename = Path.Combine("portraits-brt", item.Key, count & ".png")
                 If Not Directory.Exists(Path.GetDirectoryName(targetFilename)) Then
                     Directory.CreateDirectory(Path.GetDirectoryName(targetFilename))
                 End If
