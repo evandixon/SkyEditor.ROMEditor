@@ -4,14 +4,17 @@ Imports PPMDU
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon
+Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 Imports SkyEditor.ROMEditor.Utilities
 
 Public Class KaoFile
-    Inherits Sir0
+    Inherits ExplorersSir0
     Implements IDisposable
 
     Public Sub New()
         ThingsToDispose = New List(Of IDisposable)
+        AutoAddSir0HeaderRelativePointers = False
+        Portraits = New List(Of Bitmap)
     End Sub
 
     Protected Property ThingsToDispose As List(Of IDisposable)
@@ -114,10 +117,101 @@ Public Class KaoFile
         Await Initialize(provider.ReadAllBytes(filename))
     End Function
 
-    Protected Overrides Sub DoPreSave()
-        Throw New NotImplementedException
-        MyBase.DoPreSave()
-    End Sub
+    Protected Overrides Async Function DoPreSave() As Task
+        'Generate the palettes
+        Dim palettes As New List(Of List(Of Color))
+        For Each item In Portraits
+            Dim palette = GraphicsHelpers.GetPalette(item, 16)
+            'To-do: Order the colors as done in the game.  There should be no side-effect of leaving them unsorted, however
+
+            ''This didn't have any effect
+            'palette = (From p In palette
+            'Order By p.R, p.G, p.B).ToList
+
+            palettes.Add(palette)
+        Next
+
+        'Generate the decompressed data
+        Dim decompressedPortraits As New List(Of Byte())
+        For count = 0 To Portraits.Count - 1
+            decompressedPortraits.Add(GraphicsHelpers.Get4bppPortraitData(Portraits(count), palettes(count)))
+        Next
+
+        'Compress the portraits
+        Dim compressedPortraits As New List(Of Byte())
+        Dim manager As New UtilityManager
+        For Each item In decompressedPortraits
+            'Create a temporary file
+            Dim tempDecompressed = Path.GetTempFileName
+            File.WriteAllBytes(tempDecompressed, item)
+
+            'Decompress the file
+            Dim tempCompressed = Path.GetTempFileName
+            Await manager.DoPX(tempDecompressed, tempCompressed, PXFormat.AT4PX)
+
+            'Read the decompressed file
+            compressedPortraits.Add(File.ReadAllBytes(tempCompressed))
+
+            'Cleanup
+            File.Delete(tempCompressed)
+            File.Delete(tempDecompressed)
+        Next
+        Try
+            manager.Dispose()
+        Catch ex As Exception
+
+        End Try
+
+        'Generate the data to write to the file
+        Dim dataSection As New List(Of Byte)
+        Dim pointersSection As New List(Of Byte)
+        Dim dataIndex = &H10
+        For count = 0 To Portraits.Count - 1
+            'Write the palette
+            pointersSection.AddRange(BitConverter.GetBytes(dataIndex))
+
+            For Each item In palettes(count)
+                dataSection.Add(item.R)
+                dataSection.Add(item.G)
+                dataSection.Add(item.B)
+                dataSection.Add(&H80) 'The purpose of this byte is unknown, but needs to remain in order to preserve alignment
+            Next
+
+            dataIndex += 64
+
+            pointersSection.AddRange(BitConverter.GetBytes(dataIndex))
+            dataSection.AddRange(compressedPortraits(count))
+
+            dataIndex += compressedPortraits(count).Length
+        Next
+
+        While pointersSection.Count < &H68
+            pointersSection.Add(0)
+        End While
+
+        While pointersSection.Count Mod &H10 <> 0
+            pointersSection.Add(&HAA)
+        End While
+
+        'Write the sections to the file
+        Me.Length = &H10 + dataSection.Count
+        RawData(&H10, dataSection.Count) = dataSection.ToArray
+        ContentHeader = pointersSection.ToArray
+
+        'Add the pointer offsets, as needed by the SIR0 file format
+        RelativePointers.Clear()
+        'SIR0 Header
+        RelativePointers.Add(4)
+        RelativePointers.Add(4)
+        RelativePointers.Add(8 + dataSection.Count)
+        For count = 1 To Portraits.Count - 1
+            RelativePointers.Add(4)
+            RelativePointers.Add(4)
+        Next
+        RelativePointers.Add(4) 'Not sure about this one - it was in the original file
+
+        Await MyBase.DoPreSave()
+    End Function
 
     Protected Overrides Sub Dispose(disposing As Boolean)
         MyBase.Dispose(disposing)

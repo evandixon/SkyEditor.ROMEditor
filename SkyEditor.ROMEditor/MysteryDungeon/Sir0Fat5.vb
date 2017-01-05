@@ -61,7 +61,7 @@ Namespace MysteryDungeon
             Next
         End Sub
 
-        Protected Overrides Sub DoPreSave()
+        Protected Overrides Async Function DoPreSave() As Task
             'Only works for files without filenames
 
             'Reset pointers
@@ -91,11 +91,11 @@ Namespace MysteryDungeon
 
             Me.RelativePointers.Add(data.Count + 8)
 
-            MyBase.DoPreSave()
-        End Sub
+            Await MyBase.DoPreSave()
+        End Function
 
         Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
-            DoPreSave()
+            Await DoPreSave()
             Await MyBase.Save(Destination, provider)
         End Function
 

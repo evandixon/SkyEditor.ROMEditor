@@ -47,6 +47,68 @@ Namespace Utilities
             portraitGraphics.Save()
             Return portrait
         End Function
+
+        ''' <summary>
+        ''' Gets raw 4bpp image data for DS Mystery Dungeon portraits.
+        ''' </summary>
+        ''' <param name="image">The portrait image</param>
+        ''' <param name="palette">The portrait palette used to generate the raw data</param>
+        ''' <returns>4bpp raw image data representing <paramref name="image"/></returns>
+        ''' <exception cref="BadImageFormatException">Thrown when a color in <paramref name="image"/> is not in <paramref name="palette"/></exception>
+        Public Shared Function Get4bppPortraitData(image As Bitmap, palette As List(Of Color)) As Byte()
+            Dim data As New List(Of Byte)
+            Dim colors As New List(Of Color)
+
+            'Convert the colors to a 1-D list
+            For tileY = 0 To 4
+                For tileX = 0 To 4
+                    For y = 0 To 7
+                        For x = 0 To 7
+                            colors.Add(image.GetPixel(tileX * 8 + x, tileY * 8 + y))
+                        Next
+                    Next
+                Next
+            Next
+
+            'Convert the 1-D list to bytes
+            For count = 0 To colors.Count - 1 Step 2
+                Dim color0 As Byte = palette.IndexOf(colors(count))
+                Dim color1 As Byte = palette.IndexOf(colors(count + 1))
+                If color0 < 0 OrElse color1 < 0 Then
+                    Throw New BadImageFormatException("Color not found in the desired palette")
+                End If
+                data.Add(color0 Or color1 << 4)
+            Next
+
+            Return data.ToArray
+        End Function
+
+        ''' <summary>
+        ''' Gets the palette of the image.
+        ''' </summary>
+        ''' <param name="image">Image from which to get the palette</param>
+        ''' <param name="paletteSize">Maximum size of the palette.</param>
+        ''' <returns>A list of color representing the palette</returns>
+        ''' <exception cref="BadImageFormatException">Thrown if <paramref name="image"/> has more colors than allowed by <paramref name="paletteSize"/></exception>
+        Public Shared Function GetPalette(image As Bitmap, paletteSize As Integer) As List(Of Color)
+            Dim output As New List(Of Color)(paletteSize)
+            For x = 0 To image.Size.Width - 1
+                For y = 0 To image.Size.Height - 1
+                    Dim color = image.GetPixel(x, y)
+                    If Not output.Contains(color) Then
+                        If output.Count < paletteSize Then
+                            output.Add(color)
+                        Else
+                            Throw New BadImageFormatException("Too many colors in the image.")
+                        End If
+                    End If
+                Next
+            Next
+            While output.Count < paletteSize
+                output.Add(Color.Black)
+            End While
+            Return output
+        End Function
     End Class
 End Namespace
 
