@@ -3,14 +3,31 @@ Imports System.Drawing
 Imports System.IO
 Imports PPMDU
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Utilities
 
 Namespace MysteryDungeon.Explorers
     Public Class Kaomado
         Implements IOpenableFile
-        Implements IDisposable
+        Implements ISavableAs
+        Implements IOnDisk
+
+        Public Event FileSaved As ISavable.FileSavedEventHandler Implements ISavable.FileSaved
+
+        Public Sub New()
+            Portraits = New List(Of Bitmap())(1151)
+        End Sub
 
         Public Property Portraits As List(Of Bitmap())
+
+        Public Property Filename As String Implements IOnDisk.Filename
+
+        Public Sub CreateNew()
+            Portraits.Clear()
+            For count = 0 To 1151 - 1
+                Portraits.Add(Enumerable.Repeat(Of Bitmap)(Nothing, 40).ToArray)
+            Next
+        End Sub
 
         Public Async Function Initialize(data As Byte()) As Task
             Portraits = New List(Of Bitmap())
@@ -47,18 +64,13 @@ Namespace MysteryDungeon.Explorers
             '====================
             'This might take a while, so each portrait will be processed asynchronously
             Using manager As New UtilityManager
-                Await manager.UnPX("", "") 'Ensure files are written
-                Dim tasks As New List(Of Task)(toc.Count * 40)
-                For pokemon = 0 To toc.Count - 1
-                    For portrait = 0 To 39
-                        Dim pokemonInner = pokemon
-                        Dim portraitInner = portrait
-                        tasks.Add(Task.Run(Async Function()
-                                               Await ProcessBitmap(data, toc, pokemonInner, portraitInner, manager)
-                                           End Function))
-                    Next
-                Next
-                Await Task.WhenAll(tasks)
+                Dim f As New AsyncFor
+                f.BatchSize = Environment.ProcessorCount * 2
+                Await f.RunFor(Async Function(pokemon As Integer) As Task
+                                   For portrait = 0 To 39
+                                       Await ProcessBitmap(data, toc, pokemon, portrait, manager)
+                                   Next
+                               End Function, 0, toc.Count - 1)
             End Using
 
         End Function
@@ -129,38 +141,107 @@ Namespace MysteryDungeon.Explorers
 
         Public Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
             Await Initialize(Provider.ReadAllBytes(Filename))
+            Me.Filename = Filename
         End Function
 
-#Region "IDisposable Support"
-        Private disposedValue As Boolean ' To detect redundant calls
+        Public Async Function GetBytes() As Task(Of Byte())
+            Dim palettes As New List(Of List(Of List(Of Color))) ' Top level: Pokemon; Second level: Portraits; Third level: Colors in the pallete
+            Dim compressedPortraits As New List(Of List(Of Byte())) 'Top level: Pokemon; Second level: Portraits
+            'Allocate space
+            palettes.AddRange(Enumerable.Repeat(Of List(Of List(Of Color)))(Nothing, Portraits.Count - 1))
+            compressedPortraits.AddRange(Enumerable.Repeat(Of List(Of Byte()))(Nothing, Portraits.Count - 1))
+            'Fill the allocated space
+            Using manager As New UtilityManager
+                Dim f As New AsyncFor
+                f.BatchSize = Environment.ProcessorCount * 2
+                Await f.RunFor(Async Function(pokemonIndex) As Task
+                                   Dim pokemon = Portraits(pokemonIndex)
+                                   Dim pokemonPalettes As New List(Of List(Of Color))
+                                   Dim pokemonPortraitsCompressed As New List(Of Byte())
+                                   For Each portrait In pokemon
+                                       If portrait IsNot Nothing Then
+                                           'Generate the palette
+                                           Dim palette = GraphicsHelpers.GetKaoPalette(portrait)
+                                           pokemonPalettes.Add(palette)
 
-        ' IDisposable
-        Protected Overridable Sub Dispose(disposing As Boolean)
-            If Not disposedValue Then
-                If disposing Then
-                    ' TODO: dispose managed state (managed objects).
-                End If
+                                           'Generate the decompressed data
+                                           Dim decompressedData = GraphicsHelpers.Get4bppPortraitData(portrait, palette)
 
-                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
-                ' TODO: set large fields to null.
-            End If
-            disposedValue = True
-        End Sub
+                                           'Compress the portrait
+                                           '- Create a temporary file
+                                           Dim tempDecompressedFilename = Path.GetTempFileName
+                                           File.WriteAllBytes(tempDecompressedFilename, decompressedData)
+                                           '- Compress the file
+                                           Dim tempCompressedFilename = Path.GetTempFileName
+                                           Await manager.DoPX(tempDecompressedFilename, tempCompressedFilename, PXFormat.AT4PX)
 
-        ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.
-        'Protected Overrides Sub Finalize()
-        '    ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
-        '    Dispose(False)
-        '    MyBase.Finalize()
-        'End Sub
+                                           '- Read the decompressed file
+                                           Dim compressedData = File.ReadAllBytes(tempCompressedFilename)
+                                           pokemonPortraitsCompressed.Add(compressedData)
 
-        ' This code added by Visual Basic to correctly implement the disposable pattern.
-        Public Sub Dispose() Implements IDisposable.Dispose
-            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
-            Dispose(True)
-            ' TODO: uncomment the following line if Finalize() is overridden above.
-            ' GC.SuppressFinalize(Me)
-        End Sub
-#End Region
+                                           '- Cleanup
+                                           File.Delete(tempCompressedFilename)
+                                           File.Delete(tempDecompressedFilename)
+                                       Else
+                                           'If a portrait is missing, add null to each of the lists so the indexes are maintained later on
+                                           pokemonPalettes.Add(Nothing)
+                                           pokemonPortraitsCompressed.Add(Nothing)
+                                       End If
+                                   Next
+                                   palettes(pokemonIndex) = pokemonPalettes
+                                   compressedPortraits(pokemonIndex) = pokemonPortraitsCompressed
+                               End Function, 0, Portraits.Count - 1)
+            End Using
+
+            'Generate the data to write to the file
+            Dim nextEntryStart = (1154 + 1) * 160
+            Dim tocSection As New List(Of Byte)(nextEntryStart)
+            Dim dataSection As New List(Of Byte)
+
+            tocSection.AddRange(Enumerable.Repeat(CByte(0), 160)) 'The null entry
+
+            For pokemon = 0 To compressedPortraits.Count - 1
+                For portrait = 0 To compressedPortraits(pokemon).Count - 1
+                    If compressedPortraits(pokemon)(portrait) Is Nothing Then
+                        'Write a null toc entry
+                        tocSection.AddRange(BitConverter.GetBytes(nextEntryStart * -1))
+                    Else
+                        'Write the toc entry
+                        tocSection.AddRange(BitConverter.GetBytes(nextEntryStart))
+
+                        'Write the data
+                        For Each item In palettes(pokemon)(portrait)
+                            dataSection.Add(item.R)
+                            dataSection.Add(item.G)
+                            dataSection.Add(item.B)
+                            nextEntryStart += 3
+                        Next
+
+                        dataSection.AddRange(compressedPortraits(pokemon)(portrait))
+                        nextEntryStart += compressedPortraits(pokemon)(portrait).Length
+                    End If
+                Next
+            Next
+
+            Return tocSection.Concat(dataSection).ToArray
+        End Function
+
+        Public Async Function Save(Filename As String, provider As IOProvider) As Task Implements ISavableAs.Save
+            provider.WriteAllBytes(Filename, Await GetBytes())
+            RaiseEvent FileSaved(Me, New EventArgs)
+        End Function
+
+        Public Async Function Save(provider As IOProvider) As Task Implements ISavable.Save
+            Await Save(Filename, provider)
+        End Function
+
+        Public Function GetDefaultExtension() As String Implements ISavableAs.GetDefaultExtension
+            Return ".kao"
+        End Function
+
+        Public Function GetSupportedExtensions() As IEnumerable(Of String) Implements ISavableAs.GetSupportedExtensions
+            Return {".kao"}
+        End Function
+
     End Class
 End Namespace

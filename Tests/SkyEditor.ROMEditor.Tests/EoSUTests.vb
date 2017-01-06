@@ -1,4 +1,5 @@
-﻿Imports System.IO
+﻿Imports System.Drawing
+Imports System.IO
 Imports System.Security.Cryptography
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Windows.Providers
@@ -130,7 +131,7 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
         'Mudkip
         Assert.AreEqual(CUShort(286), testFile.Partner10, "Incorrect partner 10")
         'Skitty
-        Assert.AreEqual(CUShort(328+600), testFile.Partner19, "Incorrect partner 19")
+        Assert.AreEqual(CUShort(328 + 600), testFile.Partner19, "Incorrect partner 19")
         'Turtwig
         Assert.AreEqual(CUShort(422), testFile.Partner11, "Incorrect partner 11")
         'Chimchar
@@ -187,18 +188,35 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
         End Using
     End Sub
 
-    <TestMethod> <TestCategory("Temporary Test")> Public Sub KaomadoTest()
+    <TestMethod> <TestCategory("Temporary Test")> Public Sub KaomadoExtract()
         Dim kao As New Kaomado
         kao.OpenFile(Path.Combine(romDir, "data", "font", "kaomado.kao"), provider).Wait()
         For pokemon = 0 To kao.Portraits.Count - 1
-            For portrait = 0 To kao.Portraits(pokemon).Count - 1
-                Dim targetFilename = Path.Combine("portraits-eos", pokemon, portrait & ".png")
-                If Not Directory.Exists(Path.GetDirectoryName(targetFilename)) Then
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetFilename))
+            If kao.Portraits(pokemon).Any(Function(x) x IsNot Nothing) Then
+                For portrait = 0 To kao.Portraits(pokemon).Count - 1
+                    Dim targetFilename = Path.Combine("portraits-eos", pokemon, portrait & ".png")
+                    If Not Directory.Exists(Path.GetDirectoryName(targetFilename)) Then
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetFilename))
+                    End If
+                    kao.Portraits(pokemon)(portrait)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
+                Next
+            End If
+        Next
+    End Sub
+
+    <TestMethod> <TestCategory("Temporary Test")> Public Sub KaomadoImport()
+        Dim kao As New Kaomado
+        kao.CreateNew()
+
+        For p = 0 To kao.Portraits.Count - 1
+            For count = 0 To 39
+                If File.Exists(Path.Combine("portraits-eos", p, count & ".png")) Then
+                    kao.Portraits(p)(count) = (Bitmap.FromFile(Path.Combine("portraits-eos", p, count & ".png")))
                 End If
-                kao.Portraits(pokemon)(portrait)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
             Next
         Next
+
+        kao.Save("repack-kaomado.kao", provider).Wait()
     End Sub
 
 End Class

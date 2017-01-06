@@ -88,7 +88,7 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
         Dim kao As New KaoFile
         kao.Initialize(monster.Files("kao007")).Wait()
         kao.Portraits(1) = Bitmap.FromFile("C:\Users\Evan\Git\SkyEditor.ROMEditor\Tests\SkyEditor.ROMEditor.Tests\bin\Debug\portraits-brt\kao007\1.png")
-
+        File.WriteAllBytes("C:\Users\Evan\Git\SkyEditor.ROMEditor\Tests\SkyEditor.ROMEditor.Tests\bin\Debug\portraits-brt\kao007\repack.bin", kao.GetRawData.Result)
         monster.Files("kao007") = kao.GetRawData.Result
         'For Each d In Directory.GetDirectories("portraits-brt")
         '    Dim kao As New KaoFile

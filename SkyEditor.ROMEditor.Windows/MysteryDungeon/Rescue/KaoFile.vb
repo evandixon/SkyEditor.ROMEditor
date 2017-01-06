@@ -9,15 +9,11 @@ Imports SkyEditor.ROMEditor.Utilities
 
 Public Class KaoFile
     Inherits ExplorersSir0
-    Implements IDisposable
 
     Public Sub New()
-        ThingsToDispose = New List(Of IDisposable)
         AutoAddSir0HeaderRelativePointers = False
         Portraits = New List(Of Bitmap)
     End Sub
-
-    Protected Property ThingsToDispose As List(Of IDisposable)
 
     Public Property Portraits As List(Of Bitmap)
 
@@ -71,44 +67,37 @@ Public Class KaoFile
         Next
 
         'Decompress each portrait
-        Dim manager As New UtilityManager
-        Await manager.UnPX("", "") 'Ensure files are written
-        Dim tasks As New List(Of Task)
-        For count = 0 To sections.Count - 1 Step 2
-            Dim countInner = count
-            tasks.Add(Task.Run(Async Function() As Task
+        Using manager As New UtilityManager
+            Dim tasks As New List(Of Task)
+            For count = 0 To sections.Count - 1 Step 2
+                Dim countInner = count
+                tasks.Add(Task.Run(Async Function() As Task
 
-                                   'Create a temporary file
-                                   Dim tempCompressed = Path.GetTempFileName
-                                   File.WriteAllBytes(tempCompressed, sections(countInner + 1))
+                                       'Create a temporary file
+                                       Dim tempCompressed = Path.GetTempFileName
+                                       File.WriteAllBytes(tempCompressed, sections(countInner + 1))
 
-                                   'Decompress the file
-                                   Dim tempDecompressed = Path.GetTempFileName
-                                   Await manager.UnPX(tempCompressed, tempDecompressed)
+                                       'Decompress the file
+                                       Dim tempDecompressed = Path.GetTempFileName
+                                       Await manager.UnPX(tempCompressed, tempDecompressed)
 
-                                   'Read the decompressed file
-                                   Dim fileData = File.ReadAllBytes(tempDecompressed)
+                                       'Read the decompressed file
+                                       Dim fileData = File.ReadAllBytes(tempDecompressed)
 
-                                   'Cleanup
-                                   File.Delete(tempCompressed)
-                                   File.Delete(tempDecompressed)
+                                       'Cleanup
+                                       File.Delete(tempCompressed)
+                                       File.Delete(tempDecompressed)
 
-                                   'Build the bitmap
-                                   If fileData.Length > 0 Then
-                                       Dim paletteIndex = Math.Floor(countInner / 2)
-                                       Portraits(paletteIndex) = GraphicsHelpers.BuildPokemonPortraitBitmap(palettes(paletteIndex), fileData)
-                                   End If
+                                       'Build the bitmap
+                                       If fileData.Length > 0 Then
+                                           Dim paletteIndex = Math.Floor(countInner / 2)
+                                           Portraits(paletteIndex) = GraphicsHelpers.BuildPokemonPortraitBitmap(palettes(paletteIndex), fileData)
+                                       End If
 
-                               End Function))
-        Next
-        Await Task.WhenAll(tasks)
-
-        Try
-            manager.Dispose()
-        Catch ex As Exception
-            'Failed to dispose; try again when the current object is disposed
-            ThingsToDispose.Add(manager)
-        End Try
+                                   End Function))
+            Next
+            Await Task.WhenAll(tasks)
+        End Using
 
     End Function
 
@@ -121,14 +110,7 @@ Public Class KaoFile
         'Generate the palettes
         Dim palettes As New List(Of List(Of Color))
         For Each item In Portraits
-            Dim palette = GraphicsHelpers.GetPalette(item, 16)
-            'To-do: Order the colors as done in the game.  There should be no side-effect of leaving them unsorted, however
-
-            ''This didn't have any effect
-            'palette = (From p In palette
-            'Order By p.R, p.G, p.B).ToList
-
-            palettes.Add(palette)
+            palettes.Add(GraphicsHelpers.GetKaoPalette(item))
         Next
 
         'Generate the decompressed data
@@ -139,28 +121,24 @@ Public Class KaoFile
 
         'Compress the portraits
         Dim compressedPortraits As New List(Of Byte())
-        Dim manager As New UtilityManager
-        For Each item In decompressedPortraits
-            'Create a temporary file
-            Dim tempDecompressed = Path.GetTempFileName
-            File.WriteAllBytes(tempDecompressed, item)
+        Using manager As New UtilityManager
+            For Each item In decompressedPortraits
+                'Create a temporary file
+                Dim tempDecompressed = Path.GetTempFileName
+                File.WriteAllBytes(tempDecompressed, item)
 
-            'Decompress the file
-            Dim tempCompressed = Path.GetTempFileName
-            Await manager.DoPX(tempDecompressed, tempCompressed, PXFormat.AT4PX)
+                'Decompress the file
+                Dim tempCompressed = Path.GetTempFileName
+                Await manager.DoPX(tempDecompressed, tempCompressed, PXFormat.AT4PX)
 
-            'Read the decompressed file
-            compressedPortraits.Add(File.ReadAllBytes(tempCompressed))
+                'Read the decompressed file
+                compressedPortraits.Add(File.ReadAllBytes(tempCompressed))
 
-            'Cleanup
-            File.Delete(tempCompressed)
-            File.Delete(tempDecompressed)
-        Next
-        Try
-            manager.Dispose()
-        Catch ex As Exception
-
-        End Try
+                'Cleanup
+                File.Delete(tempCompressed)
+                File.Delete(tempDecompressed)
+            Next
+        End Using
 
         'Generate the data to write to the file
         Dim dataSection As New List(Of Byte)
@@ -175,14 +153,20 @@ Public Class KaoFile
                 dataSection.Add(item.G)
                 dataSection.Add(item.B)
                 dataSection.Add(&H80) 'The purpose of this byte is unknown, but needs to remain in order to preserve alignment
+                dataIndex += 4
             Next
 
-            dataIndex += 64
-
+            'Write the data
             pointersSection.AddRange(BitConverter.GetBytes(dataIndex))
             dataSection.AddRange(compressedPortraits(count))
 
             dataIndex += compressedPortraits(count).Length
+
+            'Integer-align the data
+            While dataSection.Count Mod 4 <> 0
+                dataSection.Add(&HAA)
+                dataIndex += 1
+            End While
         Next
 
         While pointersSection.Count < &H68
@@ -191,6 +175,10 @@ Public Class KaoFile
 
         While pointersSection.Count Mod &H10 <> 0
             pointersSection.Add(&HAA)
+        End While
+
+        While dataSection.Count Mod 4 <> 0
+            dataSection.Add(&HAA)
         End While
 
         'Write the sections to the file
@@ -212,12 +200,5 @@ Public Class KaoFile
 
         Await MyBase.DoPreSave()
     End Function
-
-    Protected Overrides Sub Dispose(disposing As Boolean)
-        MyBase.Dispose(disposing)
-        For Each item In ThingsToDispose
-            item.Dispose()
-        Next
-    End Sub
 
 End Class

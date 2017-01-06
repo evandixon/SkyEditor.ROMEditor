@@ -29,7 +29,16 @@ Namespace Utilities
                         If colors.Count <= count * 64 + y * 8 + x Then
                             Throw New BadImageFormatException("The tile size is too small.")
                         End If
-                        g.FillRectangle(New SolidBrush(palette(colors(count * 64 + y * 8 + x))), x, y, 1, 1)
+
+                        Dim colorIndex = count * 64 + y * 8 + x
+                        Dim pixelColor As Color
+                        If colors(colorIndex) = 0 Then
+                            pixelColor = Color.Transparent
+                        Else
+                            pixelColor = palette(colors(colorIndex))
+                        End If
+
+                        g.FillRectangle(New SolidBrush(pixelColor), x, y, 1, 1)
                     Next
                 Next
                 g.Save()
@@ -72,12 +81,31 @@ Namespace Utilities
 
             'Convert the 1-D list to bytes
             For count = 0 To colors.Count - 1 Step 2
-                Dim color0 As Byte = palette.IndexOf(colors(count))
-                Dim color1 As Byte = palette.IndexOf(colors(count + 1))
+                Dim color0 As Integer
+                Dim color1 As Integer
+
+                If colors(count).A = 0 Then 'Transparent color
+                    color0 = 0
+                Else
+                    Try
+                        color0 = palette.IndexOf(colors(count))
+                    Catch ex As Exception
+                        Throw
+                    End Try
+
+                End If
+
+                If colors(count + 1).A = 0 Then 'Transparent color
+                    color1 = 0
+                Else
+                    color1 = palette.IndexOf(colors(count + 1))
+                End If
+
                 If color0 < 0 OrElse color1 < 0 Then
                     Throw New BadImageFormatException("Color not found in the desired palette")
                 End If
-                data.Add(color0 Or color1 << 4)
+
+                data.Add(CByte(color0) Or CByte(color1) << 4)
             Next
 
             Return data.ToArray
@@ -95,7 +123,7 @@ Namespace Utilities
             For x = 0 To image.Size.Width - 1
                 For y = 0 To image.Size.Height - 1
                     Dim color = image.GetPixel(x, y)
-                    If Not output.Contains(color) Then
+                    If color.A <> 0 AndAlso Not output.Contains(color) Then
                         If output.Count < paletteSize Then
                             output.Add(color)
                         Else
@@ -108,6 +136,22 @@ Namespace Utilities
                 output.Add(Color.Black)
             End While
             Return output
+        End Function
+
+        ''' <summary>
+        ''' Gets a 16 color palette, the first color of which is transparent, for use with saving kao files.
+        ''' </summary>
+        Public Shared Function GetKaoPalette(image As Bitmap) As List(Of Color)
+            Dim palette = GraphicsHelpers.GetPalette(image, 15) 'Palette can store 16 colors, but the first color is transparent, so there's really only 15
+
+            'Find a color that's not in the palette (placeholder color to be the transparent color)
+            Dim transparent = Color.FromArgb(0, 0, 0) 'Black is the default color in the games
+            While palette.Contains(transparent)
+                transparent = Color.FromArgb(transparent.R + 1, 0, 0)
+            End While
+
+            'Put the transparent color in the beginning of the palette
+            Return {transparent}.Concat(palette).ToList
         End Function
     End Class
 End Namespace

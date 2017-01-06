@@ -99,8 +99,8 @@
       <HintPath>..\packages\Portable.Text.Encoding.0.8.3.0\lib\portable-net45+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\Portable.Text.Encoding.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ppmdu-wrapper, Version=1.0.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ppmdu-wrapper.1.0.0\lib\net46\ppmdu-wrapper.dll</HintPath>
+    <Reference Include="ppmdu-wrapper, Version=1.0.1.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ppmdu-wrapper.1.0.1\lib\net46\ppmdu-wrapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SkyEditor.CodeEditor, Version=4.0.13.3, Culture=neutral, processorArchitecture=MSIL">
