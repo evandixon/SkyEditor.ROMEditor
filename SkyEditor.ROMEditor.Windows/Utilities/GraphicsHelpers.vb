@@ -153,6 +153,24 @@ Namespace Utilities
             'Put the transparent color in the beginning of the palette
             Return {transparent}.Concat(palette).ToList
         End Function
+
+        ''' <summary>
+        ''' Determines whether or not two bitmaps represent the same logical image.
+        ''' </summary>
+        Public Shared Function AreBitmapsEquivalent(bitmap1 As Bitmap, bitmap2 As Bitmap) As Boolean
+            If bitmap1.Size = bitmap2.Size Then
+                For x = 0 To bitmap1.Size.Width
+                    For y = 0 To bitmap1.Size.Height
+                        If Not bitmap1.GetPixel(x, y) = bitmap2.GetPixel(x, y) Then
+                            Return False
+                        End If
+                    Next
+                Next
+                Return True
+            Else
+                Return False
+            End If
+        End Function
     End Class
 End Namespace
 

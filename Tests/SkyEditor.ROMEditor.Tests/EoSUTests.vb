@@ -4,6 +4,7 @@ Imports System.Security.Cryptography
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Windows.Providers
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
+Imports SkyEditor.ROMEditor.Utilities
 
 <TestClass()> Public Class EoSUTests
 
@@ -188,35 +189,39 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
         End Using
     End Sub
 
-    <TestMethod> <TestCategory("Temporary Test")> Public Sub KaomadoExtract()
-        Dim kao As New Kaomado
-        kao.OpenFile(Path.Combine(romDir, "data", "font", "kaomado.kao"), provider).Wait()
-        For pokemon = 0 To kao.Portraits.Count - 1
-            If kao.Portraits(pokemon).Any(Function(x) x IsNot Nothing) Then
-                For portrait = 0 To kao.Portraits(pokemon).Count - 1
-                    Dim targetFilename = Path.Combine("portraits-eos", pokemon, portrait & ".png")
-                    If Not Directory.Exists(Path.GetDirectoryName(targetFilename)) Then
-                        Directory.CreateDirectory(Path.GetDirectoryName(targetFilename))
-                    End If
-                    kao.Portraits(pokemon)(portrait)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
-                Next
-            End If
-        Next
-    End Sub
+    <TestMethod> <TestCategory(EosTestCategory)> Public Sub Kaomado()
+        'Extract
+        Dim kao1 As New Kaomado
+        kao1.OpenFile(Path.Combine(romDir, "data", "font", "kaomado.kao"), provider).Wait()
 
-    <TestMethod> <TestCategory("Temporary Test")> Public Sub KaomadoImport()
-        Dim kao As New Kaomado
-        kao.CreateNew()
+        'Pack
+        Dim kao2 As New Kaomado
+        kao2.CreateNew()
 
-        For p = 0 To kao.Portraits.Count - 1
-            For count = 0 To 39
-                If File.Exists(Path.Combine("portraits-eos", p, count & ".png")) Then
-                    kao.Portraits(p)(count) = (Bitmap.FromFile(Path.Combine("portraits-eos", p, count & ".png")))
+        For Each pokemon In kao1.Portraits
+            Dim portraits As New List(Of Bitmap)
+            For Each portrait In pokemon
+                If portrait Is Nothing Then
+                    portraits.Add(Nothing)
+                Else
+                    portraits.Add(portrait.Clone)
                 End If
             Next
+            kao2.Portraits.Add(portraits.ToArray)
         Next
 
-        kao.Save("repack-kaomado.kao", provider).Wait()
+        'Extract Again
+        Dim kao3 As New Kaomado
+        kao3.Initialize(kao2.GetBytes.Result)
+
+        'Compare
+        Assert.AreEqual(kao1.Portraits.Count, kao3.Portraits.Count, "Number of Pokemon differs")
+        For pokemon = 0 To kao1.Portraits.Count - 1
+            Assert.AreEqual(kao1.Portraits(pokemon).Length, kao3.Portraits(pokemon).Length, "Portrait count for Pokemon " & pokemon & " differs.")
+            For portrait = 0 To kao1.Portraits(pokemon).Length - 1
+                Assert.IsTrue(GraphicsHelpers.AreBitmapsEquivalent(kao1.Portraits(pokemon)(portrait), kao2.Portraits(pokemon)(portrait)), "Portrait " & portrait & " for Pokemon " & portrait & " differs.")
+            Next
+        Next
     End Sub
 
 End Class

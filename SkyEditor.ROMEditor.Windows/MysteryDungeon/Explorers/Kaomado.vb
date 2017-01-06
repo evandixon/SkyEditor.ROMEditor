@@ -15,7 +15,7 @@ Namespace MysteryDungeon.Explorers
         Public Event FileSaved As ISavable.FileSavedEventHandler Implements ISavable.FileSaved
 
         Public Sub New()
-            Portraits = New List(Of Bitmap())(1151)
+            Portraits = New List(Of Bitmap())(1154)
         End Sub
 
         Public Property Portraits As List(Of Bitmap())
@@ -24,7 +24,7 @@ Namespace MysteryDungeon.Explorers
 
         Public Sub CreateNew()
             Portraits.Clear()
-            For count = 0 To 1151 - 1
+            For count = 0 To 1154 - 1
                 Portraits.Add(Enumerable.Repeat(Of Bitmap)(Nothing, 40).ToArray)
             Next
         End Sub
@@ -148,8 +148,8 @@ Namespace MysteryDungeon.Explorers
             Dim palettes As New List(Of List(Of List(Of Color))) ' Top level: Pokemon; Second level: Portraits; Third level: Colors in the pallete
             Dim compressedPortraits As New List(Of List(Of Byte())) 'Top level: Pokemon; Second level: Portraits
             'Allocate space
-            palettes.AddRange(Enumerable.Repeat(Of List(Of List(Of Color)))(Nothing, Portraits.Count - 1))
-            compressedPortraits.AddRange(Enumerable.Repeat(Of List(Of Byte()))(Nothing, Portraits.Count - 1))
+            palettes.AddRange(Enumerable.Repeat(Of List(Of List(Of Color)))(Nothing, Portraits.Count))
+            compressedPortraits.AddRange(Enumerable.Repeat(Of List(Of Byte()))(Nothing, Portraits.Count))
             'Fill the allocated space
             Using manager As New UtilityManager
                 Dim f As New AsyncFor
@@ -162,7 +162,7 @@ Namespace MysteryDungeon.Explorers
                                        If portrait IsNot Nothing Then
                                            'Generate the palette
                                            Dim palette = GraphicsHelpers.GetKaoPalette(portrait)
-                                           pokemonPalettes.Add(palette)
+                                           pokemonPalettes(pokemonIndex) = palette
 
                                            'Generate the decompressed data
                                            Dim decompressedData = GraphicsHelpers.Get4bppPortraitData(portrait, palette)
@@ -177,15 +177,15 @@ Namespace MysteryDungeon.Explorers
 
                                            '- Read the decompressed file
                                            Dim compressedData = File.ReadAllBytes(tempCompressedFilename)
-                                           pokemonPortraitsCompressed.Add(compressedData)
+                                           pokemonPortraitsCompressed(pokemonIndex) = compressedData
 
                                            '- Cleanup
                                            File.Delete(tempCompressedFilename)
                                            File.Delete(tempDecompressedFilename)
                                        Else
                                            'If a portrait is missing, add null to each of the lists so the indexes are maintained later on
-                                           pokemonPalettes.Add(Nothing)
-                                           pokemonPortraitsCompressed.Add(Nothing)
+                                           pokemonPalettes(pokemonIndex) = Nothing
+                                           pokemonPortraitsCompressed(pokemonIndex) = Nothing
                                        End If
                                    Next
                                    palettes(pokemonIndex) = pokemonPalettes
@@ -194,7 +194,7 @@ Namespace MysteryDungeon.Explorers
             End Using
 
             'Generate the data to write to the file
-            Dim nextEntryStart = (1154 + 1) * 160
+            Dim nextEntryStart = (compressedPortraits.Count + 1) * 160
             Dim tocSection As New List(Of Byte)(nextEntryStart)
             Dim dataSection As New List(Of Byte)
 

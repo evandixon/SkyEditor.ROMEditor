@@ -5,6 +5,7 @@ Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Windows.Providers
 Imports SkyEditor.ROMEditor
 Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
+Imports SkyEditor.ROMEditor.Utilities
 
 <TestClass> Public Class BRTUTests
 
@@ -58,52 +59,83 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
         Dim titlemenu = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "titlemenu.sbin"), True, provider)
     End Sub
 
-    <TestMethod> <TestCategory("Temporary Test")> Public Sub MonsterExtract()
-        Dim monster As New SBin
-        'monster.OpenFile(Path.Combine(romDir, "data", "monster.sbin"), provider).Wait()
-        monster.OpenFile("rebuilt-monster.sbin", provider).Wait()
+    <TestMethod> <TestCategory(Category)> Public Sub MonsterKaoTest()
+        Dim extractDir1 = "portraits-brt"
+        Dim extractDir2 = "portraits-brt"
+        Dim repackFilename = "repack-monster.sbin"
+        'Extract
+        Dim monster1 As New SBin
+        monster1.OpenFile(Path.Combine(romDir, "data", "monster.sbin"), provider).Wait()
 
-        For Each item In monster.Files.Where(Function(x) x.Key.StartsWith("kao"))
-            Dim kao As New KaoFile
-            kao.Initialize(item.Value).Wait()
-            For count = 0 To kao.Portraits.Count - 1
-                Dim targetFilename = Path.Combine("portraits-brt-repack", item.Key, count & ".png")
-                If Not Directory.Exists(Path.GetDirectoryName(targetFilename)) Then
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetFilename))
-                End If
-                kao.Portraits(count)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
-            Next
-            kao.Dispose()
+        For Each item In monster1.Files.Where(Function(x) x.Key.StartsWith("kao"))
+            Using kao As New KaoFile
+                kao.Initialize(item.Value).Wait()
+                For count = 0 To kao.Portraits.Count - 1
+                    Dim targetFilename = Path.Combine(extractDir1, item.Key, count & ".png")
+                    If Not Directory.Exists(Path.GetDirectoryName(targetFilename)) Then
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetFilename))
+                    End If
+                    kao.Portraits(count)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
+                Next
+            End Using
         Next
-    End Sub
 
-    <TestMethod> <TestCategory("Temporary Test")> Public Sub MonsterImport()
-        Dim monster As New SBin
-        monster.OpenFile(Path.Combine(romDir, "data", "monster.sbin"), provider).Wait()
+        'Repack
+        For Each d In Directory.GetDirectories(extractDir1)
+            Using kao As New KaoFile
+                kao.CreateFile()
+                kao.Portraits.Clear()
 
-        If Not Directory.Exists("portraits-brt") Then
-            Directory.CreateDirectory("portraits-brt")
+                For Each f In Directory.GetFiles(d, "*.png").Where(Function(x) IsNumeric(Path.GetFileNameWithoutExtension(x))).OrderBy(Function(x) CInt(Path.GetFileNameWithoutExtension(x)))
+                    kao.Portraits.Add(Bitmap.FromFile(f))
+                Next
+
+                Dim kaoRawData = kao.GetRawData.Result
+                File.WriteAllBytes(Path.Combine(d, repackFilename), kaoRawData)
+                monster1.Files(Path.GetFileName(d)) = kaoRawData
+            End Using
+        Next
+        monster1.Save(repackFilename, provider).Wait()
+
+
+        'Extract again
+        Dim monster2 As New SBin
+        monster2.OpenFile(repackFilename, provider).Wait()
+
+        For Each item In monster2.Files.Where(Function(x) x.Key.StartsWith("kao"))
+            Using kao As New KaoFile
+                kao.Initialize(item.Value).Wait()
+                For count = 0 To kao.Portraits.Count - 1
+                    Dim targetFilename = Path.Combine(extractDir2, item.Key, count & ".png")
+                    If Not Directory.Exists(Path.GetDirectoryName(targetFilename)) Then
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetFilename))
+                    End If
+                    kao.Portraits(count)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
+                Next
+            End Using
+        Next
+
+        'Compare
+        For Each originalDirectory In Directory.GetDirectories(extractDir1)
+            Dim repackDirectory = Path.Combine(extractDir2, Path.GetFileName(originalDirectory))
+            Assert.IsTrue(Directory.Exists(repackDirectory), "Missing data for " & Path.GetFileName(originalDirectory) & " after repack.")
+            For Each originalFile In Directory.GetFiles(originalDirectory, "*.png").OrderBy(Function(x) CInt(Path.GetFileNameWithoutExtension(x)))
+                Dim repackFile = Path.Combine(repackDirectory, Path.GetFileName(originalFile))
+                Assert.IsTrue(File.Exists(repackFile), $"Missing portrait {Path.GetFileNameWithoutExtension(originalFile)} in entry {Path.GetFileName(originalDirectory)}")
+                Assert.IsTrue(GraphicsHelpers.AreBitmapsEquivalent(Bitmap.FromFile(originalFile), Bitmap.FromFile(repackFile)), $"Altered portrait {Path.GetFileNameWithoutExtension(originalFile)} in entry {Path.GetFileName(originalDirectory)}")
+            Next
+        Next
+
+        'Cleanup
+        If Directory.Exists(extractDir1) Then
+            Directory.Delete(extractDir1, True)
         End If
-
-        Dim kao As New KaoFile
-        kao.Initialize(monster.Files("kao007")).Wait()
-        kao.Portraits(1) = Bitmap.FromFile("C:\Users\Evan\Git\SkyEditor.ROMEditor\Tests\SkyEditor.ROMEditor.Tests\bin\Debug\portraits-brt\kao007\1.png")
-        File.WriteAllBytes("C:\Users\Evan\Git\SkyEditor.ROMEditor\Tests\SkyEditor.ROMEditor.Tests\bin\Debug\portraits-brt\kao007\repack.bin", kao.GetRawData.Result)
-        monster.Files("kao007") = kao.GetRawData.Result
-        'For Each d In Directory.GetDirectories("portraits-brt")
-        '    Dim kao As New KaoFile
-        '    kao.CreateFile("")
-        '    kao.Portraits.Clear()
-
-        '    For Each f In Directory.GetFiles(d, "*.png").OrderBy(Function(x) CInt(Path.GetFileNameWithoutExtension(x)))
-        '        kao.Portraits.Add(Bitmap.FromFile(f))
-        '    Next
-
-        '    Dim kaoRawData = kao.GetRawData.Result
-        '    File.WriteAllBytes(Path.Combine(d, "rebuild.bin"), kaoRawData)
-        '    monster.Files(Path.GetFileName(d)) = kaoRawData
-        'Next
-
-        monster.Save("rebuilt-monster.sbin", provider)
+        If Directory.Exists(extractDir2) Then
+            Directory.Delete(extractDir2, True)
+        End If
+        If File.Exists(repackFilename) Then
+            File.Delete(repackFilename)
+        End If
     End Sub
+
 End Class

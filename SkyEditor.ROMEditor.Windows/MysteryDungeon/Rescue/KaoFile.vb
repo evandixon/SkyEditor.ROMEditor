@@ -17,6 +17,10 @@ Public Class KaoFile
 
     Public Property Portraits As List(Of Bitmap)
 
+    Public Overloads Sub CreateFile()
+        CreateFile("")
+    End Sub
+
     Public Async Function Initialize(data As Byte()) As Task
         MyBase.CreateFile(data)
         Portraits = New List(Of Bitmap)
@@ -122,23 +126,32 @@ Public Class KaoFile
         'Compress the portraits
         Dim compressedPortraits As New List(Of Byte())
         Using manager As New UtilityManager
-            For Each item In decompressedPortraits
-                'Create a temporary file
-                Dim tempDecompressed = Path.GetTempFileName
-                File.WriteAllBytes(tempDecompressed, item)
+            'Allocate space
+            compressedPortraits.AddRange(Enumerable.Repeat(Of Byte())(Nothing, decompressedPortraits.Count))
+            Dim f As New AsyncFor
+            f.BatchSize = Environment.ProcessorCount * 2
+            Await f.RunFor(Async Function(count As Integer) As Task
+                               Dim item = decompressedPortraits(count)
+                               'Create a temporary file
+                               Dim tempDecompressed = Path.GetTempFileName
+                               File.WriteAllBytes(tempDecompressed, item)
 
-                'Decompress the file
-                Dim tempCompressed = Path.GetTempFileName
-                Await manager.DoPX(tempDecompressed, tempCompressed, PXFormat.AT4PX)
+                               'Decompress the file
+                               Dim tempCompressed = Path.GetTempFileName
+                               Await manager.DoPX(tempDecompressed, tempCompressed, PXFormat.AT4PX)
 
-                'Read the decompressed file
-                compressedPortraits.Add(File.ReadAllBytes(tempCompressed))
+                               'Read the decompressed file
+                               compressedPortraits(count) = File.ReadAllBytes(tempCompressed)
 
-                'Cleanup
-                File.Delete(tempCompressed)
-                File.Delete(tempDecompressed)
-            Next
+                               'Cleanup
+                               File.Delete(tempCompressed)
+                               File.Delete(tempDecompressed)
+                           End Function, 0, decompressedPortraits.Count - 1)
         End Using
+
+        While compressedPortraits.Last Is Nothing
+            compressedPortraits.RemoveAt(compressedPortraits.Count - 1)
+        End While
 
         'Generate the data to write to the file
         Dim dataSection As New List(Of Byte)
