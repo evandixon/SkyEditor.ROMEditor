@@ -61,7 +61,7 @@ Imports SkyEditor.ROMEditor.Utilities
 
     <TestMethod> <TestCategory(Category)> Public Sub MonsterKaoTest()
         Dim extractDir1 = "portraits-brt"
-        Dim extractDir2 = "portraits-brt"
+        Dim extractDir2 = "portraits-brt-repack"
         Dim repackFilename = "repack-monster.sbin"
         'Extract
         Dim monster1 As New SBin
@@ -110,7 +110,11 @@ Imports SkyEditor.ROMEditor.Utilities
                     If Not Directory.Exists(Path.GetDirectoryName(targetFilename)) Then
                         Directory.CreateDirectory(Path.GetDirectoryName(targetFilename))
                     End If
-                    kao.Portraits(count)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
+                    Try
+                        kao.Portraits(count)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
+                    Catch ex As Exception
+                        Throw
+                    End Try
                 Next
             End Using
         Next
@@ -121,8 +125,12 @@ Imports SkyEditor.ROMEditor.Utilities
             Assert.IsTrue(Directory.Exists(repackDirectory), "Missing data for " & Path.GetFileName(originalDirectory) & " after repack.")
             For Each originalFile In Directory.GetFiles(originalDirectory, "*.png").OrderBy(Function(x) CInt(Path.GetFileNameWithoutExtension(x)))
                 Dim repackFile = Path.Combine(repackDirectory, Path.GetFileName(originalFile))
-                Assert.IsTrue(File.Exists(repackFile), $"Missing portrait {Path.GetFileNameWithoutExtension(originalFile)} in entry {Path.GetFileName(originalDirectory)}")
-                Assert.IsTrue(GraphicsHelpers.AreBitmapsEquivalent(Bitmap.FromFile(originalFile), Bitmap.FromFile(repackFile)), $"Altered portrait {Path.GetFileNameWithoutExtension(originalFile)} in entry {Path.GetFileName(originalDirectory)}")
+                Using originalImage = Bitmap.FromFile(originalFile)
+                    Using repackImage = Bitmap.FromFile(repackFile)
+                        Assert.IsTrue(File.Exists(repackFile), $"Missing portrait {Path.GetFileNameWithoutExtension(originalFile)} in entry {Path.GetFileName(originalDirectory)}")
+                        Assert.IsTrue(GraphicsHelpers.AreBitmapsEquivalent(originalImage, repackImage), $"Altered portrait {Path.GetFileNameWithoutExtension(originalFile)} in entry {Path.GetFileName(originalDirectory)}")
+                    End Using
+                End Using
             Next
         Next
 

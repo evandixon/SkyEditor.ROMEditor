@@ -198,16 +198,18 @@ Imports SkyEditor.ROMEditor.Utilities
         Dim kao2 As New Kaomado
         kao2.CreateNew()
 
-        For Each pokemon In kao1.Portraits
-            Dim portraits As New List(Of Bitmap)
-            For Each portrait In pokemon
-                If portrait Is Nothing Then
-                    portraits.Add(Nothing)
+        For pokemon = 0 To kao1.Portraits.Count - 1
+            For portrait = 0 To kao1.Portraits(pokemon).Length - 1
+                If kao1.Portraits(pokemon)(portrait) Is Nothing Then
+                    Try
+                        kao2.Portraits(pokemon)(portrait) = Nothing
+                    Catch ex As Exception
+                        Throw
+                    End Try
                 Else
-                    portraits.Add(portrait.Clone)
+                    kao2.Portraits(pokemon)(portrait) = kao1.Portraits(pokemon)(portrait).Clone
                 End If
             Next
-            kao2.Portraits.Add(portraits.ToArray)
         Next
 
         'Extract Again
@@ -219,7 +221,16 @@ Imports SkyEditor.ROMEditor.Utilities
         For pokemon = 0 To kao1.Portraits.Count - 1
             Assert.AreEqual(kao1.Portraits(pokemon).Length, kao3.Portraits(pokemon).Length, "Portrait count for Pokemon " & pokemon & " differs.")
             For portrait = 0 To kao1.Portraits(pokemon).Length - 1
-                Assert.IsTrue(GraphicsHelpers.AreBitmapsEquivalent(kao1.Portraits(pokemon)(portrait), kao2.Portraits(pokemon)(portrait)), "Portrait " & portrait & " for Pokemon " & portrait & " differs.")
+                Dim bitmap1 = kao1.Portraits(pokemon)(portrait)
+                Dim bitmap2 = kao2.Portraits(pokemon)(portrait)
+
+                'bitmap1 is allowed to be null, but bitmap2 can only be null if bitmap1 is null
+                If bitmap1 Is Nothing Then
+                    Assert.IsNull(bitmap2, "Portrait " & portrait & " for Pokemon " & pokemon & " added.")
+                Else
+                    Assert.IsNotNull(bitmap2, "Portrait " & portrait & " for Pokemon " & pokemon & " removed.")
+                    Assert.IsTrue(GraphicsHelpers.AreBitmapsEquivalent(bitmap1, bitmap2), "Portrait " & portrait & " for Pokemon " & pokemon & " differs.")
+                End If
             Next
         Next
     End Sub

@@ -11,6 +11,7 @@ Namespace MysteryDungeon.Explorers
         Implements IOpenableFile
         Implements ISavableAs
         Implements IOnDisk
+        Implements IDisposable
 
         Public Event FileSaved As ISavable.FileSavedEventHandler Implements ISavable.FileSaved
 
@@ -55,7 +56,7 @@ Namespace MysteryDungeon.Explorers
             '====================
             'This makes it so that each pokemon/portrait can be processed asynchronously with no threading issues
             For count = 0 To toc.Count - 1
-                Dim array(40) As Bitmap
+                Dim array(39) As Bitmap
                 Portraits.Add(array)
             Next
 
@@ -122,7 +123,7 @@ Namespace MysteryDungeon.Explorers
 
             'Decompress the file
             Dim tempDecompressed = Path.GetTempFileName
-            Await manager.UnPX(tempCompressed, tempDecompressed)
+            Await manager.RunUnPX(tempCompressed, tempDecompressed)
 
             'Read the decompressed file
             decompressedData = File.ReadAllBytes(tempDecompressed)
@@ -162,30 +163,16 @@ Namespace MysteryDungeon.Explorers
                                        If portrait IsNot Nothing Then
                                            'Generate the palette
                                            Dim palette = GraphicsHelpers.GetKaoPalette(portrait)
-                                           pokemonPalettes(pokemonIndex) = palette
+                                           pokemonPalettes.Add(palette)
 
-                                           'Generate the decompressed data
-                                           Dim decompressedData = GraphicsHelpers.Get4bppPortraitData(portrait, palette)
-
-                                           'Compress the portrait
-                                           '- Create a temporary file
-                                           Dim tempDecompressedFilename = Path.GetTempFileName
-                                           File.WriteAllBytes(tempDecompressedFilename, decompressedData)
-                                           '- Compress the file
-                                           Dim tempCompressedFilename = Path.GetTempFileName
-                                           Await manager.DoPX(tempDecompressedFilename, tempCompressedFilename, PXFormat.AT4PX)
-
-                                           '- Read the decompressed file
-                                           Dim compressedData = File.ReadAllBytes(tempCompressedFilename)
-                                           pokemonPortraitsCompressed(pokemonIndex) = compressedData
-
-                                           '- Cleanup
-                                           File.Delete(tempCompressedFilename)
-                                           File.Delete(tempDecompressedFilename)
+                                           'Generat the raw data
+                                           Dim uncompressed = GraphicsHelpers.Get4bppPortraitData(portrait, palette)
+                                           Dim compressed = Await manager.RunDoPX(uncompressed, PXFormat.AT4PX)
+                                           pokemonPortraitsCompressed.Add(compressed)
                                        Else
                                            'If a portrait is missing, add null to each of the lists so the indexes are maintained later on
-                                           pokemonPalettes(pokemonIndex) = Nothing
-                                           pokemonPortraitsCompressed(pokemonIndex) = Nothing
+                                           pokemonPalettes.Add(Nothing)
+                                           pokemonPortraitsCompressed.Add(Nothing)
                                        End If
                                    Next
                                    palettes(pokemonIndex) = pokemonPalettes
@@ -242,6 +229,51 @@ Namespace MysteryDungeon.Explorers
         Public Function GetSupportedExtensions() As IEnumerable(Of String) Implements ISavableAs.GetSupportedExtensions
             Return {".kao"}
         End Function
+
+#Region "IDisposable Support"
+        Private disposedValue As Boolean ' To detect redundant calls
+
+        ' IDisposable
+        Protected Overridable Sub Dispose(disposing As Boolean)
+            If Not disposedValue Then
+                If disposing Then
+                    ' TODO: dispose managed state (managed objects).
+
+                    If Portraits IsNot Nothing Then
+                        For Each pokemon In Portraits
+                            If pokemon IsNot Nothing Then
+                                For Each portrait In pokemon
+                                    If portrait IsNot Nothing Then
+                                        portrait.Dispose()
+                                    End If
+                                Next
+                            End If
+                        Next
+                    End If
+                    Portraits = Nothing
+                End If
+
+                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                ' TODO: set large fields to null.
+            End If
+            disposedValue = True
+        End Sub
+
+        ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.
+        'Protected Overrides Sub Finalize()
+        '    ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+        '    Dispose(False)
+        '    MyBase.Finalize()
+        'End Sub
+
+        ' This code added by Visual Basic to correctly implement the disposable pattern.
+        Public Sub Dispose() Implements IDisposable.Dispose
+            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            Dispose(True)
+            ' TODO: uncomment the following line if Finalize() is overridden above.
+            ' GC.SuppressFinalize(Me)
+        End Sub
+#End Region
 
     End Class
 End Namespace

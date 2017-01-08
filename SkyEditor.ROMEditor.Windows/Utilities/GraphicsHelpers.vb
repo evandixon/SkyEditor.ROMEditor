@@ -157,11 +157,19 @@ Namespace Utilities
         ''' <summary>
         ''' Determines whether or not two bitmaps represent the same logical image.
         ''' </summary>
+        ''' <exception cref="ArgumentNullException">Thrown if <paramref name="bitmap1"/> or <paramref name="bitmap2"/> is null.</exception>
         Public Shared Function AreBitmapsEquivalent(bitmap1 As Bitmap, bitmap2 As Bitmap) As Boolean
+            If bitmap1 Is Nothing Then
+                Throw New ArgumentNullException(NameOf(bitmap1))
+            End If
+            If bitmap2 Is Nothing Then
+                Throw New ArgumentNullException(NameOf(bitmap2))
+            End If
+
             If bitmap1.Size = bitmap2.Size Then
-                For x = 0 To bitmap1.Size.Width
-                    For y = 0 To bitmap1.Size.Height
-                        If Not bitmap1.GetPixel(x, y) = bitmap2.GetPixel(x, y) Then
+                For x = 0 To bitmap1.Size.Width - 1
+                    For y = 0 To bitmap1.Size.Height - 1
+                        If bitmap1.GetPixel(x, y) <> bitmap2.GetPixel(x, y) Then
                             Return False
                         End If
                     Next

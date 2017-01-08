@@ -9,6 +9,7 @@ Imports SkyEditor.ROMEditor.Utilities
 
 Public Class KaoFile
     Inherits ExplorersSir0
+    Implements IDisposable
 
     Public Sub New()
         AutoAddSir0HeaderRelativePointers = False
@@ -43,22 +44,37 @@ Public Class KaoFile
         Dim sections As New List(Of Byte())
         For count = 0 To pointers.Count - 2
             Dim index As Integer = pointers(count)
-            Dim length As Integer = pointers(count + 1) - index
-            sections.Add(RawData(index, length))
+            If index > 0 Then
+                Dim nextPointer = pointers(count + 1)
+                If nextPointer < 0 Then
+                    nextPointer *= -1
+                End If
+                Dim length As Integer = pointers(count + 1) - index
+                sections.Add(RawData(index, length))
+            Else
+                sections.Add(Nothing)
+            End If
         Next
         '- The last section
-        sections.Add(RawData(pointers.Last, HeaderOffset - pointers.Last))
+        Dim lastPointer = pointers.Last
+        If lastPointer > 0 Then
+            sections.Add(RawData(pointers.Last, HeaderOffset - pointers.Last))
+        End If
 
         '====================
         'Part 2: Parse the palettes
         '====================
         Dim palettes As New List(Of List(Of Color))
         For i = 0 To sections.Count - 1 Step 2
-            Dim palette As New List(Of Color)
-            For count = 0 To sections(i).Length - 1 Step 4
-                palette.Add(Color.FromArgb(sections(i)(count + 0), sections(i)(count + 1), sections(i)(count + 2)))
-            Next
-            palettes.Add(palette)
+            If sections(i) IsNot Nothing Then
+                Dim palette As New List(Of Color)
+                For count = 0 To sections(i).Length - 1 Step 4
+                    palette.Add(Color.FromArgb(sections(i)(count + 0), sections(i)(count + 1), sections(i)(count + 2)))
+                Next
+                palettes.Add(palette)
+            Else
+                palettes.Add(Nothing)
+            End If
         Next
 
         '====================
@@ -76,28 +92,30 @@ Public Class KaoFile
             For count = 0 To sections.Count - 1 Step 2
                 Dim countInner = count
                 tasks.Add(Task.Run(Async Function() As Task
+                                       Dim portraitIndex = Math.Floor(countInner / 2)
+                                       If sections(countInner + 1) IsNot Nothing Then
+                                           'Create a temporary file
+                                           Dim tempCompressed = Path.GetTempFileName
+                                           File.WriteAllBytes(tempCompressed, sections(countInner + 1))
 
-                                       'Create a temporary file
-                                       Dim tempCompressed = Path.GetTempFileName
-                                       File.WriteAllBytes(tempCompressed, sections(countInner + 1))
+                                           'Decompress the file
+                                           Dim tempDecompressed = Path.GetTempFileName
+                                           Await manager.RunUnPX(tempCompressed, tempDecompressed)
 
-                                       'Decompress the file
-                                       Dim tempDecompressed = Path.GetTempFileName
-                                       Await manager.UnPX(tempCompressed, tempDecompressed)
+                                           'Read the decompressed file
+                                           Dim fileData = File.ReadAllBytes(tempDecompressed)
 
-                                       'Read the decompressed file
-                                       Dim fileData = File.ReadAllBytes(tempDecompressed)
+                                           'Cleanup
+                                           File.Delete(tempCompressed)
+                                           File.Delete(tempDecompressed)
 
-                                       'Cleanup
-                                       File.Delete(tempCompressed)
-                                       File.Delete(tempDecompressed)
-
-                                       'Build the bitmap
-                                       If fileData.Length > 0 Then
-                                           Dim paletteIndex = Math.Floor(countInner / 2)
-                                           Portraits(paletteIndex) = GraphicsHelpers.BuildPokemonPortraitBitmap(palettes(paletteIndex), fileData)
+                                           'Build the bitmap
+                                           If fileData.Length > 0 Then
+                                               Portraits(portraitIndex) = GraphicsHelpers.BuildPokemonPortraitBitmap(palettes(portraitIndex), fileData)
+                                           End If
+                                       Else
+                                           Portraits(portraitIndex) = Nothing
                                        End If
-
                                    End Function))
             Next
             Await Task.WhenAll(tasks)
@@ -131,55 +149,42 @@ Public Class KaoFile
             Dim f As New AsyncFor
             f.BatchSize = Environment.ProcessorCount * 2
             Await f.RunFor(Async Function(count As Integer) As Task
-                               Dim item = decompressedPortraits(count)
-                               'Create a temporary file
-                               Dim tempDecompressed = Path.GetTempFileName
-                               File.WriteAllBytes(tempDecompressed, item)
-
-                               'Decompress the file
-                               Dim tempCompressed = Path.GetTempFileName
-                               Await manager.DoPX(tempDecompressed, tempCompressed, PXFormat.AT4PX)
-
-                               'Read the decompressed file
-                               compressedPortraits(count) = File.ReadAllBytes(tempCompressed)
-
-                               'Cleanup
-                               File.Delete(tempCompressed)
-                               File.Delete(tempDecompressed)
+                               compressedPortraits(count) = Await manager.RunDoPX(decompressedPortraits(count), PXFormat.AT4PX)
                            End Function, 0, decompressedPortraits.Count - 1)
         End Using
-
-        While compressedPortraits.Last Is Nothing
-            compressedPortraits.RemoveAt(compressedPortraits.Count - 1)
-        End While
 
         'Generate the data to write to the file
         Dim dataSection As New List(Of Byte)
         Dim pointersSection As New List(Of Byte)
         Dim dataIndex = &H10
         For count = 0 To Portraits.Count - 1
-            'Write the palette
-            pointersSection.AddRange(BitConverter.GetBytes(dataIndex))
+            If Portraits(count) Is Nothing Then
+                'This is how explorers does it, but this has not been observed in rescue team
+                pointersSection.AddRange(BitConverter.GetBytes(dataIndex * -1))
+            Else
+                'Write the palette
+                pointersSection.AddRange(BitConverter.GetBytes(dataIndex))
 
-            For Each item In palettes(count)
-                dataSection.Add(item.R)
-                dataSection.Add(item.G)
-                dataSection.Add(item.B)
-                dataSection.Add(&H80) 'The purpose of this byte is unknown, but needs to remain in order to preserve alignment
-                dataIndex += 4
-            Next
+                For Each item In palettes(count)
+                    dataSection.Add(item.R)
+                    dataSection.Add(item.G)
+                    dataSection.Add(item.B)
+                    dataSection.Add(&H80) 'The purpose of this byte is unknown, but needs to remain in order to preserve alignment
+                    dataIndex += 4
+                Next
 
-            'Write the data
-            pointersSection.AddRange(BitConverter.GetBytes(dataIndex))
-            dataSection.AddRange(compressedPortraits(count))
+                'Write the data
+                pointersSection.AddRange(BitConverter.GetBytes(dataIndex))
+                dataSection.AddRange(compressedPortraits(count))
 
-            dataIndex += compressedPortraits(count).Length
+                dataIndex += compressedPortraits(count).Length
 
-            'Integer-align the data
-            While dataSection.Count Mod 4 <> 0
-                dataSection.Add(&HAA)
-                dataIndex += 1
-            End While
+                'Integer-align the data
+                While dataSection.Count Mod 4 <> 0
+                    dataSection.Add(&HAA)
+                    dataIndex += 1
+                End While
+            End If
         Next
 
         While pointersSection.Count < &H68
@@ -213,5 +218,17 @@ Public Class KaoFile
 
         Await MyBase.DoPreSave()
     End Function
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        MyBase.Dispose(disposing)
+        If disposing AndAlso Portraits IsNot Nothing Then
+            For Each item In Portraits
+                If item IsNot Nothing Then
+                    item.Dispose()
+                End If
+            Next
+            Portraits = Nothing
+        End If
+    End Sub
 
 End Class
