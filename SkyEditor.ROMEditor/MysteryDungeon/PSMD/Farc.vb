@@ -140,7 +140,7 @@ Namespace MysteryDungeon.PSMD
             Return out
         End Function
 
-        Public Shared Function Pack(SourceDirectory As String, DestinationFarcFilename As String, provider As IOProvider) As Task
+        Public Shared Async Function Pack(SourceDirectory As String, DestinationFarcFilename As String, provider As IOProvider) As Task
             If provider.FileExists(DestinationFarcFilename) Then
                 provider.DeleteFile(DestinationFarcFilename)
             End If
@@ -187,7 +187,7 @@ Namespace MysteryDungeon.PSMD
             '    End If
             'Next
 
-            Dim headerData = header.GetRawData
+            Dim headerData = Await header.GetRawData
 
             Dim archiveBytes As New List(Of Byte)
             'Dim archive As New FarcF5
@@ -236,7 +236,6 @@ Namespace MysteryDungeon.PSMD
 
 
             'archive.Dispose()
-            Return Task.FromResult(0)
         End Function
 
 #Region "IDisposable Support"

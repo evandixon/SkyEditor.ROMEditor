@@ -1,8 +1,10 @@
-﻿Imports System.IO
+﻿Imports System.Drawing
+Imports System.IO
 Imports System.Security.Cryptography
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Windows.Providers
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
+Imports SkyEditor.ROMEditor.Utilities
 
 <TestClass()> Public Class EoSUTests
 
@@ -130,7 +132,7 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
         'Mudkip
         Assert.AreEqual(CUShort(286), testFile.Partner10, "Incorrect partner 10")
         'Skitty
-        Assert.AreEqual(CUShort(328+600), testFile.Partner19, "Incorrect partner 19")
+        Assert.AreEqual(CUShort(328 + 600), testFile.Partner19, "Incorrect partner 19")
         'Turtwig
         Assert.AreEqual(CUShort(422), testFile.Partner11, "Incorrect partner 11")
         'Chimchar
@@ -185,6 +187,52 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
             'Ensure data is at least somewhat valid
             Assert.AreEqual(64, testFile.Dungeons.Count, "Incorrect number of items")
         End Using
+    End Sub
+
+    <TestMethod> <TestCategory(EosTestCategory)> Public Sub Kaomado()
+        'Extract
+        Dim kao1 As New Kaomado
+        kao1.OpenFile(Path.Combine(romDir, "data", "font", "kaomado.kao"), provider).Wait()
+
+        'Pack
+        Dim kao2 As New Kaomado
+        kao2.CreateNew()
+
+        For pokemon = 0 To kao1.Portraits.Count - 1
+            For portrait = 0 To kao1.Portraits(pokemon).Length - 1
+                If kao1.Portraits(pokemon)(portrait) Is Nothing Then
+                    Try
+                        kao2.Portraits(pokemon)(portrait) = Nothing
+                    Catch ex As Exception
+                        Throw
+                    End Try
+                Else
+                    kao2.Portraits(pokemon)(portrait) = kao1.Portraits(pokemon)(portrait).Clone
+                End If
+            Next
+        Next
+
+        'Extract Again
+        Dim kao3 As New Kaomado
+        kao3.Initialize(kao2.GetBytes.Result)
+
+        'Compare
+        Assert.AreEqual(kao1.Portraits.Count, kao3.Portraits.Count, "Number of Pokemon differs")
+        For pokemon = 0 To kao1.Portraits.Count - 1
+            Assert.AreEqual(kao1.Portraits(pokemon).Length, kao3.Portraits(pokemon).Length, "Portrait count for Pokemon " & pokemon & " differs.")
+            For portrait = 0 To kao1.Portraits(pokemon).Length - 1
+                Dim bitmap1 = kao1.Portraits(pokemon)(portrait)
+                Dim bitmap2 = kao2.Portraits(pokemon)(portrait)
+
+                'bitmap1 is allowed to be null, but bitmap2 can only be null if bitmap1 is null
+                If bitmap1 Is Nothing Then
+                    Assert.IsNull(bitmap2, "Portrait " & portrait & " for Pokemon " & pokemon & " added.")
+                Else
+                    Assert.IsNotNull(bitmap2, "Portrait " & portrait & " for Pokemon " & pokemon & " removed.")
+                    Assert.IsTrue(GraphicsHelpers.AreBitmapsEquivalent(bitmap1, bitmap2), "Portrait " & portrait & " for Pokemon " & pokemon & " differs.")
+                End If
+            Next
+        Next
     End Sub
 
 End Class
