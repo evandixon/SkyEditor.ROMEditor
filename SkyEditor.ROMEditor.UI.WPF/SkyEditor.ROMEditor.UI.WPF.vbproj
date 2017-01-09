@@ -48,6 +48,17 @@
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Test\</OutputPath>
+    <DocumentationFile>SkyEditor.ROMEditor.UI.WPF.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42314</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AurelienRibon.Ui.SyntaxHighlightBox, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AurelienRibon.Ui.SyntaxHighlightBox.2.0.2\lib\NET40\AurelienRibon.Ui.SyntaxHighlightBox.dll</HintPath>
