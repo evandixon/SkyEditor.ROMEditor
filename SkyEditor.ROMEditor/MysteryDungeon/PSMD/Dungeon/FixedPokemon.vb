@@ -107,16 +107,16 @@ Namespace MysteryDungeon.PSMD.Dungeon
         Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task
             Await MyBase.OpenFile(Filename, Provider)
 
-            Dim numEntries = BitConverter.ToUInt32(Me.Header, 0)
+            Dim numEntries = BitConverter.ToUInt32(Me.ContentHeader, 0)
             'Unknown integer at 0x4
 
             For count = 0 To numEntries - 2 'Subtract 1 because we're talking indexes, subtract another it seems like it's 1 too high afterward, and I don't know why
-                Dim dataPointer = BitConverter.ToUInt32(Me.Header, 8 + count * 4)
+                Dim dataPointer = BitConverter.ToUInt32(Me.ContentHeader, 8 + count * 4)
                 Entries.Add(New PokemonEntry(Me.RawData(dataPointer, &H30)))
             Next
         End Function
 
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Me.RelativePointers.Clear()
             'Sir0 header pointers
             Me.RelativePointers.Add(4)
@@ -145,11 +145,11 @@ Namespace MysteryDungeon.PSMD.Dungeon
             For count = 0 To Entries.Count - 1
                 headerBytes.AddRange(BitConverter.GetBytes(&H10 + &H30 * count))
             Next
-            Me.Header = headerBytes.ToArray
+            Me.ContentHeader = headerBytes.ToArray
 
             'Let the general SIR0 stuff happen
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
 
         Public Overrides Async Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
             'Check to see if it's a SIR0 file named "fixed_pokemon.bin"

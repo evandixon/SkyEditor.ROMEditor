@@ -1,12 +1,12 @@
 ﻿Imports System.IO
 Imports System.Text.RegularExpressions
+Imports DS_ROM_Patcher
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.Core.Windows.Processes
-Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.ROMEditor.Windows
-Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.ROMEditor.Projects
 
 Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
@@ -92,25 +92,27 @@ Namespace MysteryDungeon.PSMD.Projects
         End Function
 #End Region
 
-        'Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)
-        '    Dim patchers = New List(Of FilePatcher)
-        '    If patchers Is Nothing Then
-        '        patchers = New List(Of FilePatcher)
-        '    End If
-        '    Dim msPatcher As New FilePatcher()
-        '    Dim patcherPath = GetType(Message_FARC_Patcher.FarcF5).Assembly.Location
-        '    With MSPatcher
-        '        .CreatePatchProgram = patcherPath
-        '        .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
-        '        .ApplyPatchProgram = patcherPath
-        '        .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
-        '        .MergeSafe = True
-        '        .PatchExtension = "msgFarcT5"
-        '        .FilePath = ".*message_?[A-Za-z]*\.bin"
-        '    End With
-        '    patchers.Add(MSPatcher)
-        '    Return patchers
-        'End Function
+        Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)
+            Dim patchers = New List(Of FilePatcher)
+            If patchers Is Nothing Then
+                patchers = New List(Of FilePatcher)
+            End If
+            Dim msPatcher As New FilePatcherJson()
+            Dim patcherPath = Path.GetFileName(GetType(Message_FARC_Patcher.FarcF5).Assembly.Location)
+            Dim toolsDir = Path.GetDirectoryName(GetType(Message_FARC_Patcher.FarcF5).Assembly.Location)
+            With msPatcher
+                .CreatePatchProgram = patcherPath
+                .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""
+                .ApplyPatchProgram = patcherPath
+                .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
+                .IsPatchMergeSafe = True
+                .PatchExtension = "msgFarcT5"
+                .FilePath = ".*message_?[A-Za-z]*\.bin"
+                .Dependencies = New List(Of String)
+            End With
+            patchers.Add(New FilePatcher(msPatcher, toolsDir))
+            Return patchers
+        End Function
 
         Public Function IsLanguageLoaded() As Boolean
             Return LanguageLoadTask IsNot Nothing AndAlso LanguageLoadTask.IsCompleted
@@ -131,12 +133,12 @@ Namespace MysteryDungeon.PSMD.Projects
             Await LanguageLoadTask
 
             'Find a unique ID
-            While ExistingLanguageIds.Contains(newID)
-                newID += 1
+            While ExistingLanguageIds.Contains(newId)
+                newId += 1
             End While
-            ExistingLanguageIds.Add(newID)  'Register the new ID so it can't be used again
+            ExistingLanguageIds.Add(newId)  'Register the new ID so it can't be used again
 
-            Return newID
+            Return newId
         End Function
 
         Private Sub LoadLanguageIDs()

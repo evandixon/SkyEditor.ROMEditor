@@ -1,7 +1,7 @@
 ﻿Imports SkyEditor.Core
 Imports System.IO
 Imports SkyEditor.Core.Windows
-Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.ROMEditor.Projects
 
 Namespace Windows
     Public Class PluginDefinition

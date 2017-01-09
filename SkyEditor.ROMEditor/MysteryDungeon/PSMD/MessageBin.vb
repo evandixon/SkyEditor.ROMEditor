@@ -48,8 +48,8 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Private Sub ProcessData()
-            Dim stringCount As Integer = BitConverter.ToInt32(Header, 0)
-            Dim stringInfoPointer As Integer = BitConverter.ToInt32(Header, 4)
+            Dim stringCount As Integer = BitConverter.ToInt32(ContentHeader, 0)
+            Dim stringInfoPointer As Integer = BitConverter.ToInt32(ContentHeader, 4)
 
             For i = 0 To stringCount - 1
                 Dim stringPointer As Integer = BitConverter.ToInt32(RawData(stringInfoPointer + i * 12 + &H0, 4), 0)
@@ -96,8 +96,8 @@ Namespace MysteryDungeon.PSMD
         Public Async Function OpenFileOnlyIDs(Filename As String, provider As IOProvider) As Task
             Await MyBase.OpenFile(Filename, provider)
 
-            Dim stringCount As Integer = BitConverter.ToInt32(Header, 0)
-            Dim stringInfoPointer As Integer = BitConverter.ToInt32(Header, 4)
+            Dim stringCount As Integer = BitConverter.ToInt32(ContentHeader, 0)
+            Dim stringInfoPointer As Integer = BitConverter.ToInt32(ContentHeader, 4)
 
             For i = 0 To stringCount - 1
                 Dim stringPointer As Integer = BitConverter.ToInt32(RawData(stringInfoPointer + i * 12 + &H0, 4), 0)
@@ -111,7 +111,7 @@ Namespace MysteryDungeon.PSMD
             Next
         End Function
 
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Me.RelativePointers.Clear()
             'Sir0 header pointers
             Me.RelativePointers.Add(4)
@@ -142,12 +142,12 @@ Namespace MysteryDungeon.PSMD
             Dim headerBytes As New List(Of Byte)
             headerBytes.AddRange(BitConverter.GetBytes(Strings.Count))
             headerBytes.AddRange(BitConverter.GetBytes(16 + stringSection.Count))
-            Me.Header = headerBytes.ToArray
+            Me.ContentHeader = headerBytes.ToArray
             Me.RelativePointers.Add(&H10)
 
             'Let the general SIR0 stuff happen
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
 
         ''' <summary>
         ''' Gets the Pokemon names, if the current instance of <see cref="MessageBin"/> is the common file. 

@@ -66,8 +66,8 @@
       <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.1\lib\net46\DotNet3dsSoundtrackConverter.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotNet3dsToolkit, Version=1.4.8.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsToolkit.1.4.8\lib\net46\DotNet3dsToolkit.dll</HintPath>
+    <Reference Include="DotNet3dsToolkit, Version=1.4.9.21, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsToolkit.1.4.9\lib\net46\DotNet3dsToolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="DSPatcher, Version=1.1.3.8, Culture=neutral, processorArchitecture=MSIL">
@@ -95,20 +95,28 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor, Version=4.0.7.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.4.0.7\lib\net46\SkyEditor.CodeEditor.dll</HintPath>
+    <Reference Include="Portable.Text.Encoding, Version=0.8.3.0, Culture=neutral, PublicKeyToken=96f7b8f9dde885b2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.Text.Encoding.0.8.3.0\lib\portable-net45+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\Portable.Text.Encoding.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.Core, Version=4.0.8.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.0.8\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
+    <Reference Include="ppmdu-wrapper, Version=1.0.3.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ppmdu-wrapper.1.0.3\lib\net46\ppmdu-wrapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.Core.Windows, Version=4.0.8.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.Windows.4.0.8\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor, Version=4.0.13.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.4.0.13\lib\net46\SkyEditor.CodeEditor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.SaveEditor, Version=4.0.5.12, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.SaveEditor.4.0.5\lib\portable45-net45+win8\SkyEditor.SaveEditor.dll</HintPath>
+    <Reference Include="SkyEditor.Core, Version=4.0.14.16, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.4.0.14\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SkyEditor.Core.Windows, Version=4.0.14.16, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.Windows.4.0.14\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SkyEditor.SaveEditor, Version=4.0.13.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.SaveEditor.4.0.13\lib\portable45-net45+win8\SkyEditor.SaveEditor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -119,7 +127,6 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Presentation" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="TagLib.Portable, Version=2.2.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
@@ -144,13 +151,15 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MysteryDungeon\Explorers\Kaomado.vb" />
+    <Compile Include="MysteryDungeon\Rescue\KaoFile.vb" />
+    <Compile Include="Utilities\GraphicsHelpers.vb" />
     <Compile Include="Windows\ConsoleCommands\MessageFarcFilenameAnalysis.vb" />
     <Compile Include="Windows\ConsoleCommands\NameListResearcher.vb" />
     <Compile Include="Windows\ConsoleCommands\PackFarc.vb" />
     <Compile Include="Windows\ConsoleCommands\PSMDExpTableCsv.vb" />
     <Compile Include="Windows\ConsoleCommands\PSMDLangSearch.vb" />
     <Compile Include="Windows\ConsoleCommands\Sir0Ptrs.vb" />
-    <Compile Include="Windows\ExternalProgramHelpers.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\CommandParameterAttribute.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\Commands\BasicTalkCommand.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\Commands\BgmFadeIn.vb" />
@@ -179,26 +188,24 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Projects\PpmduStatsUtilProject.vb" />
+    <Compile Include="MysteryDungeon\Explorers\Projects\PpmduStatsUtilProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\IPsmdMessageBinProject.vb" />
-    <Compile Include="Windows\Projects\Mods\ExplorersScriptModProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\PSMDStarterMod.vb" />
     <Compile Include="Windows\PsmdDir.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\CommandGroup.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\SSA.vb" />
     <Compile Include="Windows\FileFormats\CTR\Smdh.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\SSB.vb" />
-    <Compile Include="Windows\Projects\BaseRomProject.vb" />
+    <Compile Include="Projects\BaseRomProject.vb" />
     <Compile Include="Windows\ConsoleCommands\BatchCteConvert.vb" />
     <Compile Include="Windows\ConsoleCommands\ImportLanguage.vb" />
     <Compile Include="Windows\DSIconTool.vb" />
-    <Compile Include="Windows\Projects\DSModPackProject.vb" />
-    <Compile Include="Windows\DSModSolution.vb" />
+    <Compile Include="Projects\DSModPackProject.vb" />
+    <Compile Include="DSModSolution.vb" />
     <Compile Include="Windows\GameCodeRegistry.vb" />
     <Compile Include="MysteryDungeon\Explorers\BGP.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\DecompressedFile.vb" />
-    <Compile Include="Windows\FileFormats\Explorers\Kaomado.vb" />
-    <Compile Include="Windows\Projects\GenericModProject.vb" />
+    <Compile Include="MysteryDungeon\Explorers\CompressedFile.vb" />
+    <Compile Include="Projects\GenericModProject.vb" />
     <Compile Include="Windows\Java.vb" />
     <Compile Include="MysteryDungeon\PSMD\CteImage.vb" />
     <Compile Include="Windows\Mods\GenericSkyMod.vb" />
@@ -213,11 +220,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Windows\Projects\Mods\GtiImage2dProject.vb" />
-    <Compile Include="Windows\Projects\Mods\KaomadoProject.vb" />
-    <Compile Include="Windows\Projects\Mods\Pk3DSModProject.vb" />
-    <Compile Include="Windows\Projects\Mods\SkyBackModProject.vb" />
-    <Compile Include="Windows\Projects\Mods\SkyStarterModProject.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Projects\GtiImage2dProject.vb" />
+    <Compile Include="MysteryDungeon\Explorers\Projects\KaomadoProject.vb" />
+    <Compile Include="Projects\Pk3DSModProject.vb" />
+    <Compile Include="MysteryDungeon\Explorers\Projects\SkyBackModProject.vb" />
+    <Compile Include="MysteryDungeon\Explorers\Projects\SkyStarterModProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\PsmdLuaProject.vb" />
     <Compile Include="Windows\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -250,6 +257,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\PSMDStarterIntroScript.lua" />
     <None Include="Windows\app.config" />
     <Compile Include="Windows\FileFormats\Explorers\Script\SSB.SkyCommandFactory.vb" />
     <None Include="My Project\Application.myapp">
@@ -262,76 +270,63 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <None Include="Resources\MysteryDungeon\PSMD Move Name Hashes.txt" />
+    <None Include="Resources\MysteryDungeon\PSMD Pokemon Name Hashes.txt" />
     <Content Include="Windows\App.ico" />
-    <Content Include="Resources\pmd2scriptdata.xml" />
-    <Content Include="Resources\ppmd_pxcomp.exe" />
-    <None Include="Resources\ppmd_statsutil.exe" />
-    <Content Include="Resources\ppmd_unpx.exe" />
-    <Content Include="Resources\PSMDStarterIntroScript.lua" />
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\bin2c5.1.exe">
+    <None Include="SkyEditor.ROMEditor.Windows\lua\bin2c5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\lua5.1.dll">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\lua5.1.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\lua5.1.exe">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\lua5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\lua51.dll">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\lua51.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\luac5.1.exe">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\luac5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcm80.dll">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcm80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcp80.dll">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcp80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcr80.dll">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\msvcr80.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\wlua5.1.exe">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\wlua5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\rom_tool.exe">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\rom_tool.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\unluac.jar">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\unluac.jar">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\Microsoft.VC80.CRT.manifest">
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\Microsoft.VC80.CRT.manifest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
     <None Include="Windows\SkyEditor.ROMEditor.Windows.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SkyEditor.ROMEditor.Windows\dsicontool.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="SkyEditor.ROMEditor.Windows\pk3DS.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj">
       <Project>{b7f1e33d-ede9-42ba-8932-6cca5891d2e0}</Project>
       <Name>SkyEditor.ROMEditor</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SkyEditor.ROMEditor.Windows\dsicontool.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\facenames.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\pk3DS.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\pokenames.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\ppmd_kaoutil.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SkyEditor.ROMEditor.Windows\ppmd_kaoutil.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

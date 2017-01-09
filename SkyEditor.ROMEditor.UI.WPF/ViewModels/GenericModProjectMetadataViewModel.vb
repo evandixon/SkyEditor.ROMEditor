@@ -1,7 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
-Imports SkyEditor.ROMEditor.Windows.Projects
+Imports SkyEditor.ROMEditor.Projects
 
 Namespace ViewModels
     Public Class GenericModProjectMetadataViewModel

@@ -39,9 +39,9 @@ Namespace MysteryDungeon
         End Function
         Private Sub ProcessData()
             FileData = New List(Of FileInfo)
-            DataOffset = BitConverter.ToInt32(Header, 0)
-            FileCount = BitConverter.ToInt32(Header, 4)
-            Sir0Fat5Type = BitConverter.ToInt32(Header, 8)
+            DataOffset = BitConverter.ToInt32(ContentHeader, 0)
+            FileCount = BitConverter.ToInt32(ContentHeader, 4)
+            Sir0Fat5Type = BitConverter.ToInt32(ContentHeader, 8)
 
             For count = 0 To FileCount - 1
                 Dim info As New FileInfo
@@ -61,7 +61,7 @@ Namespace MysteryDungeon
             Next
         End Sub
 
-        Protected Overrides Sub DoPreSave()
+        Protected Overrides Async Function DoPreSave() As Task
             'Only works for files without filenames
 
             'Reset pointers
@@ -87,17 +87,17 @@ Namespace MysteryDungeon
             headerData.AddRange(BitConverter.GetBytes(FileData.Count))
             headerData.AddRange(BitConverter.GetBytes(1)) 'Marks that we're not actually using filenames
 
-            Me.Header = headerData.ToArray
+            Me.ContentHeader = headerData.ToArray
 
             Me.RelativePointers.Add(data.Count + 8)
 
-            MyBase.DoPreSave()
-        End Sub
+            Await MyBase.DoPreSave()
+        End Function
 
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
-            DoPreSave()
-            MyBase.Save(Destination, provider)
-        End Sub
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
+            Await DoPreSave()
+            Await MyBase.Save(Destination, provider)
+        End Function
 
 
         Public Sub New()

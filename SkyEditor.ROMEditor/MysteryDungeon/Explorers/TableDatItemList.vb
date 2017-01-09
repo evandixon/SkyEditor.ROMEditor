@@ -3,15 +3,22 @@
 Namespace MysteryDungeon.Explorers
     Public Class TableDatItemList
         Inherits GenericFile
+
         Public Structure TableDatItem
-            Public Property ObtainPercentage As Single
-            Public Property ItemID As UInt16
+
             Public Sub New(ItemID As UInt16, ObtainPercentage As Single)
                 Me.ItemID = ItemID
                 Me.ObtainPercentage = ObtainPercentage
             End Sub
+
+            Public Property ObtainPercentage As Single
+
+            Public Property ItemID As UInt16
+
         End Structure
+
         Public Property Items As List(Of TableDatItem)
+
         Private Sub InitItems()
             Items = New List(Of TableDatItem)
             If Length >= 2 Then
@@ -27,7 +34,13 @@ Namespace MysteryDungeon.Explorers
                 Next
             End If
         End Sub
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+
+        Public Overrides Async Function OpenFile(filename As String, provider As IOProvider) As Task
+            Await MyBase.OpenFile(filename, provider)
+            InitItems()
+        End Function
+
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Me.Length = 2 + (Items.Count * 4)
             RawData(0, 2) = BitConverter.GetBytes(Items.Count)
             For count As Integer = 0 To Items.Count - 1
@@ -38,8 +51,8 @@ Namespace MysteryDungeon.Explorers
                 End If
                 RawData(count * 4 + 2, 2) = BitConverter.GetBytes(Items(count).ItemID)
             Next
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
     End Class
 
 End Namespace

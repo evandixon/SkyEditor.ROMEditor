@@ -1,4 +1,6 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports System.Reflection
+Imports SkyEditor.Core
+Imports SkyEditor.Core.IO
 
 Namespace MysteryDungeon.Explorers
     ''' <summary>
@@ -6,13 +8,32 @@ Namespace MysteryDungeon.Explorers
     ''' </summary>
     ''' <remarks></remarks>
     Public Class Overlay13
-        Public Sub New(Filename As String, provider As IOProvider)
-            Me.Filename = Filename
-            RawData = provider.ReadAllBytes(Filename)
+        Implements IOpenableFile        
+        Implements ISavable
+        Implements IOnDisk
+
+        Public Event FileSaved As ISavable.FileSavedEventHandler Implements ISavable.FileSaved
+
+        Public Sub New()
         End Sub
 
-        Public Property Filename As String
+        Public Sub New(filename As String, provider As IOProvider)
+            OpenFileInternal(filename, provider)
+        End Sub
+
+        Public Function OpenFile(filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+            OpenFileInternal(filename, Provider)
+            Return Task.FromResult(0)
+        End Function
+
+        Private Sub OpenFileInternal(filename As String, provider As IOProvider)
+            Me.Filename = filename
+            RawData = provider.ReadAllBytes(filename)
+        End Sub
+
+        Public Property Filename As String Implements IOnDisk.Filename
         Public Property RawData As Byte()
+
 #Region "RawIDs"
         Public Property Partner01 As UInt16
             Get
@@ -566,6 +587,7 @@ Namespace MysteryDungeon.Explorers
         End Property
 
 #End Region
+
         ''' <summary>
         ''' Returns the rawID, subtracted by 600 if applicable
         ''' </summary>
@@ -603,9 +625,11 @@ Namespace MysteryDungeon.Explorers
             End If
         End Function
 
-        Public Sub Save(provider As IOProvider)
+        Public Function Save(provider As IOProvider) As Task Implements ISavable.Save
             provider.WriteAllBytes(Filename, RawData)
-        End Sub
+            RaiseEvent FileSaved(Me, New EventArgs)
+            Return Task.FromResult(0)
+        End Function
 
     End Class
 

@@ -66,6 +66,24 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Complete.
+        '''</summary>
+        Friend Shared ReadOnly Property Complete() As String
+            Get
+                Return ResourceManager.GetString("Complete", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Unpacking....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingUnpacking() As String
+            Get
+                Return ResourceManager.GetString("LoadingUnpacking", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to (None).
         '''</summary>
         Friend Shared ReadOnly Property NonePokemon() As String

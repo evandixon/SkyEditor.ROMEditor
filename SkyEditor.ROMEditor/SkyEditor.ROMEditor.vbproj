@@ -123,6 +123,8 @@
     <Compile Include="MysteryDungeon\PSMD\PokemonDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\Pokemon\ActorDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\WazaDataInfo.vb" />
+    <Compile Include="MysteryDungeon\Rescue\BlueNorthAmericanArm9Bin.vb" />
+    <Compile Include="MysteryDungeon\Rescue\SBin.vb" />
     <Compile Include="MysteryDungeon\Sir0.vb" />
     <Compile Include="MysteryDungeon\Sir0Fat5.vb" />
     <Compile Include="PluginDefinition.vb" />
@@ -141,8 +143,8 @@
       <HintPath>..\packages\Portable.Text.Encoding.0.8.3.0\lib\portable-net45+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\Portable.Text.Encoding.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.Core, Version=4.0.8.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.0.8\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
+    <Reference Include="SkyEditor.Core, Version=4.0.14.16, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.4.0.14\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -170,8 +172,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\MysteryDungeon\PSMD Move Name Hashes.txt" />
-    <Content Include="Resources\MysteryDungeon\PSMD Pokemon Name Hashes.txt" />
+    <None Include="Resources\MysteryDungeon\PSMD Move Name Hashes.txt" />
+    <None Include="Resources\MysteryDungeon\PSMD Pokemon Name Hashes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

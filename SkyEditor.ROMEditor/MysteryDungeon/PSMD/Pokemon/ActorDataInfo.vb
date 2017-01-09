@@ -86,7 +86,7 @@ Namespace MysteryDungeon.PSMD.Pokemon
             Return Task.FromResult(0)
         End Function
 
-        Public Sub Save(Destination As String, provider As IOProvider) Implements ISavableAs.Save
+        Public Function Save(Destination As String, provider As IOProvider) As Task Implements ISavableAs.Save
             Me.Filename = Destination
             Dim dataBuffer As New List(Of Byte)(&H58 * Entries.Count)
             For Each item In Entries
@@ -95,11 +95,12 @@ Namespace MysteryDungeon.PSMD.Pokemon
             dataBuffer.AddRange(Footer)
             provider.WriteAllBytes(Destination, dataBuffer.ToArray)
             RaiseEvent FileSaved(Me, New EventArgs)
-        End Sub
+            Return Task.FromResult(0)
+        End Function
 
-        Public Sub Save(provider As IOProvider) Implements ISavable.Save
-            Save(Filename, provider)
-        End Sub
+        Public Async Function Save(provider As IOProvider) As Task Implements ISavable.Save
+            Await Save(Filename, provider)
+        End Function
 
         Public Function GetDefaultExtension() As String Implements ISavableAs.GetDefaultExtension
             Return ".bin"

@@ -371,11 +371,11 @@ Namespace MysteryDungeon.Explorers
             Await MyBase.OpenFile(Filename, Provider)
 
             'Load pointers
-            Dim floorIndexPointerBlockStart As Integer = BitConverter.ToInt32(Header, 0)
-            Dim attributeBlockPointer As Integer = BitConverter.ToInt32(Header, 4)
-            Dim itemSpawnPointerBlockPointer As Integer = BitConverter.ToInt32(Header, 8)
-            Dim spawnPointerBlockStart As Integer = BitConverter.ToInt32(Header, &HC) 'Block of pointers
-            Dim ptr5 As Integer = BitConverter.ToInt32(Header, &H10)
+            Dim floorIndexPointerBlockStart As Integer = BitConverter.ToInt32(ContentHeader, 0)
+            Dim attributeBlockPointer As Integer = BitConverter.ToInt32(ContentHeader, 4)
+            Dim itemSpawnPointerBlockPointer As Integer = BitConverter.ToInt32(ContentHeader, 8)
+            Dim spawnPointerBlockStart As Integer = BitConverter.ToInt32(ContentHeader, &HC) 'Block of pointers
+            Dim ptr5 As Integer = BitConverter.ToInt32(ContentHeader, &H10)
 
             Dim pkmSpawnPtr1 As Integer = Me.Int32(spawnPointerBlockStart)
             Dim itemSpawnPtr1 As Integer = Me.Int32(itemSpawnPointerBlockPointer)
@@ -552,7 +552,7 @@ Namespace MysteryDungeon.Explorers
 #End Region
 
 #Region "Save"
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
 
             Dim dataBlock As New List(Of Byte)
 
@@ -604,7 +604,7 @@ Namespace MysteryDungeon.Explorers
             '- Section pointer in header
             Dim rootFloorPointerBuffer = BitConverter.GetBytes(rootFloorIndexPointer + floorIndexData.Count)
             For i = 0 To 3
-                Header(0 + i) = rootFloorPointerBuffer(i)
+                ContentHeader(0 + i) = rootFloorPointerBuffer(i)
             Next
 
             ' ----------
@@ -624,7 +624,7 @@ Namespace MysteryDungeon.Explorers
             '- Section pointer in head
             Dim rootAttributePointerBuffer = BitConverter.GetBytes(rootAttributeIndexPointer)
             For i = 0 To 3
-                Header(4 + i) = rootAttributePointerBuffer(i)
+                ContentHeader(4 + i) = rootAttributePointerBuffer(i)
             Next
 
             '----------
@@ -670,7 +670,7 @@ Namespace MysteryDungeon.Explorers
 
             Dim rootPkmSpawnBuffer = BitConverter.GetBytes(rootPkmSpawnPointer + pkmSpawnData.Count)
             For i = 0 To 3
-                Header(&HC + i) = rootPkmSpawnBuffer(i)
+                ContentHeader(&HC + i) = rootPkmSpawnBuffer(i)
             Next
 
             '----------
@@ -707,7 +707,7 @@ Namespace MysteryDungeon.Explorers
             '- Section pointer in header
             Dim rootDataBlockCBuffer = BitConverter.GetBytes(rootDataBlockCPointer + dataBlockCData.Count)
             For i = 0 To 3
-                Header(&H10 + i) = rootDataBlockCBuffer(i)
+                ContentHeader(&H10 + i) = rootDataBlockCBuffer(i)
             Next
 
             '----------
@@ -744,7 +744,7 @@ Namespace MysteryDungeon.Explorers
             '- Section pointer in head
             Dim rootItemSpawnBuffer = BitConverter.GetBytes(rootItemSpawnPointer + itemSpawnData.Count)
             For i = 0 To 3
-                Header(&H8 + i) = rootItemSpawnBuffer(i)
+                ContentHeader(&H8 + i) = rootItemSpawnBuffer(i)
             Next
 
             'Padd data block
@@ -766,8 +766,8 @@ Namespace MysteryDungeon.Explorers
             Me.RawData(&H10, dataBlock.Count) = dataBlock.ToArray
 
             'Finish
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
 #End Region
 
         Public Property Dungeons As List(Of DungeonBalance)

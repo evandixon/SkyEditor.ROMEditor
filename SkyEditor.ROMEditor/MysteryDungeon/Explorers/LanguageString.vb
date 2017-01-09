@@ -76,7 +76,7 @@ Namespace MysteryDungeon.Explorers
                 Items(count / 4) = s.ToString
             Next
         End Function
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             'Generate File
             Dim e = Encoding.GetEncoding("Windows-1252")
             Dim offsets As New List(Of UInt32)
@@ -114,8 +114,8 @@ Namespace MysteryDungeon.Explorers
             'Write buffer to stream
             Length = totalData.Count
             RawData(0, totalData.Count) = totalData.ToArray
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
         Default Public Property Item(Index As UInteger) As String
             Get
                 Return Items(Index)

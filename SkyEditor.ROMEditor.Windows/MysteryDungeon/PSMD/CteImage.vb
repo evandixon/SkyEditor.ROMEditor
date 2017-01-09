@@ -83,7 +83,7 @@ Namespace MysteryDungeon.PSMD
             End If
         End Function
 
-        Public Overrides Sub Save(Destination As String, provider As IOProvider)
+        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
             Dim empty64(64) As Byte
             Dim dataLength = Width * Height * PixelLength
             Length = dataLength + &H80
@@ -106,8 +106,8 @@ Namespace MysteryDungeon.PSMD
                     offset += (PixelLength * 64) / 8
                 Next
             Next
-            MyBase.Save(Destination, provider)
-        End Sub
+            Await MyBase.Save(Destination, provider)
+        End Function
 
         Private Function GetColorData(Color As Color, PixelLength As Integer) As Byte()
             If PixelLength = &H20 Then

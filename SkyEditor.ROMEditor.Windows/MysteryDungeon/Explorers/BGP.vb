@@ -1,10 +1,9 @@
 ﻿Imports System.Drawing
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers
 
 Namespace MysteryDungeon.Explorers
     Public Class BGP
-        Inherits DecompressedFile
+        Inherits CompressedFile
 
         Public Sub New()
             MyBase.New
@@ -12,7 +11,7 @@ Namespace MysteryDungeon.Explorers
         End Sub
 
         Private Class Palette
-            Public Property Colors As Generic.List(Of Color)
+            Public Property Colors As List(Of Color)
             Public Function ToBytes() As Byte()
                 Dim paletteData(&H400 - 1) As Byte
                 For count As Integer = 0 To paletteData.Length - 1 Step 4
@@ -130,12 +129,12 @@ Namespace MysteryDungeon.Explorers
             End Get
         End Property
         Private Function ChunkToImage(Data As Byte(), PalData As Byte(), PalIndex As Byte) As Bitmap
-            Dim i As New System.Drawing.Bitmap(8, 8)
-            Dim g As System.Drawing.Graphics = System.Drawing.Graphics.FromImage(i)
+            Dim i As New Bitmap(8, 8)
+            Dim g As Graphics = Graphics.FromImage(i)
             Dim colors As New List(Of Byte)
             For Each b In Data
-                colors.Add(((b) Or &HF0) - &HF0)
-                colors.Add(((b >> 4) Or &HF0) - &HF0)
+                colors.Add((b) And &HF)
+                colors.Add((b >> 4) And &HF)
             Next
             Dim colorIndex = 0
             For y As Byte = 0 To 7
@@ -155,11 +154,11 @@ Namespace MysteryDungeon.Explorers
             Dim r = palData(PalNumber * 64 + Color * 4 + 0)
             Dim g = palData(PalNumber * 64 + Color * 4 + 1)
             Dim b = palData(PalNumber * 64 + Color * 4 + 2)
-            Dim out As New SolidBrush(System.Drawing.Color.FromArgb(255, r, g, b))
+            Dim out As New SolidBrush(Drawing.Color.FromArgb(255, r, g, b))
             Return out
         End Function
         Private Function ProcessMapping(MapData As Byte(), Chunks As List(Of Byte()), PalData As Byte()) As Bitmap
-            Dim i As New System.Drawing.Bitmap(256, 192)
+            Dim i As New Bitmap(256, 192)
             Dim g As Graphics = Graphics.FromImage(i)
             Dim dataIndex = 0
             For y = 0 To 23
