@@ -16,11 +16,11 @@
             ElseIf eosID = 488 Then
                 'Munchlax
                 Return 420
-            ElseIf eosID = 420 Then
+            ElseIf eosID = 421 Then
                 Return 419
-            ElseIf eosID = 419 Then
+            ElseIf eosID = 420 Then
                 Return 418
-            ElseIf eosID = 418 Then
+            ElseIf eosID = 419 Then
                 Return 417
             ElseIf eosID > 420 Then
                 If throwOnUnsupported Then
@@ -45,7 +45,7 @@
                 Else
                     Return -1
                 End If
-            ElseIf eosID > 229 Then
+            ElseIf eosID >= 229 Then
                 Return eosID - 2
             ElseIf eosID = 228 Then
                 Return 416
