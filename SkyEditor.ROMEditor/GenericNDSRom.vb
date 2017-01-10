@@ -593,7 +593,7 @@ Public Class GenericNDSRom
                             End Function, root.Children))
     End Function
 
-    Private Async Function ExtractOverlay(fAT As List(Of FileAllocationEntry), overlayTable As List(Of OverlayTableEntry), targetDir As String, provider As IOProvider) As Task
+    Private Async Function ExtractOverlay(FAT As List(Of FileAllocationEntry), overlayTable As List(Of OverlayTableEntry), targetDir As String, provider As IOProvider) As Task
         If overlayTable.Count > 0 AndAlso Not provider.DirectoryExists(targetDir) Then
             provider.CreateDirectory(targetDir)
         End If
@@ -601,8 +601,8 @@ Public Class GenericNDSRom
         f.RunSynchronously = Not Me.IsThreadSafe
         f.BatchSize = overlayTable.Count
         Await f.RunForEach(Sub(item As OverlayTableEntry)
-                               Dim dest = IO.Path.Combine(targetDir, "overlay_" & item.OverlayID.ToString.PadLeft(4, "0"c) & ".bin")
-                               Dim entry = fAT(item.FileID)
+                               Dim dest = IO.Path.Combine(targetDir, "overlay_" & item.FileID.ToString.PadLeft(4, "0"c) & ".bin")
+                               Dim entry = FAT(item.FileID)
                                provider.WriteAllBytes(dest, RawData(entry.Offset, entry.EndAddress - entry.Offset))
                            End Sub, overlayTable)
     End Function

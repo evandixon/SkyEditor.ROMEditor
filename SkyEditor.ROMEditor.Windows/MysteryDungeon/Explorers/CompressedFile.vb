@@ -18,7 +18,7 @@ Namespace MysteryDungeon.Explorers
             TempFilename = provider.GetTempFilename
 
             Using external As New UtilityManager
-                Await external.UnPX(filename, TempFilename)
+                Await external.RunUnPX(filename, TempFilename)
             End Using
 
             Await MyBase.OpenFile(TempFilename, provider)
@@ -42,7 +42,7 @@ Namespace MysteryDungeon.Explorers
                     format = PXFormat.PKDPX
                 End If
 
-                Await external.DoPX(TempFilename, filename, format)
+                Await external.RunDoPX(TempFilename, filename, format)
             End Using
 
             Me.OriginalFilename = filename

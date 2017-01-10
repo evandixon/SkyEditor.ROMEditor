@@ -19,6 +19,7 @@ Namespace MysteryDungeon
             ResizeFileOnLoad = True
             AutoAddSir0HeaderRelativePointers = False
             RelativePointers = New List(Of Integer)
+            EnableInMemoryLoad = True
         End Sub
 
         ''' <summary>
@@ -124,7 +125,7 @@ Namespace MysteryDungeon
             ProcessData()
         End Function
 
-        Protected Overridable Sub DoPreSave()
+        Protected Overridable Function DoPreSave() As Task
             'The header and relative pointers must be set by child classes
 
             Me.RawData(0, 4) = {&H53, &H49, &H52, &H30}
@@ -184,10 +185,11 @@ Namespace MysteryDungeon
                 Length += 1
                 RawData(Me.Length - 1) = PaddingByte
             End While
-        End Sub
+            Return Task.FromResult(0)
+        End Function
 
         Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
-            DoPreSave()
+            Await DoPreSave()
 
             Await MyBase.Save(Destination, provider)
 
@@ -204,8 +206,8 @@ Namespace MysteryDungeon
             Return {".bin"}
         End Function
 
-        Public Function GetRawData() As Byte()
-            DoPreSave()
+        Public Async Function GetRawData() As Task(Of Byte())
+            Await DoPreSave()
             Dim data = RawData
             ProcessData()
             Return data

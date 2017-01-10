@@ -133,8 +133,8 @@ Namespace MysteryDungeon.Explorers
             Dim g As Graphics = Graphics.FromImage(i)
             Dim colors As New List(Of Byte)
             For Each b In Data
-                colors.Add(((b) Or &HF0) - &HF0)
-                colors.Add(((b >> 4) Or &HF0) - &HF0)
+                colors.Add((b) And &HF)
+                colors.Add((b >> 4) And &HF)
             Next
             Dim colorIndex = 0
             For y As Byte = 0 To 7
