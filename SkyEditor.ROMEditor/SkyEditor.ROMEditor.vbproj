@@ -102,6 +102,7 @@
     <Compile Include="MysteryDungeon\Explorers\TableDatItemList.vb" />
     <Compile Include="MysteryDungeon\Explorers\ViewModels\PersonalityTestContainer.vb" />
     <Compile Include="MysteryDungeon\Explorers\waza_p.vb" />
+    <Compile Include="MysteryDungeon\IDConversion.vb" />
     <Compile Include="MysteryDungeon\PSMD\ActDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\ActHitCountTableDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\ActXlWaza.vb" />
