@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BRTUTests.vb" />
+    <Compile Include="CombinedExplorersRescueTests.vb" />
     <Compile Include="EoSUTests.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
