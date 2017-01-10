@@ -117,17 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="eos_u" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Test ROMs\eos-u.nds;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="EoS_U_MD5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Test ROMs\EoS-U-MD5;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="brt_u" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Test ROMs\brt-u.nds;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="BRT_U_MD5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Test ROMs\BRT-U-MD5;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
 </root>
