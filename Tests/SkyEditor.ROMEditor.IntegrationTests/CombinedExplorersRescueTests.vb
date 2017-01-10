@@ -39,5 +39,23 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
         End If
 
         monster.Save(Path.Combine("ManualTests", "eos-copied-monster.sbin"), provider).Wait()
+
+        'Extract
+        Dim monster1 As New SBin
+        monster1.OpenFile(Path.Combine("ManualTests", "eos-copied-monster.sbin"), provider).Wait()
+
+        For Each item In monster1.Files.Where(Function(x) x.Key.StartsWith("kao"))
+            File.WriteAllBytes(Path.Combine("ManualTests", item.Key & ".bin"), item.Value)
+            Using kao As New KaoFile
+                kao.Initialize(item.Value).Wait()
+                For count = 0 To kao.Portraits.Count - 1
+                    Dim targetFilename = Path.Combine("ManualTests", "Extracted", item.Key, count & ".png")
+                    If Not Directory.Exists(Path.GetDirectoryName(targetFilename)) Then
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetFilename))
+                    End If
+                    kao.Portraits(count)?.Save(targetFilename, Drawing.Imaging.ImageFormat.Png)
+                Next
+            End Using
+        Next
     End Sub
 End Class

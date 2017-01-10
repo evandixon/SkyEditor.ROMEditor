@@ -132,13 +132,21 @@ Public Class KaoFile
         'Generate the palettes
         Dim palettes As New List(Of List(Of Color))
         For Each item In Portraits
-            palettes.Add(GraphicsHelpers.GetKaoPalette(item))
+            If item Is Nothing Then
+                palettes.Add(Nothing)
+            Else
+                palettes.Add(GraphicsHelpers.GetKaoPalette(item))
+            End If
         Next
 
         'Generate the decompressed data
         Dim decompressedPortraits As New List(Of Byte())
         For count = 0 To Portraits.Count - 1
-            decompressedPortraits.Add(GraphicsHelpers.Get4bppPortraitData(Portraits(count), palettes(count)))
+            If Portraits(count) Is Nothing Then
+                decompressedPortraits.Add(Nothing)
+            Else
+                decompressedPortraits.Add(GraphicsHelpers.Get4bppPortraitData(Portraits(count), palettes(count)))
+            End If
         Next
 
         'Compress the portraits
@@ -149,7 +157,9 @@ Public Class KaoFile
             Dim f As New AsyncFor
             f.BatchSize = Environment.ProcessorCount * 2
             Await f.RunFor(Async Function(count As Integer) As Task
-                               compressedPortraits(count) = Await manager.RunDoPX(decompressedPortraits(count), PXFormat.AT4PX)
+                               If decompressedPortraits(count) IsNot Nothing Then
+                                   compressedPortraits(count) = Await manager.RunDoPX(decompressedPortraits(count), PXFormat.AT4PX)
+                               End If
                            End Function, 0, decompressedPortraits.Count - 1)
         End Using
 

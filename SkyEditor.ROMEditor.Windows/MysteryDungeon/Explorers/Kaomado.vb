@@ -237,60 +237,79 @@ Namespace MysteryDungeon.Explorers
         ''' <param name="monsterBin">The file to which to copy portraits.</param>
         ''' <param name="copyAllEmotions">Whether or not to substitute the default portrait for missing emotions.</param>
         Public Async Function CopyToRescueTeam(monsterBin As SBin, Optional copyAllEmotions As Boolean = False) As Task
-            For count = 0 To Portraits.Count - 1
-                Dim eosPokemonID = count + 1
-                Dim rescuePokemonID = IDConversion.ConvertEoSPokemonToRB(eosPokemonID, False)
-                If rescuePokemonID > -1 Then
-                    Using kao As New KaoFile()
-                        'Initialize
-                        Dim monsterBinFilename = "kao" & rescuePokemonID.ToString.PadLeft(3, "0"c)
-                        If monsterBin.Files.ContainsKey(monsterBinFilename) Then
-                            Await kao.Initialize(monsterBin.Files(monsterBinFilename))
-                        Else
-                            kao.CreateFile()
-                        End If
+            Dim data As New ConcurrentDictionary(Of String, Byte())(monsterBin.Files)
+            Dim a As New AsyncFor
+            a.BatchSize = Environment.ProcessorCount * 2
+            Await a.RunFor(Async Function(count As Integer) As Task
+                               Dim eosPokemonID = count + 1
+                               Dim rescuePokemonID = IDConversion.ConvertEoSPokemonToRB(eosPokemonID, False)
+                               If rescuePokemonID > -1 Then
+                                   Using kao As New KaoFile()
+                                       'Initialize
+                                       Dim monsterBinFilename = "kao" & rescuePokemonID.ToString.PadLeft(3, "0"c)
+                                       If data.ContainsKey(monsterBinFilename) Then
+                                           Await kao.Initialize(data(monsterBinFilename))
+                                       Else
+                                           kao.CreateFile()
+                                       End If
 
-                        'Copy Portraits
-                        For eosPortrait = 0 To Portraits(count).Length - 1
-                            Try
-                                If Not eosPortrait = 18 AndAlso 'Rescue Team uses another emotion instead of Determined
-                                eosPortrait Mod 2 = 0 AndAlso 'Rescue Team does not have asymmetric portraits
-                                eosPortrait <= 24 Then 'Rescue Team's max portrait index is 12
+                                       While kao.Portraits.Count <= 13
+                                           kao.Portraits.Add(Nothing)
+                                       End While
 
-                                    Dim rescuePortrait = eosPokemonID / 2
-                                    If Portraits(count)(eosPortrait) IsNot Nothing AndAlso kao.Portraits(rescuePortrait) Is Nothing Then
-                                        'Copy portrait if there isn't already one
-                                        kao.Portraits(rescuePortrait) = Portraits(count)(eosPortrait).Clone
-                                    End If
+                                       'Copy Portraits
+                                       For eosPortrait = 0 To Portraits(count).Length - 1
+                                           Try
+                                               If Not eosPortrait = 18 AndAlso 'Rescue Team uses another emotion instead of Determined
+                                                                      eosPortrait Mod 2 = 0 AndAlso 'Rescue Team does not have asymmetric portraits
+                                                                      eosPortrait <= 24 Then 'Rescue Team's max portrait index is 12
 
-                                    If eosPortrait = 2 AndAlso kao.Portraits(9) Is Nothing Then
-                                        'Additionally copy to index 9, since 9 is a closed-mouth variant of Grin 
-                                        kao.Portraits(rescuePortrait) = Portraits(count)(2).Clone
-                                    End If
-                                End If
-                            Catch ex As Exception
-                                Throw
-                            End Try
+                                                   Dim rescuePortrait = (eosPortrait / 2)
+                                                   If Portraits(count)(eosPortrait) IsNot Nothing Then
+                                                       'Copy portrait if there isn't already one
 
-                        Next
+                                                       If kao.Portraits(rescuePortrait) Is Nothing Then
+                                                           kao.Portraits(rescuePortrait) = Portraits(count)(eosPortrait).Clone
+                                                       End If
+                                                   End If
 
-                        'Copy default to other emotions if applicable
-                        If copyAllEmotions AndAlso kao.Portraits(0) IsNot Nothing Then
-                            For rescuePortrait = 1 To kao.Portraits.Count - 1
-                                If kao.Portraits(rescuePortrait) Is Nothing Then
-                                    kao.Portraits(rescuePortrait) = kao.Portraits(0).Clone
-                                End If
-                            Next
-                        End If
+                                                   If eosPortrait = 2 AndAlso Portraits(count)(2) IsNot Nothing AndAlso kao.Portraits(9) Is Nothing Then
+                                                       'Additionally copy to index 9, since 9 is a closed-mouth variant of Grin 
+                                                       kao.Portraits(9) = Portraits(count)(2).Clone
+                                                   End If
+                                               End If
+                                           Catch ex As Exception
+                                               Throw
+                                           End Try
 
-                        'Save
-                        Dim rawData = Await kao.GetRawData
-                        If monsterBin.Files.ContainsKey(monsterBinFilename) Then
-                            monsterBin.Files(monsterBinFilename) = rawData
-                        Else
-                            monsterBin.Files.Add(monsterBinFilename, rawData)
-                        End If
-                    End Using
+
+                                       Next
+
+                                       'Copy default to other emotions if applicable
+                                       If copyAllEmotions AndAlso kao.Portraits(0) IsNot Nothing Then
+                                           For rescuePortrait = 1 To kao.Portraits.Count - 1
+                                               If kao.Portraits(rescuePortrait) Is Nothing Then
+                                                   kao.Portraits(rescuePortrait) = kao.Portraits(0).Clone
+                                               End If
+                                           Next
+                                       End If
+
+                                       'Save
+                                       Try
+                                           Dim rawData = Await kao.GetRawData
+                                           data(monsterBinFilename) = rawData
+                                       Catch ex As Exception
+                                           Throw
+                                       End Try
+
+                                   End Using
+                               End If
+                           End Function, 0, Portraits.Count)
+            For Each item In data
+                If monsterBin.Files.ContainsKey(item.Key) Then
+                    monsterBin.Files(item.Key) = item.Value
+                Else
+                    monsterBin.Files.Add(item.Key, item.Value)
                 End If
             Next
         End Function
