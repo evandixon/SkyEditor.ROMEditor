@@ -48,7 +48,7 @@ Imports SkyEditor.ROMEditor.Utilities
         End If
     End Sub
 
-    <TestMethod> <TestCategory(Category)> Public Sub SBinFileFormat()
+    <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub SBinFileFormat()
         Dim dungeon = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "dungeon.sbin"), True, provider)
         Dim effect = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "effect.sbin"), True, provider)
         Dim ground = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "ground.sbin"), True, provider)
@@ -59,7 +59,7 @@ Imports SkyEditor.ROMEditor.Utilities
         Dim titlemenu = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "titlemenu.sbin"), True, provider)
     End Sub
 
-    <TestMethod> <TestCategory(Category)> Public Sub MonsterKaoTest()
+    <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub MonsterKaoTest()
         Dim extractDir1 = "portraits-brt"
         Dim extractDir2 = "portraits-brt-repack"
         Dim repackFilename = "repack-monster.sbin"

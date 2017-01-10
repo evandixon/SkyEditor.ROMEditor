@@ -3,6 +3,8 @@ Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
 
 Public Class TestHelpers
+    Public Const AutomatedTestCategory As String = "Automated"
+    Public Const ManualTestCategory As String = "Manual"
     Public Shared Function GetAndTestFile(Of T As IOpenableFile)(filePath As String, enableResaveTest As Boolean, provider As IOProvider) As T
         Dim tempFilename As String = provider.GetTempFilename
         Dim originalData = provider.ReadAllBytes(filePath)
