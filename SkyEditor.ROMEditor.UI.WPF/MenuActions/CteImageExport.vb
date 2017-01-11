@@ -1,7 +1,7 @@
 ﻿Imports System.Reflection
 Imports System.Windows.Forms
 Imports SkyEditor.Core.UI
-Imports SkyEditor.ROMEditor.UI.WPF.PSMD.ViewModels
+Imports SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.PSMD.ViewModels
 
 Namespace MenuActions
     Public Class CteImageExport

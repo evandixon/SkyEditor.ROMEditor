@@ -1,4 +1,4 @@
-﻿Namespace Explorers.Views
+﻿Namespace MysteryDungeon.Explorers.Views
     Public Class PersonalityTest
 
     End Class

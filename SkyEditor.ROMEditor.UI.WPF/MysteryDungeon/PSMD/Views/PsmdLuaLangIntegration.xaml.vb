@@ -1,8 +1,8 @@
 ﻿Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Projects
-Imports SkyEditor.ROMEditor.UI.WPF.PSMD.ViewModels
+Imports SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.PSMD.ViewModels
 Imports SkyEditor.UI.WPF
 
-Namespace PSMD.Views
+Namespace MysteryDungeon.PSMD.Views
     Public Class PsmdLuaLangIntegration
         Inherits DataBoundObjectControl
         Implements IDisposable
@@ -26,7 +26,7 @@ Namespace PSMD.Views
                 btnAdd.IsEnabled = False
                 btnAdd.Content = String.Format(My.Resources.Language.GenericLoading, oldText)
             End If
-            Dim id As UInteger = Await p.GetNewLanguageID
+            Dim id As UInteger = Await p.GetNewLanguageId
             For Each item As TabItem In tcTabs.Items
                 DirectCast(DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit, MessageBinViewModel).AddBlankEntry(id)
             Next

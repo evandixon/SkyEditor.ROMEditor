@@ -2,11 +2,11 @@
 Imports System.Drawing
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
-Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
+Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 
-Namespace PSMD.ViewModels
-    Public Class CteImageViewModel
-        Inherits GenericViewModel(Of CteImage)
+Namespace MysteryDungeon.Explorers.ViewModels
+    Public Class BGPViewModel
+        Inherits GenericViewModel(Of BGP)
         Implements INotifyModified
         Implements INotifyPropertyChanged
 
@@ -15,14 +15,11 @@ Namespace PSMD.ViewModels
 
         Public Property ContainedImage As Bitmap
             Get
-                Return Model.ContainedImage
+                Return Model.GetImage
             End Get
             Set(value As Bitmap)
-                If Model.ContainedImage IsNot value Then
-                    Model.ContainedImage = value
-                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(ContainedImage)))
-                    RaiseEvent Modified(Me, New EventArgs)
-                End If
+                Me.Model = BGP.ConvertFromBitmap(value)
+                RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(ContainedImage)))
             End Set
         End Property
     End Class

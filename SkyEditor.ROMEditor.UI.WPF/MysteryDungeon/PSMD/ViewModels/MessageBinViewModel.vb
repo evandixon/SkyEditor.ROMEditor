@@ -5,7 +5,7 @@ Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
-Namespace PSMD.ViewModels
+Namespace MysteryDungeon.PSMD.ViewModels
     Public Class MessageBinViewModel
         Inherits GenericViewModel(Of MessageBin)
         Implements INotifyPropertyChanged

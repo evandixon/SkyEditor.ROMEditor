@@ -1,7 +1,7 @@
 ﻿Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.UI.WPF
 
-Namespace PSMD.Views
+Namespace MysteryDungeon.PSMD.Views
     Public Class MessageBinEditor
         Inherits DataBoundObjectControl
 

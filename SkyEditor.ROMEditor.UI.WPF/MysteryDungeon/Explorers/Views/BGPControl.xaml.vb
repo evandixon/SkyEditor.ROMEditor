@@ -1,4 +1,4 @@
-﻿Namespace Views
+﻿Namespace MysteryDungeon.Explorers.Views
     Public Class CteImageControl
 
     End Class

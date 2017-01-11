@@ -6,7 +6,7 @@ Imports SkyEditor.Core.UI
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.UI.WPF
 
-Namespace PSMD.ViewModels
+Namespace MysteryDungeon.PSMD.ViewModels
     Public Class PsmdLuaLangIntegrationViewModel
         Inherits GenericViewModel(Of LuaCodeFile)
         Implements INotifyModified
