@@ -11,15 +11,20 @@ Imports SkyEditor.ROMEditor.Utilities
     Private Const EosTestCategory As String = "EOS (U) Files"
 
     'Files for all tests
-    Dim romFilename As String = "eos-u.nds"
-    Dim romDir As String = "extracted-EOS-U"
+    Private Const romFilename As String = "eos-u.nds"
+    Public Const romDir As String = "extracted-EOS-U"
 
     Dim provider As IOProvider
 
+    ''' <summary>
+    ''' Determines whether or not the test has been initialized
+    ''' </summary>
+    ''' <remarks>This is not thread safe, and assumes tests are initialized or cleaned sequentially.</remarks>
+    Public Shared Function IsTestInitialized() As Boolean
+        Return Directory.Exists(romDir)
+    End Function
 
-    <TestInitialize()> Public Sub TestInit()
-        'Set up
-        provider = New WindowsIOProvider
+    Public Shared Sub UnpackFiles(provider As IOProvider)
         Try
             Using md5 As New MD5CryptoServiceProvider
                 Dim hash = md5.ComputeHash(My.Resources.eos_u)
@@ -38,13 +43,23 @@ Imports SkyEditor.ROMEditor.Utilities
         End Try
     End Sub
 
-    <TestCleanup> Public Sub Cleanup()
+    Public Shared Sub CleanupFiles(provider As IOProvider)
         If provider.FileExists(romFilename) Then
             provider.DeleteFile(romFilename)
         End If
         If provider.DirectoryExists(romDir) Then
             provider.DeleteDirectory(romDir)
         End If
+    End Sub
+
+
+    <TestInitialize()> Public Sub TestInit()
+        provider = New WindowsIOProvider
+        UnpackFiles(provider)
+    End Sub
+
+    <TestCleanup> Public Sub Cleanup()
+        CleanupFiles(provider)
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub Overlay13()
