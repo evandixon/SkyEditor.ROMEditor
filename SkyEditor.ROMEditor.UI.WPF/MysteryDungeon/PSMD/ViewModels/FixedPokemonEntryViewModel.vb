@@ -17,6 +17,12 @@ Namespace MysteryDungeon.PSMD.ViewModels
             RaiseEvent Modified(Me, New EventArgs)
         End Sub
 
+        Public ReadOnly Property Name As String
+            Get
+                Return PokemonNames(PokemonID)
+            End Get
+        End Property
+
         Public Property PokemonID As Integer
             Get
                 Return Model.PokemonID
@@ -25,6 +31,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
                 If Not Model.PokemonID = value Then
                     Model.PokemonID = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(PokemonID)))
+                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Name)))
                 End If
             End Set
         End Property

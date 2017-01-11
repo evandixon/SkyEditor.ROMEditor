@@ -43,7 +43,7 @@ Namespace Projects
         Public Property OutputDec3DSFile As Boolean
             Get
                 If Me.Setting("OutputDec3DSFile") Is Nothing Then
-                    Me.Setting("OutputDec3DSFile") = True
+                    Me.Setting("OutputDec3DSFile") = False
                 End If
                 Return Me.Setting("OutputDec3DSFile")
             End Get

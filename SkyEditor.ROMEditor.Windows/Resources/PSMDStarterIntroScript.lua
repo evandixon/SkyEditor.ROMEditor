@@ -259,63 +259,64 @@ function seikakushindankekka01_start()
   CUT:PlayLoop()
   CAMERA:SetFollowEffect("EV_SINDAN_00_LP", 0)
   local POKEID_HERO, POKEID_PARTNER
-  if basecharname == "RIORU" then
+  if charname == #Starter537# then
     typeRIORU()
 	charRIORU()
-  elseif basecharname == "KEROMATSU" then
+  elseif charname == #Starter772# then
     typeKEROMATSU()
 	charKEROMATSU()
-  elseif basecharname == "HIKOZARU" then
+  elseif charname == #Starter482# then
     typeHIKOZARU()
-  elseif basecharname == "FUSHIGIDANE" then
+	charHIKOZARU()
+  elseif charname == #Starter1# then
     typeFUSHIGIDANE()
 	charHIKOZARU()
-  elseif basecharname == "NAETORU" then
+  elseif charname == #Starter479# then
     typeNAETORU()
 	charNAETORU()
-  elseif basecharname == "KIMORI" then
+  elseif charname == #Starter322# then
     typeKIMORI()
 	charKIMORI()
-  elseif basecharname == "WANINOKO" then
+  elseif charname == #Starter203# then
     typeWANINOKO()
 	charWANINOKO()
-  elseif basecharname == "POTCHAMA" then
+  elseif charname == #Starter485# then
     typePOTCHAMA()
 	charPOTCHAMA()
-  elseif basecharname == "PIKACHUU" then
+  elseif charname == #Starter30# then
     typePIKACHUU()
 	charPIKACHUU()
-  elseif basecharname == "HITOKAGE" then
+  elseif charname == #Starter5# then
     typeHITOKAGE()
 	charHITOKAGE()
-  elseif basecharname == "CHIKORIITA" then
+  elseif charname == #Starter197# then
     typeCHIKORIITA()
 	charCHIKORIITA()
-  elseif basecharname == "ACHAMO" then
+  elseif charname == #Starter325# then
     typeACHAMO()
 	charACHAMO()
-  elseif basecharname == "MIJUMARU" then
+  elseif charname == #Starter598# then
     typeMIJUMARU()
 	charMIJUMARU()
-  elseif basecharname == "FOKKO" then
+  elseif charname == #Starter769# then
     typeFOKKO()
 	charFOKKO()
-  elseif basecharname == "TSUTAAJA" then
+  elseif charname == #Starter592# then
     typeTSUTAAJA()
 	charTSUTAAJA()
-  elseif basecharname == "HARIMARON" then
+  elseif charname == #Starter766# then
     typeHARIMARON()
 	charHARIMARON()
-  elseif basecharname == "HINOARASHI" then
+  elseif charname == #Starter200# then
     typeHINOARASHI()
 	charHINOARASHI()
-  elseif basecharname == "ZENIGAME" then
+  elseif charname == #Starter10# then
     typeZENIGAME()
 	charZENIGAME()
-  elseif basecharname == "POKABU" then
+  elseif charname == #Starter595# then
     typePOKABU()
 	charPOKABU()
-  elseif basecharname == "MIZUGOROU" then
+  elseif charname == #Starter329# then
     typeMIZUGOROU()
 	charMIZUGOROU()
   end

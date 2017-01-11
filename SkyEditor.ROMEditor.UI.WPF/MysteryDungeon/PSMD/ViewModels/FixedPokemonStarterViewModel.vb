@@ -67,20 +67,20 @@ Namespace MysteryDungeon.PSMD.ViewModels
             StarterEntries.Add(Await CreateFileViewModel(f.Entries(53))) 'KEROMATSU_H (Froakie)
 
             ClearList(EvolutionEntries)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(55))) '(Evo for Bulbasaur)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(56))) '(Evo for Charmander)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(57))) '(Evo for Squirtle)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(58))) '(Evo for Pikachu)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(59))) '(Evo for Chikorita)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(60))) '(Evo for Cyndaquil)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(61))) '(Evo for Totodile)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(62))) '(Evo for Treecko)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(63))) '(Evo for Torchic)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(64))) '(Evo for Mudkip)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(65))) '(Evo for Turtwig)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(66))) '(Evo for Chimchar)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(67))) '(Evo for Piplup)
-            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(68))) '(Evo for Riolu)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(57))) '(Evo for Bulbasaur)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(58))) '(Evo for Charmander)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(59))) '(Evo for Squirtle)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(55))) '(Evo for Pikachu)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(60))) '(Evo for Chikorita)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(61))) '(Evo for Cyndaquil)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(62))) '(Evo for Totodile)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(63))) '(Evo for Treecko)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(64))) '(Evo for Torchic)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(65))) '(Evo for Mudkip)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(66))) '(Evo for Turtwig)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(67))) '(Evo for Chimchar)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(68))) '(Evo for Piplup)
+            EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(56))) '(Evo for Riolu)
             EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(69))) '(Evo for Snivy)
             EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(70))) '(Evo for Tepig)
             EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(71))) '(Evo for Oshawott)
@@ -117,20 +117,20 @@ Namespace MysteryDungeon.PSMD.ViewModels
             f.Entries(51) = StarterEntries(18).Model
             f.Entries(53) = StarterEntries(19).Model
 
-            f.Entries(55) = EvolutionEntries(0).Model
-            f.Entries(56) = EvolutionEntries(1).Model
-            f.Entries(57) = EvolutionEntries(2).Model
-            f.Entries(58) = EvolutionEntries(3).Model
-            f.Entries(59) = EvolutionEntries(4).Model
-            f.Entries(60) = EvolutionEntries(5).Model
-            f.Entries(61) = EvolutionEntries(6).Model
-            f.Entries(62) = EvolutionEntries(7).Model
-            f.Entries(63) = EvolutionEntries(8).Model
-            f.Entries(64) = EvolutionEntries(9).Model
-            f.Entries(65) = EvolutionEntries(10).Model
-            f.Entries(66) = EvolutionEntries(11).Model
-            f.Entries(67) = EvolutionEntries(12).Model
-            f.Entries(68) = EvolutionEntries(13).Model
+            f.Entries(57) = EvolutionEntries(0).Model
+            f.Entries(58) = EvolutionEntries(1).Model
+            f.Entries(59) = EvolutionEntries(2).Model
+            f.Entries(55) = EvolutionEntries(3).Model
+            f.Entries(60) = EvolutionEntries(4).Model
+            f.Entries(61) = EvolutionEntries(5).Model
+            f.Entries(62) = EvolutionEntries(6).Model
+            f.Entries(63) = EvolutionEntries(7).Model
+            f.Entries(64) = EvolutionEntries(8).Model
+            f.Entries(65) = EvolutionEntries(9).Model
+            f.Entries(66) = EvolutionEntries(10).Model
+            f.Entries(67) = EvolutionEntries(11).Model
+            f.Entries(68) = EvolutionEntries(12).Model
+            f.Entries(56) = EvolutionEntries(13).Model
             f.Entries(69) = EvolutionEntries(14).Model
             f.Entries(70) = EvolutionEntries(15).Model
             f.Entries(71) = EvolutionEntries(16).Model

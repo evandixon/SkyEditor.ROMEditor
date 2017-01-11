@@ -13,9 +13,9 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200" />
-            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="10" />
             <ColumnDefinition Width="305" />
-            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="10" />
             <ColumnDefinition Width="305" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -24,14 +24,14 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="{x:Static res:Language.Starters}" />
+        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="{x:Static res:Language.Starters}" FontWeight="Bold" />
         <ListView Grid.Row="2" Grid.Column="0"
-                  ItemsSource="{Binding StarterEntries}" SelectedItem="{Binding SelectedStarterEntry}" />
+                  ItemsSource="{Binding StarterEntries}" SelectedItem="{Binding SelectedStarterEntry}" DisplayMemberPath="Name" />
 
-        <TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Text="{x:Static res:Language.Starter}" />
-        <Views:FixedPokemonEntry  Grid.Row="2" Grid.Column="2" DataContext="{Binding SelectedStarterEntry}" />
+        <TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Text="{x:Static res:Language.Starter}" FontWeight="Bold" />
+        <Views:FixedPokemonEntry  Grid.Row="2" Grid.Column="2" DataContext="{Binding SelectedStarterEntry}" VerticalAlignment="Top" />
 
-        <TextBlock Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Text="{x:Static res:Language.StarterEvolution}" />
-        <Views:FixedPokemonEntry  Grid.Row="2" Grid.Column="4" DataContext="{Binding SelectedEvolutionEntry}" />
+        <TextBlock Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Text="{x:Static res:Language.StarterEvolution}" FontWeight="Bold" />
+        <Views:FixedPokemonEntry  Grid.Row="2" Grid.Column="4" DataContext="{Binding SelectedEvolutionEntry}" VerticalAlignment="Top" />
     </Grid>
 </skyUI:DataBoundObjectControl>

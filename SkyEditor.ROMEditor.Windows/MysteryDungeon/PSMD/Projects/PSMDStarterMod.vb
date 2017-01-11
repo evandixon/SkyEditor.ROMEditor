@@ -1,4 +1,5 @@
-﻿Imports System.Text.RegularExpressions
+﻿Imports System.IO
+Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
@@ -74,26 +75,26 @@ Namespace MysteryDungeon.PSMD.Projects
             'Dim starter167 As Integer 'IIBUI_H (Eevee)
             'Dim starter352 As Integer 'RARUTOSU_H (Ralts)
 
-            Dim evo1 As Integer = fixedPokemon.Entries(55).PokemonID '(Bulbasaur)
-            Dim evo5 As Integer = fixedPokemon.Entries(56).PokemonID '(Charmander)
-            Dim evo10 As Integer = fixedPokemon.Entries(57).PokemonID '(Squirtle)
-            Dim evo30 As Integer = fixedPokemon.Entries(58).PokemonID '(Pikachu)
-            Dim evo197 As Integer = fixedPokemon.Entries(59).PokemonID '(Chikorita)
-            Dim evo200 As Integer = fixedPokemon.Entries(60).PokemonID '(Cyndaquil)
-            Dim evo203 As Integer = fixedPokemon.Entries(61).PokemonID  '(Totodile)
-            Dim evo322 As Integer = fixedPokemon.Entries(62).PokemonID  '(Treecko)
-            Dim evo325 As Integer = fixedPokemon.Entries(63).PokemonID '(Torchic)
-            Dim evo329 As Integer = fixedPokemon.Entries(64).PokemonID '(Mudkip)
-            Dim evo479 As Integer = fixedPokemon.Entries(65).PokemonID '(Turtwig)
-            Dim evo482 As Integer = fixedPokemon.Entries(66).PokemonID '(Chimchar)
-            Dim evo485 As Integer = fixedPokemon.Entries(67).PokemonID  '(Piplup)
-            Dim evo537 As Integer = fixedPokemon.Entries(68).PokemonID '(Riolu)
-            Dim evo592 As Integer = fixedPokemon.Entries(69).PokemonID  '(Snivy)
-            Dim evo595 As Integer = fixedPokemon.Entries(70).PokemonID  '(Tepig)
-            Dim evo598 As Integer = fixedPokemon.Entries(71).PokemonID  '(Oshawott)
-            Dim evo766 As Integer = fixedPokemon.Entries(72).PokemonID  '(Chespin)
-            Dim evo769 As Integer = fixedPokemon.Entries(73).PokemonID  '(Fennekin)
-            Dim evo772 As Integer = fixedPokemon.Entries(74).PokemonID  '(Froakie)
+            Dim evo1 As Integer = fixedPokemon.Entries(57).PokemonID '(Bulbasaur)
+            Dim evo5 As Integer = fixedPokemon.Entries(58).PokemonID '(Charmander)
+            Dim evo10 As Integer = fixedPokemon.Entries(59).PokemonID '(Squirtle)
+            Dim evo30 As Integer = fixedPokemon.Entries(55).PokemonID '(Pikachu)
+            Dim evo197 As Integer = fixedPokemon.Entries(60).PokemonID '(Chikorita)
+            Dim evo200 As Integer = fixedPokemon.Entries(61).PokemonID '(Cyndaquil)
+            Dim evo203 As Integer = fixedPokemon.Entries(62).PokemonID '(Totodile)
+            Dim evo322 As Integer = fixedPokemon.Entries(63).PokemonID '(Treecko)
+            Dim evo325 As Integer = fixedPokemon.Entries(64).PokemonID '(Torchic)
+            Dim evo329 As Integer = fixedPokemon.Entries(65).PokemonID '(Mudkip)
+            Dim evo479 As Integer = fixedPokemon.Entries(66).PokemonID '(Turtwig)
+            Dim evo482 As Integer = fixedPokemon.Entries(67).PokemonID '(Chimchar)
+            Dim evo485 As Integer = fixedPokemon.Entries(68).PokemonID '(Piplup)
+            Dim evo537 As Integer = fixedPokemon.Entries(56).PokemonID '(Riolu)
+            Dim evo592 As Integer = fixedPokemon.Entries(69).PokemonID '(Snivy)
+            Dim evo595 As Integer = fixedPokemon.Entries(70).PokemonID '(Tepig)
+            Dim evo598 As Integer = fixedPokemon.Entries(71).PokemonID '(Oshawott)
+            Dim evo766 As Integer = fixedPokemon.Entries(72).PokemonID '(Chespin)
+            Dim evo769 As Integer = fixedPokemon.Entries(73).PokemonID '(Fennekin)
+            Dim evo772 As Integer = fixedPokemon.Entries(74).PokemonID '(Froakie)
 
             Dim replacementDictionary As New Dictionary(Of Integer, Integer) 'Key: original ID, Value: edited ID
             replacementDictionary.Add(1, starter1)
@@ -220,7 +221,7 @@ Namespace MysteryDungeon.PSMD.Projects
             'Patch inc_charchoice script
             '-Get the hashes of the scripts to change
             Dim charchoiceRegex = New Regex("function char([A-Z]+)\(\)\s*WINDOW\:SysMsg\((-?[0-9]+)\)", RegexOptions.IgnoreCase)
-            Dim sourceScript = IO.Path.Combine(Me.GetRootDirectory, "script", "include", "inv_charchoice.lua.original")
+            Dim sourceScript = File.ReadAllText(Path.Combine(Me.GetRootDirectory, "script", "include", "inc_charchoice.lua.original"))
             Dim charchoiceMatches = charchoiceRegex.Matches(sourceScript)
             Dim charchoiceData As New Dictionary(Of String, Integer) 'Key: Internal name, Value: String Hash
             For Each item As Match In charchoiceMatches
@@ -242,6 +243,10 @@ Namespace MysteryDungeon.PSMD.Projects
                     Dim common As New MessageBin
                     Await common.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "common"), CurrentPluginManager.CurrentIOProvider)
                     Dim pokemonNames = common.GetCommonPokemonNames
+
+                    'Open the message bin file
+                    Dim charchoiceFile As New MessageBin
+                    Await charchoiceFile.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "inc_charchoice"), CurrentPluginManager.CurrentIOProvider)
 
                     For Each charchoice In charchoiceData
                         Dim pokemonID As Integer
@@ -287,17 +292,17 @@ Namespace MysteryDungeon.PSMD.Projects
                             Case "KEROMATSU"
                                 pokemonID = starter772
                             Case Else
-                                'Unknow Pokemon name.  Make no changes.
+                                'Unknown Pokemon name.  Make no changes.
                                 Exit For
                         End Select
 
                         'Patch the message bin
-                        Dim charchoiceFile As New MessageBin
-                        Await charchoiceFile.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "charchoice"), CurrentPluginManager.CurrentIOProvider)
                         Dim charchoiceEntry = charchoiceFile.Strings.Where(Function(x) x.HashSigned = charchoice.Value).Single
                         charchoiceEntry.Entry = String.Format(charchoiceLanguageTemplate.Value, pokemonNames(pokemonID))
-                        Await charchoiceFile.Save(CurrentPluginManager.CurrentIOProvider)
                     Next
+
+                    'Save the file
+                    Await charchoiceFile.Save(CurrentPluginManager.CurrentIOProvider)
                 End If
             Next
 
@@ -341,6 +346,7 @@ Namespace MysteryDungeon.PSMD.Projects
             'Continue the build (script compilation, mod building, etc.)
             Await MyBase.DoBuild()
         End Function
+
     End Class
 End Namespace
 
