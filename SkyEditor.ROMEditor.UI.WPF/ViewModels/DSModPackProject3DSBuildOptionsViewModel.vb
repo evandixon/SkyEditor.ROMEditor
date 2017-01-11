@@ -12,14 +12,26 @@ Namespace ViewModels
         Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
-        Public Property Output3DSFile As Boolean
+        Public Property OutputEnc3DSFile As Boolean
             Get
-                Return Model.Output3DSFile
+                Return Model.OutputEnc3DSFile
             End Get
             Set(value As Boolean)
-                If Not Model.Output3DSFile = value Then
-                    Model.Output3DSFile = value
-                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Output3DSFile)))
+                If Not Model.OutputEnc3DSFile = value Then
+                    Model.OutputEnc3DSFile = value
+                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(OutputEnc3DSFile)))
+                End If
+            End Set
+        End Property
+
+        Public Property OutputDec3DSFile As Boolean
+            Get
+                Return Model.OutputDec3DSFile
+            End Get
+            Set(value As Boolean)
+                If Not Model.OutputDec3DSFile = value Then
+                    Model.OutputDec3DSFile = value
+                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(OutputDec3DSFile)))
                 End If
             End Set
         End Property

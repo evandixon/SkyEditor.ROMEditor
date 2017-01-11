@@ -420,8 +420,8 @@ evandixon (Personality test, bgp files)</value>
   <data name="PNGImages" xml:space="preserve">
     <value>PNG Images</value>
   </data>
-  <data name="Build3DS" xml:space="preserve">
-    <value>Build 3DS</value>
+  <data name="BuildEnc3DS" xml:space="preserve">
+    <value>Build 0-Key Encrypted 3DS (For Gateway)</value>
   </data>
   <data name="BuildCIA" xml:space="preserve">
     <value>Build CIA</value>
@@ -437,5 +437,8 @@ evandixon (Personality test, bgp files)</value>
   </data>
   <data name="MenuUtilitiesExportSoundtrack" xml:space="preserve">
     <value>Export _Soundtrack</value>
+  </data>
+  <data name="BuildDec3DS" xml:space="preserve">
+    <value>Build Decrypted 3DS (For Flashcart &amp; Decrypt9)</value>
   </data>
 </root>

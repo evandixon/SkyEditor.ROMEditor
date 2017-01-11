@@ -146,20 +146,29 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Build 3DS.
-        '''</summary>
-        Public Shared ReadOnly Property Build3DS() As String
-            Get
-                Return ResourceManager.GetString("Build3DS", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized string similar to Build CIA.
         '''</summary>
         Public Shared ReadOnly Property BuildCIA() As String
             Get
                 Return ResourceManager.GetString("BuildCIA", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Build Decrypted 3DS (For Flashcart &amp; Decrypt9).
+        '''</summary>
+        Public Shared ReadOnly Property BuildDec3DS() As String
+            Get
+                Return ResourceManager.GetString("BuildDec3DS", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Build 0-Key Encrypted 3DS (For Gateway).
+        '''</summary>
+        Public Shared ReadOnly Property BuildEnc3DS() As String
+            Get
+                Return ResourceManager.GetString("BuildEnc3DS", resourceCulture)
             End Get
         End Property
         
