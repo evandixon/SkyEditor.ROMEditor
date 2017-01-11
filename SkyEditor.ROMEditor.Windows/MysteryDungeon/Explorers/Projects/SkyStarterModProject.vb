@@ -2,6 +2,7 @@
 Imports DS_ROM_Patcher
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
+Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers.ViewModels
 Imports SkyEditor.ROMEditor.Projects
 
@@ -64,16 +65,14 @@ Namespace MysteryDungeon.Explorers.Projects
             languageDictionary.Add("text_g.str", "Deutsche") 'German
             languageDictionary.Add("text_j.str", "日本語") 'Japanese
 
-            If Not IO.Directory.Exists(IO.Path.Combine(projDir, "Languages")) Then
-                IO.Directory.CreateDirectory(IO.Path.Combine(projDir, "Languages"))
+            If Not Directory.Exists(IO.Path.Combine(projDir, "Languages")) Then
+                Directory.CreateDirectory(IO.Path.Combine(projDir, "Languages"))
             End If
             For Each item In languageDictionary
-                If IO.File.Exists(IO.Path.Combine(rawDir, "Data", "MESSAGE", item.Key)) Then
+                If File.Exists(IO.Path.Combine(rawDir, "Data", "MESSAGE", item.Key)) Then
                     Using langString = New LanguageString()
-                        Await langString.OpenFile(IO.Path.Combine(rawDir, "Data", "MESSAGE", item.Key), CurrentPluginManager.CurrentIOProvider)
-                        Dim langList As New ObjectFile(Of List(Of String))(CurrentPluginManager.CurrentIOProvider)
-                        langList.ContainedObject = langString.Items
-                        Await langList.Save(IO.Path.Combine(projDir, "Languages", item.Value), CurrentPluginManager.CurrentIOProvider)
+                        Await langString.OpenFile(Path.Combine(rawDir, "Data", "MESSAGE", item.Key), CurrentPluginManager.CurrentIOProvider)
+                        Json.SerializeToFile(Path.Combine(projDir, "Languages", item.Value), langString.Items, CurrentPluginManager.CurrentIOProvider)
                     End Using
                 End If
             Next
@@ -102,11 +101,10 @@ Namespace MysteryDungeon.Explorers.Projects
             languageDictionary.Add("text_g.str", "Deutsche") 'German
             languageDictionary.Add("text_j.str", "日本語") 'Japanese
             For Each item In languageDictionary
-                If IO.File.Exists(IO.Path.Combine(projDir, "Languages", item.Value)) Then
-                    Dim langFile As New ObjectFile(Of List(Of String))(CurrentPluginManager.CurrentIOProvider, IO.Path.Combine(projDir, "Languages", item.Value))
+                If File.Exists(IO.Path.Combine(projDir, "Languages", item.Value)) Then
                     Using langString As New LanguageString
                         langString.CreateFile("")
-                        langString.Items = langFile.ContainedObject
+                        langString.Items = Json.DeserializeFromFile(Of List(Of String))(Path.Combine(projDir, "Languages", item.Value), CurrentPluginManager.CurrentIOProvider)
 
                         If personalityTest IsNot Nothing Then
                             langString.UpdatePersonalityTestResult(personalityTest)
