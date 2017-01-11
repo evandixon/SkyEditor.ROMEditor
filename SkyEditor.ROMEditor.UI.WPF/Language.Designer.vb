@@ -83,6 +83,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Attack Boost.
+        '''</summary>
+        Public Shared ReadOnly Property AttackBoost() As String
+            Get
+                Return ResourceManager.GetString("AttackBoost", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Author.
         '''</summary>
         Public Shared ReadOnly Property Author() As String
@@ -218,6 +227,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Defense Boost.
+        '''</summary>
+        Public Shared ReadOnly Property DefenseBoost() As String
+            Get
+                Return ResourceManager.GetString("DefenseBoost", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Description.
         '''</summary>
         Public Shared ReadOnly Property Description() As String
@@ -331,6 +349,15 @@ Namespace My.Resources
         Public Shared ReadOnly Property HastyMale() As String
             Get
                 Return ResourceManager.GetString("HastyMale", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to HP Boost.
+        '''</summary>
+        Public Shared ReadOnly Property HPBoost() As String
+            Get
+                Return ResourceManager.GetString("HPBoost", resourceCulture)
             End Get
         End Property
         
@@ -511,6 +538,42 @@ Namespace My.Resources
         Public Shared ReadOnly Property Monologue() As String
             Get
                 Return ResourceManager.GetString("Monologue", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Move 1.
+        '''</summary>
+        Public Shared ReadOnly Property Move1() As String
+            Get
+                Return ResourceManager.GetString("Move1", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Move 2.
+        '''</summary>
+        Public Shared ReadOnly Property Move2() As String
+            Get
+                Return ResourceManager.GetString("Move2", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Move 3.
+        '''</summary>
+        Public Shared ReadOnly Property Move3() As String
+            Get
+                Return ResourceManager.GetString("Move3", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Move 4.
+        '''</summary>
+        Public Shared ReadOnly Property Move4() As String
+            Get
+                Return ResourceManager.GetString("Move4", resourceCulture)
             End Get
         End Property
         
@@ -964,6 +1027,69 @@ Namespace My.Resources
         Public Shared ReadOnly Property Spanish() As String
             Get
                 Return ResourceManager.GetString("Spanish", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Sp. Attack Boost.
+        '''</summary>
+        Public Shared ReadOnly Property SpAttackBoost() As String
+            Get
+                Return ResourceManager.GetString("SpAttackBoost", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Sp. Defense Boost.
+        '''</summary>
+        Public Shared ReadOnly Property SpDefenseBoost() As String
+            Get
+                Return ResourceManager.GetString("SpDefenseBoost", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Species.
+        '''</summary>
+        Public Shared ReadOnly Property Species() As String
+            Get
+                Return ResourceManager.GetString("Species", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Speed Boost.
+        '''</summary>
+        Public Shared ReadOnly Property SpeedBoost() As String
+            Get
+                Return ResourceManager.GetString("SpeedBoost", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Starter.
+        '''</summary>
+        Public Shared ReadOnly Property Starter() As String
+            Get
+                Return ResourceManager.GetString("Starter", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Evolution.
+        '''</summary>
+        Public Shared ReadOnly Property StarterEvolution() As String
+            Get
+                Return ResourceManager.GetString("StarterEvolution", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Starters.
+        '''</summary>
+        Public Shared ReadOnly Property Starters() As String
+            Get
+                Return ResourceManager.GetString("Starters", resourceCulture)
             End Get
         End Property
         

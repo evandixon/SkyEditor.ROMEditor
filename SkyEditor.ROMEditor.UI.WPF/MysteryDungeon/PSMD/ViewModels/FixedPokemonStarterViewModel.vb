@@ -1,16 +1,43 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports System.ComponentModel
+Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
 
 Namespace MysteryDungeon.PSMD.ViewModels
-    Public Class FixedPokemonViewModel
+    Public Class FixedPokemonStarterViewModel
         Inherits GenericViewModel(Of FixedPokemon)
         Implements INotifyModified
+        Implements INotifyPropertyChanged
 
         Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
+        Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
         Public Property StarterEntries As List(Of FixedPokemonEntryViewModel)
         Public Property EvolutionEntries As List(Of FixedPokemonEntryViewModel)
+
+        Public Property SelectedStarterEntry As FixedPokemonEntryViewModel
+            Get
+                Return _selectedStarterEntry
+            End Get
+            Set(value As FixedPokemonEntryViewModel)
+                'Update current property
+                _selectedStarterEntry = value
+                RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(SelectedStarterEntry)))
+
+                'Update sister property
+                Dim currentIndex = StarterEntries.IndexOf(value)
+                _selectedEvolutionEntry = EvolutionEntries(currentIndex)
+                RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(SelectedEvolutionEntry)))
+            End Set
+        End Property
+        Dim _selectedStarterEntry As FixedPokemonEntryViewModel
+
+        Public ReadOnly Property SelectedEvolutionEntry As FixedPokemonEntryViewModel
+            Get
+                Return _selectedEvolutionEntry
+            End Get
+        End Property
+        Dim _selectedEvolutionEntry As FixedPokemonEntryViewModel
 
         Public Overrides Async Sub SetModel(model As Object)
             MyBase.SetModel(model)
@@ -60,6 +87,8 @@ Namespace MysteryDungeon.PSMD.ViewModels
             EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(72))) '(Evo for Chespin)
             EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(73))) '(Evo for Fennekin)
             EvolutionEntries.Add(Await CreateFileViewModel(f.Entries(74))) '(Evo for Froakie)
+
+            SelectedStarterEntry = StarterEntries(0)
         End Sub
 
         Public Overrides Sub UpdateModel(model As Object)
