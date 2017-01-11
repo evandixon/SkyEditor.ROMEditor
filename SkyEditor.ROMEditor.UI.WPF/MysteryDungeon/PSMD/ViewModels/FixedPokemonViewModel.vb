@@ -1,6 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
-Imports SkyEditor.ROMEditor.Windows.FileFormats.PSMD.Dungeon
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
 
 Namespace MysteryDungeon.PSMD.ViewModels
     Public Class FixedPokemonViewModel
