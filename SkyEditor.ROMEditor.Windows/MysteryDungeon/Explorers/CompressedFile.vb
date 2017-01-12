@@ -14,7 +14,7 @@ Namespace MysteryDungeon.Explorers
 
         Protected Property TempFilename As String
 
-        Public Overrides Async Function OpenFile(filename As String, provider As IOProvider) As Task
+        Public Overrides Async Function OpenFile(filename As String, provider As IIOProvider) As Task
             TempFilename = provider.GetTempFilename
 
             Using external As New UtilityManager
@@ -30,7 +30,7 @@ Namespace MysteryDungeon.Explorers
         ''' Saves and compresses the DecompressedFile.
         ''' </summary>
         ''' <remarks></remarks>
-        Public Overrides Async Function Save(filename As String, provider As IOProvider) As Task
+        Public Overrides Async Function Save(filename As String, provider As IIOProvider) As Task
 
             Await MyBase.Save(TempFilename, provider)
 

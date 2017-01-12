@@ -104,7 +104,7 @@ Namespace MysteryDungeon.PSMD.Dungeon
         '    End Get
         'End Property
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task
             Await MyBase.OpenFile(Filename, Provider)
 
             Dim numEntries = BitConverter.ToUInt32(Me.ContentHeader, 0)
@@ -116,7 +116,7 @@ Namespace MysteryDungeon.PSMD.Dungeon
             Next
         End Function
 
-        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
             Me.RelativePointers.Clear()
             'Sir0 header pointers
             Me.RelativePointers.Add(4)

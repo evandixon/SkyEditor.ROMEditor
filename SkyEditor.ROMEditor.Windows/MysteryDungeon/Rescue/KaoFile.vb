@@ -123,7 +123,7 @@ Public Class KaoFile
 
     End Function
 
-    Public Overrides Async Function OpenFile(filename As String, provider As IOProvider) As Task
+    Public Overrides Async Function OpenFile(filename As String, provider As IIOProvider) As Task
         Await MyBase.OpenFile(filename, provider)
         Await Initialize(provider.ReadAllBytes(filename))
     End Function

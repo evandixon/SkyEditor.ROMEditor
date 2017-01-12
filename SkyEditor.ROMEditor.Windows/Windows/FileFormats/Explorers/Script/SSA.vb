@@ -15,7 +15,7 @@ Namespace Windows.FileFormats.Explorers.Script
             End Get
         End Property
 
-        Public Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Me.Filename = Filename
 
             Using f As New GenericFile

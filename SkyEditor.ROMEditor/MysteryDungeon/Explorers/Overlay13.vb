@@ -17,16 +17,16 @@ Namespace MysteryDungeon.Explorers
         Public Sub New()
         End Sub
 
-        Public Sub New(filename As String, provider As IOProvider)
+        Public Sub New(filename As String, provider As IIOProvider)
             OpenFileInternal(filename, provider)
         End Sub
 
-        Public Function OpenFile(filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Function OpenFile(filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             OpenFileInternal(filename, Provider)
             Return Task.FromResult(0)
         End Function
 
-        Private Sub OpenFileInternal(filename As String, provider As IOProvider)
+        Private Sub OpenFileInternal(filename As String, provider As IIOProvider)
             Me.Filename = filename
             RawData = provider.ReadAllBytes(filename)
         End Sub
@@ -625,7 +625,7 @@ Namespace MysteryDungeon.Explorers
             End If
         End Function
 
-        Public Function Save(provider As IOProvider) As Task Implements ISavable.Save
+        Public Function Save(provider As IIOProvider) As Task Implements ISavable.Save
             provider.WriteAllBytes(Filename, RawData)
             RaiseEvent FileSaved(Me, New EventArgs)
             Return Task.FromResult(0)

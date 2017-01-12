@@ -160,7 +160,7 @@ Namespace MysteryDungeon.Explorers
             AutoAddSir0HeaderRelativePointers = True
         End Sub
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
             ProcessRawData()
         End Function
@@ -173,7 +173,7 @@ Namespace MysteryDungeon.Explorers
             Next
         End Sub
 
-        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
             Dim out As New List(Of Byte)
 
             For Each item In Items

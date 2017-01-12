@@ -38,7 +38,7 @@ Namespace MysteryDungeon.Explorers
 
         Public Property Items As List(Of Item)
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task
             Await MyBase.OpenFile(Filename, Provider)
 
             Items = New List(Of Item)
@@ -51,7 +51,7 @@ Namespace MysteryDungeon.Explorers
             Next
         End Function
 
-        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
             Dim out As New List(Of Byte)
 
             For Each item In Items

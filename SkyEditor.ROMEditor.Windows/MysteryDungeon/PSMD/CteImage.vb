@@ -21,7 +21,7 @@ Namespace MysteryDungeon.PSMD
 
         Private Property Height As Integer
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
             ImageFormat = BitConverter.ToInt32(RawData(&H4, 4), 0)
             Width = BitConverter.ToInt32(RawData(&H8, 4), 0)
@@ -83,7 +83,7 @@ Namespace MysteryDungeon.PSMD
             End If
         End Function
 
-        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
             Dim empty64(64) As Byte
             Dim dataLength = Width * Height * PixelLength
             Length = dataLength + &H80

@@ -31,7 +31,7 @@ Namespace Windows
             MyBase.New
         End Sub
 
-        Public Async Function OpenFile(RootDirectory As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(RootDirectory As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             PokemonInfo = New PokemonDataInfo
             PokemonInfo.EnableInMemoryLoad = True
             Await PokemonInfo.OpenFile(IO.Path.Combine(RootDirectory, "romfs", "pokemon", "pokemon_data_info.bin"), Provider)

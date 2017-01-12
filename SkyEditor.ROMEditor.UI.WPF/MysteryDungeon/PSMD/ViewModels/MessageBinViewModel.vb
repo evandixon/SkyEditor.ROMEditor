@@ -110,7 +110,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
         Public ReadOnly Property ResetSearchCommand As RelayCommand
 
-        Public Sub Save(provider As IOProvider)
+        Public Sub Save(provider As IIOProvider)
             Model.Save(provider)
         End Sub
 

@@ -35,12 +35,12 @@ Namespace MysteryDungeon.Explorers
             End If
         End Sub
 
-        Public Overrides Async Function OpenFile(filename As String, provider As IOProvider) As Task
+        Public Overrides Async Function OpenFile(filename As String, provider As IIOProvider) As Task
             Await MyBase.OpenFile(filename, provider)
             InitItems()
         End Function
 
-        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
             Me.Length = 2 + (Items.Count * 4)
             RawData(0, 2) = BitConverter.GetBytes(Items.Count)
             For count As Integer = 0 To Items.Count - 1

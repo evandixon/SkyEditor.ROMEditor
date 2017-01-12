@@ -28,7 +28,7 @@ Namespace MysteryDungeon.Explorers
                 Return m
             End Function
         End Class
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
             Pokemon = New List(Of PokemonMoves)
             Dim index As Integer = &H13

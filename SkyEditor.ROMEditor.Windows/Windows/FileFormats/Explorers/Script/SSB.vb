@@ -88,7 +88,7 @@ Namespace Windows.FileFormats.Explorers.Script
 #Region "Functions"
 
 #Region "IO"
-        Public Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Me.Filename = Filename
             Using f As New GenericFile
                 f.IsReadOnly = True
@@ -303,7 +303,7 @@ Namespace Windows.FileFormats.Explorers.Script
             Return $"Goto-{LabelIndex}"
         End Function
 
-        Public Function Save(Filename As String, provider As IOProvider) As Task Implements ISavableAs.Save
+        Public Function Save(Filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
             RaiseEvent FileSaving(Me, New EventArgs)
 
             'Preprocess the constants and strings
@@ -501,7 +501,7 @@ Namespace Windows.FileFormats.Explorers.Script
             Return Task.CompletedTask
         End Function
 
-        Public Async Function Save(provider As IOProvider) As Task Implements ISavable.Save
+        Public Async Function Save(provider As IIOProvider) As Task Implements ISavable.Save
             Await Save(Me.Filename, provider)
         End Function
 

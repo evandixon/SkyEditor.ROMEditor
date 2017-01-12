@@ -68,12 +68,12 @@
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.Core, Version=4.0.14.16, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SkyEditor.Core.4.0.14\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
+    <Reference Include="SkyEditor.Core, Version=4.0.15.17, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SkyEditor.Core.4.0.15\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.Core.Windows, Version=4.0.14.16, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SkyEditor.Core.Windows.4.0.14\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
+    <Reference Include="SkyEditor.Core.Windows, Version=4.0.15.17, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SkyEditor.Core.Windows.4.0.15\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

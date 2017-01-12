@@ -54,7 +54,7 @@ Namespace MysteryDungeon.Explorers
 
         Public Property Items As List(Of String)
 
-        Public Overrides Async Function OpenFile(filename As String, provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Overrides Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(filename, provider)
             Dim bytes = provider.ReadAllBytes(filename)
 
@@ -76,7 +76,7 @@ Namespace MysteryDungeon.Explorers
                 Items(count / 4) = s.ToString
             Next
         End Function
-        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
             'Generate File
             Dim e = Encoding.GetEncoding("Windows-1252")
             Dim offsets As New List(Of UInt32)

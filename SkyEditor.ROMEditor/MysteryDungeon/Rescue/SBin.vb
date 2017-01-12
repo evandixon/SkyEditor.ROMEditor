@@ -24,7 +24,7 @@ Namespace MysteryDungeon.Rescue
             Return {".sbin"}
         End Function
 
-        Public Function OpenFile(filename As String, provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Dim rawData = provider.ReadAllBytes(filename)
             Dim currentRange = rawData.Take(16).ToArray
             Files.Clear()
@@ -45,7 +45,7 @@ Namespace MysteryDungeon.Rescue
             Return Task.FromResult(0)
         End Function
 
-        Public Async Function Save(provider As IOProvider) As Task Implements ISavable.Save
+        Public Async Function Save(provider As IIOProvider) As Task Implements ISavable.Save
             Await Save(Filename, provider)
         End Function
 
@@ -108,7 +108,7 @@ Namespace MysteryDungeon.Rescue
             Return headerSection.Concat(dataSection).ToArray
         End Function
 
-        Public Function Save(filename As String, provider As IOProvider) As Task Implements ISavableAs.Save
+        Public Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
             provider.WriteAllBytes(filename, GetBytes)
             RaiseEvent FileSaved(Me, New EventArgs)
             Return Task.FromResult(0)

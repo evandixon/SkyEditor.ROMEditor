@@ -10,7 +10,7 @@ Namespace MysteryDungeon.PSMD
         ''' <returns>The games' scripts refer to the strings by this hash.</returns>
         Public Property Strings As List(Of String)
 
-        Public Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Dim total As New Text.StringBuilder
             Using f As New GenericFile
                 f.IsReadOnly = True

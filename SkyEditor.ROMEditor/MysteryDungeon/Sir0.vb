@@ -120,7 +120,7 @@ Namespace MysteryDungeon
             End If
         End Sub
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
             ProcessData()
         End Function
@@ -188,7 +188,7 @@ Namespace MysteryDungeon
             Return Task.FromResult(0)
         End Function
 
-        Public Overrides Async Function Save(Destination As String, provider As IOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
             Await DoPreSave()
 
             Await MyBase.Save(Destination, provider)

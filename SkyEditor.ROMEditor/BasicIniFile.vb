@@ -9,7 +9,7 @@ Public Class BasicIniFile
 
     Public Property Entries As Dictionary(Of String, String)
 
-    Public Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+    Public Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
         For Each item In Provider.ReadAllText(Filename).Split(vbLf)
             Dim parts = item.Trim.Split("=".ToCharArray, 2)
             If Not Entries.ContainsKey(parts(0)) Then

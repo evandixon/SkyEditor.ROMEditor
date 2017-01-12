@@ -19,7 +19,7 @@ Namespace MysteryDungeon.PSMD
         Public Property Entries As List(Of JukeboxEntry)
 
 
-        Public Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Using f As New GenericFile
                 f.IsReadOnly = True
                 Await f.OpenFile(Filename, Provider)

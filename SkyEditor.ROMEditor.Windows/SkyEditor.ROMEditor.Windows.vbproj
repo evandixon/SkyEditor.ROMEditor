@@ -87,12 +87,12 @@
       <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.1\lib\net46\DotNet3dsSoundtrackConverter.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotNet3dsToolkit, Version=1.4.9.21, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsToolkit.1.4.9\lib\net46\DotNet3dsToolkit.dll</HintPath>
+    <Reference Include="DotNet3dsToolkit, Version=1.4.10.22, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsToolkit.1.4.10\lib\net46\DotNet3dsToolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DSPatcher, Version=1.1.3.8, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DS-ROM-Patcher.1.1.3\lib\net46\DSPatcher.exe</HintPath>
+    <Reference Include="DSPatcher, Version=1.1.4.9, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DS-ROM-Patcher.1.1.4\lib\net46\DSPatcher.exe</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
@@ -124,20 +124,20 @@
       <HintPath>..\packages\ppmdu-wrapper.1.0.3\lib\net46\ppmdu-wrapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor, Version=4.0.13.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.4.0.13\lib\net46\SkyEditor.CodeEditor.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor, Version=4.0.15.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.4.0.15\lib\net46\SkyEditor.CodeEditor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.Core, Version=4.0.14.16, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.0.14\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
+    <Reference Include="SkyEditor.Core, Version=4.0.15.17, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.4.0.15\lib\portable45-net45+win8+wpa81\SkyEditor.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.Core.Windows, Version=4.0.14.16, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.Windows.4.0.14\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
+    <Reference Include="SkyEditor.Core.Windows, Version=4.0.15.17, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.Windows.4.0.15\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.SaveEditor, Version=4.0.13.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.SaveEditor.4.0.13\lib\portable45-net45+win8\SkyEditor.SaveEditor.dll</HintPath>
+    <Reference Include="SkyEditor.SaveEditor, Version=4.0.16.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.SaveEditor.4.0.16\lib\portable45-net45+win8\SkyEditor.SaveEditor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -291,8 +291,10 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="packages.config" />
-    <None Include="Resources\MysteryDungeon\PSMD Move Name Hashes.txt" />
-    <None Include="Resources\MysteryDungeon\PSMD Pokemon Name Hashes.txt" />
+    <Content Include="Resources\de\SkyItems.txt" />
+    <Content Include="Resources\de\SkyLocations.txt" />
+    <Content Include="Resources\de\SkyMoves.txt" />
+    <Content Include="Resources\de\SkyPokemon.txt" />
     <Content Include="Windows\App.ico" />
     <None Include="SkyEditor.ROMEditor.Windows\lua\bin2c5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -349,7 +351,6 @@
       <Name>SkyEditor.ROMEditor</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

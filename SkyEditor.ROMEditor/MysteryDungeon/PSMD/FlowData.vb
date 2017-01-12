@@ -9,7 +9,7 @@ Namespace MysteryDungeon.PSMD
         Public Property Data1 As List(Of ULong)
         Public Property Data2 As List(Of ULong)
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task
             Await MyBase.OpenFile(Filename, Provider)
 
             Dim numEntries1 As UInteger = Me.UInt32(&H18)

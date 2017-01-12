@@ -19,7 +19,7 @@ Namespace MysteryDungeon.PSMD
         End Class
         Public Property Entries As List(Of ActXlWazaEntry)
 
-        Public Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Const entryLength = 8
             Using f As New GenericFile
                 f.EnableInMemoryLoad = True

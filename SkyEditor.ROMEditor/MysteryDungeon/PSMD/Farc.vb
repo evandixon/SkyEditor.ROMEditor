@@ -14,7 +14,7 @@ Namespace MysteryDungeon.PSMD
             Me.EnableInMemoryLoad = True
         End Sub
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
 
             Dim sir0Type = Me.Int32(&H20)
@@ -87,7 +87,7 @@ Namespace MysteryDungeon.PSMD
         ''' Extracts the FARC to the given directory.
         ''' </summary>
         ''' <param name="Directory">Directory to extract the FARC to.</param>
-        Public Async Function Extract(Directory As String, provider As IOProvider, Optional UseDictionary As Boolean = True) As Task
+        Public Async Function Extract(Directory As String, provider As IIOProvider, Optional UseDictionary As Boolean = True) As Task
             Dim asyncFor As New AsyncFor
             Dim dic As Dictionary(Of UInteger, String)
             If UseDictionary Then
@@ -116,7 +116,7 @@ Namespace MysteryDungeon.PSMD
         ''' <returns></returns>
         Public Function GetFileDictionary() As Dictionary(Of UInteger, String)
             Dim out As New Dictionary(Of UInteger, String)
-            Dim resourceFile = My.Resources.FarcFilenames.ResourceManager.GetString(IO.Path.GetFileNameWithoutExtension(Me.OriginalFilename)) ' PluginHelper.GetResourceName(IO.Path.Combine("farc", IO.Path.GetFileNameWithoutExtension(Me.OriginalFilename) & ".txt"))
+            Dim resourceFile = My.Resources.FarcFilenames.ResourceManager.GetString(Path.GetFileNameWithoutExtension(Me.OriginalFilename)) ' PluginHelper.GetResourceName(IO.Path.Combine("farc", IO.Path.GetFileNameWithoutExtension(Me.OriginalFilename) & ".txt"))
             If Not String.IsNullOrEmpty(resourceFile) Then
                 Dim i As New BasicIniFile
                 i.CreateFile(resourceFile)
@@ -127,9 +127,9 @@ Namespace MysteryDungeon.PSMD
             Return out
         End Function
 
-        Private Shared Function GetReverseFileDictionary(Filename As String, provider As IOProvider) As Dictionary(Of String, UInteger)
+        Private Shared Function GetReverseFileDictionary(Filename As String, provider As IIOProvider) As Dictionary(Of String, UInteger)
             Dim out As New Dictionary(Of String, UInteger)
-            Dim resource = My.Resources.FarcFilenames.ResourceManager.GetString(IO.Path.GetFileNameWithoutExtension(Filename))
+            Dim resource = My.Resources.FarcFilenames.ResourceManager.GetString(Path.GetFileNameWithoutExtension(Filename))
             If Not String.IsNullOrEmpty(resource) Then
                 Dim i As New BasicIniFile
                 i.CreateFile(resource)
@@ -140,7 +140,7 @@ Namespace MysteryDungeon.PSMD
             Return out
         End Function
 
-        Public Shared Async Function Pack(SourceDirectory As String, DestinationFarcFilename As String, provider As IOProvider) As Task
+        Public Shared Async Function Pack(SourceDirectory As String, DestinationFarcFilename As String, provider As IIOProvider) As Task
             If provider.FileExists(DestinationFarcFilename) Then
                 provider.DeleteFile(DestinationFarcFilename)
             End If
