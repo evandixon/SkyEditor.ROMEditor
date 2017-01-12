@@ -157,13 +157,12 @@ Namespace MysteryDungeon.PSMD
         Public Function GetCommonPokemonNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
-            For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf)
-                Dim trimmed = item.Trim
+            For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf).Select(Function(x) x.Trim)
                 Dim hash As Integer
-                If Integer.TryParse(trimmed, hash) Then
-                    pokemonNameHashes.Add(trimmed)
+                If Integer.TryParse(item, hash) Then
+                    pokemonNameHashes.Add(item)
                 Else
-                    Throw New Exception($"Invalid resource item: ""{trimmed}""")
+                    Throw New Exception($"Invalid resource item: ""{item}""")
                 End If
             Next
 
