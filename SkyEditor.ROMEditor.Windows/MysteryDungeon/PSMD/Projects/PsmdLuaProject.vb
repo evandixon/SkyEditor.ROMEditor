@@ -14,6 +14,7 @@ Namespace MysteryDungeon.PSMD.Projects
     ''' </summary>
     Public Class PsmdLuaProject
         Inherits GenericModProject
+        Implements IPsmdMessageBinProject
 
         Public Sub New()
             MyBase.New
@@ -61,35 +62,43 @@ Namespace MysteryDungeon.PSMD.Projects
         ''' </summary>
         ''' <param name="name">Name of the language file of which to get (e.g. "common").</param>
         ''' <returns>The <see cref="MessageBin"/> with the given <paramref name="name"/> for the language appropriate for the current culture.</returns>
-        Public Async Function GetLanguageFile(name As String) As Task(Of MessageBin)
-            Dim dir = IO.Path.Combine(Me.GetRootDirectory, "Languages")
+        Public Async Function GetLanguageFile(name As String) As Task(Of MessageBin) Implements IPsmdMessageBinProject.GetLanguageFile
+            Dim dir = Path.Combine(Me.GetRootDirectory, "Languages")
             Dim availableDirs = Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly)
 
             Dim languageDir As String
-            If availableDirs.Any(Function(x) x.ToLower = My.Resources.Language.LocalizedPsmdLanguageFileLanguage) Then
-                languageDir = IO.Path.Combine(dir, My.Resources.Language.LocalizedPsmdLanguageFileLanguage)
-            ElseIf availableDirs.Any(Function(x) x.ToLower = "us") Then
-                languageDir = IO.Path.Combine(dir, "us")
-            ElseIf availableDirs.Any(Function(x) x.ToLower = "en") Then
-                languageDir = IO.Path.Combine(dir, "en")
-            ElseIf availableDirs.Any(Function(x) x.ToLower = "jp") Then
-                languageDir = IO.Path.Combine(dir, "jp")
+            If availableDirs.Any(Function(x) Path.GetFileName(x.ToLower) = My.Resources.Language.LocalizedPsmdLanguageFileLanguage) Then
+                languageDir = Path.Combine(dir, My.Resources.Language.LocalizedPsmdLanguageFileLanguage)
+            ElseIf availableDirs.Any(Function(x) Path.GetFileName(x.ToLower) = "us") Then
+                languageDir = Path.Combine(dir, "us")
+            ElseIf availableDirs.Any(Function(x) Path.GetFileName(x.ToLower) = "en") Then
+                languageDir = Path.Combine(dir, "en")
+            ElseIf availableDirs.Any(Function(x) Path.GetFileName(x.ToLower) = "jp") Then
+                languageDir = Path.Combine(dir, "jp")
             Else
                 Throw New IO.DirectoryNotFoundException(String.Format(My.Resources.Language.ErrorLocalizedPsmdLanguageFileLanguageNotFound, My.Resources.Language.LocalizedPsmdLanguageFileLanguage))
             End If
 
             Dim message As New MessageBin
-            Await message.OpenFile(IO.Path.Combine(languageDir, name), CurrentPluginManager.CurrentIOProvider)
+            Await message.OpenFile(Path.Combine(languageDir, name), CurrentPluginManager.CurrentIOProvider)
             Return message
         End Function
 
-        Public Async Function GetPokemonNames() As Task(Of Dictionary(Of Integer, String))
-            Return (Await GetLanguageFile("common")).GetCommonPokemonNames
+        Public Async Function GetPokemonNames() As Task(Of Dictionary(Of Integer, String)) Implements IPsmdMessageBinProject.GetPokemonNames
+            If _pokemonNames Is Nothing Then
+                _pokemonNames = (Await GetLanguageFile("common")).GetCommonPokemonNames
+            End If
+            Return _pokemonNames
         End Function
+        Dim _pokemonNames As Dictionary(Of Integer, String)
 
-        Public Async Function GetMoveNames() As Task(Of Dictionary(Of Integer, String))
-            Return (Await GetLanguageFile("common")).GetCommonMoveNames
+        Public Async Function GetMoveNames() As Task(Of Dictionary(Of Integer, String)) Implements IPsmdMessageBinProject.GetMoveNames
+            If _moveNames Is Nothing Then
+                _moveNames = (Await GetLanguageFile("common")).GetCommonMoveNames
+            End If
+            Return _moveNames
         End Function
+        Dim _moveNames As Dictionary(Of Integer, String)
 #End Region
 
         Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)

@@ -17,133 +17,140 @@ Namespace MysteryDungeon.PSMD.ViewModels
             RaiseEvent Modified(Me, New EventArgs)
         End Sub
 
-        Public Property PokemonID As Int16
+        Public ReadOnly Property Name As String
+            Get
+                Return PokemonNames(PokemonID)
+            End Get
+        End Property
+
+        Public Property PokemonID As Integer
             Get
                 Return Model.PokemonID
             End Get
-            Set(value As Int16)
-                If Not value = Model.PokemonID Then
-                    value = Model.PokemonID
+            Set(value As Integer)
+                If Not Model.PokemonID = value Then
+                    Model.PokemonID = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(PokemonID)))
+                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Name)))
                 End If
             End Set
         End Property
 
-        Public Property Move1 As UInt16
+        Public Property Move1 As Integer
             Get
                 Return Model.Move1
             End Get
-            Set(value As UInt16)
-                If Not value = Model.Move1 Then
-                    value = Model.Move1
+            Set(value As Integer)
+                If Not Model.Move1 = value Then
+                    Model.Move1 = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Move1)))
                 End If
             End Set
         End Property
 
-        Public Property Move2 As UInt16
+        Public Property Move2 As Integer
             Get
                 Return Model.Move2
             End Get
-            Set(value As UInt16)
-                If Not value = Model.Move2 Then
-                    value = Model.Move2
+            Set(value As Integer)
+                If Not Model.Move2 = value Then
+                    Model.Move2 = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Move2)))
                 End If
             End Set
         End Property
 
-        Public Property Move3 As UInt16
+        Public Property Move3 As Integer
             Get
                 Return Model.Move3
             End Get
-            Set(value As UInt16)
-                If Not value = Model.Move3 Then
-                    value = Model.Move3
+            Set(value As Integer)
+                If Not Model.Move3 = value Then
+                    Model.Move3 = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Move3)))
                 End If
             End Set
         End Property
 
-        Public Property Move4 As UInt16
+        Public Property Move4 As Integer
             Get
                 Return Model.Move4
             End Get
-            Set(value As UInt16)
-                If Not value = Model.Move4 Then
-                    value = Model.Move4
+            Set(value As Integer)
+                If Not Model.Move4 = value Then
+                    Model.Move4 = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Move4)))
                 End If
             End Set
         End Property
 
-        Public Property HPBoost As Int16
+        Public Property HPBoost As Integer
             Get
                 Return Model.HPBoost
             End Get
-            Set(value As Int16)
-                If Not value = Model.HPBoost Then
-                    value = Model.HPBoost
+            Set(value As Integer)
+                If Not Model.HPBoost = value Then
+                    Model.HPBoost = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(HPBoost)))
                 End If
             End Set
         End Property
 
-        Public Property AttackBoost As Byte
+        Public Property AttackBoost As Integer
             Get
                 Return Model.AttackBoost
             End Get
-            Set(value As Byte)
-                If Not value = Model.AttackBoost Then
-                    value = Model.AttackBoost
+            Set(value As Integer)
+                If Not Model.AttackBoost = value Then
+                    Model.AttackBoost = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(AttackBoost)))
                 End If
             End Set
         End Property
 
-        Public Property SpAttackBoost As Byte
+        Public Property SpAttackBoost As Integer
             Get
                 Return Model.SpAttackBoost
             End Get
-            Set(value As Byte)
-                If Not value = Model.SpAttackBoost Then
-                    value = Model.SpAttackBoost
+            Set(value As Integer)
+                If Not Model.SpAttackBoost = value Then
+                    Model.SpAttackBoost = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(SpAttackBoost)))
                 End If
             End Set
         End Property
 
-        Public Property DefenseBoost As Byte
+        Public Property DefenseBoost As Integer
             Get
                 Return Model.DefenseBoost
             End Get
-            Set(value As Byte)
-                If Not value = Model.DefenseBoost Then
-                    value = Model.DefenseBoost
+            Set(value As Integer)
+                If Not Model.DefenseBoost = value Then
+                    Model.DefenseBoost = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(DefenseBoost)))
                 End If
             End Set
         End Property
 
-        Public Property SpDefenseBoost As Byte
+        Public Property SpDefenseBoost As Integer
             Get
                 Return Model.SpDefenseBoost
             End Get
-            Set(value As Byte)
-                If Not value = Model.SpDefenseBoost Then
-                    value = Model.SpDefenseBoost
+            Set(value As Integer)
+                If Not Model.SpDefenseBoost = value Then
+                    Model.SpDefenseBoost = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(SpDefenseBoost)))
                 End If
             End Set
         End Property
 
-        Public Property SpeedBoost As Byte
+        Public Property SpeedBoost As Integer
             Get
                 Return Model.SpeedBoost
             End Get
-            Set(value As Byte)
-                If Not value = Model.SpeedBoost Then
-                    value = Model.SpeedBoost
+            Set(value As Integer)
+                If Not Model.SpeedBoost = value Then
+                    Model.SpeedBoost = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(SpeedBoost)))
                 End If
             End Set

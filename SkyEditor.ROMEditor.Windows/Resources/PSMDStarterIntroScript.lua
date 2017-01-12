@@ -259,63 +259,64 @@ function seikakushindankekka01_start()
   CUT:PlayLoop()
   CAMERA:SetFollowEffect("EV_SINDAN_00_LP", 0)
   local POKEID_HERO, POKEID_PARTNER
-  if basecharname == "RIORU" then
+  if charname == #Starter537# then
     typeRIORU()
 	charRIORU()
-  elseif basecharname == "KEROMATSU" then
+  elseif charname == #Starter772# then
     typeKEROMATSU()
 	charKEROMATSU()
-  elseif basecharname == "HIKOZARU" then
+  elseif charname == #Starter482# then
     typeHIKOZARU()
-  elseif basecharname == "FUSHIGIDANE" then
+	charHIKOZARU()
+  elseif charname == #Starter1# then
     typeFUSHIGIDANE()
 	charHIKOZARU()
-  elseif basecharname == "NAETORU" then
+  elseif charname == #Starter479# then
     typeNAETORU()
 	charNAETORU()
-  elseif basecharname == "KIMORI" then
+  elseif charname == #Starter322# then
     typeKIMORI()
 	charKIMORI()
-  elseif basecharname == "WANINOKO" then
+  elseif charname == #Starter203# then
     typeWANINOKO()
 	charWANINOKO()
-  elseif basecharname == "POTCHAMA" then
+  elseif charname == #Starter485# then
     typePOTCHAMA()
 	charPOTCHAMA()
-  elseif basecharname == "PIKACHUU" then
+  elseif charname == #Starter30# then
     typePIKACHUU()
 	charPIKACHUU()
-  elseif basecharname == "HITOKAGE" then
+  elseif charname == #Starter5# then
     typeHITOKAGE()
 	charHITOKAGE()
-  elseif basecharname == "CHIKORIITA" then
+  elseif charname == #Starter197# then
     typeCHIKORIITA()
 	charCHIKORIITA()
-  elseif basecharname == "ACHAMO" then
+  elseif charname == #Starter325# then
     typeACHAMO()
 	charACHAMO()
-  elseif basecharname == "MIJUMARU" then
+  elseif charname == #Starter598# then
     typeMIJUMARU()
 	charMIJUMARU()
-  elseif basecharname == "FOKKO" then
+  elseif charname == #Starter769# then
     typeFOKKO()
 	charFOKKO()
-  elseif basecharname == "TSUTAAJA" then
+  elseif charname == #Starter592# then
     typeTSUTAAJA()
 	charTSUTAAJA()
-  elseif basecharname == "HARIMARON" then
+  elseif charname == #Starter766# then
     typeHARIMARON()
 	charHARIMARON()
-  elseif basecharname == "HINOARASHI" then
+  elseif charname == #Starter200# then
     typeHINOARASHI()
 	charHINOARASHI()
-  elseif basecharname == "ZENIGAME" then
+  elseif charname == #Starter10# then
     typeZENIGAME()
 	charZENIGAME()
-  elseif basecharname == "POKABU" then
+  elseif charname == #Starter595# then
     typePOKABU()
 	charPOKABU()
-  elseif basecharname == "MIZUGOROU" then
+  elseif charname == #Starter329# then
     typeMIZUGOROU()
 	charMIZUGOROU()
   end
@@ -407,57 +408,150 @@ function seikakushindankekka02_5_start()
    
     if id == 1 then
       WINDOW:SysMsg( 200004 )
-      local oldpokemonid = SymAct("HERO"):GetIndex()
-      local menu      = MENU:CreateNumericMenuWindow(ScreenType.A)
-      menu:SetLayoutRect(Rectangle(96, 80, 132, 84))
-      menu:SetPlace(3)
-      menu:SetDigit(3)
-      menu:SetStartNum(initval)
-      menu:SetType(NUM_MENU_TYPE.TYPE_DIGIT_ON)
-      menu:SetTextOffset(24, 40)
-      function menu:decideAction()
-        charname = self:GetSettingData()
-        GROUND:SetHero(charname, 0)
-		doRefresh = true
-        self:Close()
-      end
-      function menu:cancelAction()
-        charname = oldpokemonid
-        GROUND:SetHero(charname, 0)
-        CHARA:ReloadHeroPartner()
-        self:Close()
-      end
-      menu:Open()
-      menu:SetCaption("Pokemon ID")
-      MENU:SetFocus(menu)
-      MENU:WaitClose(menu)
-      
+	  local oldpartnerid = SymAct("PARTNER"):GetIndex()
+	  WINDOW:SelectStart()
+	  WINDOW:SelectChain(200001, 0)
+	  if oldpartnerid ~= #Starter1# then
+          WINDOW:SelectChain(#StarterHash1#,#Starter1#)
+	  end
+	  if oldpartnerid ~= #Starter5# then
+          WINDOW:SelectChain(#StarterHash5#,#Starter5#)
+	  end
+	  if oldpartnerid ~= #Starter10# then
+          WINDOW:SelectChain(#StarterHash10#,#Starter10#)
+	  end
+	  if oldpartnerid ~= #Starter30# then
+          WINDOW:SelectChain(#StarterHash30#,#Starter30#)
+	  end
+	  if oldpartnerid ~= #Starter197# then
+          WINDOW:SelectChain(#StarterHash197#,#Starter197#)
+	  end
+	  if oldpartnerid ~= #Starter200# then
+          WINDOW:SelectChain(#StarterHash200#,#Starter200#)
+	  end
+	  if oldpartnerid ~= #Starter203# then
+          WINDOW:SelectChain(#StarterHash203#,#Starter203#)
+	  end
+	  if oldpartnerid ~= #Starter322# then
+          WINDOW:SelectChain(#StarterHash322#,#Starter322#)
+	  end
+	  if oldpartnerid ~= #Starter325# then
+          WINDOW:SelectChain(#StarterHash325#,#Starter325#)
+	  end
+	  if oldpartnerid ~= #Starter329# then
+          WINDOW:SelectChain(#StarterHash329#,#Starter329#)
+	  end
+	  if oldpartnerid ~= #Starter479# then
+          WINDOW:SelectChain(#StarterHash479#,#Starter479#)
+	  end
+	  if oldpartnerid ~= #Starter482# then
+          WINDOW:SelectChain(#StarterHash482#,#Starter482#)
+	  end
+	  if oldpartnerid ~= #Starter485# then
+          WINDOW:SelectChain(#StarterHash485#,#Starter485#)
+	  end
+	  if oldpartnerid ~= #Starter537# then
+          WINDOW:SelectChain(#StarterHash537#,#Starter537#)
+	  end
+	  if oldpartnerid ~= #Starter592# then
+          WINDOW:SelectChain(#StarterHash592#,#Starter592#)
+	  end
+	  if oldpartnerid ~= #Starter595# then
+          WINDOW:SelectChain(#StarterHash595#,#Starter595#)
+	  end
+	  if oldpartnerid ~= #Starter598# then
+          WINDOW:SelectChain(#StarterHash598#,#Starter598#)
+	  end
+	  if oldpartnerid ~= #Starter766# then
+          WINDOW:SelectChain(#StarterHash766#,#Starter766#)
+	  end
+	  if oldpartnerid ~= #Starter769# then
+          WINDOW:SelectChain(#StarterHash769#,#Starter769#)
+	  end
+	  if oldpartnerid ~= #Starter772# then
+          WINDOW:SelectChain(#StarterHash772#,#Starter772#)
+	  end	  
+	  WINDOW:DefaultCursor(0)
+	  local pkmID = WINDOW:SelectEnd(MENU_SELECT_MODE.DISABLE_CANCEL)
+	  if pkmID == 0 then
+	      --Do nothing
+	  else
+	      GROUND:SetHero(pkmID, 0)
+		  doRefresh = true
+	  end
     elseif id == 2 then
       WINDOW:SysMsg( 200005 )
       local oldpokemonid = SymAct("HERO"):GetIndex()
-      local menu      = MENU:CreateNumericMenuWindow(ScreenType.A)
-      menu:SetLayoutRect(Rectangle(96, 80, 132, 84))
-      menu:SetPlace(3)
-      menu:SetDigit(3)
-      menu:SetStartNum(initval)
-      menu:SetType(NUM_MENU_TYPE.TYPE_DIGIT_ON)
-      menu:SetTextOffset(24, 40)
-      function menu:decideAction()
-        pertnername = self:GetSettingData()
-        GROUND:SetPartner(pertnername, 0)
-		doRefresh = true
-        self:Close()
-      end
-      function menu:cancelAction()
-        pertnername = oldpokemonid
-        GROUND:SetPartner(pertnername, 0)
-        CHARA:ReloadHeroPartner()
-        self:Close()
-      end
-      menu:Open()
-      menu:SetCaption("Pokemon ID")
-      MENU:SetFocus(menu)
-      MENU:WaitClose(menu)
+	  WINDOW:SelectStart()	  
+	  WINDOW:SelectChain(200001, 0)
+	  if oldpokemonid ~= #Starter1# then
+          WINDOW:SelectChain(#StarterHash1#,#Starter1#)
+	  end
+	  if oldpokemonid ~= #Starter5# then
+          WINDOW:SelectChain(#StarterHash5#,#Starter5#)
+	  end
+	  if oldpokemonid ~= #Starter10# then
+          WINDOW:SelectChain(#StarterHash10#,#Starter10#)
+	  end
+	  if oldpokemonid ~= #Starter30# then
+          WINDOW:SelectChain(#StarterHash30#,#Starter30#)
+	  end
+	  if oldpokemonid ~= #Starter197# then
+          WINDOW:SelectChain(#StarterHash197#,#Starter197#)
+	  end
+	  if oldpokemonid ~= #Starter200# then
+          WINDOW:SelectChain(#StarterHash200#,#Starter200#)
+	  end
+	  if oldpokemonid ~= #Starter203# then
+          WINDOW:SelectChain(#StarterHash203#,#Starter203#)
+	  end
+	  if oldpokemonid ~= #Starter322# then
+          WINDOW:SelectChain(#StarterHash322#,#Starter322#)
+	  end
+	  if oldpokemonid ~= #Starter325# then
+          WINDOW:SelectChain(#StarterHash325#,#Starter325#)
+	  end
+	  if oldpokemonid ~= #Starter329# then
+          WINDOW:SelectChain(#StarterHash329#,#Starter329#)
+	  end
+	  if oldpokemonid ~= #Starter479# then
+          WINDOW:SelectChain(#StarterHash479#,#Starter479#)
+	  end
+	  if oldpokemonid ~= #Starter482# then
+          WINDOW:SelectChain(#StarterHash482#,#Starter482#)
+	  end
+	  if oldpokemonid ~= #Starter485# then
+          WINDOW:SelectChain(#StarterHash485#,#Starter485#)
+	  end
+	  if oldpokemonid ~= #Starter537# then
+          WINDOW:SelectChain(#StarterHash537#,#Starter537#)
+	  end
+	  if oldpokemonid ~= #Starter592# then
+          WINDOW:SelectChain(#StarterHash592#,#Starter592#)
+	  end
+	  if oldpokemonid ~= #Starter595# then
+          WINDOW:SelectChain(#StarterHash595#,#Starter595#)
+	  end
+	  if oldpokemonid ~= #Starter598# then
+          WINDOW:SelectChain(#StarterHash598#,#Starter598#)
+	  end
+	  if oldpokemonid ~= #Starter766# then
+          WINDOW:SelectChain(#StarterHash766#,#Starter766#)
+	  end
+	  if oldpokemonid ~= #Starter769# then
+          WINDOW:SelectChain(#StarterHash769#,#Starter769#)
+	  end
+	  if oldpokemonid ~= #Starter772# then
+          WINDOW:SelectChain(#StarterHash772#,#Starter772#)
+	  end
+	  WINDOW:DefaultCursor(0)
+	  local pkmID = WINDOW:SelectEnd(MENU_SELECT_MODE.DISABLE_CANCEL)
+	  if pkmID == 0 then
+	      --Do nothing
+	  else
+	      GROUND:SetPartner(pkmID, 0)
+		  doRefresh = true
+	  end
     end
 
 	if doRefresh == true then

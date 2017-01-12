@@ -441,4 +441,46 @@ evandixon (Personality test, bgp files)</value>
   <data name="BuildDec3DS" xml:space="preserve">
     <value>Build Decrypted 3DS (For Flashcart &amp; Decrypt9)</value>
   </data>
+  <data name="AttackBoost" xml:space="preserve">
+    <value>Attack Boost</value>
+  </data>
+  <data name="DefenseBoost" xml:space="preserve">
+    <value>Defense Boost</value>
+  </data>
+  <data name="HPBoost" xml:space="preserve">
+    <value>HP Boost</value>
+  </data>
+  <data name="Move1" xml:space="preserve">
+    <value>Move 1</value>
+  </data>
+  <data name="Move2" xml:space="preserve">
+    <value>Move 2</value>
+  </data>
+  <data name="Move3" xml:space="preserve">
+    <value>Move 3</value>
+  </data>
+  <data name="Move4" xml:space="preserve">
+    <value>Move 4</value>
+  </data>
+  <data name="SpAttackBoost" xml:space="preserve">
+    <value>Sp. Attack Boost</value>
+  </data>
+  <data name="SpDefenseBoost" xml:space="preserve">
+    <value>Sp. Defense Boost</value>
+  </data>
+  <data name="Species" xml:space="preserve">
+    <value>Species</value>
+  </data>
+  <data name="SpeedBoost" xml:space="preserve">
+    <value>Speed Boost</value>
+  </data>
+  <data name="Starter" xml:space="preserve">
+    <value>Starter</value>
+  </data>
+  <data name="StarterEvolution" xml:space="preserve">
+    <value>Evolution</value>
+  </data>
+  <data name="Starters" xml:space="preserve">
+    <value>Starters</value>
+  </data>
 </root>

@@ -157,13 +157,12 @@ Namespace MysteryDungeon.PSMD
         Public Function GetCommonPokemonNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
-            For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf)
-                Dim trimmed = item.Trim
+            For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf).Select(Function(x) x.Trim)
                 Dim hash As Integer
-                If Integer.TryParse(trimmed, hash) Then
-                    pokemonNameHashes.Add(trimmed)
+                If Integer.TryParse(item, hash) Then
+                    pokemonNameHashes.Add(item)
                 Else
-                    Throw New Exception($"Invalid resource item: ""{trimmed}""")
+                    Throw New Exception($"Invalid resource item: ""{item}""")
                 End If
             Next
 
@@ -201,7 +200,7 @@ Namespace MysteryDungeon.PSMD
             pokemonNames.Add(0, My.Resources.Language.NonePokemon)
             For count = 0 To pokemonNameHashes.Count - 1
                 Dim count2 = count 'Helps avoid potential weirdness from having an iterator variable in the lambda expression below
-                pokemonNames.Add(count, ((From s In Strings Where s.HashSigned = pokemonNameHashes(count2)).First).Entry)
+                pokemonNames.Add(count + 1, ((From s In Strings Where s.HashSigned = pokemonNameHashes(count2)).First).Entry)
             Next
 
             Return pokemonNames
