@@ -284,4 +284,10 @@ evandixon (Personality test, bgp files)</value>
   <data name="SkyEditor_ROMEditor_Projects_GenericModProject" xml:space="preserve">
     <value>Generic Mod</value>
   </data>
+  <data name="SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdLuaProject" xml:space="preserve">
+    <value>Script Mod</value>
+  </data>
+  <data name="SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PSMDStarterMod" xml:space="preserve">
+    <value>Starter Mod</value>
+  </data>
 </root>

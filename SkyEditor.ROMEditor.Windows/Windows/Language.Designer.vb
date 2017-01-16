@@ -527,6 +527,24 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Script Mod.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdLuaProject() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdLuaProject", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Starter Mod.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PSMDStarterMod() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PSMDStarterMod", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Modpack.
         '''</summary>
         Friend Shared ReadOnly Property SkyEditor_ROMEditor_Projects_DSModPackProject() As String
