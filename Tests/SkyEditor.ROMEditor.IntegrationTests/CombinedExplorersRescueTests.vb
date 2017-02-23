@@ -1,6 +1,5 @@
 ﻿Imports System.IO
 Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.Windows.Providers
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
 
@@ -8,10 +7,10 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
 
     Private Const TestCategory As String = "Combined EOS/BRT Tests"
 
-    Dim provider As IOProvider
+    Dim provider As IIOProvider
 
     <TestInitialize> Public Sub TestInit()
-        provider = New WindowsIOProvider
+        provider = New PhysicalIOProvider
         If Not BRTUTests.IsTestInitialized Then
             BRTUTests.UnpackFiles(provider)
         End If
