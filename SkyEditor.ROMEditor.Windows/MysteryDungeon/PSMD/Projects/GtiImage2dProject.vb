@@ -25,10 +25,9 @@ Namespace MysteryDungeon.PSMD.Projects
 
             Dim backFiles = IO.Directory.GetFiles(IO.Path.Combine(rawFilesDir, "romfs"), "*.img", IO.SearchOption.AllDirectories)
             Dim f As New AsyncFor
-            IsIndeterminate = True
-            'AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
-            '                                       Me.BuildProgress = e.Progress
-            '                                   End Sub
+            AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                                   Me.Progress = e.Progress
+                                               End Sub
             Await f.RunForEach(backFiles,
                                Async Function(Item As String) As Task
                                    Using b As New CteImage

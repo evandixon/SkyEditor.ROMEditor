@@ -205,10 +205,9 @@ Namespace Projects
                 ElseIf filesToCopy.Count > 0 Then
                     Me.IsIndeterminate = False
                     Dim a As New AsyncFor
-                    IsIndeterminate = True
-                    'AddHandler a.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
-                    '                                       Me.BuildProgress = e.Progress
-                    '                                   End Sub
+                    AddHandler a.LoadingStatusChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                                           Me.Progress = e.Progress
+                                                       End Sub
                     Await a.RunForEach(filesToCopy,
                                        Sub(item As String)
                                            Dim source As String = Path.Combine(sourceRoot, item)
