@@ -34,7 +34,7 @@ Namespace MysteryDungeon.PSMD
                 Dim numEntries = Math.Floor(f.Length / EntryLength)
 
                 For count = 0 To numEntries - 1
-                    Entries.Add(New DungeonDataInfoEntry(f.RawData(count * EntryLength, EntryLength)))
+                    Entries.Add(New DungeonDataInfoEntry(Await f.ReadAsync(count * EntryLength, EntryLength)))
                 Next
             End Using
         End Function

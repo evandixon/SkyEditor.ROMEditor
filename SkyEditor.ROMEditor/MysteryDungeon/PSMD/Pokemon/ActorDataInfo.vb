@@ -1,5 +1,4 @@
 ﻿Imports System.Text
-Imports Portable.Text
 Imports SkyEditor.Core.IO
 
 Namespace MysteryDungeon.PSMD.Pokemon
@@ -48,13 +47,12 @@ Namespace MysteryDungeon.PSMD.Pokemon
         End Class
 #End Region
 
-
         Public Sub New()
             MyBase.New
             Entries = New List(Of ActorDataInfoEntry)
         End Sub
 
-        Public Event FileSaved As ISavable.FileSavedEventHandler Implements ISavable.FileSaved
+        Public Event FileSaved As EventHandler Implements ISavable.FileSaved
 
         Public Property Entries As List(Of ActorDataInfoEntry)
 
@@ -72,18 +70,17 @@ Namespace MysteryDungeon.PSMD.Pokemon
         End Function
 
 #Region "IO"
-        Public Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Me.Filename = Filename
             Using f As New GenericFile(Provider, Filename)
                 Dim numEntries = Math.Floor(f.Length / &H58)
 
                 For count = 0 To numEntries - 1
-                    Entries.Add(New ActorDataInfoEntry(f.RawData(&H58 * count, &H58)))
+                    Entries.Add(New ActorDataInfoEntry(Await f.ReadAsync(&H58 * count, &H58)))
                 Next
 
-                Footer = f.RawData(f.Length - &H40, &H40)
+                Footer = Await f.ReadAsync(f.Length - &H40, &H40)
             End Using
-            Return Task.FromResult(0)
         End Function
 
         Public Function Save(Destination As String, provider As IIOProvider) As Task Implements ISavableAs.Save
@@ -110,8 +107,6 @@ Namespace MysteryDungeon.PSMD.Pokemon
             Return {".bin"}
         End Function
 #End Region
-
-
 
     End Class
 End Namespace

@@ -1,4 +1,4 @@
-﻿<skywpf:DataBoundObjectControl x:Class="Views.ModpackInfoControl"
+﻿<skywpf:DataBoundViewControl x:Class="Views.ModpackInfoControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -27,4 +27,4 @@
             <TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding GameCode, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Top" />
         </UniformGrid>
     </Grid>
-</skywpf:DataBoundObjectControl>
+</skywpf:DataBoundViewControl>

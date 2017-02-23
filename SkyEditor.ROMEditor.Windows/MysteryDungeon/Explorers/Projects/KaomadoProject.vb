@@ -16,13 +16,13 @@ Namespace MysteryDungeon.Explorers.Projects
             Return {IO.Path.Combine("Data", "FONT", "kaomado.kao")}
         End Function
 
-        Protected Overrides Async Function Initialize() As Task
+        Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
 
             'Start loading
-            Me.BuildProgress = 0
-            Me.IsBuildProgressIndeterminate = True
-            Me.BuildStatusMessage = My.Resources.Language.LoadingUnpacking
+            Me.Progress = 0
+            Me.IsIndeterminate = True
+            Me.Message = My.Resources.Language.LoadingUnpacking
 
             'Unpack
             Dim rootDir = GetRootDirectory()
@@ -44,17 +44,17 @@ Namespace MysteryDungeon.Explorers.Projects
             'Next
 
             'Stop loading
-            Me.BuildProgress = 1
-            Me.IsBuildProgressIndeterminate = False
-            Me.BuildStatusMessage = My.Resources.Language.Complete
+            Me.Progress = 1
+            Me.IsIndeterminate = False
+            Me.Message = My.Resources.Language.Complete
 
         End Function
 
         Protected Overrides Async Function DoBuild() As Task
             'Start loading
-            Me.BuildProgress = 0
-            Me.IsBuildProgressIndeterminate = True
-            Me.BuildStatusMessage = My.Resources.Language.LoadingPacking
+            Me.Progress = 0
+            Me.IsIndeterminate = True
+            Me.Message = My.Resources.Language.LoadingPacking
 
             'Pack
             Using manager As New UtilityManager
@@ -62,9 +62,9 @@ Namespace MysteryDungeon.Explorers.Projects
             End Using
 
             'Stop loading
-            Me.BuildProgress = 1
-            Me.IsBuildProgressIndeterminate = False
-            Me.BuildStatusMessage = My.Resources.Language.Complete
+            Me.Progress = 1
+            Me.IsIndeterminate = False
+            Me.Message = My.Resources.Language.Complete
 
             'Build the mod
             Await MyBase.DoBuild
@@ -90,14 +90,14 @@ Namespace MysteryDungeon.Explorers.Projects
 
             Dim runner As New AsyncFor
             Dim directories = IO.Directory.GetDirectories(unpackDirectory)
-            Dim delegateAction As New AsyncFor.ForEachItem(Of String)(Sub(directory As String)
-                                                                          For j As Integer = 1 To faces.Length - 1
-                                                                              If Not IO.File.Exists(IO.Path.Combine(directory, faces(j))) Then
-                                                                                  IO.File.Copy(IO.Path.Combine(directory, faces(0)), IO.Path.Combine(directory, faces(j)))
-                                                                              End If
-                                                                          Next
-                                                                      End Sub)
-            Await runner.RunForEach(delegateAction, directories)
+            Await runner.RunForEach(directories,
+                                    Sub(directory As String)
+                                        For j As Integer = 1 To faces.Length - 1
+                                            If Not IO.File.Exists(IO.Path.Combine(directory, faces(j))) Then
+                                                IO.File.Copy(IO.Path.Combine(directory, faces(0)), IO.Path.Combine(directory, faces(j)))
+                                            End If
+                                        Next
+                                    End Sub)
         End Function
     End Class
 End Namespace

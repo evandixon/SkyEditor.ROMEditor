@@ -4,13 +4,13 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace Windows.ConsoleCommands
     Public Class PSMDExpTableCsv
-        Inherits ConsoleCommandAsync
+        Inherits ConsoleCommand
 
         Public Overrides Async Function MainAsync(Arguments() As String) As Task
             If Arguments.Length > 0 Then
                 If IO.File.Exists(Arguments(0)) Then
                     Dim exp As New Experience
-                    Await exp.OpenFile(Arguments(0), CurrentPluginManager.CurrentIOProvider)
+                    Await exp.OpenFile(Arguments(0), CurrentApplicationViewModel.CurrentIOProvider)
 
                     For Each item In exp.Entries
                         Dim s As New StringBuilder

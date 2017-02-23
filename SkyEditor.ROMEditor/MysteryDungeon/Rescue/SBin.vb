@@ -1,4 +1,4 @@
-﻿Imports Portable.Text
+﻿Imports System.Text
 Imports SkyEditor.Core.IO
 
 Namespace MysteryDungeon.Rescue
@@ -7,7 +7,7 @@ Namespace MysteryDungeon.Rescue
         Implements ISavableAs
         Implements IOnDisk
 
-        Public Event FileSaved As ISavable.FileSavedEventHandler Implements ISavable.FileSaved
+        Public Event FileSaved As EventHandler Implements ISavable.FileSaved
 
         Public Sub New()
             Files = New Dictionary(Of String, Byte())

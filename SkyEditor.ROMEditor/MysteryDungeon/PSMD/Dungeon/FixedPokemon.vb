@@ -112,7 +112,7 @@ Namespace MysteryDungeon.PSMD.Dungeon
 
             For count = 0 To numEntries - 2 'Subtract 1 because we're talking indexes, subtract another it seems like it's 1 too high afterward, and I don't know why
                 Dim dataPointer = BitConverter.ToUInt32(Me.ContentHeader, 8 + count * 4)
-                Entries.Add(New PokemonEntry(Me.RawData(dataPointer, &H30)))
+                Entries.Add(New PokemonEntry(Await Me.ReadAsync(dataPointer, &H30)))
             Next
         End Function
 
@@ -136,7 +136,7 @@ Namespace MysteryDungeon.PSMD.Dungeon
 
             'Write sections to file
             Me.Length = 16 + dataSection.Count
-            Me.RawData(16, dataSection.Count) = dataSection.ToArray
+            Await Me.WriteAsync(16, dataSection.Count, dataSection.ToArray)
 
             'Update header
             Dim headerBytes As New List(Of Byte)
@@ -153,7 +153,7 @@ Namespace MysteryDungeon.PSMD.Dungeon
 
         Public Overrides Async Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
             'Check to see if it's a SIR0 file named "fixed_pokemon.bin"
-            Return Await MyBase.IsOfType(File) AndAlso Path.GetFileName(File.OriginalFilename) = "fixed_pokemon.bin"
+            Return Await MyBase.IsOfType(File) AndAlso Path.GetFileName(File.Filename) = "fixed_pokemon.bin"
         End Function
     End Class
 

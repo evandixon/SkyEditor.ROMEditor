@@ -52,9 +52,9 @@ Namespace MysteryDungeon.Explorers.Projects
             Dim projDir = GetRootDirectory()
 
 
-            Me.BuildProgress = 0
-            Me.IsBuildProgressIndeterminate = True
-            Me.BuildStatusMessage = My.Resources.Language.LoadingConvertingLanguages
+            Me.Progress = 0
+            Me.IsIndeterminate = True
+            Me.Message = My.Resources.Language.LoadingConvertingLanguages
 
             'Convert Languages
             Dim languageDictionary As New Dictionary(Of String, String)
@@ -80,9 +80,9 @@ Namespace MysteryDungeon.Explorers.Projects
             'Add Personality Test
             Me.AddExistingFileToPath("/Starter Pokemon", Path.Combine(rawDir, "Overlay", "overlay_0013.bin"), GetType(Overlay13), CurrentPluginManager.CurrentIOProvider)
 
-            Me.BuildProgress = 1
-            Me.IsBuildProgressIndeterminate = False
-            Me.BuildStatusMessage = My.Resources.Language.Complete
+            Me.Progress = 1
+            Me.IsIndeterminate = False
+            Me.Message = My.Resources.Language.Complete
         End Function
 
         Protected Overrides Async Function DoBuild() As Task
@@ -90,7 +90,7 @@ Namespace MysteryDungeon.Explorers.Projects
             Dim projDir = GetRootDirectory()
 
             'Open Personality Test
-            Dim personalityTest As New PersonalityTestContainer(Await Me.GetFileByPath("/Starter Pokemon", CurrentPluginManager, AddressOf IOHelper.PickFirstDuplicateMatchSelector))
+            Dim personalityTest As New PersonalityTestContainer(Await Me.GetFile("/Starter Pokemon", AddressOf IOHelper.PickFirstDuplicateMatchSelector, CurrentPluginManager))
 
             'Convert Languages
             Dim languageDictionary As New Dictionary(Of String, String)
@@ -118,9 +118,6 @@ Namespace MysteryDungeon.Explorers.Projects
             Await MyBase.DoBuild
         End Function
 
-        Private Sub SkyStarterModProject_ProjectOpened(sender As Object, e As EventArgs) Handles Me.ProjectOpened
-
-        End Sub
     End Class
 
 End Namespace

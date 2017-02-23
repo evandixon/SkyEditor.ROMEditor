@@ -12,7 +12,7 @@ Namespace MysteryDungeon.Explorers
         Implements ISavable
         Implements IOnDisk
 
-        Public Event FileSaved As ISavable.FileSavedEventHandler Implements ISavable.FileSaved
+        Public Event FileSaved As EventHandler Implements ISavable.FileSaved
 
         Public Sub New()
         End Sub

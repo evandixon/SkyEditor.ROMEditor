@@ -12,7 +12,7 @@ Namespace MysteryDungeon.Explorers.ViewModels
         Implements INotifyModified
 
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
-        Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
+        Public Event Modified As EventHandler Implements INotifyModified.Modified
 
         Public Sub New()
         End Sub

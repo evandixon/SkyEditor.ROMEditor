@@ -3,7 +3,7 @@ Imports SkyEditor.ROMEditor.MysteryDungeon
 
 Namespace Windows.ConsoleCommands
     Public Class Sir0Ptrs
-        Inherits ConsoleCommandAsync
+        Inherits ConsoleCommand
 
         Public Overrides Async Function MainAsync(Arguments() As String) As Task
             If Arguments.Length > 0 Then
@@ -11,12 +11,12 @@ Namespace Windows.ConsoleCommands
                     Dim pointers As New Dictionary(Of UInt32, UInt32)
                     Using f As New Sir0
                         f.IsReadOnly = True
-                        Await f.OpenFile(Arguments(0), CurrentPluginManager.CurrentIOProvider)
+                        Await f.OpenFile(Arguments(0), CurrentApplicationViewModel.CurrentIOProvider)
                         Dim offset As UInt32 = 0
                         For Each item In f.RelativePointers
                             offset += item
-                            pointers.Add(offset, f.UInt32(offset))
-                            Console.WriteLine($"{Conversion.Hex(offset)}: {Conversion.Hex(f.UInt32(offset))}")
+                            pointers.Add(offset, f.ReadUInt32(offset))
+                            Console.WriteLine($"{Conversion.Hex(offset)}: {Conversion.Hex(f.ReadUInt32(offset))}")
                         Next
 
 
@@ -30,10 +30,10 @@ Namespace Windows.ConsoleCommands
                                 i += 4
                             ElseIf pointers.ContainsValue(i) Then
                                 Dim ref = (From p In pointers Where p.Value = i Select p.Key).First
-                                s.AppendLine($"{Conversion.Hex(i)}: {Conversion.Hex(f.UInt32(i))} [Referenced at {Conversion.Hex(ref)}]")
+                                s.AppendLine($"{Conversion.Hex(i)}: {Conversion.Hex(f.ReadUInt32(i))} [Referenced at {Conversion.Hex(ref)}]")
                                 i += 4
                             Else
-                                s.AppendLine($"{Conversion.Hex(i)}: {Conversion.Hex(f.UInt32(i))}")
+                                s.AppendLine($"{Conversion.Hex(i)}: {Conversion.Hex(f.ReadUInt32(i))}")
                                 i += 4
                             End If
                         End While

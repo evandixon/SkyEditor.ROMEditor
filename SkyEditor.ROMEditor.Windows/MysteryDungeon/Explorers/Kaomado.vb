@@ -15,7 +15,7 @@ Namespace MysteryDungeon.Explorers
         Implements IOnDisk
         Implements IDisposable
 
-        Public Event FileSaved As ISavable.FileSavedEventHandler Implements ISavable.FileSaved
+        Public Event FileSaved As EventHandler Implements ISavable.FileSaved
 
         Public Sub New()
             Portraits = New List(Of Bitmap())(1154)

@@ -12,17 +12,17 @@ Namespace MysteryDungeon.PSMD
         Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task
             Await MyBase.OpenFile(Filename, Provider)
 
-            Dim numEntries1 As UInteger = Me.UInt32(&H18)
-            Dim entryPtr1 As UInteger = Me.UInt32(&H1C)
-            Dim numEntries2 As UInteger = Me.UInt32(&H20)
-            Dim entryPtr2 As UInteger = Me.UInt32(&H24)
+            Dim numEntries1 As UInteger = Await Me.ReadUInt32Async(&H18)
+            Dim entryPtr1 As UInteger = Await Me.ReadUInt32Async(&H1C)
+            Dim numEntries2 As UInteger = Await Me.ReadUInt32Async(&H20)
+            Dim entryPtr2 As UInteger = Await Me.ReadUInt32Async(&H24)
 
             For count As UInteger = 0 To numEntries1 - 1
                 Dim data As New List(Of Byte)
-                Dim len = Me.UInt32(entryPtr1 + count * 8)
-                Dim ptr = Me.UInt32(entryPtr1 + count * 8 + 4)
+                Dim len = Await Me.ReadUInt32Async(entryPtr1 + count * 8)
+                Dim ptr = Await Me.ReadUInt32Async(entryPtr1 + count * 8 + 4)
                 For i As UInteger = 0 To len - 1
-                    data.Add(Me.RawData(ptr + i))
+                    data.Add(Await Me.ReadAsync(ptr + i))
                 Next
                 While data.Count < 8
                     data.Add(0)
@@ -32,10 +32,10 @@ Namespace MysteryDungeon.PSMD
 
             For count As UInteger = 0 To numEntries2 - 1
                 Dim data As New List(Of Byte)
-                Dim len = Me.UInt32(entryPtr2 + count * 8)
-                Dim ptr = Me.UInt32(entryPtr2 + count * 8 + 4)
+                Dim len = Await Me.ReadUInt32Async(entryPtr2 + count * 8)
+                Dim ptr = Await Me.ReadUInt32Async(entryPtr2 + count * 8 + 4)
                 For i As UInteger = 0 To len - 1
-                    data.Add(Me.RawData(ptr + i))
+                    data.Add(Await Me.ReadAsync(ptr + i))
                 Next
                 While data.Count < 8
                     data.Add(0)

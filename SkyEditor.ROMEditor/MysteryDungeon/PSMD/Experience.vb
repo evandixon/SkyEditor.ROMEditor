@@ -35,7 +35,7 @@ Namespace MysteryDungeon.PSMD
                 For tableCount = 0 To (f.Length / tableLength) - 1
                     Dim localEntries As New List(Of ExperienceEntry)
                     For entryCount = 0 To 99 '100 entries
-                        localEntries.Add(New ExperienceEntry(f.RawData(tableCount * tableLength + entryCount * entryLength, entryLength)))
+                        localEntries.Add(New ExperienceEntry(Await f.ReadAsync(tableCount * tableLength + entryCount * entryLength, entryLength)))
                     Next
                     Entries.Add(tableCount, localEntries)
                 Next

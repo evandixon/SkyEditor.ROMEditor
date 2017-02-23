@@ -16,7 +16,7 @@ Public Class DSModSolution
     End Function
 
     Public Overrides Function GetSupportedProjectTypes(Path As String, manager As PluginManager) As IEnumerable(Of TypeInfo)
-        Dim baseRomProject As BaseRomProject = GetProjectsByName(Me.Setting("BaseRomProject")).FirstOrDefault
+        Dim baseRomProject As BaseRomProject = GetProjectsByName(Me.Settings("BaseRomProject")).FirstOrDefault
         If baseRomProject Is Nothing OrElse baseRomProject.RomSystem Is Nothing OrElse baseRomProject.GameCode Is Nothing Then
             Return {}
         Else
@@ -36,18 +36,11 @@ Public Class DSModSolution
         End If
     End Function
 
-    Private Sub DSModSolution_Created(sender As Object, e As EventArgs) Handles Me.Created
-        Me.Setting("BaseRomProject") = "BaseRom"
-        Me.Setting("ModPackProject") = "ModPack"
-        CreateProject("", "BaseRom", GetType(BaseRomProject), CurrentPluginManager)
-        CreateProject("", "ModPack", GetType(DSModPackProject), CurrentPluginManager)
-    End Sub
-
     Private Async Sub DSModSolution_ProjectAdded(sender As Object, e As ProjectAddedEventArgs) Handles Me.ProjectAdded
         If TypeOf e.Project Is GenericModProject Then
             Dim m = DirectCast(e.Project, GenericModProject)
-            m.ProjectReferences = New List(Of String)
-            m.ProjectReferences.Add(Me.Setting("BaseRomProject"))
+            m.ProjectReferenceNames = New List(Of String)
+            m.ProjectReferenceNames.Add(Me.Settings("BaseRomProject"))
             m.ModDependenciesBefore = New List(Of String)
             m.ModDependenciesAfter = New List(Of String)
             m.ModName = e.Project.Name
@@ -63,10 +56,10 @@ Public Class DSModSolution
                     Dim modPack = DirectCast(item, DSModPackProject)
 
                     'If the mod we just added targets the same base ROM as this modpack...
-                    If m.ProjectReferences.Contains(modPack.BaseRomProject) Then
+                    If m.ProjectReferenceNames.Contains(modPack.BaseRomProject) Then
                         '...then we add this mod to the modpack.
-                        If Not modPack.ProjectReferences.Contains(m.Name) Then
-                            modPack.ProjectReferences.Add(m.Name)
+                        If Not modPack.ProjectReferenceNames.Contains(m.Name) Then
+                            modPack.ProjectReferenceNames.Add(m.Name)
                         End If
 
                     End If
@@ -80,27 +73,39 @@ Public Class DSModSolution
             m.Info.ShortName = Me.Name.Substring(0, Math.Min(Me.Name.Length, 10))
             m.Info.Author = "Unknown"
             m.Info.Version = "1.0.0"
-            Dim baseRomProject As BaseRomProject = GetProjectsByName(Me.Setting("BaseRomProject")).FirstOrDefault
+            Dim baseRomProject As BaseRomProject = GetProjectsByName(Me.Settings("BaseRomProject")).FirstOrDefault
             If baseRomProject IsNot Nothing Then
                 m.Info.System = baseRomProject.RomSystem
                 m.Info.GameCode = baseRomProject.GameCode
-                m.BaseRomProject = Me.Setting("BaseRomProject")
+                m.BaseRomProject = Me.Settings("BaseRomProject")
             End If
         End If
     End Sub
 
+    Public Overrides Async Function Load() As Task
+        Await MyBase.Load
+        Dim setting = Settings("IsInitialLoadComplete")
+        If Not (setting IsNot Nothing AndAlso (TypeOf setting Is Boolean AndAlso DirectCast(setting, Boolean) = True)) Then
+            Me.Settings("BaseRomProject") = "BaseRom"
+            Me.Settings("ModPackProject") = "ModPack"
+            CreateProject("", "BaseRom", GetType(BaseRomProject), CurrentPluginManager)
+            CreateProject("", "ModPack", GetType(DSModPackProject), CurrentPluginManager)
+            Settings("IsInitialLoadComplete") = True
+        End If
+    End Function
+
     Public Overrides Async Function Build() As Task
-        Dim info As ModpackInfo = Me.Setting("ModpackInfo")
+        Dim info As ModpackInfo = Me.Settings("ModpackInfo")
         If info Is Nothing Then
             info = New ModpackInfo
-            Me.Setting("ModpackInfo") = info
+            Me.Settings("ModpackInfo") = info
         End If
-        Dim baseRomProject As BaseRomProject = GetProjectsByName(Me.Setting("BaseRomProject")).FirstOrDefault
+        Dim baseRomProject As BaseRomProject = GetProjectsByName(Me.Settings("BaseRomProject")).FirstOrDefault
         If baseRomProject IsNot Nothing Then
             info.System = baseRomProject.RomSystem
             info.GameCode = baseRomProject.GameCode
-            Me.Setting("System") = info.System
-            Me.Setting("GameCode") = info.GameCode
+            Me.Settings("System") = info.System
+            Me.Settings("GameCode") = info.GameCode
         End If
         Await MyBase.Build()
         'Dim modPacks As New List(Of DSModPackProject)

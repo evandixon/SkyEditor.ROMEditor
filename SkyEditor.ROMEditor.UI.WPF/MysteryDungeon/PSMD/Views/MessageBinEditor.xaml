@@ -1,4 +1,4 @@
-﻿<skyWPF:DataBoundObjectControl x:Class="MysteryDungeon.PSMD.Views.MessageBinEditor"
+﻿<skyWPF:DataBoundViewControl x:Class="MysteryDungeon.PSMD.Views.MessageBinEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -28,4 +28,4 @@
         </DataGrid>
         <Button Content="{x:Static res:Language.Reset}" Command="{Binding ResetSearchCommand}" Margin="0,6,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Height="18"/>
     </Grid>
-</skyWPF:DataBoundObjectControl>
+</skyWPF:DataBoundViewControl>

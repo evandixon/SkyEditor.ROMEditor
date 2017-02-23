@@ -37,61 +37,61 @@ Namespace MysteryDungeon.Explorers
             While index < Length
                 Select Case section
                     Case 0 'Level up
-                        If RawData(index) = 0 Then
+                        If Await ReadAsync(index) = 0 Then
                             index += 1
                             section += 1
                         Else
                             Dim moveID As UInt16 = 0
-                            If RawData(index) > 128 Then
-                                Dim part1 = (RawData(index) - 128) << 7
-                                Dim part2 = RawData(index + 1)
+                            If Await ReadAsync(index) > 128 Then
+                                Dim part1 = (Await ReadAsync(index) - 128) << 7
+                                Dim part2 = Await ReadAsync(index + 1)
                                 moveID = part1 Or part2
                                 index += 2
                             Else
-                                moveID = RawData(index)
+                                moveID = Await ReadAsync(index)
                                 index += 1
                             End If
-                            If Not m.LevelUpMoves.ContainsKey(RawData(index)) Then
-                                m.LevelUpMoves.Add(RawData(index), moveID)
+                            If Not m.LevelUpMoves.ContainsKey(Await ReadAsync(index)) Then
+                                m.LevelUpMoves.Add(Await ReadAsync(index), moveID)
                                 'else the first one wins
                             End If
                             index += 1
                         End If
                     Case 1 'TMs
-                        If RawData(index) = 0 Then
+                        If Await ReadAsync(index) = 0 Then
                             index += 1
                             section += 1
                         Else
                             Dim moveID As UInt16 = 0
-                            If RawData(index) > 128 Then
-                                Dim part1 = (RawData(index) - 128) << 7
-                                Dim part2 = RawData(index + 1)
+                            If Await ReadAsync(index) > 128 Then
+                                Dim part1 = (Await ReadAsync(index) - 128) << 7
+                                Dim part2 = Await ReadAsync(index + 1)
                                 moveID = part1 Or part2
                                 index += 2
                             Else
-                                moveID = RawData(index)
+                                moveID = Await ReadAsync(index)
                                 index += 1
                             End If
                             m.TMMoves.Add(moveID)
                         End If
                     Case 2 'Egg moves
-                        If RawData(index) = 0 Then
+                        If Await ReadAsync(index) = 0 Then
                             Pokemon.Add(m.Clone)
                             m = New PokemonMoves
                             section = 0
                             index += 1
-                            If RawData(index) = 0 Then
+                            If Await ReadAsync(index) = 0 Then
                                 Exit While
                             End If
                         Else
                             Dim moveID As UInt16 = 0
-                            If RawData(index) > 128 Then
-                                Dim part1 = (RawData(index) - 128) << 7
-                                Dim part2 = RawData(index + 1)
+                            If Await ReadAsync(index) > 128 Then
+                                Dim part1 = (Await ReadAsync(index) - 128) << 7
+                                Dim part2 = Await ReadAsync(index + 1)
                                 moveID = part1 Or part2
                                 index += 2
                             Else
-                                moveID = RawData(index)
+                                moveID = Await ReadAsync(index)
                                 index += 1
                             End If
                             m.EggMoves.Add(moveID)

@@ -22,12 +22,12 @@ Namespace Windows.FileFormats.Explorers.Script
         ''' <summary>
         ''' Raised after the file has saved
         ''' </summary>
-        Public Event FileSaved As ISavable.FileSavedEventHandler Implements ISavable.FileSaved
+        Public Event FileSaved As EventHandler Implements ISavable.FileSaved
 
         ''' <summary>
         ''' Raised when the file is modified
         ''' </summary>
-        Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
+        Public Event Modified As EventHandler Implements INotifyModified.Modified
 
         Public Sub New()
             GotoTargetCommands = New List(Of RawCommand)
@@ -95,14 +95,14 @@ Namespace Windows.FileFormats.Explorers.Script
                 Await f.OpenFile(Filename, Provider)
 
                 f.Position = 0
-                Dim numConstants As Integer = f.NextUInt16
-                Dim numStrings As Integer = f.NextUInt16
+                Dim numConstants As Integer = f.ReadInt16
+                Dim numStrings As Integer = f.ReadInt16
 
                 'In Words
                 'Absolute tring table offset = stringTableOffset * 2 + Header Size
-                Dim stringTableOffset As Integer = f.NextUInt16
-                Dim sizeConstants As Integer = f.NextUInt16 'In Words
-                Dim sizeEnglish As Integer = f.NextUInt16
+                Dim stringTableOffset As Integer = f.ReadInt16
+                Dim sizeConstants As Integer = f.ReadInt16 'In Words
+                Dim sizeEnglish As Integer = f.ReadInt16
                 Dim sizeFrench As Integer = 0
                 Dim sizeGerman As Integer = 0
                 Dim sizeItalian As Integer = 0
@@ -111,7 +111,7 @@ Namespace Windows.FileFormats.Explorers.Script
                 Dim dataBlockOffset As Integer = f.Position + 2
 
                 'Todo: correct this invalid check
-                If f.Length > (dataBlockOffset + f.Int16(dataBlockOffset) * 2 + sizeEnglish * 2 + f.Int16(dataBlockOffset) * 2) Then
+                If f.Length > (dataBlockOffset + f.ReadInt16(dataBlockOffset) * 2 + sizeEnglish * 2 + f.ReadInt16(dataBlockOffset) * 2) Then
                     'Then it's probably a multi-lang script.
                     isMultiLang = True
                 Else
@@ -119,27 +119,27 @@ Namespace Windows.FileFormats.Explorers.Script
                 End If
 
                 If isMultiLang Then
-                    sizeFrench = f.NextUInt16
-                    sizeGerman = f.NextUInt16
-                    sizeItalian = f.NextUInt16
-                    sizeSpanish = f.NextUInt16
+                    sizeFrench = f.ReadInt16
+                    sizeGerman = f.ReadInt16
+                    sizeItalian = f.ReadInt16
+                    sizeSpanish = f.ReadInt16
                     dataBlockOffset = f.Position
                 Else
                     'Unknown value, possibly for an unused string table
                     f.Position += 2
                 End If
 
-                Dim dataWordLength = f.NextUInt16
-                Dim numGroups = f.NextUInt16
+                Dim dataWordLength = f.ReadInt16
+                Dim numGroups = f.ReadInt16
 
                 'Read Groups
                 Dim groupDefinitions As New List(Of CommandGroup)
                 Dim groupPointerDictionary As New Dictionary(Of Integer, List(Of CommandGroup))
                 Dim groupOffset = f.Position
                 For count = 0 To numGroups - 1
-                    Dim ptrScript As Integer = &HC + f.NextUInt16 * 2
-                    Dim type As Integer = f.NextUInt16
-                    Dim unknownGroupData As Integer = f.NextUInt16
+                    Dim ptrScript As Integer = &HC + f.ReadInt16 * 2
+                    Dim type As Integer = f.ReadInt16
+                    Dim unknownGroupData As Integer = f.ReadInt16
 
                     Dim g = New CommandGroup With {.Type = type, .Unknown = unknownGroupData}
                     groupDefinitions.Add(g)
@@ -211,11 +211,11 @@ Namespace Windows.FileFormats.Explorers.Script
 
 
                     'Read the command
-                    Dim commandID As UInt16 = f.UInt16(currentCommandStart)
+                    Dim commandID As UInt16 = f.ReadUInt16(currentCommandStart)
                     Dim paramSize As Integer = (From d In CurrentCommandInfo Where d.CommandID = commandID Select d.ParameterCount).First
                     Dim params As New List(Of UInt16)
                     For i = 1 To paramSize
-                        params.Add(f.UInt16(currentCommandStart + i * 2))
+                        params.Add(f.ReadUInt16(currentCommandStart + i * 2))
                     Next
                     Dim newCmd = CreateCommand(commandID, params)
                     rawCommands.Add(newCmd)
@@ -559,7 +559,7 @@ Namespace Windows.FileFormats.Explorers.Script
 
         Public Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
             'Todo: actually look at the file contents to verify its integrity
-            Return Task.FromResult(File.OriginalFilename.ToLower.EndsWith(".ssb"))
+            Return Task.FromResult(File.Filename.ToLower.EndsWith(".ssb"))
         End Function
 
         Public Sub RaiseModified()

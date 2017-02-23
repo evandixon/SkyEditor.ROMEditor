@@ -15,25 +15,27 @@ Namespace Projects
 
         Public Property RomSystem As String
             Get
-                Return Setting("System")
+                Return Settings("System")
             End Get
             Set(value As String)
-                Setting("System") = value
+                Settings("System") = value
             End Set
         End Property
 
         Public Property GameCode As String
             Get
-                Return Setting("GameCode")
+                Return Settings("GameCode")
             End Get
             Set(value As String)
-                Setting("GameCode") = value
+                Settings("GameCode") = value
             End Set
         End Property
 
-        Public Overrides Function CanBuild() As Boolean
-            Return (Me.GetItem("/BaseRom") IsNot Nothing)
-        End Function
+        Public Overrides ReadOnly Property CanBuild As Boolean
+            Get
+                Return (Me.GetItem("/BaseRom") IsNot Nothing)
+            End Get
+        End Property
 
         Public Overrides Function CanCreateDirectory(Path As String) As Boolean
             Return False
@@ -47,23 +49,23 @@ Namespace Projects
             Return False
         End Function
 
-        Public Overrides Function CanAddExistingFile(Path As String) As Boolean
+        Public Overrides Function CanImportFile(path As String) As Boolean
             'Only if it's the root, and there isn't already a file named BaseRom.
-            Return (Path.Replace("\", "/").TrimStart("/") = "") AndAlso (Me.GetItem("/BaseRom") Is Nothing)
+            Return (path.Replace("\", "/").TrimStart("/") = "") AndAlso (Me.GetItem("/BaseRom") Is Nothing)
         End Function
 
         Public Overrides Function CanDeleteFile(FilePath As String) As Boolean
             Return (FilePath.Replace("\", "/").TrimStart("/").ToLower = "baserom")
         End Function
 
-        Public Overrides Function GetImportIOFilter(ParentProjectPath As String, manager As PluginManager) As String
-            Select Case Me.Setting("System")
+        Public Overrides Function GetSupportedImportFileExtensions(parentProjectPath As String) As IEnumerable(Of String)
+            Select Case Me.Settings("System")
                 Case "NDS"
-                    Return $"{My.Resources.Language.NDSRomFile} (*.nds)|*.nds|{My.Resources.Language.AllFiles} (*.*)|*.*"
+                    Return {"*.nds"}
                 Case "3DS"
-                    Return $"{My.Resources.Language.ThreeDSRomFile} (*.3ds;*.3dz)|*.3ds;*.3dz|{My.Resources.Language.AllFiles} (*.*)|*.*"
+                    Return {"*.3ds", "*.3dz", "*.cia", "*.cci", "*.cxi"}
                 Case Else
-                    Return $"{My.Resources.Language.AllFiles} (*.*)|*.*"
+                    Return {"*"}
             End Select
         End Function
 
@@ -85,7 +87,7 @@ Namespace Projects
 
         Private Async Function DoBuild() As Task
             Dim mode As String = Nothing
-            Dim fullPath = Me.GetItem("/BaseRom").GetFilename
+            Dim fullPath = Me.GetItem("/BaseRom").Filename
 
             If Not String.IsNullOrEmpty(Me.RomSystem) Then
                 If Me.RomSystem = SystemNDS Then
@@ -107,14 +109,14 @@ Namespace Projects
                 End Select
             End If
 
-            Me.BuildProgress = 0
-            Me.BuildStatusMessage = My.Resources.Language.LoadingUnpacking
+            Me.Progress = 0
+            Me.Message = My.Resources.Language.LoadingUnpacking
 
             Using unpacker As New DotNet3dsToolkit.Converter
                 Dim unpackProgressEventHandler = Sub(sender As Object, e As ProgressReportedEventArgs)
-                                                     Me.BuildProgress = e.Progress
-                                                     Me.BuildStatusMessage = e.Message
-                                                     Me.IsBuildProgressIndeterminate = e.IsIndeterminate
+                                                     Me.Progress = e.Progress
+                                                     Me.Message = e.Message
+                                                     Me.IsIndeterminate = e.IsIndeterminate
                                                  End Sub
 
                 AddHandler unpacker.UnpackProgressed, unpackProgressEventHandler
@@ -130,9 +132,9 @@ Namespace Projects
             DeleteFile("/BaseRom")
             File.Delete(baseromFilename)
 
-            Me.IsBuildProgressIndeterminate = False
-            Me.BuildProgress = 1
-            Me.BuildStatusMessage = My.Resources.Language.Complete
+            Me.IsIndeterminate = False
+            Me.Progress = 1
+            Me.Message = My.Resources.Language.Complete
         End Function
 
         Public Overridable Function GetRawFilesDir() As String
