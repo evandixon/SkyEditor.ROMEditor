@@ -3,7 +3,7 @@ Imports SkyEditor.UI.WPF
 
 Namespace MysteryDungeon.PSMD.Views
     Public Class MessageBinEditor
-        Inherits DataBoundObjectControl
+        Inherits DataBoundViewControl
 
         Private Sub OnMsgItemAdded(sender As Object, e As MessageBin.EntryAddedEventArgs)
             Dim addedEntry = (From i As MessageBinStringEntry In lstEntries.ItemsSource Where i.Hash = e.NewID).FirstOrDefault

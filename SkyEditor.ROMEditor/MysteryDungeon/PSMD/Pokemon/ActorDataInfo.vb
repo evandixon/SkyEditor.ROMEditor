@@ -21,7 +21,7 @@ Namespace MysteryDungeon.PSMD.Pokemon
                 Data = RawData
 
                 Dim e As New ASCIIEncoding
-                Name = e.GetString(RawData, 0, &H10).Trim(vbNullChar) 'Todo: verify this is really 16 bytes
+                Name = e.GetString(RawData, 0, &H10).Trim(VBConstants.vbNullChar) 'Todo: verify this is really 16 bytes
                 PokemonID = BitConverter.ToInt16(RawData, &H28)
             End Sub
 
@@ -72,7 +72,7 @@ Namespace MysteryDungeon.PSMD.Pokemon
 #Region "IO"
         Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Me.Filename = Filename
-            Using f As New GenericFile(Provider, Filename)
+            Using f As New GenericFile(Filename, Provider)
                 Dim numEntries = Math.Floor(f.Length / &H58)
 
                 For count = 0 To numEntries - 1

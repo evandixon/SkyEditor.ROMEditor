@@ -34,16 +34,16 @@ Namespace MysteryDungeon.PSMD.Projects
                     IO.Path.Combine("romfs", "pokemon", "pokemon_actor_data_info.bin")}
         End Function
 
-        Protected Overrides Async Function Initialize() As Task
+        Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize()
 
             'Add fixed_pokemon to project
-            Me.AddExistingFile("", IO.Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), CurrentPluginManager.CurrentIOProvider)
+            Me.AddExistingFile("", Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), CurrentPluginManager.CurrentIOProvider)
         End Function
 
         Protected Overrides Async Function DoBuild() As Task
             'Open fixed_pokemon
-            Dim fpFilename = Me.GetItem("fixed_pokemon.bin").GetFilename
+            Dim fpFilename = Me.GetItem("fixed_pokemon.bin").Filename
             Dim fixedPokemon As New FixedPokemon()
             Await fixedPokemon.OpenFile(fpFilename, Me.CurrentPluginManager.CurrentIOProvider)
             File.Copy(fpFilename, Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), True)
@@ -333,14 +333,16 @@ Namespace MysteryDungeon.PSMD.Projects
 
             'Patch script ID checks
             Dim patchExpression As New Regex("if ((pokemonIndexHero)|(pokemonIndexPartner)) \=\= ([0-9]{1,3}) then", RegexOptions.Compiled)
-            Me.BuildProgress = 0
-            Me.IsBuildProgressIndeterminate = False
-            Me.BuildStatusMessage = My.Resources.Language.LoadingPatchingScripts
+            Me.Progress = 0
+            Me.IsIndeterminate = False
+            Me.Message = My.Resources.Language.LoadingPatchingScripts
             Dim f As New AsyncFor
-            AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
-                                                   Me.BuildProgress = e.Progress
-                                               End Sub
-            Await f.RunForEach(Sub(filename As String)
+            IsIndeterminate = True
+            'AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
+            '                                       Me.BuildProgress = e.Progress
+            '                                   End Sub
+            Await f.RunForEach(Directory.GetFiles(IO.Path.Combine(Me.GetRootDirectory, "script"), "*.lua", SearchOption.AllDirectories),
+                               Sub(filename As String)
                                    Dim script = CurrentPluginManager.CurrentIOProvider.ReadAllText(filename & ".original")
 
                                    Dim edited As Boolean = False
@@ -365,8 +367,8 @@ Namespace MysteryDungeon.PSMD.Projects
                                        Console.WriteLine("Edited script: " & filename)
                                    End If
 
-                               End Sub, IO.Directory.GetFiles(IO.Path.Combine(Me.GetRootDirectory, "script"), "*.lua", IO.SearchOption.AllDirectories))
-            Me.BuildProgress = 1
+                               End Sub)
+            Me.Progress = 1
 
             'Continue the build (script compilation, mod building, etc.)
             Await MyBase.DoBuild()

@@ -10,7 +10,7 @@ Namespace ViewModels
         Implements INotifyModified
         Implements INotifyPropertyChanged
 
-        Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
+        Public Event Modified As EventHandler Implements INotifyModified.Modified
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
         Public Property ModName As String

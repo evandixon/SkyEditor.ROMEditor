@@ -1,4 +1,4 @@
-﻿Imports SkyEditor.Core.Windows.Processes
+﻿Imports SkyEditor.Core.Processes
 
 Namespace Windows
     Public Class Java

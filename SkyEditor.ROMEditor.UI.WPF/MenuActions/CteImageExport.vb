@@ -7,7 +7,7 @@ Namespace MenuActions
     Public Class CteImageExport
         Inherits MenuAction
         Private WithEvents SaveFileDialog1 As SaveFileDialog
-        Public Overrides Function SupportedTypes() As IEnumerable(Of TypeInfo)
+        Public Overrides Function GetSupportedTypes() As IEnumerable(Of TypeInfo)
             Return {GetType(CteImageViewModel).GetTypeInfo}
         End Function
         Public Overrides Sub DoAction(Targets As IEnumerable(Of Object))

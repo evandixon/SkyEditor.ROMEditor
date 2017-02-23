@@ -9,7 +9,7 @@ Namespace ViewModels
         Implements INotifyModified
         Implements INotifyPropertyChanged
 
-        Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
+        Public Event Modified As EventHandler Implements INotifyModified.Modified
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
         Public Property OutputEnc3DSFile As Boolean
@@ -61,7 +61,7 @@ Namespace ViewModels
         End Property
 
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
-            Return MyBase.SupportsObject(Obj) AndAlso DirectCast(Obj, DSModPackProject).GetBaseRomSystem(CurrentPluginManager.CurrentIOUIManager.CurrentSolution) = BaseRomProject.System3DS
+            Return MyBase.SupportsObject(Obj) AndAlso DirectCast(Obj, DSModPackProject).GetBaseRomSystem(CurrentApplicationViewModel.CurrentSolution) = BaseRomProject.System3DS
         End Function
 
         Private Sub ModpackInfoViewModel_PropertyChanged(sender As Object, e As PropertyChangedEventArgs) Handles Me.PropertyChanged

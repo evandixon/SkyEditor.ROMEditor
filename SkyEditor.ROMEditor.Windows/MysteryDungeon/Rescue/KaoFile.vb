@@ -50,7 +50,7 @@ Public Class KaoFile
                     nextPointer *= -1
                 End If
                 Dim length As Integer = pointers(count + 1) - index
-                sections.Add(RawData(index, length))
+                sections.Add(Await ReadAsync(index, length))
             Else
                 sections.Add(Nothing)
             End If
@@ -58,7 +58,7 @@ Public Class KaoFile
         '- The last section
         Dim lastPointer = pointers.Last
         If lastPointer > 0 Then
-            sections.Add(RawData(pointers.Last, HeaderOffset - pointers.Last))
+            sections.Add(Await ReadAsync(pointers.Last, HeaderOffset - pointers.Last))
         End If
 
         '====================
@@ -211,7 +211,7 @@ Public Class KaoFile
 
         'Write the sections to the file
         Me.Length = &H10 + dataSection.Count
-        RawData(&H10, dataSection.Count) = dataSection.ToArray
+        Await WriteAsync(&H10, dataSection.Count, dataSection.ToArray)
         ContentHeader = pointersSection.ToArray
 
         'Add the pointer offsets, as needed by the SIR0 file format

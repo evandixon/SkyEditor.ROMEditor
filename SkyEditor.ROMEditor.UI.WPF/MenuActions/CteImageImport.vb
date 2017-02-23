@@ -8,7 +8,7 @@ Namespace MenuActions
     Public Class CteImageImport
         Inherits MenuAction
         Private WithEvents OpenFileDialog1 As System.Windows.Forms.OpenFileDialog
-        Public Overrides Function SupportedTypes() As IEnumerable(Of TypeInfo)
+        Public Overrides Function GetSupportedTypes() As IEnumerable(Of TypeInfo)
             Return {GetType(CteImage).GetTypeInfo}
         End Function
         Public Overrides Sub DoAction(Targets As IEnumerable(Of Object))

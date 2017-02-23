@@ -10,13 +10,13 @@ Namespace MysteryDungeon.Explorers.Projects
             Return {GameStrings.SkyCode}
         End Function
 
-        Protected Overrides Async Function Initialize() As Task
+        Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize()
 
             Dim outputDir = IO.Path.Combine(Me.GetRootDirectory)
 
-            Me.IsBuildProgressIndeterminate = True
-            Me.BuildStatusMessage = My.Resources.Language.Loading
+            Me.IsIndeterminate = True
+            Me.Message = My.Resources.Language.Loading
 
             Using external As New UtilityManager
                 Dim options As New StatsUtilOptions
@@ -33,9 +33,9 @@ Namespace MysteryDungeon.Explorers.Projects
                 Me.AddExistingFile(IO.Path.GetDirectoryName(item).Replace(outputDir, ""), item, CurrentPluginManager.CurrentIOProvider)
             Next
 
-            Me.BuildStatusMessage = My.Resources.Language.Complete
-            Me.BuildProgress = 1
-            Me.IsBuildProgressIndeterminate = False
+            Me.Message = My.Resources.Language.Complete
+            Me.Progress = 1
+            Me.IsIndeterminate = False
         End Function
 
         Protected Overrides Async Function DoBuild() As Task

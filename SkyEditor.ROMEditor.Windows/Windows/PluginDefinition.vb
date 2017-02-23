@@ -27,9 +27,9 @@ Namespace Windows
 
         Public Overrides Sub Load(manager As PluginManager)
             manager.LoadRequiredPlugin(New ROMEditor.PluginDefinition, Me)
-            manager.CurrentIOUIManager.RegisterIOFilter("*.img", My.Resources.Language.CTEImageFiles)
+            manager.RegisterIOFilter("*.img", My.Resources.Language.CTEImageFiles)
 
-            manager.RegisterTypeRegister(GetType(GenericModProject))
+            manager.RegisterTypeRegister(Of GenericModProject)()
 
             'Manager.RegisterConsoleCommand("import-language", New ConsoleCommands.ImportLanguage)
             'Manager.RegisterConsoleCommand("cteconvert", New ConsoleCommands.BatchCteConvert)

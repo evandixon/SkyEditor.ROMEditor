@@ -14,21 +14,23 @@ Namespace MysteryDungeon.PSMD.Projects
             Return {IO.Path.Combine("romfs", "bg"), IO.Path.Combine("romfs", "font"), IO.Path.Combine("romfs", "image_2d")}
         End Function
 
-        Protected Overrides Async Function Initialize() As Task
+        Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
             Dim rawFilesDir = GetRawFilesDir()
             Dim backDir = GetRootDirectory()
 
-            Me.BuildStatusMessage = My.Resources.Language.LoadingConvertingBackgrounds
-            Me.IsBuildProgressIndeterminate = False
-            Me.BuildProgress = 0
+            Me.Message = My.Resources.Language.LoadingConvertingBackgrounds
+            Me.IsIndeterminate = False
+            Me.Progress = 0
 
             Dim backFiles = IO.Directory.GetFiles(IO.Path.Combine(rawFilesDir, "romfs"), "*.img", IO.SearchOption.AllDirectories)
             Dim f As New AsyncFor
-            AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
-                                                   Me.BuildProgress = e.Progress
-                                               End Sub
-            Await f.RunForEach(Async Function(Item As String) As Task
+            IsIndeterminate = True
+            'AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
+            '                                       Me.BuildProgress = e.Progress
+            '                                   End Sub
+            Await f.RunForEach(backFiles,
+                               Async Function(Item As String) As Task
                                    Using b As New CteImage
                                        Await b.OpenFile(Item, CurrentPluginManager.CurrentIOProvider)
                                        Dim image = b.ContainedImage
@@ -42,10 +44,10 @@ Namespace MysteryDungeon.PSMD.Projects
                                        Dim internalDir = IO.Path.GetDirectoryName(Item).Replace(rawFilesDir, "").Replace("\romfs", "")
                                        Me.AddExistingFile(internalDir, newFilename, CurrentPluginManager.CurrentIOProvider)
                                    End Using
-                               End Function, backFiles)
+                               End Function)
 
-            Me.BuildProgress = 1
-            Me.BuildStatusMessage = My.Resources.Language.Complete
+            Me.Progress = 1
+            Me.Message = My.Resources.Language.Complete
         End Function
 
         Protected Overrides Async Function DoBuild() As Task

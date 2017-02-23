@@ -14,13 +14,13 @@ Namespace MysteryDungeon.Explorers.Projects
             Return {GameStrings.SkyCode}
         End Function
 
-        Protected Overrides Async Function Initialize() As Task
+        Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
 
             'Stop loading
-            Me.BuildProgress = 0
-            Me.IsBuildProgressIndeterminate = False
-            Me.BuildStatusMessage = My.Resources.Language.LoadingConvertingBackgrounds
+            Me.Progress = 0
+            Me.IsIndeterminate = False
+            Me.Message = My.Resources.Language.LoadingConvertingBackgrounds
 
             Dim projectDir = GetRootDirectory()
             Dim sourceDir = GetRawFilesDir()
@@ -28,10 +28,12 @@ Namespace MysteryDungeon.Explorers.Projects
             Dim BACKdir As String = IO.Path.Combine(projectDir, "Backgrounds")
             Dim backFiles = IO.Directory.GetFiles(IO.Path.Combine(sourceDir, "Data", "BACK"), "*.bgp")
             Dim f As New AsyncFor
-            AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
-                                                   Me.BuildProgress = e.Progress
-                                               End Sub
-            Await f.RunForEach(Async Function(Item As String) As Task
+            IsIndeterminate = True
+            'AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
+            '                                       Me.BuildProgress = e.Progress
+            '                                   End Sub
+            Await f.RunForEach(backFiles,
+                               Async Function(Item As String) As Task
                                    Using b As New BGP
                                        Await b.OpenFile(Item, CurrentPluginManager.CurrentIOProvider)
 
@@ -45,12 +47,12 @@ Namespace MysteryDungeon.Explorers.Projects
 
                                        Me.AddExistingFileToPath("/" & IO.Path.GetFileName(newFilename), newFilename, Nothing, CurrentPluginManager.CurrentIOProvider)
                                    End Using
-                               End Function, backFiles)
+                               End Function)
 
             'Stop loading
-            Me.BuildProgress = 1
-            Me.IsBuildProgressIndeterminate = False
-            Me.BuildStatusMessage = My.Resources.Language.Complete
+            Me.Progress = 1
+            Me.IsIndeterminate = False
+            Me.Message = My.Resources.Language.Complete
         End Function
 
         Protected Overrides Async Function DoBuild() As Task

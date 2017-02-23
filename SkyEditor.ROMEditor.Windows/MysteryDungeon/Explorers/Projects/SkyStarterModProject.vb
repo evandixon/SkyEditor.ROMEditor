@@ -45,7 +45,7 @@ Namespace MysteryDungeon.Explorers.Projects
             Return patchers
         End Function
 
-        Protected Overrides Async Function Initialize() As Task
+        Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
 
             Dim rawDir = GetRawFilesDir()
@@ -65,11 +65,11 @@ Namespace MysteryDungeon.Explorers.Projects
             languageDictionary.Add("text_g.str", "Deutsche") 'German
             languageDictionary.Add("text_j.str", "日本語") 'Japanese
 
-            If Not Directory.Exists(IO.Path.Combine(projDir, "Languages")) Then
-                Directory.CreateDirectory(IO.Path.Combine(projDir, "Languages"))
+            If Not Directory.Exists(Path.Combine(projDir, "Languages")) Then
+                Directory.CreateDirectory(Path.Combine(projDir, "Languages"))
             End If
             For Each item In languageDictionary
-                If File.Exists(IO.Path.Combine(rawDir, "Data", "MESSAGE", item.Key)) Then
+                If File.Exists(Path.Combine(rawDir, "Data", "MESSAGE", item.Key)) Then
                     Using langString = New LanguageString()
                         Await langString.OpenFile(Path.Combine(rawDir, "Data", "MESSAGE", item.Key), CurrentPluginManager.CurrentIOProvider)
                         Json.SerializeToFile(Path.Combine(projDir, "Languages", item.Value), langString.Items, CurrentPluginManager.CurrentIOProvider)

@@ -1,4 +1,5 @@
-﻿Imports SkyEditor.Core.Windows
+﻿Imports System.IO
+Imports SkyEditor.Core
 
 Namespace Windows
     Public Class unluac
@@ -37,7 +38,7 @@ Namespace Windows
 
         Public Shared Sub DecompileToFile(SourceFilename As String, DestinationFilename As String)
             Dim un As New unluac(SourceFilename)
-            IO.File.WriteAllText(DestinationFilename, un.Decompile)
+            File.WriteAllText(DestinationFilename, un.Decompile)
         End Sub
     End Class
 End Namespace

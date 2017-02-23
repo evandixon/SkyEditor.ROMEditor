@@ -1,4 +1,6 @@
-﻿Imports System.Windows.Forms
+﻿Imports System.IO
+Imports System.Windows.Forms
+Imports SkyEditor.Core
 Imports SkyEditor.Core.Windows
 
 Public Class RomSelector
@@ -11,20 +13,20 @@ Public Class RomSelector
     Public Property RomName As String
     Sub OnOK()
         Dim romDirectory As String = EnvironmentPaths.GetResourceName("Roms/NDS/")
-        If Not IO.Directory.Exists(romDirectory) Then
-            IO.Directory.CreateDirectory(romDirectory)
+        If Not Directory.Exists(romDirectory) Then
+            Directory.CreateDirectory(romDirectory)
         End If
-        Dim file As String = IO.Path.Combine(romDirectory, DirectCast(lvRoms.SelectedItem, ROM).Name.Replace(":", ""))
-        If IO.File.Exists(file) Then
-            RomName = file
+        Dim filename As String = Path.Combine(romDirectory, DirectCast(lvRoms.SelectedItem, ROM).Name.Replace(":", ""))
+        If File.Exists(filename) Then
+            RomName = filename
             DialogResult = True
             Me.Close()
         Else
             Dim x As New OpenFileDialog
             x.Filter = $"{My.Resources.Language.NDSRomFiles} (*.nds)|*.nds|{My.Resources.Language.AllFiles} (*.*)|*.*"
             If x.ShowDialog = Forms.DialogResult.OK Then
-                IO.File.Copy(x.FileName, file)
-                RomName = file
+                File.Copy(x.FileName, filename)
+                RomName = filename
                 DialogResult = True
                 Me.Close()
             End If

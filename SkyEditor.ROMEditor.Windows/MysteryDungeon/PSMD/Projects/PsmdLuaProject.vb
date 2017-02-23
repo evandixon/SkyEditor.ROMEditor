@@ -225,7 +225,7 @@ Namespace MysteryDungeon.PSMD.Projects
         End Function
         Private _languageExtractTask As Task
 
-        Protected Overrides Async Function Initialize() As Task
+        Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
 
             Me.Message = My.Resources.Language.LoadingExtractingLanguages

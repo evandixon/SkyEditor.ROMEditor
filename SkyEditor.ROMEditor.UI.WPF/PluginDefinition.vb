@@ -28,11 +28,4 @@ Public Class PluginDefinition
         Manager.LoadRequiredPlugin(New SkyEditor.CodeEditor.UI.WPF.PluginInfo, Me)
     End Sub
 
-    Public Overrides Sub UnLoad(Manager As PluginManager)
-
-    End Sub
-
-    Public Overrides Sub PrepareForDistribution()
-
-    End Sub
 End Class
