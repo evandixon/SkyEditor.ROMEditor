@@ -435,7 +435,7 @@ Namespace MysteryDungeon.Explorers
                 Else
                     'Go to the next PokemonSpawn list
                     currentPointerOffset += 4
-                    entryPointer = Me.Read(currentPointerOffset)
+                    entryPointer = Me.ReadInt32(currentPointerOffset)
                 End If
             Loop
         End Sub
