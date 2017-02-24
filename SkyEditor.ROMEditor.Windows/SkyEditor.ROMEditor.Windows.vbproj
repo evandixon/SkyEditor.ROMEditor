@@ -129,10 +129,10 @@
       <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI2\lib\net46\SkyEditor.CodeEditor.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI63\lib\netstandard1.3\SkyEditor.Core.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI64\lib\netstandard1.3\SkyEditor.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.Core.Windows, Version=4.1.0.63, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.Windows.4.1.0-CI63\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
+    <Reference Include="SkyEditor.Core.Windows, Version=4.1.0.64, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.Windows.4.1.0-CI64\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI5\lib\netstandard1.3\SkyEditor.SaveEditor.dll</HintPath>
