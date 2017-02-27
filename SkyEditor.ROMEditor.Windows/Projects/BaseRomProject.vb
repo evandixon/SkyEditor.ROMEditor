@@ -135,6 +135,7 @@ Namespace Projects
             Me.IsIndeterminate = False
             Me.Progress = 1
             Me.Message = My.Resources.Language.Complete
+            Me.IsCompleted = True
         End Function
 
         Public Overridable Function GetRawFilesDir() As String

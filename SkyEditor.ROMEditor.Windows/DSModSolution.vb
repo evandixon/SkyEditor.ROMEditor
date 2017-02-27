@@ -82,16 +82,11 @@ Public Class DSModSolution
         End If
     End Sub
 
-    Public Overrides Async Function Load() As Task
-        Await MyBase.Load
-        Dim setting = Settings("IsInitialLoadComplete")
-        If Not (setting IsNot Nothing AndAlso (TypeOf setting Is Boolean AndAlso DirectCast(setting, Boolean) = True)) Then
-            Me.Settings("BaseRomProject") = "BaseRom"
-            Me.Settings("ModPackProject") = "ModPack"
-            CreateProject("", "BaseRom", GetType(BaseRomProject), CurrentPluginManager)
-            CreateProject("", "ModPack", GetType(DSModPackProject), CurrentPluginManager)
-            Settings("IsInitialLoadComplete") = True
-        End If
+    Public Overrides Async Function Initialize() As Task
+        Me.Settings("BaseRomProject") = "BaseRom"
+        Me.Settings("ModPackProject") = "ModPack"
+        Await AddNewProject("/", "BaseRom", GetType(BaseRomProject), CurrentPluginManager)
+        Await AddNewProject("/", "ModPack", GetType(DSModPackProject), CurrentPluginManager)
     End Function
 
     Public Overrides Async Function Build() As Task

@@ -64,9 +64,8 @@
       <HintPath>..\packages\AurelienRibon.Ui.SyntaxHighlightBox.2.0.2\lib\NET40\AurelienRibon.Ui.SyntaxHighlightBox.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.1.7, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.1\lib\net46\DotNet3dsSoundtrackConverter.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.2.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.2-CI1\lib\net46\DotNet3dsSoundtrackConverter.dll</HintPath>
     </Reference>
     <Reference Include="DotNet3dsToolkit, Version=1.4.11.7, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNet3dsToolkit.1.4.11-CI7\lib\net46\DotNet3dsToolkit.dll</HintPath>
@@ -86,9 +85,8 @@
       <HintPath>..\packages\ListViewDragDropManager.1.2.0\lib\net45\ListViewDragDropManager.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MediaToolkit, Version=1.2.1.7, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaToolkit.1.2.1\lib\net20\MediaToolkit.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MediaToolkit, Version=1.2.2.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaToolkit.1.2.2-CI5\lib\net20\MediaToolkit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Primitives.4.0.1\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
@@ -107,17 +105,17 @@
     <Reference Include="SkyEditor.CodeEditor.UI.WPF, Version=4.1.0.2, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.1.0-CI2\lib\net46\SkyEditor.CodeEditor.UI.WPF.exe</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI64\lib\netstandard1.3\SkyEditor.Core.dll</HintPath>
+    <Reference Include="SkyEditor.Core, Version=4.1.0.88, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI88\lib\netstandard1.3\SkyEditor.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.Core.Windows, Version=4.1.0.64, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.Windows.4.1.0-CI64\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
+    <Reference Include="SkyEditor.Core.Windows, Version=4.1.0.88, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.Windows.4.1.0-CI88\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI5\lib\netstandard1.3\SkyEditor.SaveEditor.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.111, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI111\lib\net46\SkyEditor.UI.WPF.dll</HintPath>
+    <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.112, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI112\lib\net46\SkyEditor.UI.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.AppContext.4.1.0\lib\net46\System.AppContext.dll</HintPath>

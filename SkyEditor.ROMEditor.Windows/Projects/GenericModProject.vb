@@ -11,12 +11,6 @@ Namespace Projects
     Public Class GenericModProject
         Inherits Project
 
-        Public Sub New()
-            MyBase.New
-            Me.ModDependenciesBefore = New List(Of String)
-            Me.ModDependenciesAfter = New List(Of String)
-        End Sub
-
 #Region "Project Settings"
         Public Property ModName As String
             Get

@@ -5,6 +5,7 @@
 
     Private Async Sub Application_Startup(sender As Object, e As StartupEventArgs) Handles Me.Startup
         Try
+            SkyEditor.UI.WPF.StartupHelpers.EnableErrorDialog()
             Await SkyEditor.UI.WPF.StartupHelpers.RunWPFStartupSequence(New SkyEditor.UI.WPF.WPFCoreSkyEditorPlugin(New PluginDefinition))
         Catch ex As Exception
             Debugger.Break()

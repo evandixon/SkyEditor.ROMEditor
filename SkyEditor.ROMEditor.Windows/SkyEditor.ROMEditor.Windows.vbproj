@@ -83,9 +83,8 @@
     <DocumentationFile>SkyEditor.ROMEditor.Windows.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.1.7, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.1\lib\net46\DotNet3dsSoundtrackConverter.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.2.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.2-CI1\lib\net46\DotNet3dsSoundtrackConverter.dll</HintPath>
     </Reference>
     <Reference Include="DotNet3dsToolkit, Version=1.4.11.7, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNet3dsToolkit.1.4.11-CI7\lib\net46\DotNet3dsToolkit.dll</HintPath>
@@ -101,9 +100,8 @@
       <HintPath>..\packages\LanguageStringPatcher.1.0.0\lib\net46\LanguageStringPatcher.exe</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MediaToolkit, Version=1.2.1.7, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaToolkit.1.2.1\lib\net20\MediaToolkit.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MediaToolkit, Version=1.2.2.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaToolkit.1.2.2-CI5\lib\net20\MediaToolkit.dll</HintPath>
     </Reference>
     <Reference Include="MessageFARCPatcher, Version=1.0.2.6, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -128,11 +126,11 @@
     <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.2, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI2\lib\net46\SkyEditor.CodeEditor.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI64\lib\netstandard1.3\SkyEditor.Core.dll</HintPath>
+    <Reference Include="SkyEditor.Core, Version=4.1.0.88, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI88\lib\netstandard1.3\SkyEditor.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.Core.Windows, Version=4.1.0.64, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.Windows.4.1.0-CI64\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
+    <Reference Include="SkyEditor.Core.Windows, Version=4.1.0.88, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.Windows.4.1.0-CI88\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI5\lib\netstandard1.3\SkyEditor.SaveEditor.dll</HintPath>
