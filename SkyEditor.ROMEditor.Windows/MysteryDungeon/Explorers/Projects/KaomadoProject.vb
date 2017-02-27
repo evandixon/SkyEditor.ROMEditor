@@ -50,7 +50,7 @@ Namespace MysteryDungeon.Explorers.Projects
 
         End Function
 
-        Protected Overrides Async Function DoBuild() As Task
+        Public Overrides Async Function Build() As Task
             'Start loading
             Me.Progress = 0
             Me.IsIndeterminate = True
@@ -67,7 +67,7 @@ Namespace MysteryDungeon.Explorers.Projects
             Me.Message = My.Resources.Language.Complete
 
             'Build the mod
-            Await MyBase.DoBuild
+            Await MyBase.Build
         End Function
 
         Public Async Function ApplyMissingPortraitFix(unpackDirectory As String) As Task

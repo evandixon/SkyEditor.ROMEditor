@@ -291,7 +291,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.IsIndeterminate = False
         End Function
 
-        Protected Overrides Async Function DoBuild() As Task
+        Public Overrides Async Function Build() As Task
             Dim farcMode As Boolean = False
 
             If IO.Directory.GetFiles(IO.Path.Combine(Me.GetRawFilesDir, "romfs"), "message*").Length > 0 Then
@@ -347,7 +347,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                    End If
                                End Function)
             RemoveHandler f.LoadingStatusChanged, onProgressChanged
-            Await MyBase.DoBuild
+            Await MyBase.Build
         End Function
 
         Public Overrides Function GetFilesToCopy(Solution As Solution, BaseRomProjectName As String) As IEnumerable(Of String)

@@ -41,7 +41,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.AddExistingFile("", Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), CurrentPluginManager.CurrentIOProvider)
         End Function
 
-        Protected Overrides Async Function DoBuild() As Task
+        Public Overrides Async Function Build() As Task
             'Open fixed_pokemon
             Dim fpFilename = Me.GetItem("fixed_pokemon.bin").Filename
             Dim fixedPokemon As New FixedPokemon()
@@ -370,7 +370,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.Progress = 1
 
             'Continue the build (script compilation, mod building, etc.)
-            Await MyBase.DoBuild()
+            Await MyBase.Build()
         End Function
 
     End Class

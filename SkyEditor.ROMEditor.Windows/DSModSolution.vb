@@ -36,7 +36,7 @@ Public Class DSModSolution
         End If
     End Function
 
-    Private Async Sub DSModSolution_ProjectAdded(sender As Object, e As ProjectAddedEventArgs) Handles Me.ProjectAdded
+    Private Sub DSModSolution_ProjectAdded(sender As Object, e As ProjectAddedEventArgs) Handles Me.ProjectAdded
         If TypeOf e.Project Is GenericModProject Then
             Dim m = DirectCast(e.Project, GenericModProject)
             m.ProjectReferenceNames = New List(Of String)
@@ -49,7 +49,8 @@ Public Class DSModSolution
             m.ModDescription = "A generic Mod"
             m.Homepage = ""
 
-            Await m.RunInitialize
+            'Called by project now
+            'Await m.Initialize
 
             For Each item In Me.GetAllProjects
                 If TypeOf item Is DSModPackProject Then

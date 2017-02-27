@@ -38,7 +38,7 @@ Namespace MysteryDungeon.Explorers.Projects
             Me.IsIndeterminate = False
         End Function
 
-        Protected Overrides Async Function DoBuild() As Task
+        Public Overrides Async Function Build() As Task
             Dim outputDir = IO.Path.Combine(Me.GetRootDirectory)
 
             Using external As New UtilityManager
@@ -51,7 +51,7 @@ Namespace MysteryDungeon.Explorers.Projects
                 Await external.RunStatsUtil(GetRawFilesDir, outputDir, options)
             End Using
 
-            Await MyBase.DoBuild
+            Await MyBase.Build
         End Function
     End Class
 End Namespace

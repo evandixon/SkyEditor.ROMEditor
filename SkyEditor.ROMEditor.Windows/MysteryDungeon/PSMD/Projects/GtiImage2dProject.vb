@@ -49,7 +49,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.Message = My.Resources.Language.Complete
         End Function
 
-        Protected Overrides Async Function DoBuild() As Task
+        Public Overrides Async Function Build() As Task
             'Convert BACK
             Dim sourceDir = GetRootDirectory()
             Dim rawFilesDir = GetRawFilesDir()
@@ -85,7 +85,7 @@ Namespace MysteryDungeon.PSMD.Projects
                 End If
 
             Next
-            Await MyBase.DoBuild
+            Await MyBase.Build
         End Function
     End Class
 

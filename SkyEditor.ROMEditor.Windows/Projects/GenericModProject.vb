@@ -157,25 +157,6 @@ Namespace Projects
         End Function
 #End Region
 
-        Public Async Function RunInitialize() As Task
-            RequiresInitialization = True
-            Await ParentSolution.Build({Me})
-        End Function
-
-        Private Property RequiresInitialization As Boolean
-
-        Public NotOverridable Overrides Async Function Build() As Task
-            If RequiresInitialization Then
-                Await Initialize()
-            Else
-                Await DoBuild()
-            End If
-
-            Me.Progress = 1
-            Me.IsIndeterminate = False
-            Me.Message = My.Resources.Language.Complete
-        End Function
-
         Public Overrides Async Function Initialize() As Task
             If Me.ProjectReferenceNames.Count > 0 Then
                 Me.Progress = 0
@@ -235,7 +216,6 @@ Namespace Projects
                     Directory.CreateDirectory(GetRawFilesDir)
                 End If
             End If
-            RequiresInitialization = False
         End Function
 
         ''' <summary>
@@ -243,7 +223,7 @@ Namespace Projects
         ''' </summary>
         ''' <returns></returns>
         ''' <remarks>If this is overridden, do custom work, THEN use MyBase.Build</remarks>
-        Protected Overridable Async Function DoBuild() As Task
+        Public Overrides Async Function Build() As Task
             For Each sourceProjectName In Me.ProjectReferenceNames
 
                 Dim sourceProject As Project = ParentSolution.GetProjectsByName(sourceProjectName).FirstOrDefault

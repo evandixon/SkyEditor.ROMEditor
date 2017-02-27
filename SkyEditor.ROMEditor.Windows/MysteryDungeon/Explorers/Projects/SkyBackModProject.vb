@@ -54,7 +54,7 @@ Namespace MysteryDungeon.Explorers.Projects
             Me.Message = My.Resources.Language.Complete
         End Function
 
-        Protected Overrides Async Function DoBuild() As Task
+        Public Overrides Async Function Build() As Task
             'Convert BACK
             Dim projectDir = GetRootDirectory()
             Dim rawDir = GetRawFilesDir()
@@ -90,7 +90,7 @@ Namespace MysteryDungeon.Explorers.Projects
                 Next
             End If
 
-            Await MyBase.DoBuild
+            Await MyBase.Build
         End Function
     End Class
 End Namespace
