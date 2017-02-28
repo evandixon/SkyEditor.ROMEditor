@@ -337,9 +337,9 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.IsIndeterminate = False
             Me.Message = My.Resources.Language.LoadingPatchingScripts
             Dim f As New AsyncFor
-            AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
-                                                   Me.Progress = e.Progress
-                                               End Sub
+            AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                              Me.Progress = e.Progress
+                                          End Sub
             Await f.RunForEach(Directory.GetFiles(IO.Path.Combine(Me.GetRootDirectory, "script"), "*.lua", SearchOption.AllDirectories),
                                Sub(filename As String)
                                    Dim script = CurrentPluginManager.CurrentIOProvider.ReadAllText(filename & ".original")

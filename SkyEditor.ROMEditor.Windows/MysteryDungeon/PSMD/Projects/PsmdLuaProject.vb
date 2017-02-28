@@ -168,9 +168,9 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim languageNameRegex As New Regex(".*message_?(.*)\.bin", RegexOptions.IgnoreCase)
             Dim languageFileNames = Directory.GetFiles(IO.Path.Combine(Me.GetRawFilesDir, "romfs"), "message*.bin", IO.SearchOption.TopDirectoryOnly)
             Dim f As New AsyncFor
-            AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
-                                                   Me.Progress = e.Progress
-                                               End Sub
+            AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                              Me.Progress = e.Progress
+                                          End Sub
             f.RunSynchronously = True
             Await f.RunForEach(languageFileNames, Async Function(item As String) As Task
                                                       Dim lang = "jp"
@@ -192,9 +192,9 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim languageDirNameRegex As New Regex(".*message_?(.*)", RegexOptions.IgnoreCase)
             Dim languageDirFilenames = Directory.GetDirectories(IO.Path.Combine(Me.GetRawFilesDir, "romfs"), "message*", IO.SearchOption.TopDirectoryOnly)
             Dim f2 As New AsyncFor
-            AddHandler f2.LoadingStatusChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
-                                                    Me.Progress = e.Progress
-                                                End Sub
+            AddHandler f2.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                               Me.Progress = e.Progress
+                                           End Sub
             f.RunSynchronously = True
             Await f2.RunForEach(languageDirFilenames, Async Function(item As String) As Task
                                                           Dim lang = "en"
@@ -241,9 +241,9 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim filesToOpen As New List(Of String)
 
             Dim f As New AsyncFor
-            AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
-                                                   Me.Progress = e.Progress
-                                               End Sub
+            AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                              Me.Progress = e.Progress
+                                          End Sub
 
             f.BatchSize = Environment.ProcessorCount * 2
 
@@ -335,7 +335,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim onProgressChanged = Sub(sender As Object, e As ProgressReportedEventArgs)
                                         Me.Progress = e.Progress
                                     End Sub
-            AddHandler f.LoadingStatusChanged, onProgressChanged
+            AddHandler f.ProgressChanged, onProgressChanged
             Await f.RunForEach(toCompile,
                                Async Function(Item As String) As Task
                                    Dim sourceText = IO.File.ReadAllText(Item)
@@ -346,7 +346,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                        Await ConsoleApp.RunProgram(Core.EnvironmentPaths.GetResourceName("lua/luac5.1.exe"), $"-o ""{dest}"" ""{Item}""")
                                    End If
                                End Function)
-            RemoveHandler f.LoadingStatusChanged, onProgressChanged
+            RemoveHandler f.ProgressChanged, onProgressChanged
             Await MyBase.Build
         End Function
 

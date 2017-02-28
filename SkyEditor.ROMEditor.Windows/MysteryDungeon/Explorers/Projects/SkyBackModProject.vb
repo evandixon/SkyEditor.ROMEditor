@@ -28,9 +28,9 @@ Namespace MysteryDungeon.Explorers.Projects
             Dim BACKdir As String = IO.Path.Combine(projectDir, "Backgrounds")
             Dim backFiles = IO.Directory.GetFiles(IO.Path.Combine(sourceDir, "Data", "BACK"), "*.bgp")
             Dim f As New AsyncFor
-            AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
-                                                   Me.Progress = e.Progress
-                                               End Sub
+            AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                              Me.Progress = e.Progress
+                                          End Sub
             Await f.RunForEach(backFiles,
                                Async Function(Item As String) As Task
                                    Using b As New BGP
