@@ -131,12 +131,23 @@ Namespace Projects
             Return IO.Path.Combine(GetRootDirectory, "Modpack.smdh")
         End Function
 
-        Public Overrides Async Function Build() As Task
-            Await DoBuild()
-            Await MyBase.Build()
+        Public Overrides Function Initialize() As Task
+            Return MyBase.Initialize()
+
+            Me.Info = New ModpackInfo With {.Name = Me.Name}
+            Me.Info.Name = Me.Name
+            Me.Info.ShortName = Me.Name.Substring(0, Math.Min(Me.Name.Length, 10))
+            Me.Info.Author = "Unknown"
+            Me.Info.Version = "1.0.0"
+            Dim baseRomProject As BaseRomProject = ParentSolution.GetProjectsByName(Me.Settings("BaseRomProject")).FirstOrDefault
+            If baseRomProject IsNot Nothing Then
+                Me.Info.System = baseRomProject.RomSystem
+                Me.Info.GameCode = baseRomProject.GameCode
+                Me.BaseRomProject = Me.Settings("BaseRomProject")
+            End If
         End Function
 
-        Protected Async Function DoBuild() As Task
+        Public Overrides Async Function Build() As Task
             Dim modpackDir = GetModPackDir()
             'Dim modpackModsDir = GetModsDir()
             'Dim modpackToolsDir = GetToolsDir()
@@ -145,10 +156,10 @@ Namespace Projects
             Dim outputDir = GetOutputDir()
 
             'Create missing directories
-            If Not Directory.Exists(modsSourceDir)
+            If Not Directory.Exists(modsSourceDir) Then
                 Directory.CreateDirectory(modsSourceDir)
             End If
-            If Not Directory.Exists(outputDir)
+            If Not Directory.Exists(outputDir) Then
                 Directory.CreateDirectory(outputDir)
             End If
 

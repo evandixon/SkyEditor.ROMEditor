@@ -158,6 +158,31 @@ Namespace Projects
 #End Region
 
         Public Overrides Async Function Initialize() As Task
+            Me.ProjectReferenceNames = New List(Of String)
+            Me.ProjectReferenceNames.Add(ParentSolution.Settings("BaseRomProject"))
+            Me.ModDependenciesBefore = New List(Of String)
+            Me.ModDependenciesAfter = New List(Of String)
+            Me.ModName = Me.Name
+            Me.ModVersion = "1.0.0"
+            Me.ModAuthor = "Unknown"
+            Me.ModDescription = "A generic Mod"
+            Me.Homepage = ""
+
+            For Each item In ParentSolution.GetAllProjects
+                If TypeOf item Is DSModPackProject Then
+                    Dim modPack = DirectCast(item, DSModPackProject)
+
+                    'If the mod we just added targets the same base ROM as this modpack...
+                    If Me.ProjectReferenceNames.Contains(modPack.BaseRomProject) Then
+                        '...then we add this mod to the modpack.
+                        If Not modPack.ProjectReferenceNames.Contains(Me.Name) Then
+                            modPack.ProjectReferenceNames.Add(Me.Name)
+                        End If
+
+                    End If
+
+                End If
+            Next
             If Me.ProjectReferenceNames.Count > 0 Then
                 Me.Progress = 0
                 Me.Message = My.Resources.Language.LoadingCopyingFiles

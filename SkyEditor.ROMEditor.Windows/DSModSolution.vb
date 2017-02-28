@@ -36,53 +36,6 @@ Public Class DSModSolution
         End If
     End Function
 
-    Private Sub DSModSolution_ProjectAdded(sender As Object, e As ProjectAddedEventArgs) Handles Me.ProjectAdded
-        If TypeOf e.Project Is GenericModProject Then
-            Dim m = DirectCast(e.Project, GenericModProject)
-            m.ProjectReferenceNames = New List(Of String)
-            m.ProjectReferenceNames.Add(Me.Settings("BaseRomProject"))
-            m.ModDependenciesBefore = New List(Of String)
-            m.ModDependenciesAfter = New List(Of String)
-            m.ModName = e.Project.Name
-            m.ModVersion = "1.0.0"
-            m.ModAuthor = "Unknown"
-            m.ModDescription = "A generic Mod"
-            m.Homepage = ""
-
-            'Called by project now
-            'Await m.Initialize
-
-            For Each item In Me.GetAllProjects
-                If TypeOf item Is DSModPackProject Then
-                    Dim modPack = DirectCast(item, DSModPackProject)
-
-                    'If the mod we just added targets the same base ROM as this modpack...
-                    If m.ProjectReferenceNames.Contains(modPack.BaseRomProject) Then
-                        '...then we add this mod to the modpack.
-                        If Not modPack.ProjectReferenceNames.Contains(m.Name) Then
-                            modPack.ProjectReferenceNames.Add(m.Name)
-                        End If
-
-                    End If
-
-                End If
-            Next
-        ElseIf TypeOf e.Project Is DSModPackProject Then
-            Dim m = DirectCast(e.Project, DSModPackProject)
-            m.Info = New ModpackInfo With {.Name = Me.Name}
-            m.Info.Name = Me.Name
-            m.Info.ShortName = Me.Name.Substring(0, Math.Min(Me.Name.Length, 10))
-            m.Info.Author = "Unknown"
-            m.Info.Version = "1.0.0"
-            Dim baseRomProject As BaseRomProject = GetProjectsByName(Me.Settings("BaseRomProject")).FirstOrDefault
-            If baseRomProject IsNot Nothing Then
-                m.Info.System = baseRomProject.RomSystem
-                m.Info.GameCode = baseRomProject.GameCode
-                m.BaseRomProject = Me.Settings("BaseRomProject")
-            End If
-        End If
-    End Sub
-
     Public Overrides Async Function Initialize() As Task
         Me.Settings("BaseRomProject") = "BaseRom"
         Me.Settings("ModPackProject") = "ModPack"
