@@ -14,7 +14,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
         Public Property MessageTabs As ObservableCollection(Of TabItem)
 
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
-            Return MyBase.SupportsObject(Obj) AndAlso CurrentApplicationViewModel.GetFileViewModelForModel(Obj).ParentProject IsNot Nothing
+            Return MyBase.SupportsObject(Obj) AndAlso CurrentApplicationViewModel.GetFileViewModelForModel(Obj)?.ParentProject IsNot Nothing
         End Function
 
         Public Overrides Async Sub SetModel(model As Object)
