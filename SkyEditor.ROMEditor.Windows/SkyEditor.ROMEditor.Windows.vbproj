@@ -96,9 +96,8 @@
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="LanguageStringPatcher, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LanguageStringPatcher.1.0.0\lib\net46\LanguageStringPatcher.exe</HintPath>
-      <Private>True</Private>
+    <Reference Include="LanguageStringPatcher, Version=1.0.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LanguageStringPatcher.1.0.1\lib\net46\LanguageStringPatcher.exe</HintPath>
     </Reference>
     <Reference Include="MediaToolkit, Version=1.2.2.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MediaToolkit.1.2.2-CI5\lib\net20\MediaToolkit.dll</HintPath>
