@@ -45,16 +45,16 @@ Namespace MysteryDungeon.Explorers.Projects
             Return patchers
         End Function
 
-        Protected Overrides Async Function Initialize() As Task
+        Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
 
             Dim rawDir = GetRawFilesDir()
             Dim projDir = GetRootDirectory()
 
 
-            Me.BuildProgress = 0
-            Me.IsBuildProgressIndeterminate = True
-            Me.BuildStatusMessage = My.Resources.Language.LoadingConvertingLanguages
+            Me.Progress = 0
+            Me.IsIndeterminate = True
+            Me.Message = My.Resources.Language.LoadingConvertingLanguages
 
             'Convert Languages
             Dim languageDictionary As New Dictionary(Of String, String)
@@ -65,11 +65,11 @@ Namespace MysteryDungeon.Explorers.Projects
             languageDictionary.Add("text_g.str", "Deutsche") 'German
             languageDictionary.Add("text_j.str", "日本語") 'Japanese
 
-            If Not Directory.Exists(IO.Path.Combine(projDir, "Languages")) Then
-                Directory.CreateDirectory(IO.Path.Combine(projDir, "Languages"))
+            If Not Directory.Exists(Path.Combine(projDir, "Languages")) Then
+                Directory.CreateDirectory(Path.Combine(projDir, "Languages"))
             End If
             For Each item In languageDictionary
-                If File.Exists(IO.Path.Combine(rawDir, "Data", "MESSAGE", item.Key)) Then
+                If File.Exists(Path.Combine(rawDir, "Data", "MESSAGE", item.Key)) Then
                     Using langString = New LanguageString()
                         Await langString.OpenFile(Path.Combine(rawDir, "Data", "MESSAGE", item.Key), CurrentPluginManager.CurrentIOProvider)
                         Json.SerializeToFile(Path.Combine(projDir, "Languages", item.Value), langString.Items, CurrentPluginManager.CurrentIOProvider)
@@ -80,17 +80,17 @@ Namespace MysteryDungeon.Explorers.Projects
             'Add Personality Test
             Me.AddExistingFileToPath("/Starter Pokemon", Path.Combine(rawDir, "Overlay", "overlay_0013.bin"), GetType(Overlay13), CurrentPluginManager.CurrentIOProvider)
 
-            Me.BuildProgress = 1
-            Me.IsBuildProgressIndeterminate = False
-            Me.BuildStatusMessage = My.Resources.Language.Complete
+            Me.Progress = 1
+            Me.IsIndeterminate = False
+            Me.Message = My.Resources.Language.Complete
         End Function
 
-        Protected Overrides Async Function DoBuild() As Task
+        Public Overrides Async Function Build() As Task
             Dim rawDir = GetRawFilesDir()
             Dim projDir = GetRootDirectory()
 
             'Open Personality Test
-            Dim personalityTest As New PersonalityTestContainer(Await Me.GetFileByPath("/Starter Pokemon", CurrentPluginManager, AddressOf IOHelper.PickFirstDuplicateMatchSelector))
+            Dim personalityTest As New PersonalityTestContainer(Await Me.GetFile("/Starter Pokemon", AddressOf IOHelper.PickFirstDuplicateMatchSelector, CurrentPluginManager))
 
             'Convert Languages
             Dim languageDictionary As New Dictionary(Of String, String)
@@ -115,12 +115,9 @@ Namespace MysteryDungeon.Explorers.Projects
                 End If
             Next
 
-            Await MyBase.DoBuild
+            Await MyBase.Build
         End Function
 
-        Private Sub SkyStarterModProject_ProjectOpened(sender As Object, e As EventArgs) Handles Me.ProjectOpened
-
-        End Sub
     End Class
 
 End Namespace

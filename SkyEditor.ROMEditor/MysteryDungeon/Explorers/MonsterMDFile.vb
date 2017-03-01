@@ -97,7 +97,7 @@ Namespace MysteryDungeon.Explorers
             out.magic = BitConverter.ToInt32(RawData, 0) 'MD\0\0
             out.nEntries = BitConverter.ToUInt32(RawData, 4)
             For count As UInteger = 0 To out.nEntries - 1
-                out.Entries.Add(MonsterMDEntry.FromBytes(GenericArrayOperations(Of Byte).CopyOfRange(RawData, 8 + (count * &H44), 8 - 1 + ((count + 1) * &H44))))
+                out.Entries.Add(MonsterMDEntry.FromBytes(RawData.Skip(8 + (count * &H44)).Take(&H44).ToArray))
             Next
             Return out
         End Function

@@ -1,4 +1,5 @@
-﻿Imports SkyEditor.Core.Windows
+﻿Imports System.IO
+Imports SkyEditor.Core
 
 Namespace Projects
     Public Class Pk3DSModProject
@@ -7,11 +8,11 @@ Namespace Projects
             Return {GameStrings.PokemonXCode, GameStrings.PokemonYCode, GameStrings.ORCode, GameStrings.ASCode}
         End Function
 
-        Protected Overrides Async Function Initialize() As Task
+        Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
-            IO.File.Copy(EnvironmentPaths.GetResourceName("pk3DS.exe"), IO.Path.Combine(GetRootDirectory, "pk3DS.exe"))
-            Me.AddExistingFile("", IO.Path.Combine(GetRootDirectory, "pk3DS.exe"), CurrentPluginManager.CurrentIOProvider)
-            IO.File.WriteAllText(IO.Path.Combine(GetRootDirectory, "config.ini"), IO.Path.GetFileName(Me.GetRawFilesDir))
+            File.Copy(EnvironmentPaths.GetResourceName("pk3DS.exe"), Path.Combine(GetRootDirectory, "pk3DS.exe"))
+            Me.AddExistingFile("", Path.Combine(GetRootDirectory, "pk3DS.exe"), CurrentPluginManager.CurrentIOProvider)
+            File.WriteAllText(Path.Combine(GetRootDirectory, "config.ini"), Path.GetFileName(Me.GetRawFilesDir))
         End Function
     End Class
 End Namespace

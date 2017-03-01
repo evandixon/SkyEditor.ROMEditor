@@ -1,4 +1,6 @@
-﻿Imports System.Windows.Media.Imaging
+﻿Imports System.IO
+Imports System.Windows.Media.Imaging
+Imports SkyEditor.Core
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.ROMEditor.Windows
 
@@ -7,16 +9,16 @@ Public Class ROM
     Public ReadOnly Property Filename As String
         Get
             Dim romDirectory As String = EnvironmentPaths.GetResourceName("Roms/NDS/")
-            Return IO.Path.Combine(romDirectory, Name.Replace(":", ""))
+            Return Path.Combine(romDirectory, Name.Replace(":", ""))
         End Get
     End Property
     Public ReadOnly Property ImageUri As Uri
         Get
-            If IO.File.Exists(Filename) Then
-                Dim newpath = IO.Path.Combine(EnvironmentPaths.GetResourceName("Temp"), IO.Path.GetFileNameWithoutExtension(Name.Replace(":", "")) & ".bmp")
-                If Not IO.File.Exists(newpath) Then
-                    If Not IO.Directory.Exists(IO.Path.GetDirectoryName(newpath)) Then
-                        IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(newpath))
+            If File.Exists(Filename) Then
+                Dim newpath = Path.Combine(EnvironmentPaths.GetResourceName("Temp"), Path.GetFileNameWithoutExtension(Name.Replace(":", "")) & ".bmp")
+                If Not File.Exists(newpath) Then
+                    If Not Directory.Exists(Path.GetDirectoryName(newpath)) Then
+                        Directory.CreateDirectory(Path.GetDirectoryName(newpath))
                     End If
                     DSIconTool.ExtractIcon(Filename, newpath)
                 End If
@@ -29,7 +31,7 @@ Public Class ROM
     Public ReadOnly Property ImageSource As BitmapImage
         Get
             Dim u = ImageUri
-            If u IsNot Nothing AndAlso IO.File.Exists(u.AbsolutePath) Then
+            If u IsNot Nothing AndAlso File.Exists(u.AbsolutePath) Then
                 Return New BitmapImage(u)
             Else
                 Return New BitmapImage

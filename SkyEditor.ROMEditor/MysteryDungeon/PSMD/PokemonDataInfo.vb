@@ -168,14 +168,14 @@ Namespace MysteryDungeon.PSMD
             Dim numEntries = Math.Floor(Me.Length / entryLength)
 
             For count = 0 To numEntries - 1
-                Entries.Add(New PokemonInfoEntry(RawData(count * entryLength, entryLength)))
+                Entries.Add(New PokemonInfoEntry(Await ReadAsync(count * entryLength, entryLength)))
             Next
         End Function
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
             Me.Length = Entries.Count * entryLength
 
             For count = 0 To Entries.Count - 1
-                RawData(count * entryLength, entryLength) = Entries(count).ToBytes
+                Await WriteAsync(count * entryLength, entryLength, Entries(count).ToBytes)
             Next
 
             Await MyBase.Save(Destination, provider)

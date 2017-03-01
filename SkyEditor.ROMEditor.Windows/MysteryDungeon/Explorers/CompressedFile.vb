@@ -23,7 +23,7 @@ Namespace MysteryDungeon.Explorers
 
             Await MyBase.OpenFile(TempFilename, provider)
 
-            Me.OriginalFilename = filename
+            Me.Filename = filename
         End Function
 
         ''' <summary>
@@ -45,7 +45,7 @@ Namespace MysteryDungeon.Explorers
                 Await external.RunDoPX(TempFilename, filename, format)
             End Using
 
-            Me.OriginalFilename = filename
+            Me.Filename = filename
         End Function
 
     End Class

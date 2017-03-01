@@ -15,12 +15,12 @@ Namespace MysteryDungeon.PSMD
             Using f As New GenericFile
                 f.IsReadOnly = True
                 Await f.OpenFile(Filename, Provider)
-                Dim subHeaderPointer = f.Int32(4)
-                Dim stringPointerOffset = f.Int32(subHeaderPointer + 4)
-                Dim numEntries = f.Int32(subHeaderPointer + 8) * 4
+                Dim subHeaderPointer = Await f.ReadInt32Async(4)
+                Dim stringPointerOffset = Await f.ReadInt32Async(subHeaderPointer + 4)
+                Dim numEntries = Await f.ReadInt32Async(subHeaderPointer + 8) * 4
 
                 For count = 0 To numEntries - 1
-                    Dim entryPointer = f.Int32(stringPointerOffset + count * 4)
+                    Dim entryPointer = Await f.ReadInt32Async(stringPointerOffset + count * 4)
 
                     If entryPointer > 0 Then
                         Dim s As New Text.StringBuilder()
@@ -31,7 +31,7 @@ Namespace MysteryDungeon.PSMD
                         Dim cRaw As Byte()
                         Dim c As String
                         Do
-                            cRaw = f.RawData(entryPointer + j * 2, 2)
+                            cRaw = Await f.ReadAsync(entryPointer + j * 2, 2)
                             c = e.GetString(cRaw, 0, cRaw.Length)
 
                             If Not c = vbNullChar Then

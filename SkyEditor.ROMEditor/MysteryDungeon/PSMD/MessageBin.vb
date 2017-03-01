@@ -52,9 +52,9 @@ Namespace MysteryDungeon.PSMD
             Dim stringInfoPointer As Integer = BitConverter.ToInt32(ContentHeader, 4)
 
             For i = 0 To stringCount - 1
-                Dim stringPointer As Integer = BitConverter.ToInt32(RawData(stringInfoPointer + i * 12 + &H0, 4), 0)
-                Dim stringHash As UInteger = BitConverter.ToUInt32(RawData(stringInfoPointer + i * 12 + &H4, 4), 0)
-                Dim unk As UInt32 = BitConverter.ToUInt32(RawData(stringInfoPointer + i * 12 + &H8, 4), 0)
+                Dim stringPointer As Integer = BitConverter.ToInt32(Read(stringInfoPointer + i * 12 + &H0, 4), 0)
+                Dim stringHash As UInteger = BitConverter.ToUInt32(Read(stringInfoPointer + i * 12 + &H4, 4), 0)
+                Dim unk As UInt32 = BitConverter.ToUInt32(Read(stringInfoPointer + i * 12 + &H8, 4), 0)
 
                 Dim s As New Text.StringBuilder()
                 Dim e = Text.UnicodeEncoding.Unicode
@@ -64,7 +64,7 @@ Namespace MysteryDungeon.PSMD
                 Dim cRaw As Byte()
                 Dim doEnd As Boolean = False
                 Do
-                    cRaw = RawData(stringPointer + j * 2, 2)
+                    cRaw = Read(stringPointer + j * 2, 2)
 
                     'TODO: parse escape characters, as described in these posts:
                     'http://projectpokemon.org/forums/showthread.php?46904-Pokemon-Super-Mystery-Dungeon-And-PMD-GTI-Research-And-Utilities&p=211018&viewfull=1#post211018
@@ -78,7 +78,7 @@ Namespace MysteryDungeon.PSMD
                     Else
                         Dim c = e.GetString(cRaw, 0, cRaw.Length)
 
-                        If (GenericArrayOperations(Of Byte).ArraysEqual(cRaw, {0, 0})) Then
+                        If cRaw.SequenceEqual({0, 0}) Then
                             doEnd = True
                         Else
                             s.Append(c)
@@ -100,9 +100,9 @@ Namespace MysteryDungeon.PSMD
             Dim stringInfoPointer As Integer = BitConverter.ToInt32(ContentHeader, 4)
 
             For i = 0 To stringCount - 1
-                Dim stringPointer As Integer = BitConverter.ToInt32(RawData(stringInfoPointer + i * 12 + &H0, 4), 0)
-                Dim stringHash As UInteger = BitConverter.ToUInt32(RawData(stringInfoPointer + i * 12 + &H4, 4), 0)
-                Dim unk As UInt32 = BitConverter.ToUInt32(RawData(stringInfoPointer + i * 12 + &H8, 4), 0)
+                Dim stringPointer As Integer = BitConverter.ToInt32(Await ReadAsync(stringInfoPointer + i * 12 + &H0, 4), 0)
+                Dim stringHash As UInteger = BitConverter.ToUInt32(Await ReadAsync(stringInfoPointer + i * 12 + &H4, 4), 0)
+                Dim unk As UInt32 = BitConverter.ToUInt32(Await ReadAsync(stringInfoPointer + i * 12 + &H8, 4), 0)
 
                 'We're skipping reading the string, since this function only loads the IDs
 
@@ -135,8 +135,8 @@ Namespace MysteryDungeon.PSMD
 
             'Write sections to file
             Me.Length = 16 + stringSection.Count + infoSection.Count
-            Me.RawData(16, stringSection.Count) = stringSection.ToArray
-            Me.RawData(16 + stringSection.Count, infoSection.Count) = infoSection.ToArray
+            Await Me.WriteAsync(16, stringSection.Count, stringSection.ToArray)
+            Await Me.WriteAsync(16 + stringSection.Count, infoSection.Count, infoSection.ToArray)
 
             'Update header
             Dim headerBytes As New List(Of Byte)
@@ -157,7 +157,7 @@ Namespace MysteryDungeon.PSMD
         Public Function GetCommonPokemonNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
-            For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf).Select(Function(x) x.Trim)
+            For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf).Select(Function(x) x.Trim)
                 Dim hash As Integer
                 If Integer.TryParse(item, hash) Then
                     pokemonNameHashes.Add(item)
@@ -185,7 +185,7 @@ Namespace MysteryDungeon.PSMD
         Public Function GetCommonMoveNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
-            For Each item In My.Resources.PSMD_Move_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf)
+            For Each item In My.Resources.PSMD_Move_Name_Hashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf)
                 Dim trimmed = item.Trim
                 Dim hash As Integer
                 If Integer.TryParse(trimmed, hash) Then

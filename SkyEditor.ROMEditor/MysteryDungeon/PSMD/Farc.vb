@@ -17,17 +17,17 @@ Namespace MysteryDungeon.PSMD
         Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
 
-            Dim sir0Type = Me.Int32(&H20)
-            Dim sir0Offset = Me.Int32(&H24)
-            Dim sir0Length = Me.Int32(&H28)
-            DataOffset = Me.Int32(&H2C)
-            Dim datLength = Me.Int32(&H30)
+            Dim sir0Type = Await Me.ReadInt32Async(&H20)
+            Dim sir0Offset = Await Me.ReadInt32Async(&H24)
+            Dim sir0Length = Await Me.ReadInt32Async(&H28)
+            DataOffset = Await Me.ReadInt32Async(&H2C)
+            Dim datLength = Await Me.ReadInt32Async(&H30)
 
             'Todo: use another class for another sir0 type
             'This code is for sir0 type 5
             Header = New Sir0Fat5
             Header.EnableInMemoryLoad = True
-            Header.CreateFile("", Me.RawData(sir0Offset, sir0Length))
+            Header.CreateFile("", Await Me.ReadAsync(sir0Offset, sir0Length))
         End Function
 
         Public Property Header As Sir0Fat5
@@ -40,7 +40,7 @@ Namespace MysteryDungeon.PSMD
         End Property
 
         Public Function GetFileData(FileIndex As Integer) As Byte()
-            Return RawData(Header.FileData(FileIndex).DataOffset + DataOffset, Header.FileData(FileIndex).DataLength)
+            Return Read(Header.FileData(FileIndex).DataOffset + DataOffset, Header.FileData(FileIndex).DataLength)
         End Function
 
         ''' <summary>
@@ -57,7 +57,7 @@ Namespace MysteryDungeon.PSMD
             If hash IsNot Nothing Then
                 Dim info = (From i In Header.FileData Where i.FilenamePointer = hash).FirstOrDefault
                 If info IsNot Nothing Then
-                    Return RawData(info.DataOffset + DataOffset, info.DataLength)
+                    Return Read(info.DataOffset + DataOffset, info.DataLength)
                 Else
                     Throw New IndexOutOfRangeException("Unable to find entry with name " & Filename)
                 End If
@@ -116,7 +116,7 @@ Namespace MysteryDungeon.PSMD
         ''' <returns></returns>
         Public Function GetFileDictionary() As Dictionary(Of UInteger, String)
             Dim out As New Dictionary(Of UInteger, String)
-            Dim resourceFile = My.Resources.FarcFilenames.ResourceManager.GetString(Path.GetFileNameWithoutExtension(Me.OriginalFilename)) ' PluginHelper.GetResourceName(IO.Path.Combine("farc", IO.Path.GetFileNameWithoutExtension(Me.OriginalFilename) & ".txt"))
+            Dim resourceFile = My.Resources.FarcFilenames.ResourceManager.GetString(Path.GetFileNameWithoutExtension(Me.Filename)) ' PluginHelper.GetResourceName(IO.Path.Combine("farc", IO.Path.GetFileNameWithoutExtension(Me.OriginalFilename) & ".txt"))
             If Not String.IsNullOrEmpty(resourceFile) Then
                 Dim i As New BasicIniFile
                 i.CreateFile(resourceFile)

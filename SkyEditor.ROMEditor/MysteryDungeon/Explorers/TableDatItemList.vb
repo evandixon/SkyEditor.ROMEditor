@@ -22,15 +22,15 @@ Namespace MysteryDungeon.Explorers
         Private Sub InitItems()
             Items = New List(Of TableDatItem)
             If Length >= 2 Then
-                Dim itemCount = BitConverter.ToUInt16(RawData(0, 2), 0)
+                Dim itemCount = BitConverter.ToUInt16(Read(0, 2), 0)
                 For count As Integer = 2 To (itemCount - 1) * 4
                     Dim percentage As Single
                     If count = 0 Then
-                        percentage = BitConverter.ToUInt16(RawData(count, 2), 0) / 1024
+                        percentage = BitConverter.ToUInt16(Read(count, 2), 0) / 1024
                     Else
-                        percentage = (BitConverter.ToUInt16(RawData(count, 2), 0) - BitConverter.ToUInt16(RawData(count - 4, 2), 0)) / 1024
+                        percentage = (BitConverter.ToUInt16(Read(count, 2), 0) - BitConverter.ToUInt16(Read(count - 4, 2), 0)) / 1024
                     End If
-                    Items.Add(New TableDatItem(percentage, BitConverter.ToUInt16(RawData(count + 2, 2), 0)))
+                    Items.Add(New TableDatItem(percentage, BitConverter.ToUInt16(Read(count + 2, 2), 0)))
                 Next
             End If
         End Sub
@@ -42,14 +42,14 @@ Namespace MysteryDungeon.Explorers
 
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
             Me.Length = 2 + (Items.Count * 4)
-            RawData(0, 2) = BitConverter.GetBytes(Items.Count)
+            Await WriteAsync(0, 2, BitConverter.GetBytes(Items.Count))
             For count As Integer = 0 To Items.Count - 1
                 If count = 0 Then
-                    RawData(count * 4, 2) = BitConverter.GetBytes(CInt(Items(count).ObtainPercentage * 1024))
+                    Await WriteAsync(count * 4, 2, BitConverter.GetBytes(CInt(Items(count).ObtainPercentage * 1024)))
                 Else
-                    RawData(count * 4, 2) = BitConverter.GetBytes(CInt((Items(count).ObtainPercentage + Items(count + 1).ObtainPercentage) * 1024))
+                    Await WriteAsync(count * 4, 2, BitConverter.GetBytes(CInt((Items(count).ObtainPercentage + Items(count + 1).ObtainPercentage) * 1024)))
                 End If
-                RawData(count * 4 + 2, 2) = BitConverter.GetBytes(Items(count).ItemID)
+                Await WriteAsync(count * 4 + 2, 2, BitConverter.GetBytes(Items(count).ItemID))
             Next
             Await MyBase.Save(Destination, provider)
         End Function

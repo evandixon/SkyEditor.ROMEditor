@@ -377,8 +377,8 @@ Namespace MysteryDungeon.Explorers
             Dim spawnPointerBlockStart As Integer = BitConverter.ToInt32(ContentHeader, &HC) 'Block of pointers
             Dim ptr5 As Integer = BitConverter.ToInt32(ContentHeader, &H10)
 
-            Dim pkmSpawnPtr1 As Integer = Me.Int32(spawnPointerBlockStart)
-            Dim itemSpawnPtr1 As Integer = Me.Int32(itemSpawnPointerBlockPointer)
+            Dim pkmSpawnPtr1 As Integer = Await Me.ReadInt32Async(spawnPointerBlockStart)
+            Dim itemSpawnPtr1 As Integer = Await Me.ReadInt32Async(itemSpawnPointerBlockPointer)
 
             'Load sections
             LoadFloorIndex(floorIndexPointerBlockStart)
@@ -395,7 +395,7 @@ Namespace MysteryDungeon.Explorers
             RawFloorIndexes = New List(Of List(Of FloorIndex))
 
             Dim currentPointerOffset = pointerBlockPointer 'Pointer to the currently processing pointer
-            Dim entryPointer As Integer = Me.Int32(currentPointerOffset) 'Pointer to the currently processing entry
+            Dim entryPointer As Integer = Me.ReadInt32(currentPointerOffset) 'Pointer to the currently processing entry
             Dim floorEntries As New List(Of FloorIndex) 'Buffer of entries in a single group
 
             Dim isFirstEntry As Boolean 'Used in processing entries
@@ -405,7 +405,7 @@ Namespace MysteryDungeon.Explorers
                 isFirstEntry = True
                 Do
                     'Read a single Floor Index
-                    currentIndex = New FloorIndex(Me.RawData(entryPointer, 18))
+                    currentIndex = New FloorIndex(Me.Read(entryPointer, 18))
 
                     If (currentIndex.IsDefault AndAlso Not isFirstEntry) Then
                         'Then we've reached the end
@@ -435,7 +435,7 @@ Namespace MysteryDungeon.Explorers
                 Else
                     'Go to the next PokemonSpawn list
                     currentPointerOffset += 4
-                    entryPointer = Me.Int32(currentPointerOffset)
+                    entryPointer = Me.ReadInt32(currentPointerOffset)
                 End If
             Loop
         End Sub
@@ -443,7 +443,7 @@ Namespace MysteryDungeon.Explorers
         Private Sub LoadAttributeData(attributeBlockPointer As Integer, nextPointer As Integer)
             RawAttributeData = New List(Of FloorAttribute)
             For count = attributeBlockPointer To nextPointer - 1 Step 32
-                RawAttributeData.Add(New FloorAttribute(RawData(count, 32)))
+                RawAttributeData.Add(New FloorAttribute(Read(count, 32)))
             Next
         End Sub
 
@@ -452,7 +452,7 @@ Namespace MysteryDungeon.Explorers
             Dim pointers As New List(Of Integer)
             Dim pointerPtr As Integer = pointerBlockPointer
             Do
-                Dim pointer = Me.Int32(pointerPtr)
+                Dim pointer = Me.ReadInt32(pointerPtr)
                 pointerPtr += 4
 
                 If pointer = &HAAAAAAAA OrElse pointer = 0 Then
@@ -482,7 +482,7 @@ Namespace MysteryDungeon.Explorers
 
                 Dim length = nextItemPointer - currentItemPointer
 
-                SuperRawItemSpawnData.Add(RawData(currentItemPointer, length))
+                SuperRawItemSpawnData.Add(Read(currentItemPointer, length))
             Next
         End Sub
 
@@ -490,14 +490,14 @@ Namespace MysteryDungeon.Explorers
             RawPokemonSpawns = New List(Of List(Of PokemonSpawn))
 
             Dim currentPointerOffset = pointerBlockPointer 'Pointer to the currently processing pointer
-            Dim entryPointer As Integer = Me.Int32(currentPointerOffset) 'Pointer to the currently processing entry
+            Dim entryPointer As Integer = Me.ReadInt32(currentPointerOffset) 'Pointer to the currently processing entry
             Dim spawnEntries As New List(Of PokemonSpawn) 'Buffer of entries in a single group
 
             Do
                 'Read a single PokemonSpawn list
                 Dim currentSpawn As PokemonSpawn
                 Do
-                    currentSpawn = New PokemonSpawn(Me.RawData(entryPointer, 8))
+                    currentSpawn = New PokemonSpawn(Me.Read(entryPointer, 8))
                     entryPointer += 8
 
                     If currentSpawn.IsDefault Then 'Keep reading until the last entry is blank
@@ -517,7 +517,7 @@ Namespace MysteryDungeon.Explorers
                 Else
                     'Go to the next PokemonSpawn list
                     currentPointerOffset += 4
-                    entryPointer = Me.Int32(currentPointerOffset)
+                    entryPointer = Me.ReadInt32(currentPointerOffset)
                 End If
             Loop
         End Sub
@@ -526,7 +526,7 @@ Namespace MysteryDungeon.Explorers
             'Parse the pointers in the pointer block
             Dim pointers As New List(Of Integer)
             For count = pointerBlockPointer To pointerBlockEnd - 1 Step 4
-                pointers.Add(Me.Int32(count))
+                pointers.Add(Me.ReadInt32(count))
             Next
 
             'Read the item spawn data
@@ -545,7 +545,7 @@ Namespace MysteryDungeon.Explorers
 
                 Dim length = nextItemPointer - currentItemPointer
 
-                SuperRawBlock5.Add(RawData(currentItemPointer, length))
+                SuperRawBlock5.Add(Read(currentItemPointer, length))
             Next
         End Sub
 
@@ -763,7 +763,7 @@ Namespace MysteryDungeon.Explorers
             RelativePointers.Add(0) ' In original file, possibly a terminator
 
             Me.Length = &H10 + dataBlock.Count
-            Me.RawData(&H10, dataBlock.Count) = dataBlock.ToArray
+            Await Me.WriteAsync(&H10, dataBlock.Count, dataBlock.ToArray)
 
             'Finish
             Await MyBase.Save(Destination, provider)
@@ -777,7 +777,6 @@ Namespace MysteryDungeon.Explorers
         Private Property RawPokemonSpawns As List(Of List(Of PokemonSpawn))
         Private Property SuperRawItemSpawnData As List(Of Byte())
         Private Property SuperRawBlock5 As List(Of Byte())
-
 
     End Class
 End Namespace

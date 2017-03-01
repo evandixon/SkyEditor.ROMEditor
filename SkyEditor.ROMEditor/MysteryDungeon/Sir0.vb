@@ -106,10 +106,10 @@ Namespace MysteryDungeon
             'Todo: possible parsing of file to ensure file contents are OK.
             'Checking the magic should be good enough.
             Return File.Length >= 32 AndAlso
-                (Await File.Read(0)) = &H53 AndAlso 'S
-                (Await File.Read(1)) = &H49 AndAlso 'I
-                (Await File.Read(2)) = &H52 AndAlso 'R
-                (Await File.Read(3)) = &H30         '0
+                (Await File.ReadAsync(0)) = &H53 AndAlso 'S
+                (Await File.ReadAsync(1)) = &H49 AndAlso 'I
+                (Await File.ReadAsync(2)) = &H52 AndAlso 'R
+                (Await File.ReadAsync(3)) = &H30         '0
         End Function
 
         Public Overrides Sub CreateFile(Name As String, FileContents() As Byte)
@@ -125,24 +125,24 @@ Namespace MysteryDungeon
             ProcessData()
         End Function
 
-        Protected Overridable Function DoPreSave() As Task
+        Protected Overridable Async Function DoPreSave() As Task
             'The header and relative pointers must be set by child classes
 
-            Me.RawData(0, 4) = {&H53, &H49, &H52, &H30}
+            Await Me.WriteAsync(0, 4, {&H53, &H49, &H52, &H30})
 
             'Update subheader length
             Dim oldLength = Me.Length 'the new header offset
             Me.Length += Me.ContentHeader.Length 'Change the file length
-            Me.Int32(&H4) = oldLength 'Update the header pointer
+            Await Me.WriteInt32Async(&H4, oldLength) 'Update the header pointer
             Me.HeaderOffset = oldLength
 
             'Update subHeader
-            RawData(HeaderOffset, ContentHeader.Length) = ContentHeader
+            Await Me.WriteAsync(HeaderOffset, ContentHeader.Length, ContentHeader)
 
             'Pad the footer
             While Not Length Mod 16 = 0
                 Length += 1
-                RawData(Me.Length - 1) = PaddingByte
+                Await Me.WriteAsync(Me.Length - 1, PaddingByte)
             End While
 
             'Write the pointers
@@ -177,15 +177,14 @@ Namespace MysteryDungeon
 
             oldLength = Me.Length
             Me.Length += pointerSection.Count
-            Me.Int32(&H8) = oldLength
+            Await Me.WriteInt32Async(&H8, oldLength)
             Me.PointerOffset = oldLength
-            Me.RawData(oldLength, pointerSection.Count) = pointerSection.ToArray
+            Await Me.WriteAsync(oldLength, pointerSection.Count, pointerSection.ToArray)
 
             While Not Length Mod 16 = 0
                 Length += 1
-                RawData(Me.Length - 1) = PaddingByte
+                Await WriteAsync(Me.Length - 1, PaddingByte)
             End While
-            Return Task.FromResult(0)
         End Function
 
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
@@ -208,32 +207,32 @@ Namespace MysteryDungeon
 
         Public Async Function GetRawData() As Task(Of Byte())
             Await DoPreSave()
-            Dim data = RawData
+            Dim data = Await ReadAsync()
             ProcessData()
             Return data
         End Function
 
         Private Sub ProcessData()
             RelativePointers = New List(Of Integer)
-            HeaderOffset = Me.Int32(&H4)
-            PointerOffset = Me.Int32(&H8)
+            HeaderOffset = Me.ReadInt32(&H4)
+            PointerOffset = Me.ReadInt32(&H8)
 
             'Adjust header length to ignore padding
             If PaddingByte > 0 Then 'Check this so we don't accidentally remove a valid 0 value
                 For i = HeaderOffset + HeaderLength - 1 To HeaderOffset Step -1
-                    If RawData(i) = PaddingByte Then
+                    If Read(i) = PaddingByte Then
                         HeaderPadding += 1
                     Else
                         Exit For
                     End If
                 Next
             End If
-            ContentHeader = RawData(HeaderOffset, HeaderLength)
+            ContentHeader = Read(HeaderOffset, HeaderLength)
 
             Dim isConstructing As Boolean = False
             Dim constructedPointer As Integer = 0
             For count = PointerOffset To Length - 1
-                Dim current = RawData(count)
+                Dim current = Read(count)
                 If current >= 128 Then 'if the most significant bit is 1
                     isConstructing = True
                     constructedPointer = constructedPointer << 7 Or (current And &H7F)

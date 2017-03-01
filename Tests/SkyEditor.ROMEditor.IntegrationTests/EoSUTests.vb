@@ -1,8 +1,8 @@
 ﻿Imports System.Drawing
 Imports System.IO
 Imports System.Security.Cryptography
+Imports DotNet3dsToolkit
 Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.Windows.Providers
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 Imports SkyEditor.ROMEditor.Utilities
 
@@ -14,7 +14,7 @@ Imports SkyEditor.ROMEditor.Utilities
     Private Const romFilename As String = "eos-u.nds"
     Public Const romDir As String = "extracted-EOS-U"
 
-    Dim provider As IOProvider
+    Dim provider As IIOProvider
 
     ''' <summary>
     ''' Determines whether or not the test has been initialized
@@ -24,7 +24,7 @@ Imports SkyEditor.ROMEditor.Utilities
         Return Directory.Exists(romDir)
     End Function
 
-    Public Shared Sub UnpackFiles(provider As IOProvider)
+    Public Shared Sub UnpackFiles(provider As IIOProvider)
         Try
             Using md5 As New MD5CryptoServiceProvider
                 Dim hash = md5.ComputeHash(My.Resources.eos_u)
@@ -43,7 +43,7 @@ Imports SkyEditor.ROMEditor.Utilities
         End Try
     End Sub
 
-    Public Shared Sub CleanupFiles(provider As IOProvider)
+    Public Shared Sub CleanupFiles(provider As IIOProvider)
         If provider.FileExists(romFilename) Then
             provider.DeleteFile(romFilename)
         End If
@@ -54,7 +54,7 @@ Imports SkyEditor.ROMEditor.Utilities
 
 
     <TestInitialize()> Public Sub TestInit()
-        provider = New WindowsIOProvider
+        provider = New PhysicalIOProvider
         UnpackFiles(provider)
     End Sub
 

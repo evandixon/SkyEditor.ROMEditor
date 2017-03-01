@@ -1,4 +1,5 @@
 ﻿Imports System.Text
+Imports Microsoft
 Imports SkyEditor.Core.IO
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers.ViewModels
 
@@ -70,7 +71,7 @@ Namespace MysteryDungeon.Explorers
                 Dim s As New StringBuilder
                 'Read the null-terminated string
                 While bytes(endOffset) <> 0
-                    s.Append(e.GetString({RawData(endOffset)}, 0, 1))
+                    s.Append(e.GetString({Await ReadAsync(endOffset)}, 0, 1))
                     endOffset += 1
                 End While
                 Items(count / 4) = s.ToString
@@ -88,7 +89,7 @@ Namespace MysteryDungeon.Explorers
             For count As Integer = 0 To Items.Count - 1
                 Dim offset As UInt32 = offsets.Count * 4 + stringdataBytes.Count
                 offsets(count) = offset
-                Dim strBytes = e.GetBytes(Item(count).Replace(vbCrLf, vbCr))
+                Dim strBytes = e.GetBytes(Item(count).Replace(VBConstants.vbCrLf, VBConstants.vbCr))
                 For Each s In strBytes
                     stringdataBytes.Add(s)
                 Next
@@ -113,7 +114,7 @@ Namespace MysteryDungeon.Explorers
             Next
             'Write buffer to stream
             Length = totalData.Count
-            RawData(0, totalData.Count) = totalData.ToArray
+            Await WriteAsync(0, totalData.Count, totalData.ToArray)
             Await MyBase.Save(Destination, provider)
         End Function
         Default Public Property Item(Index As UInteger) As String

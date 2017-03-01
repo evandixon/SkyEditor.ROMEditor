@@ -23,11 +23,13 @@ Namespace MysteryDungeon.PSMD
 
         Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
-            ImageFormat = BitConverter.ToInt32(RawData(&H4, 4), 0)
-            Width = BitConverter.ToInt32(RawData(&H8, 4), 0)
-            Height = BitConverter.ToInt32(RawData(&HC, 4), 0)
-            PixelLength = BitConverter.ToInt32(RawData(&H10, 4), 0)
-            Dim dataStart = BitConverter.ToInt32(RawData(&H18, 4), 0)
+            Position = &H4
+            ImageFormat = ReadInt32()
+            Width = ReadInt32()
+            Height = ReadInt32()
+            PixelLength = ReadInt32()
+
+            Dim dataStart = ReadInt32(&H18)
             Dim dataLength = Width * Height * PixelLength
 
             Dim image As New Bitmap(Width, Height)
@@ -47,13 +49,13 @@ Namespace MysteryDungeon.PSMD
         End Function
         Private Function GetColor(PixelIndex As Integer, PixelLength As Integer, DataStart As Integer) As Color
             If PixelLength = &H20 Then '32 bit
-                Dim data = RawData(PixelIndex * (PixelLength / 8) + DataStart, 4)
+                Dim data = Read(PixelIndex * (PixelLength / 8) + DataStart, 4)
                 Return Color.FromArgb(data(0), data(3), data(2), data(1))
             ElseIf PixelLength = &H18 Then
-                Dim data = RawData(PixelIndex * (PixelLength / 8) + DataStart, 3)
+                Dim data = Read(PixelIndex * (PixelLength / 8) + DataStart, 3)
                 Return Color.FromArgb(255, data(2), data(1), data(0))
             ElseIf PixelLength = 8 Then
-                Dim data = RawData(PixelIndex * (PixelLength / 8) + DataStart)
+                Dim data = Read(PixelIndex * (PixelLength / 8) + DataStart)
                 Dim a = ((data And &HF0) >> 4) * 17
                 Dim c = ((data And &HF)) * 17
                 Return Color.FromArgb(a, c, c, c)
@@ -87,22 +89,22 @@ Namespace MysteryDungeon.PSMD
             Dim empty64(64) As Byte
             Dim dataLength = Width * Height * PixelLength
             Length = dataLength + &H80
-            RawData(0) = 0
-            RawData(1) = &H63
-            RawData(2) = &H74
-            RawData(3) = &H65
-            RawData(4, 4) = BitConverter.GetBytes(ImageFormat)
-            RawData(8, 4) = BitConverter.GetBytes(Width)
-            RawData(&HC, 4) = BitConverter.GetBytes(Height)
-            RawData(&H10, 4) = BitConverter.GetBytes(PixelLength)
-            RawData(&H14, 4) = BitConverter.GetBytes(0)
-            RawData(&H18, 4) = BitConverter.GetBytes(&H80)
-            RawData(&H1C, 64) = empty64
+            Await WriteAsync(0, 0)
+            Await WriteAsync(1, &H63)
+            Await WriteAsync(2, &H74)
+            Await WriteAsync(3, &H65)
+            Await WriteAsync(4, 4, BitConverter.GetBytes(ImageFormat))
+            Await WriteAsync(8, 4, BitConverter.GetBytes(Width))
+            Await WriteAsync(&HC, 4, BitConverter.GetBytes(Height))
+            Await WriteAsync(&H10, 4, BitConverter.GetBytes(PixelLength))
+            Await WriteAsync(&H14, 4, BitConverter.GetBytes(0))
+            Await WriteAsync(&H18, 4, BitConverter.GetBytes(&H80))
+            Await WriteAsync(&H1C, 64, empty64)
             'Todo: write pixel data
             Dim offset = &H80
             For y As Integer = (Height / 8) - 1 To 0 Step -1
                 For x As Integer = 0 To (Width / 8) - 1
-                    RawData(offset, (PixelLength * 64) / 8) = GetTileData(x * 8, y * 8, 8, PixelLength).ToArray
+                    Write(offset, (PixelLength * 64) / 8, GetTileData(x * 8, y * 8, 8, PixelLength).ToArray)
                     offset += (PixelLength * 64) / 8
                 Next
             Next
@@ -141,8 +143,8 @@ Namespace MysteryDungeon.PSMD
             End If
         End Function
 
-        Public Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
-            Return Task.FromResult(File.RawData(0) = 0 AndAlso File.RawData(1) = &H63 AndAlso File.RawData(2) = &H74 AndAlso File.RawData(3) = &H65)
+        Public Async Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
+            Return Await File.ReadAsync(0) = 0 AndAlso Await File.ReadAsync(1) = &H63 AndAlso Await File.ReadAsync(2) = &H74 AndAlso Await File.ReadAsync(3) = &H65
         End Function
     End Class
 End Namespace

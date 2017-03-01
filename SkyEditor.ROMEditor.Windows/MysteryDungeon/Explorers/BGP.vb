@@ -106,24 +106,24 @@ Namespace MysteryDungeon.Explorers
 #Region "Private Image Processing"
         Private ReadOnly Property ImageData As Byte()
             Get
-                Return RawData(&HC40, Length - &HC40)
+                Return Read(&HC40, Length - &HC40)
             End Get
         End Property
         Private ReadOnly Property MapData As Byte()
             Get
-                Return RawData(&H420, &H600)
+                Return Read(&H420, &H600)
             End Get
         End Property
         Private ReadOnly Property PaletteData As Byte()
             Get
-                Return RawData(&H20, &H400)
+                Return Read(&H20, &H400)
             End Get
         End Property
         Private ReadOnly Property ChunkData As List(Of Byte())
             Get
                 Dim chunks As New List(Of Byte())
                 For count As Integer = 0 To Math.Min(Math.Floor((ImageData.Count - 1) / 32) - 1, &H1400)
-                    chunks.Add(GenericArrayOperations(Of Byte).CopyOfRange(ImageData, count * 32, (count + 1) * 32 - 1))
+                    chunks.Add(ImageData.Skip(count * 32).Take(32).ToArray)
                 Next
                 Return chunks
             End Get

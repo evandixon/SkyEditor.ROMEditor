@@ -14,14 +14,14 @@ Namespace MysteryDungeon.PSMD.ViewModels
         Public Property MessageTabs As ObservableCollection(Of TabItem)
 
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
-            Return MyBase.SupportsObject(Obj) AndAlso CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(Obj) IsNot Nothing
+            Return MyBase.SupportsObject(Obj) AndAlso CurrentApplicationViewModel.GetFileViewModelForModel(Obj).ParentProject IsNot Nothing
         End Function
 
         Public Overrides Async Sub SetModel(model As Object)
             MyBase.SetModel(model)
 
             Dim codeFile As LuaCodeFile = model
-            Dim project = CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(codeFile)
+            Dim project = CurrentApplicationViewModel.GetFileViewModelForModel(codeFile).ParentProject
 
             Dim messageFiles As New Dictionary(Of String, MessageBin)
             For Each item In Directory.GetDirectories(Path.Combine(project.GetRootDirectory, "Languages"), "*", SearchOption.TopDirectoryOnly)
@@ -37,7 +37,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
                 End If
 
                 If exists Then
-                    Await msgfile.OpenFile(filename, CurrentPluginManager.CurrentIOProvider)
+                    Await msgfile.OpenFile(filename, CurrentApplicationViewModel.CurrentIOProvider)
                     messageFiles.Add(Path.GetFileName(item), msgfile)
                 End If
             Next
@@ -45,12 +45,12 @@ Namespace MysteryDungeon.PSMD.ViewModels
             MessageTabs = New ObservableCollection(Of TabItem)
             For Each item In messageFiles
                 Dim m As New MessageBinViewModel
-                m.SetPluginManager(CurrentPluginManager)
+                m.SetApplicationViewModel(CurrentApplicationViewModel)
                 m.SetModel(item.Value)
                 AddHandler m.Modified, AddressOf Me.OnModified
 
                 Dim p As New ObjectControlPlaceholder
-                p.CurrentPluginManager = Me.CurrentPluginManager
+                p.CurrentApplicationViewModel = Me.CurrentApplicationViewModel
                 p.ObjectToEdit = m
 
                 Dim t As New TabItem
@@ -64,11 +64,11 @@ Namespace MysteryDungeon.PSMD.ViewModels
             MyBase.UpdateModel(model)
 
             For Each item As TabItem In MessageTabs
-                DirectCast(DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit, MessageBinViewModel).Save(CurrentPluginManager.CurrentIOProvider)
+                DirectCast(DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit, MessageBinViewModel).Save(CurrentApplicationViewModel.CurrentIOProvider)
             Next
         End Sub
 
-        Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
+        Public Event Modified As EventHandler Implements INotifyModified.Modified
 
         Private Sub OnModified(sender As Object, e As EventArgs)
             RaiseEvent Modified(Me, e)

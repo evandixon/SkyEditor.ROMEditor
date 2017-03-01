@@ -3,7 +3,7 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace Windows.ConsoleCommands
     Public Class PSMDLangSearch
-        Inherits ConsoleCommandAsync
+        Inherits ConsoleCommand
 
         Public Overrides Async Function MainAsync(Arguments() As String) As Task
             If IO.Directory.Exists(Arguments(0)) Then
@@ -11,7 +11,7 @@ Namespace Windows.ConsoleCommands
                 Dim totalList As New Dictionary(Of UInteger, String)
                 For Each item In IO.Directory.GetFiles(Arguments(0))
                     Dim msg As New MessageBin
-                    Await msg.OpenFile(item, CurrentPluginManager.CurrentIOProvider)
+                    Await msg.OpenFile(item, CurrentApplicationViewModel.CurrentIOProvider)
                     languageEntries.Add(IO.Path.GetFileNameWithoutExtension(item), New Dictionary(Of UInteger, String))
                     For Each s In msg.Strings
                         languageEntries(IO.Path.GetFileNameWithoutExtension(item)).Add(s.Hash, s.Entry)

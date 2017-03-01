@@ -7,7 +7,7 @@ Namespace MenuActions
     Public Class PsmdSoundtrackMenuAction
         Inherits MenuAction
 
-        Public Overrides Function SupportedTypes() As IEnumerable(Of TypeInfo)
+        Public Overrides Function GetSupportedTypes() As IEnumerable(Of TypeInfo)
             Return {GetType(SolutionHeiarchyItemViewModel).GetTypeInfo}
         End Function
 
@@ -27,7 +27,7 @@ Namespace MenuActions
                 Dim sourceDir = DirectCast(project.GetNodeProject, BaseRomProject).GetRawFilesDir
                 Dim outputDir = IO.Path.Combine(project.GetNodeProject.GetRootDirectory, "Soundtrack")
                 c.Convert(sourceDir, outputDir)
-                CurrentPluginManager.CurrentIOUIManager.ShowLoading(c)
+                CurrentApplicationViewModel.ShowLoading(c)
             Next
         End Sub
 

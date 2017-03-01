@@ -23,15 +23,15 @@ Namespace Windows.FileFormats.Explorers.Script
                 Await f.OpenFile(Filename, Provider)
 
                 f.Position = 0
-                Dim numGroups = f.NextUInt16
-                Dim dataOffset = f.NextUInt16 'Length of non-groups/start of groups (Z)
-                Dim unkA = f.NextUInt16 'Start of something, only in enter.sse
-                Dim pokePos = f.NextUInt16
-                Dim objPos = f.NextUInt16
-                Dim backPos = f.NextUInt16
-                Dim unkE = f.NextUInt16
-                Dim movements = f.NextUInt16
-                Dim wordsGStart = f.NextUInt16
+                Dim numGroups = f.ReadUInt16
+                Dim dataOffset = f.ReadUInt16 'Length of non-groups/start of groups (Z)
+                Dim unkA = f.ReadUInt16 'Start of something, only in enter.sse
+                Dim pokePos = f.ReadUInt16
+                Dim objPos = f.ReadUInt16
+                Dim backPos = f.ReadUInt16
+                Dim unkE = f.ReadUInt16
+                Dim movements = f.ReadUInt16
+                Dim wordsGStart = f.ReadUInt16
             End Using
         End Function
     End Class

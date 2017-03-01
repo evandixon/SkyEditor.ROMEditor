@@ -292,7 +292,7 @@ Namespace MysteryDungeon.PSMD
                 Await f.OpenFile(Filename, Provider)
 
                 For count = 0 To ((f.Length / entryLength) - 1)
-                    Entries.Add(New ActDataInfoEntry(f.RawData(count * entryLength, entryLength)))
+                    Entries.Add(New ActDataInfoEntry(Await f.ReadAsync(count * entryLength, entryLength)))
                 Next
             End Using
         End Function

@@ -1,87 +1,88 @@
-﻿Imports System.Security.Cryptography
+﻿Imports System.IO
+Imports System.Security.Cryptography
 Imports System.Text.RegularExpressions
 Imports DS_ROM_Patcher
+Imports SkyEditor.Core
+Imports SkyEditor.Core.Processes
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.Core.Windows
-Imports SkyEditor.Core.Windows.Processes
 
 Namespace Projects
     Public Class GenericModProject
         Inherits Project
 
-        Public Sub New()
-            MyBase.New
-            Me.ModDependenciesBefore = New List(Of String)
-            Me.ModDependenciesAfter = New List(Of String)
-        End Sub
-
 #Region "Project Settings"
         Public Property ModName As String
             Get
-                Return Setting("ModName")
+                Return Settings("ModName")
             End Get
             Set(value As String)
-                Setting("ModName") = value
+                Settings("ModName") = value
             End Set
         End Property
 
         Public Property ModVersion As String
             Get
-                Return Setting("ModVersion")
+                Return Settings("ModVersion")
             End Get
             Set(value As String)
-                Setting("ModVersion") = value
+                Settings("ModVersion") = value
             End Set
         End Property
 
         Public Property ModAuthor As String
             Get
-                Return Setting("ModAuthor")
+                Return Settings("ModAuthor")
             End Get
             Set(value As String)
-                Setting("ModAuthor") = value
+                Settings("ModAuthor") = value
             End Set
         End Property
 
         Public Property ModDescription As String
             Get
-                Return Setting("ModDescription")
+                Return Settings("ModDescription")
             End Get
             Set(value As String)
-                Setting("ModDescription") = value
+                Settings("ModDescription") = value
             End Set
         End Property
 
         Public Property Homepage As String
             Get
-                Return Setting("Homepage")
+                Return Settings("Homepage")
             End Get
             Set(value As String)
-                Setting("Homepage") = value
+                Settings("Homepage") = value
             End Set
         End Property
 
         Public Property ModDependenciesBefore As List(Of String)
             Get
-                Return Setting("Dependencies-Before")
+                Return Settings("Dependencies-Before")
             End Get
             Set(value As List(Of String))
-                Setting("Dependencies-Before") = value
+                Settings("Dependencies-Before") = value
             End Set
         End Property
 
         Public Property ModDependenciesAfter As List(Of String)
             Get
-                Return Setting("Dependencies-After")
+                Return Settings("Dependencies-After")
             End Get
             Set(value As List(Of String))
-                Setting("Dependencies-After") = value
+                Settings("Dependencies-After") = value
             End Set
         End Property
 #End Region
 
 #Region "Project Type Properties"
+
+        Public Overrides ReadOnly Property CanBuild As Boolean
+            Get
+                Return Not IsBuilding
+            End Get
+        End Property
         Public Overrides Function CanCreateDirectory(Path As String) As Boolean
             Return False
         End Function
@@ -94,7 +95,7 @@ Namespace Projects
             Return False
         End Function
 
-        Public Overrides Function CanAddExistingFile(Path As String) As Boolean
+        Public Overrides Function CanImportFile(path As String) As Boolean
             Return False
         End Function
 
@@ -106,9 +107,6 @@ Namespace Projects
             Return {".*"}
         End Function
 
-        Public Overrides Function CanBuild() As Boolean
-            Return True
-        End Function
 #End Region
 
         ''' <summary>
@@ -139,104 +137,110 @@ Namespace Projects
         End Function
 
         Public Overridable Function GetModRootOutputDir() As String
-            Return IO.Path.Combine(GetRootDirectory, "Output")
+            Return Path.Combine(GetRootDirectory, "Output")
         End Function
 
         Public Overridable Function GetModOutputDir(sourceProjectName As String)
-            Return IO.Path.Combine(GetModRootOutputDir, sourceProjectName)
+            Return Path.Combine(GetModRootOutputDir, sourceProjectName)
         End Function
 
         Public Overridable Function GetModOutputFilename(sourceProjectName As String)
-            Return IO.Path.Combine(GetModOutputDir(sourceProjectName), ModName & ".mod")
+            Return Path.Combine(GetModOutputDir(sourceProjectName), ModName & ".mod")
         End Function
 
         Public Overridable Function GetRawFilesDir() As String
-            Return IO.Path.Combine(GetRootDirectory, "Raw Files")
+            Return Path.Combine(GetRootDirectory, "Raw Files")
         End Function
 
         Public Overridable Function GetModTempDir() As String
-            Return IO.Path.Combine(GetRootDirectory, "Mod Files")
+            Return Path.Combine(GetRootDirectory, "Mod Files")
         End Function
 #End Region
 
-        Public Async Function RunInitialize() As Task
-            RequiresInitialization = True
-            Await ParentSolution.Build({Me})
-        End Function
+        Public Overrides Async Function Initialize() As Task
+            Me.ProjectReferenceNames = New List(Of String)
+            Me.ProjectReferenceNames.Add(ParentSolution.Settings("BaseRomProject"))
+            Me.ModDependenciesBefore = New List(Of String)
+            Me.ModDependenciesAfter = New List(Of String)
+            Me.ModName = Me.Name
+            Me.ModVersion = "1.0.0"
+            Me.ModAuthor = "Unknown"
+            Me.ModDescription = "A generic Mod"
+            Me.Homepage = ""
 
-        Private Property RequiresInitialization As Boolean
+            For Each item In ParentSolution.GetAllProjects
+                If TypeOf item Is DSModPackProject Then
+                    Dim modPack = DirectCast(item, DSModPackProject)
 
-        Public NotOverridable Overrides Async Function Build() As Task
-            If RequiresInitialization Then
-                Await Initialize()
-            Else
-                Await DoBuild()
-            End If
-
-            Me.BuildProgress = 1
-            Me.IsBuildProgressIndeterminate = False
-            Me.BuildStatusMessage = My.Resources.Language.Complete
-        End Function
-
-        Protected Overridable Async Function Initialize() As Task
-            If Me.ProjectReferences.Count > 0 Then
-                Me.BuildProgress = 0
-                Me.BuildStatusMessage = My.Resources.Language.LoadingCopyingFiles
-
-                Dim filesToCopy = Me.GetFilesToCopy(ParentSolution, Me.ProjectReferences(0))
-                Dim sourceRoot = GetRawFilesSourceDir(ParentSolution, Me.ProjectReferences(0))
-                If filesToCopy.Count = 1 Then
-                    Me.IsBuildProgressIndeterminate = True
-
-                    Dim source As String = IO.Path.Combine(sourceRoot, filesToCopy(0))
-                    Dim dest As String = IO.Path.Combine(GetRawFilesDir, filesToCopy(0))
-                    If IO.File.Exists(source) Then
-                        If Not IO.Directory.Exists(IO.Path.GetDirectoryName(dest)) Then
-                            IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(dest))
+                    'If the mod we just added targets the same base ROM as this modpack...
+                    If Me.ProjectReferenceNames.Contains(modPack.BaseRomProject) Then
+                        '...then we add this mod to the modpack.
+                        If Not modPack.ProjectReferenceNames.Contains(Me.Name) Then
+                            modPack.ProjectReferenceNames.Add(Me.Name)
                         End If
-                        IO.File.Copy(source, dest, True)
-                    ElseIf IO.Directory.Exists(source) Then
+
+                    End If
+
+                End If
+            Next
+            If Me.ProjectReferenceNames.Count > 0 Then
+                Me.Progress = 0
+                Me.Message = My.Resources.Language.LoadingCopyingFiles
+
+                Dim filesToCopy = Me.GetFilesToCopy(ParentSolution, Me.ProjectReferenceNames(0))
+                Dim sourceRoot = GetRawFilesSourceDir(ParentSolution, Me.ProjectReferenceNames(0))
+                If filesToCopy.Count = 1 Then
+                    Me.IsIndeterminate = True
+
+                    Dim source As String = Path.Combine(sourceRoot, filesToCopy(0))
+                    Dim dest As String = Path.Combine(GetRawFilesDir, filesToCopy(0))
+                    If File.Exists(source) Then
+                        If Not Directory.Exists(Path.GetDirectoryName(dest)) Then
+                            Directory.CreateDirectory(Path.GetDirectoryName(dest))
+                        End If
+                        File.Copy(source, dest, True)
+                    ElseIf Directory.Exists(source) Then
                         Await FileSystem.CopyDirectory(source, dest, CurrentPluginManager.CurrentIOProvider)
                     End If
                 ElseIf filesToCopy.Count > 0 Then
-                    Me.IsBuildProgressIndeterminate = False
+                    Me.IsIndeterminate = False
                     Dim a As New AsyncFor
-                    AddHandler a.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
-                                                           Me.BuildProgress = e.Progress
-                                                       End Sub
-                    Await a.RunForEach(Sub(item As String)
-                                           Dim source As String = IO.Path.Combine(sourceRoot, item)
-                                           If IO.File.Exists(source) Then
-                                               Dim dest As String = IO.Path.Combine(GetRawFilesDir, item)
-                                               If Not IO.Directory.Exists(IO.Path.GetDirectoryName(dest)) Then
-                                                   IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(dest))
+                    AddHandler a.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                                      Me.Progress = e.Progress
+                                                  End Sub
+                    Await a.RunForEach(filesToCopy,
+                                       Sub(item As String)
+                                           Dim source As String = Path.Combine(sourceRoot, item)
+                                           If File.Exists(source) Then
+                                               Dim dest As String = Path.Combine(GetRawFilesDir, item)
+                                               If Not Directory.Exists(Path.GetDirectoryName(dest)) Then
+                                                   Directory.CreateDirectory(Path.GetDirectoryName(dest))
                                                End If
-                                               IO.File.Copy(source, dest, True)
-                                           ElseIf IO.Directory.Exists(source) Then
+                                               File.Copy(source, dest, True)
+                                           ElseIf Directory.Exists(source) Then
 
-                                               For Each f In IO.Directory.GetFiles(source, "*", IO.SearchOption.AllDirectories)
+                                               For Each f In Directory.GetFiles(source, "*", SearchOption.AllDirectories)
                                                    Dim dest As String = f.Replace(sourceRoot, GetRawFilesDir)
-                                                   If Not IO.Directory.Exists(IO.Path.GetDirectoryName(dest)) Then
-                                                       IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(dest))
+                                                   If Not Directory.Exists(Path.GetDirectoryName(dest)) Then
+                                                       Directory.CreateDirectory(Path.GetDirectoryName(dest))
                                                    End If
-                                                   IO.File.Copy(f, dest, True)
+                                                   File.Copy(f, dest, True)
                                                Next
                                            End If
-                                       End Sub, filesToCopy)
+                                       End Sub)
                 Else
                     Await FileSystem.CopyDirectory(sourceRoot, GetRawFilesDir, CurrentPluginManager.CurrentIOProvider)
                 End If
 
-                Me.BuildProgress = 1
-                Me.IsBuildProgressIndeterminate = False
-                Me.BuildStatusMessage = My.Resources.Language.Complete
+                Me.Progress = 1
+                Me.IsIndeterminate = False
+                Me.Message = My.Resources.Language.Complete
             Else
                 'Since there's no source project, we'll leave it up to the user to supply the needed files.
-                If Not IO.Directory.Exists(GetRawFilesDir) Then
-                    IO.Directory.CreateDirectory(GetRawFilesDir)
+                If Not Directory.Exists(GetRawFilesDir) Then
+                    Directory.CreateDirectory(GetRawFilesDir)
                 End If
             End If
-            RequiresInitialization = False
         End Function
 
         ''' <summary>
@@ -244,8 +248,8 @@ Namespace Projects
         ''' </summary>
         ''' <returns></returns>
         ''' <remarks>If this is overridden, do custom work, THEN use MyBase.Build</remarks>
-        Protected Overridable Async Function DoBuild() As Task
-            For Each sourceProjectName In Me.ProjectReferences
+        Public Overrides Async Function Build() As Task
+            For Each sourceProjectName In Me.ProjectReferenceNames
 
                 Dim sourceProject As Project = ParentSolution.GetProjectsByName(sourceProjectName).FirstOrDefault
 
@@ -269,9 +273,9 @@ Namespace Projects
                     AddHandler builder.BuildStatusChanged, AddressOf OnModBuilderProgressed
 
                     'Ensure parent directory exists
-                    Dim parentDir = IO.Path.GetDirectoryName(GetModOutputFilename(sourceProjectName))
-                    If Not IO.Directory.Exists(parentDir) Then
-                        IO.Directory.CreateDirectory(parentDir)
+                    Dim parentDir = Path.GetDirectoryName(GetModOutputFilename(sourceProjectName))
+                    If Not Directory.Exists(parentDir) Then
+                        Directory.CreateDirectory(parentDir)
                     End If
 
                     'Do the build
@@ -282,14 +286,14 @@ Namespace Projects
                 End If
 
             Next
-            Me.BuildProgress = 1
-            Me.BuildStatusMessage = My.Resources.Language.Complete
+            Me.Progress = 1
+            Me.Message = My.Resources.Language.Complete
         End Function
 
         Private Sub OnModBuilderProgressed(sender As Object, e As ProgressReportedEventArgs)
-            Me.IsBuildProgressIndeterminate = e.IsIndeterminate
-            Me.BuildProgress = e.Progress
-            Me.BuildStatusMessage = e.Message
+            Me.IsIndeterminate = e.IsIndeterminate
+            Me.Progress = e.Progress
+            Me.Message = e.Message
         End Sub
 
     End Class

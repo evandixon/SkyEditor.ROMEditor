@@ -9,7 +9,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
         Implements INotifyModified
         Implements INotifyPropertyChanged
 
-        Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
+        Public Event Modified As EventHandler Implements INotifyModified.Modified
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
         Public Property StarterEntries As List(Of FixedPokemonEntryViewModel)
@@ -145,9 +145,9 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
         Private Async Function CreateFileViewModel(model As Object) As Task(Of FixedPokemonEntryViewModel)
             Dim vm As New FixedPokemonEntryViewModel
-            vm.SetPluginManager(CurrentPluginManager)
+            vm.SetApplicationViewModel(CurrentApplicationViewModel)
             vm.SetModel(model)
-            Await vm.SetLanguageProject(CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(Me.Model))
+            Await vm.SetLanguageProject(CurrentApplicationViewModel.GetFileViewModelForModel(Me.Model).ParentProject)
             AddHandler vm.Modified, AddressOf OnEntryModified
 
             Return vm

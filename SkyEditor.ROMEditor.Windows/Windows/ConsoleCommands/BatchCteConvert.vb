@@ -3,7 +3,7 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace Windows.ConsoleCommands
     Public Class BatchCteConvert
-        Inherits ConsoleCommandAsync
+        Inherits ConsoleCommand
 
         Public Overrides Async Function MainAsync(Arguments() As String) As Task
             Dim SourceDir = Arguments(0)
@@ -14,7 +14,7 @@ Namespace Windows.ConsoleCommands
             For Each item In IO.Directory.GetFiles(SourceDir)
                 Try
                     Using c As New CteImage
-                        Await c.OpenFile(item, CurrentPluginManager.CurrentIOProvider)
+                        Await c.OpenFile(item, CurrentApplicationViewModel.CurrentIOProvider)
                         c.ContainedImage.Save(item & ".png", Drawing.Imaging.ImageFormat.Png)
                         Console.WriteLine("Converted " & item)
                     End Using

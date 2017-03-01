@@ -16,7 +16,7 @@ Namespace MenuActions
 
         Private WithEvents SaveFileDialog1 As SaveFileDialog
 
-        Public Overrides Function SupportedTypes() As IEnumerable(Of TypeInfo)
+        Public Overrides Function GetSupportedTypes() As IEnumerable(Of TypeInfo)
             Return {GetType(BGP).GetTypeInfo}
         End Function
 

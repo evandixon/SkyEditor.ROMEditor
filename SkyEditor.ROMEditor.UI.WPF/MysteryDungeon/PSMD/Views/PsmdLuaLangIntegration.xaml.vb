@@ -1,17 +1,18 @@
-﻿Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Projects
+﻿Imports System.Reflection
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Projects
 Imports SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.PSMD.ViewModels
 Imports SkyEditor.UI.WPF
 
 Namespace MysteryDungeon.PSMD.Views
     Public Class PsmdLuaLangIntegration
-        Inherits DataBoundObjectControl
+        Inherits DataBoundViewControl
         Implements IDisposable
 
         Private Sub PsmdLuaLangIntegration_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
             Me.Header = My.Resources.Language.Message
         End Sub
 
-        Public Overrides Function GetSortOrder(currentType As Type, isTab As Boolean) As Integer
+        Public Overrides Function GetSortOrder(currentType As TypeInfo, isTab As Boolean) As Integer
             Return 1
         End Function
 
@@ -20,7 +21,7 @@ Namespace MysteryDungeon.PSMD.Views
         End Sub
 
         Private Async Sub btnAdd_Click(sender As Object, e As RoutedEventArgs) Handles btnAdd.Click
-            Dim p As PsmdLuaProject = CurrentPluginManager.CurrentIOUIManager.GetProjectOfOpenModel(DirectCast(ObjectToEdit, PsmdLuaLangIntegrationViewModel).Model)
+            Dim p As PsmdLuaProject = CurrentApplicationViewModel.GetFileViewModelForModel(DirectCast(ViewModel, PsmdLuaLangIntegrationViewModel).Model).ParentProject
             Dim oldText As String = btnAdd.Content
             If Not p.IsLanguageLoaded Then
                 btnAdd.IsEnabled = False
@@ -37,7 +38,7 @@ Namespace MysteryDungeon.PSMD.Views
         Private Sub btnSciptSort_Click(sender As Object, e As RoutedEventArgs) Handles btnSciptSort.Click
             Dim numberRegex As New Text.RegularExpressions.Regex("\-?[0-9]+")
             Dim matches As New List(Of Integer)
-            For Each item As Text.RegularExpressions.Match In numberRegex.Matches(DirectCast(ObjectToEdit, PsmdLuaLangIntegrationViewModel).Model.Text)
+            For Each item As Text.RegularExpressions.Match In numberRegex.Matches(DirectCast(ViewModel, PsmdLuaLangIntegrationViewModel).Model.Contents)
                 matches.Add(CInt(item.Value))
             Next
             For Each item As TabItem In tcTabs.Items
@@ -45,12 +46,12 @@ Namespace MysteryDungeon.PSMD.Views
             Next
         End Sub
 
-        Public Overrides Property ObjectToEdit As Object
+        Public Overrides Property ViewModel As Object
             Get
-                Return MyBase.ObjectToEdit
+                Return MyBase.ViewModel
             End Get
             Set(value As Object)
-                MyBase.ObjectToEdit = value
+                MyBase.ViewModel = value
 
                 tcTabs.Items.Clear()
                 For Each item In DirectCast(value, PsmdLuaLangIntegrationViewModel).MessageTabs

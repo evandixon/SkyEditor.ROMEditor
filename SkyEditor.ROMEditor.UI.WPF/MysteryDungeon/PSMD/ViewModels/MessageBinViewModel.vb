@@ -60,9 +60,10 @@ Namespace MysteryDungeon.PSMD.ViewModels
             RawEntries = New ObservableCollection(Of MessageBinEntryViewModel)
             ResetSearchCommand = New RelayCommand(AddressOf ResetSearch)
         End Sub
+
 #Region "Events"
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
-        Public Event Modified As INotifyModified.ModifiedEventHandler Implements INotifyModified.Modified
+        Public Event Modified As EventHandler Implements INotifyModified.Modified
 #End Region
 
 #Region "Event Handlers"
@@ -128,7 +129,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
 #Region "Set/Load ViewModel"
         Private Function CreateViewModel(model As MessageBinStringEntry) As MessageBinEntryViewModel
             Dim vm As New MessageBinEntryViewModel
-            vm.CurrentPluginManager = Me.CurrentPluginManager
+            vm.SetApplicationViewModel(Me.CurrentApplicationViewModel)
             vm.Model = model
             AddHandler vm.PropertyChanged, AddressOf OnModified
             Return vm
@@ -161,8 +162,6 @@ Namespace MysteryDungeon.PSMD.ViewModels
             Next
         End Sub
 #End Region
-
-
 
 #Region "Search Functions"
         Public Sub Sort(Keys As List(Of Integer))

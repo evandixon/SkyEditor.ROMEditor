@@ -46,13 +46,13 @@ Namespace MysteryDungeon
             For count = 0 To FileCount - 1
                 Dim info As New FileInfo
                 info.Index = count
-                Dim filenameOffset = Me.UInt32(DataOffset + count * 12 + 0)
-                info.DataOffset = Me.Int32(DataOffset + count * 12 + 4)
-                info.DataLength = Me.Int32(DataOffset + count * 12 + 8)
+                Dim filenameOffset = Me.ReadUInt32(DataOffset + count * 12 + 0)
+                info.DataOffset = Me.ReadInt32(DataOffset + count * 12 + 4)
+                info.DataLength = Me.ReadInt32(DataOffset + count * 12 + 8)
                 info.FilenamePointer = filenameOffset
                 If Sir0Fat5Type = 0 Then
                     'We're inferring the length based on the offset of the next filename
-                    Dim filenameLength = Me.Int32(DataOffset + (count + 1) * 12 + 0) - filenameOffset
+                    Dim filenameLength = Me.ReadInt32(DataOffset + (count + 1) * 12 + 0) - filenameOffset
                     info.Filename = Me.ReadUnicodeString(filenameOffset, filenameLength / 2)
                 Else
                     info.Filename = Conversion.Hex(filenameOffset).PadLeft(8, "0"c)
@@ -79,7 +79,7 @@ Namespace MysteryDungeon
 
             'Write data
             Me.Length = 16 + data.Count
-            Me.RawData(16, data.Count) = data.ToArray
+            Await Me.WriteAsync(16, data.Count, data.ToArray)
 
             'Generate header, and let the base class write it
             Dim headerData As New List(Of Byte)

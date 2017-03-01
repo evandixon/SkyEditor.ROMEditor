@@ -24,26 +24,26 @@ Namespace MysteryDungeon.PSMD
                 f.IsReadOnly = True
                 Await f.OpenFile(Filename, Provider)
 
-                Dim subHeaderPointer = f.Int32(4)
-                Dim jukeboxPointerOffset = f.Int32(subHeaderPointer + 0)
-                Dim numEntries = f.Int32(subHeaderPointer + 4)
+                Dim subHeaderPointer = Await f.ReadInt32Async(4)
+                Dim jukeboxPointerOffset = Await f.ReadInt32Async(subHeaderPointer + 0)
+                Dim numEntries = Await f.ReadInt32Async(subHeaderPointer + 4)
 
                 For count = 0 To numEntries - 1
-                    Dim filenamePointer As Integer = f.Int32(jukeboxPointerOffset + count * 36 + 0)
-                    Dim u2 As Integer = f.Int32(jukeboxPointerOffset + count * 36 + 4)
-                    Dim u3 As Integer = f.Int32(jukeboxPointerOffset + count * 36 + 8)
-                    Dim unlockPointer As Integer = f.Int32(jukeboxPointerOffset + count * 36 + 12)
-                    Dim unk5 As Integer = f.Int32(jukeboxPointerOffset + count * 36 + 16)
-                    Dim unk6 As Integer = f.Int32(jukeboxPointerOffset + count * 36 + 20)
-                    Dim unk7 As Integer = f.Int32(jukeboxPointerOffset + count * 36 + 24)
-                    Dim unk8 As Integer = f.Int32(jukeboxPointerOffset + count * 36 + 28)
-                    Dim unk9 As Integer = f.Int32(jukeboxPointerOffset + count * 36 + 32)
+                    Dim filenamePointer As Integer = Await f.ReadInt32Async(jukeboxPointerOffset + count * 36 + 0)
+                    Dim u2 As Integer = Await f.ReadInt32Async(jukeboxPointerOffset + count * 36 + 4)
+                    Dim u3 As Integer = Await f.ReadInt32Async(jukeboxPointerOffset + count * 36 + 8)
+                    Dim unlockPointer As Integer = Await f.ReadInt32Async(jukeboxPointerOffset + count * 36 + 12)
+                    Dim unk5 As Integer = Await f.ReadInt32Async(jukeboxPointerOffset + count * 36 + 16)
+                    Dim unk6 As Integer = Await f.ReadInt32Async(jukeboxPointerOffset + count * 36 + 20)
+                    Dim unk7 As Integer = Await f.ReadInt32Async(jukeboxPointerOffset + count * 36 + 24)
+                    Dim unk8 As Integer = Await f.ReadInt32Async(jukeboxPointerOffset + count * 36 + 28)
+                    Dim unk9 As Integer = Await f.ReadInt32Async(jukeboxPointerOffset + count * 36 + 32)
 
                     Dim e As New JukeboxEntry
-                    e.Filename = f.ReadUnicodeString(filenamePointer)
-                    e.Unk2 = f.ReadUnicodeString(u2)
-                    e.Unk3 = f.ReadUnicodeString(u3)
-                    e.UnlockCriteria = f.ReadUnicodeString(unlockPointer)
+                    e.Filename = Await f.ReadNullTerminatedUnicodeStringAsync(filenamePointer)
+                    e.Unk2 = Await f.ReadNullTerminatedUnicodeStringAsync(u2)
+                    e.Unk3 = Await f.ReadNullTerminatedUnicodeStringAsync(u3)
+                    e.UnlockCriteria = Await f.ReadNullTerminatedUnicodeStringAsync(unlockPointer)
                     e.unk5 = unk5
                     e.unk6 = unk6
                     e.unk7 = unk7

@@ -1,5 +1,6 @@
-﻿Imports SkyEditor.Core.Windows
-Imports SkyEditor.Core.Windows.Processes
+﻿Imports System.IO
+Imports SkyEditor.Core
+Imports SkyEditor.Core.Processes
 
 Namespace Windows
     Public Module DSIconTool
@@ -9,7 +10,7 @@ Namespace Windows
             '                                      String.Format("{0} {1}",
             '                                                    RomPath, OutputPath))
             'extractTask.Wait()
-            ConsoleApp.RunProgram(IO.Path.Combine(romDirectory, "DSIconTool.exe"),
+            ConsoleApp.RunProgram(Path.Combine(romDirectory, "DSIconTool.exe"),
                                                   String.Format("{0} {1}",
                                                                 RomPath, OutputPath))
         End Sub

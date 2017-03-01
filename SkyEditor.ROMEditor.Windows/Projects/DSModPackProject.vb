@@ -1,10 +1,9 @@
 ﻿Imports System.IO
 Imports DS_ROM_Patcher
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.Processes
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.Core.Windows
-Imports SkyEditor.Core.Windows.Processes
 
 Namespace Projects
     Public Class DSModPackProject
@@ -12,68 +11,75 @@ Namespace Projects
 
         Public Property Info As ModpackInfo
             Get
-                Return Me.Setting("ModpackInfo")
+                Return Me.Settings("ModpackInfo")
             End Get
             Set
-                Me.Setting("ModpackInfo") = Value
+                Me.Settings("ModpackInfo") = Value
             End Set
         End Property
 
         Public Property BaseRomProject As String
             Get
-                Return Me.Setting("BaseRomProject")
+                Return Me.Settings("BaseRomProject")
             End Get
             Set
-                Me.Setting("BaseRomProject") = Value
+                Me.Settings("BaseRomProject") = Value
             End Set
         End Property
 
         Public Property OutputEnc3DSFile As Boolean
             Get
-                If Me.Setting("OutputEnc3DSFile") Is Nothing Then
-                    Me.Setting("OutputEnc3DSFile") = True
+                If Me.Settings("OutputEnc3DSFile") Is Nothing Then
+                    Me.Settings("OutputEnc3DSFile") = True
                 End If
-                Return Me.Setting("OutputEnc3DSFile")
+                Return Me.Settings("OutputEnc3DSFile")
             End Get
             Set
-                Me.Setting("OutputEnc3DSFile") = Value
+                Me.Settings("OutputEnc3DSFile") = Value
             End Set
         End Property
 
         Public Property OutputDec3DSFile As Boolean
             Get
-                If Me.Setting("OutputDec3DSFile") Is Nothing Then
-                    Me.Setting("OutputDec3DSFile") = False
+                If Me.Settings("OutputDec3DSFile") Is Nothing Then
+                    Me.Settings("OutputDec3DSFile") = False
                 End If
-                Return Me.Setting("OutputDec3DSFile")
+                Return Me.Settings("OutputDec3DSFile")
             End Get
             Set
-                Me.Setting("OutputDec3DSFile") = Value
+                Me.Settings("OutputDec3DSFile") = Value
             End Set
         End Property
 
         Public Property OutputCIAFile As Boolean
             Get
-                If Me.Setting("OutputCIAFile") Is Nothing Then
-                    Me.Setting("OutputCIAFile") = False
+                If Me.Settings("OutputCIAFile") Is Nothing Then
+                    Me.Settings("OutputCIAFile") = False
                 End If
-                Return Me.Setting("OutputCIAFile")
+                Return Me.Settings("OutputCIAFile")
             End Get
             Set(value As Boolean)
-                Me.Setting("OutputCIAFile") = value
+                Me.Settings("OutputCIAFile") = value
             End Set
         End Property
 
         Public Property OutputHans As Boolean
             Get
-                If Me.Setting("OutputHans") Is Nothing Then
-                    Me.Setting("OutputHans") = False
+                If Me.Settings("OutputHans") Is Nothing Then
+                    Me.Settings("OutputHans") = False
                 End If
-                Return Me.Setting("OutputHans")
+                Return Me.Settings("OutputHans")
             End Get
             Set(value As Boolean)
-                Me.Setting("OutputHans") = value
+                Me.Settings("OutputHans") = value
             End Set
+        End Property
+
+        Public Overrides ReadOnly Property CanBuild As Boolean
+            Get
+                Dim p As BaseRomProject = ParentSolution.GetProjectsByName(BaseRomProject).FirstOrDefault
+                Return (p IsNot Nothing)
+            End Get
         End Property
 
 
@@ -125,17 +131,25 @@ Namespace Projects
             Return IO.Path.Combine(GetRootDirectory, "Modpack.smdh")
         End Function
 
-        Public Overrides Function CanBuild() As Boolean
-            Dim p As BaseRomProject = ParentSolution.GetProjectsByName(BaseRomProject).FirstOrDefault
-            Return (p IsNot Nothing)
+        Public Overrides Async Function Initialize() As Task
+            Await MyBase.Initialize()
+
+            Me.Info = New ModpackInfo With {.Name = Me.Name}
+            Me.Info.Name = Me.Name
+            Me.Info.ShortName = Me.Name.Substring(0, Math.Min(Me.Name.Length, 10))
+            Me.Info.Author = "Unknown"
+            Me.Info.Version = "1.0.0"
+
+            Me.BaseRomProject = ParentSolution.Settings("BaseRomProject")
+
+            Dim baseRomProject As BaseRomProject = ParentSolution.GetProjectsByName(Me.BaseRomProject).FirstOrDefault
+            If baseRomProject IsNot Nothing Then
+                Me.Info.System = baseRomProject.RomSystem
+                Me.Info.GameCode = baseRomProject.GameCode
+            End If
         End Function
 
         Public Overrides Async Function Build() As Task
-            Await DoBuild()
-            Await MyBase.Build()
-        End Function
-
-        Protected Async Function DoBuild() As Task
             Dim modpackDir = GetModPackDir()
             'Dim modpackModsDir = GetModsDir()
             'Dim modpackToolsDir = GetToolsDir()
@@ -144,10 +158,10 @@ Namespace Projects
             Dim outputDir = GetOutputDir()
 
             'Create missing directories
-            If Not Directory.Exists(modsSourceDir)
+            If Not Directory.Exists(modsSourceDir) Then
                 Directory.CreateDirectory(modsSourceDir)
             End If
-            If Not Directory.Exists(outputDir)
+            If Not Directory.Exists(outputDir) Then
                 Directory.CreateDirectory(outputDir)
             End If
 
@@ -157,7 +171,7 @@ Namespace Projects
             Next
 
             'Copy mods from other projects
-            For Each item In Me.GetReferences(ParentSolution)
+            For Each item In Me.GetReferences()
                 If TypeOf item Is GenericModProject Then
                     Dim sourceFilename = DirectCast(item, GenericModProject).GetModOutputFilename(BaseRomProject)
                     ModBuilder.CopyMod(sourceFilename, modpackDir, True)
@@ -175,13 +189,13 @@ Namespace Projects
             ModBuilder.ZipModpack(modpackDir, Path.Combine(outputDir, Me.Info.Name & " " & Me.Info.Version & ".zip"))
 
             'Apply patch
-            Me.BuildProgress = 0.9
-            Me.BuildStatusMessage = My.Resources.Language.LoadingApplyingPatch
+            Me.Progress = 0.9
+            Me.Message = My.Resources.Language.LoadingApplyingPatch
 
             Await ApplyPatchAsync(ParentSolution)
 
-            Me.BuildProgress = 1
-            Me.BuildStatusMessage = My.Resources.Language.Complete
+            Me.Progress = 1
+            Me.Message = My.Resources.Language.Complete
         End Function
 
         Public Overridable Async Function ApplyPatchAsync(solution As Solution) As Task

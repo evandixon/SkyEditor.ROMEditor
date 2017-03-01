@@ -40,7 +40,7 @@ Namespace MysteryDungeon.PSMD
                 Await f.OpenFile(Filename, Provider)
 
                 For count = 0 To ((f.Length / 16) - 1)
-                    Entries.Add(New ActHitCountTableDataInfoEntry(f.RawData(count * 16, 16)))
+                    Entries.Add(New ActHitCountTableDataInfoEntry(Await f.ReadAsync(count * 16, 16)))
                 Next
             End Using
         End Function
