@@ -181,7 +181,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                                       End If
 
                                                       Dim destDir = IO.Path.Combine(Me.GetRootDirectory, "Languages", lang)
-                                                      Await FileSystem.EnsureDirectoryEmpty(destDir, CurrentPluginManager.CurrentIOProvider)
+                                                      Await FileSystem.EnsureDirectoryExistsEmpty(destDir, CurrentPluginManager.CurrentIOProvider)
 
                                                       Dim farc As New FarcF5
                                                       Await farc.OpenFile(item, CurrentPluginManager.CurrentIOProvider)
@@ -205,7 +205,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                                           End If
 
                                                           Dim destDir = IO.Path.Combine(Me.GetRootDirectory, "Languages", lang)
-                                                          Await FileSystem.EnsureDirectoryEmpty(destDir, CurrentPluginManager.CurrentIOProvider)
+                                                          Await FileSystem.EnsureDirectoryExistsEmpty(destDir, CurrentPluginManager.CurrentIOProvider)
                                                           Await FileSystem.CopyDirectory(item, destDir, CurrentPluginManager.CurrentIOProvider)
                                                       End Function)
         End Function

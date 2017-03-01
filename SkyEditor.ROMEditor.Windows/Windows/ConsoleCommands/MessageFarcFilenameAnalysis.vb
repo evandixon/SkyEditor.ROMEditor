@@ -15,7 +15,7 @@ Namespace Windows.ConsoleCommands
                 If File.Exists(Arguments(0)) Then
                     If Directory.Exists(Arguments(1)) Then
                         Dim tmpDirectory = Path.Combine(Environment.CurrentDirectory, "tmp", "farcAnalysis")
-                        Await FileSystem.EnsureDirectoryEmpty(tmpDirectory, CurrentApplicationViewModel.CurrentIOProvider)
+                        Await FileSystem.EnsureDirectoryExistsEmpty(tmpDirectory, CurrentApplicationViewModel.CurrentIOProvider)
 
                         'Extract the farc
                         Dim f As New FarcF5

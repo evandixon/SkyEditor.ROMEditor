@@ -131,19 +131,21 @@ Namespace Projects
             Return IO.Path.Combine(GetRootDirectory, "Modpack.smdh")
         End Function
 
-        Public Overrides Function Initialize() As Task
-            Return MyBase.Initialize()
+        Public Overrides Async Function Initialize() As Task
+            Await MyBase.Initialize()
 
             Me.Info = New ModpackInfo With {.Name = Me.Name}
             Me.Info.Name = Me.Name
             Me.Info.ShortName = Me.Name.Substring(0, Math.Min(Me.Name.Length, 10))
             Me.Info.Author = "Unknown"
             Me.Info.Version = "1.0.0"
-            Dim baseRomProject As BaseRomProject = ParentSolution.GetProjectsByName(Me.Settings("BaseRomProject")).FirstOrDefault
+
+            Me.BaseRomProject = ParentSolution.Settings("BaseRomProject")
+
+            Dim baseRomProject As BaseRomProject = ParentSolution.GetProjectsByName(Me.BaseRomProject).FirstOrDefault
             If baseRomProject IsNot Nothing Then
                 Me.Info.System = baseRomProject.RomSystem
                 Me.Info.GameCode = baseRomProject.GameCode
-                Me.BaseRomProject = Me.Settings("BaseRomProject")
             End If
         End Function
 
