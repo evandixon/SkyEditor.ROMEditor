@@ -90,6 +90,10 @@ Namespace MysteryDungeon.PSMD.Projects
         Dim _moveNames As Dictionary(Of Integer, String)
 #End Region
 
+        Public Overrides Function CanCreateDirectory(Path As String) As Boolean
+            Return True
+        End Function
+
         Public Overrides Function GetCustomFilePatchers() As IEnumerable(Of FilePatcher)
             Dim patchers = New List(Of FilePatcher)
             If patchers Is Nothing Then
