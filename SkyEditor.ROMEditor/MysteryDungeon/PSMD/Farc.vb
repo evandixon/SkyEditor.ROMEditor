@@ -14,6 +14,16 @@ Namespace MysteryDungeon.PSMD
             Me.EnableInMemoryLoad = True
         End Sub
 
+        Public Property Header As Sir0Fat5
+
+        Protected Property DataOffset As Integer
+
+        Public ReadOnly Property FileCount As Integer
+            Get
+                Return Header.FileData.Count
+            End Get
+        End Property
+
         Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
 
@@ -28,116 +38,6 @@ Namespace MysteryDungeon.PSMD
             Header = New Sir0Fat5
             Header.EnableInMemoryLoad = True
             Header.CreateFile("", Await Me.ReadAsync(sir0Offset, sir0Length))
-        End Function
-
-        Public Property Header As Sir0Fat5
-        Protected Property DataOffset As Integer
-
-        Public ReadOnly Property FileCount As Integer
-            Get
-                Return Header.FileData.Count
-            End Get
-        End Property
-
-        Public Function GetFileData(FileIndex As Integer) As Byte()
-            Return Read(Header.FileData(FileIndex).DataOffset + DataOffset, Header.FileData(FileIndex).DataLength)
-        End Function
-
-        ''' <summary>
-        ''' Gets the FARC file with the given filename, if it exists.
-        ''' Otherwise, returns nothing.
-        ''' </summary>
-        ''' <param name="Filename">Name of the file to look for.</param>
-        ''' <returns></returns>
-        Public Function GetFileData(Filename As String) As Byte()
-            'Only works on Farc files without filenames.
-            Dim dic = GetFileDictionary()
-
-            Dim hash As UInteger? = (From kv In dic Where String.Compare(Filename, kv.Value, StringComparison.OrdinalIgnoreCase) = 0 Select kv.Key).FirstOrDefault
-            If hash IsNot Nothing Then
-                Dim info = (From i In Header.FileData Where i.FilenamePointer = hash).FirstOrDefault
-                If info IsNot Nothing Then
-                    Return Read(info.DataOffset + DataOffset, info.DataLength)
-                Else
-                    Throw New IndexOutOfRangeException("Unable to find entry with name " & Filename)
-                End If
-            Else
-                Throw New IndexOutOfRangeException("Unable to find entry with name " & Filename)
-            End If
-        End Function
-
-        '''' <summary>
-        '''' Copies the file at FileIndex into the given Stream at its current position.
-        '''' </summary>
-        '''' <param name="FileIndex"></param>
-        '''' <param name="Stream"></param>
-        '''' <param name="FullCopy">True to write at the beginning of the target stream and set the length to the proper length.</param>
-        'Public Sub ReadData(FileIndex As Integer, Stream As IO.Stream, FullCopy As Boolean)
-        '    Me.FileReader.Seek(Header.FileData(FileIndex).DataOffset + DataOffset, IO.SeekOrigin.Begin)
-        '    If FullCopy Then
-        '        Stream.Seek(0, IO.SeekOrigin.Begin)
-        '        Stream.SetLength(Header.FileData(FileIndex).DataLength)
-        '    End If
-        '    For count = 0 To Header.FileData(FileIndex).DataLength - 1
-        '        Stream.WriteByte(FileReader.ReadByte)
-        '    Next
-        'End Sub
-
-        ''' <summary>
-        ''' Extracts the FARC to the given directory.
-        ''' </summary>
-        ''' <param name="Directory">Directory to extract the FARC to.</param>
-        Public Async Function Extract(Directory As String, provider As IIOProvider, Optional UseDictionary As Boolean = True) As Task
-            Dim asyncFor As New AsyncFor
-            Dim dic As Dictionary(Of UInteger, String)
-            If UseDictionary Then
-                dic = GetFileDictionary()
-            Else
-                dic = New Dictionary(Of UInteger, String)
-            End If
-            'Extract the files.
-            'Async if thread safe, sync otherwise
-            asyncFor.RunSynchronously = Not Me.IsThreadSafe
-            Await asyncFor.RunFor(Sub(Count As Integer)
-                                      Dim filename As String
-                                      Dim fileHash As UInteger = Header.FileData(Count).FilenamePointer
-                                      If dic.ContainsKey(fileHash) Then
-                                          filename = dic(fileHash)
-                                      Else
-                                          filename = fileHash.ToString 'Count.ToString
-                                      End If
-                                      provider.WriteAllBytes(IO.Path.Combine(Directory, filename), GetFileData(Count))
-                                  End Sub, 0, FileCount - 1)
-        End Function
-
-        ''' <summary>
-        ''' Gets a dictionary matching file indexes to file names.
-        ''' </summary>
-        ''' <returns></returns>
-        Public Function GetFileDictionary() As Dictionary(Of UInteger, String)
-            Dim out As New Dictionary(Of UInteger, String)
-            Dim resourceFile = My.Resources.FarcFilenames.ResourceManager.GetString(Path.GetFileNameWithoutExtension(Me.Filename)) ' PluginHelper.GetResourceName(IO.Path.Combine("farc", IO.Path.GetFileNameWithoutExtension(Me.OriginalFilename) & ".txt"))
-            If Not String.IsNullOrEmpty(resourceFile) Then
-                Dim i As New BasicIniFile
-                i.CreateFile(resourceFile)
-                For Each item In i.Entries
-                    out.Add(CUInt(item.Key), item.Value)
-                Next
-            End If
-            Return out
-        End Function
-
-        Private Shared Function GetReverseFileDictionary(Filename As String, provider As IIOProvider) As Dictionary(Of String, UInteger)
-            Dim out As New Dictionary(Of String, UInteger)
-            Dim resource = My.Resources.FarcFilenames.ResourceManager.GetString(Path.GetFileNameWithoutExtension(Filename))
-            If Not String.IsNullOrEmpty(resource) Then
-                Dim i As New BasicIniFile
-                i.CreateFile(resource)
-                For Each item In i.Entries
-                    out.Add(item.Value, CUInt(item.Key))
-                Next
-            End If
-            Return out
         End Function
 
         Public Shared Async Function Pack(SourceDirectory As String, DestinationFarcFilename As String, provider As IIOProvider) As Task
@@ -236,6 +136,91 @@ Namespace MysteryDungeon.PSMD
 
 
             'archive.Dispose()
+        End Function
+
+
+        Public Function GetFileData(FileIndex As Integer) As Byte()
+            Return Read(Header.FileData(FileIndex).DataOffset + DataOffset, Header.FileData(FileIndex).DataLength)
+        End Function
+
+        ''' <summary>
+        ''' Gets the FARC file with the given filename, if it exists.
+        ''' Otherwise, returns nothing.
+        ''' </summary>
+        ''' <param name="Filename">Name of the file to look for.</param>
+        ''' <returns></returns>
+        Public Function GetFileData(Filename As String) As Byte()
+            'Only works on Farc files without filenames.
+            Dim dic = GetFileDictionary()
+
+            Dim hash As UInteger? = (From kv In dic Where String.Compare(Filename, kv.Value, StringComparison.OrdinalIgnoreCase) = 0 Select kv.Key).FirstOrDefault
+            If hash IsNot Nothing Then
+                Dim info = (From i In Header.FileData Where i.FilenamePointer = hash).FirstOrDefault
+                If info IsNot Nothing Then
+                    Return Read(info.DataOffset + DataOffset, info.DataLength)
+                Else
+                    Throw New IndexOutOfRangeException("Unable to find entry with name " & Filename)
+                End If
+            Else
+                Throw New IndexOutOfRangeException("Unable to find entry with name " & Filename)
+            End If
+        End Function
+
+        ''' <summary>
+        ''' Extracts the FARC to the given directory.
+        ''' </summary>
+        ''' <param name="Directory">Directory to extract the FARC to.</param>
+        Public Async Function Extract(Directory As String, provider As IIOProvider, Optional UseDictionary As Boolean = True) As Task
+            Dim asyncFor As New AsyncFor
+            Dim dic As Dictionary(Of UInteger, String)
+            If UseDictionary Then
+                dic = GetFileDictionary()
+            Else
+                dic = New Dictionary(Of UInteger, String)
+            End If
+            'Extract the files.
+            'Async if thread safe, sync otherwise
+            asyncFor.RunSynchronously = Not Me.IsThreadSafe
+            Await asyncFor.RunFor(Sub(Count As Integer)
+                                      Dim filename As String
+                                      Dim fileHash As UInteger = Header.FileData(Count).FilenamePointer
+                                      If dic.ContainsKey(fileHash) Then
+                                          filename = dic(fileHash)
+                                      Else
+                                          filename = fileHash.ToString 'Count.ToString
+                                      End If
+                                      provider.WriteAllBytes(IO.Path.Combine(Directory, filename), GetFileData(Count))
+                                  End Sub, 0, FileCount - 1)
+        End Function
+
+        ''' <summary>
+        ''' Gets a dictionary matching file indexes to file names.
+        ''' </summary>
+        ''' <returns></returns>
+        Public Function GetFileDictionary() As Dictionary(Of UInteger, String)
+            Dim out As New Dictionary(Of UInteger, String)
+            Dim resourceFile = My.Resources.FarcFilenames.ResourceManager.GetString(Path.GetFileNameWithoutExtension(Me.Filename)) ' PluginHelper.GetResourceName(IO.Path.Combine("farc", IO.Path.GetFileNameWithoutExtension(Me.OriginalFilename) & ".txt"))
+            If Not String.IsNullOrEmpty(resourceFile) Then
+                Dim i As New BasicIniFile
+                i.CreateFile(resourceFile)
+                For Each item In i.Entries
+                    out.Add(CUInt(item.Key), item.Value)
+                Next
+            End If
+            Return out
+        End Function
+
+        Private Shared Function GetReverseFileDictionary(Filename As String, provider As IIOProvider) As Dictionary(Of String, UInteger)
+            Dim out As New Dictionary(Of String, UInteger)
+            Dim resource = My.Resources.FarcFilenames.ResourceManager.GetString(Path.GetFileNameWithoutExtension(Filename))
+            If Not String.IsNullOrEmpty(resource) Then
+                Dim i As New BasicIniFile
+                i.CreateFile(resource)
+                For Each item In i.Entries
+                    out.Add(item.Value, CUInt(item.Key))
+                Next
+            End If
+            Return out
         End Function
 
 #Region "IDisposable Support"
