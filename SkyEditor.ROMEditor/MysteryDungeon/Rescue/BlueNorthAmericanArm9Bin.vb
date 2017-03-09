@@ -7,7 +7,7 @@ Namespace MysteryDungeon.Rescue
 #Region "Starter Block"
         Protected Property StarterBlockOffset As Integer = &HBE5F0
 
-        Public Property Starter01 As UInt16
+        Public Property HardyMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 0)
             End Get
@@ -16,7 +16,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter02 As UInt16
+        Public Property HardyFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 2)
             End Get
@@ -25,7 +25,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter03 As UInt16
+        Public Property DocileMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 4)
             End Get
@@ -34,7 +34,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter04 As UInt16
+        Public Property DocileFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 6)
             End Get
@@ -43,7 +43,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter05 As UInt16
+        Public Property BraveMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 8)
             End Get
@@ -52,7 +52,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter06 As UInt16
+        Public Property BraveFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 10)
             End Get
@@ -61,7 +61,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter07 As UInt16
+        Public Property JollyMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 12)
             End Get
@@ -70,7 +70,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter08 As UInt16
+        Public Property JollyFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 14)
             End Get
@@ -79,7 +79,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter09 As UInt16
+        Public Property ImpishMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 16)
             End Get
@@ -88,7 +88,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter10 As UInt16
+        Public Property ImpishFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 18)
             End Get
@@ -97,7 +97,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter11 As UInt16
+        Public Property NaiveMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 20)
             End Get
@@ -106,7 +106,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter12 As UInt16
+        Public Property NaiveFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 22)
             End Get
@@ -115,7 +115,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter13 As UInt16
+        Public Property TimidMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 24)
             End Get
@@ -124,7 +124,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter14 As UInt16
+        Public Property TimidFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 26)
             End Get
@@ -133,7 +133,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter15 As UInt16
+        Public Property HastyMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 28)
             End Get
@@ -142,7 +142,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter16 As UInt16
+        Public Property HastyFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 30)
             End Get
@@ -151,7 +151,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter17 As UInt16
+        Public Property SassyMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 32)
             End Get
@@ -160,7 +160,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter18 As UInt16
+        Public Property SassyFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 34)
             End Get
@@ -169,7 +169,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter19 As UInt16
+        Public Property CalmMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 36)
             End Get
@@ -178,7 +178,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter20 As UInt16
+        Public Property CalmFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 38)
             End Get
@@ -187,7 +187,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter21 As UInt16
+        Public Property RelaxedMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 40)
             End Get
@@ -196,7 +196,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter22 As UInt16
+        Public Property RelaxedFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 42)
             End Get
@@ -205,7 +205,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter23 As UInt16
+        Public Property LonelyMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 44)
             End Get
@@ -214,7 +214,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter24 As UInt16
+        Public Property LonelyFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 46)
             End Get
@@ -223,7 +223,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter25 As UInt16
+        Public Property QuirkyMale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 48)
             End Get
@@ -232,7 +232,7 @@ Namespace MysteryDungeon.Rescue
             End Set
         End Property
 
-        Public Property Starter26 As UInt16
+        Public Property QuirkyFemale As UInt16
             Get
                 Return ReadUInt16(StarterBlockOffset + 50)
             End Get
