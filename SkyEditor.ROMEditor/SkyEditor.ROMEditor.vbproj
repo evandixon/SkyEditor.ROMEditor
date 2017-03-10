@@ -137,6 +137,7 @@
     <Compile Include="MysteryDungeon\PSMD\Pokemon\ActorDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\WazaDataInfo.vb" />
     <Compile Include="MysteryDungeon\Rescue\BlueNorthAmericanArm9Bin.vb" />
+    <Compile Include="MysteryDungeon\Rescue\IRescueTeamStarters.vb" />
     <Compile Include="MysteryDungeon\Rescue\SBin.vb" />
     <Compile Include="MysteryDungeon\Sir0.vb" />
     <Compile Include="MysteryDungeon\Sir0Fat5.vb" />
