@@ -1,0 +1,137 @@
+﻿<skyWPF:DataBoundViewControl x:Class="MysteryDungeon.Rescue.Views.RescueTeamPersonalityTest"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:skyWPF="clr-namespace:SkyEditor.UI.WPF;assembly=SkyEditor.UI.WPF"
+             xmlns:res="clr-namespace:SkyEditor.ROMEditor.UI.WPF.My.Resources"
+             xmlns:saveEditor="clr-namespace:SkyEditor.SaveEditor;assembly=SkyEditor.SaveEditor"
+             xmlns:rescue="clr-namespace:SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.Rescue.ViewModels"
+             TargetType="{x:Type rescue:RescueTeamStartersViewModel}"
+             mc:Ignorable="d">
+    <Grid x:Name="grid1">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="23" />
+            <RowDefinition Height="3" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="3" />
+            <RowDefinition Height="23" />
+            <RowDefinition Height="3" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="3" />
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Content="{x:Static res:Language.Player}" FontWeight="Bold"/>
+        <UniformGrid Grid.Row="2" Columns="4" Rows="13" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Label Content="{x:Static res:Language.HardyMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding HardyMale}" />
+
+            <Label Content="{x:Static res:Language.HardyFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding HardyFemale}" />
+
+            <Label Content="{x:Static res:Language.DocileMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding DocileMale}" />
+
+            <Label Content="{x:Static res:Language.DocileFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding DocileFemale}" />
+
+            <Label Content="{x:Static res:Language.BraveMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding BraveMale}" />
+
+            <Label Content="{x:Static res:Language.BraveFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding BraveFemale}" />
+
+            <Label Content="{x:Static res:Language.JollyMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding JollyMale}" />
+
+            <Label Content="{x:Static res:Language.JollyFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding JollyFemale}" />
+
+            <Label Content="{x:Static res:Language.ImpishMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding ImpishMale}" />
+
+            <Label Content="{x:Static res:Language.ImpishFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding ImpishFemale}" />
+
+            <Label Content="{x:Static res:Language.NaiveMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding NaiveMale}" />
+
+            <Label Content="{x:Static res:Language.NaiveFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding NaiveFemale}" />
+
+            <Label Content="{x:Static res:Language.TimidMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding TimidMale}" />
+
+            <Label Content="{x:Static res:Language.TimidFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding TimidFemale}" />
+
+            <Label Content="{x:Static res:Language.HastyMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding HastyMale}" />
+
+            <Label Content="{x:Static res:Language.HastyFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding HastyFemale}" />
+
+            <Label Content="{x:Static res:Language.SassyMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding SassyMale}" />
+
+            <Label Content="{x:Static res:Language.SassyFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding SassyFemale}" />
+
+            <Label Content="{x:Static res:Language.CalmMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding CalmMale}" />
+
+            <Label Content="{x:Static res:Language.CalmFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding CalmFemale}" />
+
+            <Label Content="{x:Static res:Language.RelaxedMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding RelaxedMale}" />
+
+            <Label Content="{x:Static res:Language.RelaxedFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding RelaxedFemale}" />
+
+            <Label Content="{x:Static res:Language.LonelyMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding LonelyMale}" />
+
+            <Label Content="{x:Static res:Language.LonelyFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding LonelyFemale}" />
+
+            <Label Content="{x:Static res:Language.QuirkyMale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding QuirkyMale}" />
+
+            <Label Content="{x:Static res:Language.QuirkyFemale}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding QuirkyFemale}" />
+        </UniformGrid>
+        <Label Grid.Row="4" Content="{x:Static res:Language.Partner}" FontWeight="Bold"/>
+        <UniformGrid Grid.Row="6" Columns="2" Rows="10" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Label Content="{x:Static res:Language.Partner01}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Partner01}" />
+
+            <Label Content="{x:Static res:Language.Partner02}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Partner02}" />
+
+            <Label Content="{x:Static res:Language.Partner03}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Partner03}" />
+
+            <Label Content="{x:Static res:Language.Partner04}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Partner04}" />
+
+            <Label Content="{x:Static res:Language.Partner05}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Partner05}" />
+
+            <Label Content="{x:Static res:Language.Partner06}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Partner06}" />
+
+            <Label Content="{x:Static res:Language.Partner07}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Partner07}" />
+
+            <Label Content="{x:Static res:Language.Partner08}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Partner08}" />
+
+            <Label Content="{x:Static res:Language.Partner09}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Partner09}" />
+
+            <Label Content="{x:Static res:Language.Partner10}" Height="26" VerticalContentAlignment="Center"/>
+            <ComboBox IsEditable="True" Height="21" Width="100" ItemsSource="{x:Static saveEditor:Lists.RBPokemon}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Partner10}" />
+
+        </UniformGrid>
+    </Grid>
+</skyWPF:DataBoundViewControl>
