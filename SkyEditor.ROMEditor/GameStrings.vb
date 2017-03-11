@@ -7,4 +7,5 @@
     Public Const PSMDCode = "0004000000(1744|1746|149B)00"
 
     Public Const SkyCode = "C2S."
+    Public Const BRTUSCode = "APHE"
 End Class
