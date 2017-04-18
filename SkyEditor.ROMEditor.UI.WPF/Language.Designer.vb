@@ -623,6 +623,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Index.
+        '''</summary>
+        Public Shared ReadOnly Property OriginalIndex() As String
+            Get
+                Return ResourceManager.GetString("OriginalIndex", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Partner.
         '''</summary>
         Public Shared ReadOnly Property Partner() As String

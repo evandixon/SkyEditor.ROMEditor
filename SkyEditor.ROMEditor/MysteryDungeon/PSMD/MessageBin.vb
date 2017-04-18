@@ -88,7 +88,7 @@ Namespace MysteryDungeon.PSMD
 
                 Loop Until doEnd
 
-                Dim newEntry = New MessageBinStringEntry With {.Hash = stringHash, .Entry = s.ToString.Trim, .Unknown = unk, .Pointer = stringPointer}
+                Dim newEntry = New MessageBinStringEntry With {.Hash = stringHash, .Entry = s.ToString.Trim, .Unknown = unk, .Pointer = stringPointer, .OriginalIndex = i}
                 Strings.Add(newEntry)
             Next
         End Sub
@@ -106,7 +106,7 @@ Namespace MysteryDungeon.PSMD
 
                 'We're skipping reading the string, since this function only loads the IDs
 
-                Dim newEntry = New MessageBinStringEntry With {.Hash = stringHash, .Entry = "", .Unknown = unk}
+                Dim newEntry = New MessageBinStringEntry With {.Hash = stringHash, .Entry = "", .Unknown = unk, .OriginalIndex = i}
                 Strings.Add(newEntry)
             Next
         End Function

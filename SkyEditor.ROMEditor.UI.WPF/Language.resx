@@ -483,4 +483,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="Starters" xml:space="preserve">
     <value>Starters</value>
   </data>
+  <data name="OriginalIndex" xml:space="preserve">
+    <value>Index</value>
+  </data>
 </root>

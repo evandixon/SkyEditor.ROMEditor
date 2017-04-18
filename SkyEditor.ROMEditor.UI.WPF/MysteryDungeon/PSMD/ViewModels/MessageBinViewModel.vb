@@ -1,9 +1,12 @@
 ﻿Imports System.Collections.ObjectModel
 Imports System.ComponentModel
 Imports System.Timers
+Imports System.Windows.Forms
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
+Imports SkyEditor.UI.WPF
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
+Imports System.Text
 
 Namespace MysteryDungeon.PSMD.ViewModels
     Public Class MessageBinViewModel
@@ -52,6 +55,12 @@ Namespace MysteryDungeon.PSMD.ViewModels
                     End If
                 End Set
             End Property
+
+            Public ReadOnly Property OriginalIndex As Integer
+                Get
+                    Return Model.OriginalIndex
+                End Get
+            End Property
         End Class
 
         Public Sub New()
@@ -77,6 +86,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
         Private searchTask As Task
 
         Public Property RawEntries As ObservableCollection(Of MessageBinEntryViewModel)
+
         Public Property CurrentEntryList As ObservableCollection(Of MessageBinEntryViewModel)
             Get
                 Return _currentEntryList
@@ -111,12 +121,14 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
         Public ReadOnly Property ResetSearchCommand As RelayCommand
 
+        Public ReadOnly Property ExportCommand As RelayCommand
+
         Public Sub Save(provider As IIOProvider)
             Model.Save(provider)
         End Sub
 
         Public Sub AddBlankEntry(id As UInteger)
-            RawEntries.Add(CreateViewModel(New MessageBinStringEntry With {.Hash = id}))
+            RawEntries.Add(CreateViewModel(New MessageBinStringEntry With {.Hash = id, .OriginalIndex = RawEntries.Count}))
         End Sub
 
         Private Sub ResetSearch()
@@ -124,6 +136,34 @@ Namespace MysteryDungeon.PSMD.ViewModels
             _searchText = ""
             CurrentEntryList = RawEntries
             RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(SearchText)))
+        End Sub
+
+        ''' <summary>
+        ''' Saves the current entries as a CSV file
+        ''' </summary>
+        ''' <param name="filename"></param>
+        Public Sub Export(filename As String)
+            Dim output As New StringBuilder
+            output.AppendLine("Index,Hash,Entry")
+            For Each item In CurrentEntryList
+                output.Append(item.OriginalIndex)
+                output.Append(",")
+                output.Append(item.HashSigned)
+                output.Append(",")
+                output.Append(item.Entry)
+            Next
+            CurrentApplicationViewModel.CurrentIOProvider.WriteAllText(filename, output.ToString)
+        End Sub
+
+        ''' <summary>
+        ''' Saves the current entries as a CSV file, the path of which determined by an SaveFileDialog
+        ''' </summary>
+        Public Sub Export()
+            Dim s As New SaveFileDialog
+            s.Filter = CurrentApplicationViewModel.GetIOFilter({"*.csv"}, False, True)
+            If s.ShowDialog = DialogResult.OK Then
+                Export(s.FileName)
+            End If
         End Sub
 
 #Region "Set/Load ViewModel"
