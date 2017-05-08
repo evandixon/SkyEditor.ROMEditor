@@ -207,8 +207,8 @@ Imports SkyEditor.ROMEditor.Utilities
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub waza_p()
         Using testFile = TestHelpers.GetAndTestFile(Of waza_p)(Path.Combine(romDir, "data", "balance", "waza_p.bin"), False, provider)
             'Ensure data is at least somewhat valid
-            Assert.AreEqual(561, testFile.Moves.Count, "Incorrect number of moves")
-            Assert.AreEqual(552, testFile.PokemonLearnsets.Count, "Incorrect number of Pokemon moveset data")
+            Assert.AreEqual(559, testFile.Moves.Count, "Incorrect number of moves")
+            Assert.AreEqual(553, testFile.PokemonLearnsets.Count, "Incorrect number of Pokemon moveset data")
         End Using
     End Sub
 

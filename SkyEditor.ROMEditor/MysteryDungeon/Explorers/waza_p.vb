@@ -85,13 +85,14 @@ Namespace MysteryDungeon.Explorers
         Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task
             Await MyBase.OpenFile(Filename, Provider)
 
+            Moves = New List(Of MoveData)
             PokemonLearnsets = New List(Of PokemonMoves)
 
             Dim moveDataBlockPtr = BitConverter.ToInt32(ContentHeader, 0)
             Dim learnPtrTablePtr = BitConverter.ToInt32(ContentHeader, 4)
 
             'Parse Move data
-            Dim moveDataBlockEnd = Await ReadInt32Async(learnPtrTablePtr)
+            Dim moveDataBlockEnd = learnPtrTablePtr
             While moveDataBlockPtr + 26 < moveDataBlockEnd
                 Moves.Add(New MoveData(Await ReadAsync(moveDataBlockPtr, 26)))
                 moveDataBlockPtr += 26
@@ -169,6 +170,7 @@ Namespace MysteryDungeon.Explorers
                         End If
 
                         currentLearnPtr += 1
+                        currentByte = Await ReadAsync(currentLearnPtr)
                     End While
                 End If
 
@@ -200,6 +202,7 @@ Namespace MysteryDungeon.Explorers
                         End If
 
                         currentLearnPtr += 1
+                        currentByte = Await ReadAsync(currentLearnPtr)
                     End While
                 End If
 
