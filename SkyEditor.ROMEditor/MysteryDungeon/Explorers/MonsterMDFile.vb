@@ -10,7 +10,7 @@ Namespace MysteryDungeon.Explorers
             Genderless = 3
         End Enum
 
-        Public Enum PokemonEvolutionMethod As Byte
+        Public Enum PokemonEvolutionMethod As UInt16
             None = 0
             Level = 1
             IQ = 2
@@ -44,7 +44,7 @@ Namespace MysteryDungeon.Explorers
         Public Property DexNumber As UInt16 'National Pokédex number, as displayed in Chimecho's assembly.
         Public Property Unk_06 As UInt16 'Classification?
         Public Property EvolveFrom As UInt16 'Index of entity in Monster.MD.  NOT the EntityID.
-        Public Property EvolveMethod As UInt16
+        Public Property EvolveMethod As PokemonEvolutionMethod
         Public Property EvolveParam As UInt16
         Public Property EvolveItem As EvolutionaryItem
         Public Property SpriteIndex As UInt16
