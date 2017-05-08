@@ -1,85 +1,122 @@
-﻿Imports SkyEditor.Core.Utilities
+﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.Utilities
 
 Namespace MysteryDungeon.Explorers
     Public Class MonsterMDEntry
-        Dim entityID As UInt16
-        Dim unk_02 As UInt16
-        Dim dex As UInt16 'National Pokédex number, as displayed in Chimecho's assembly.
-        Dim unk_06 As UInt16 'Classification?
-        Dim evolveFrom As UInt16 'Index of entity in Monster.MD.  NOT the EntityID.
-        Dim evolveMethod As UInt16
-        Dim evolveParam1 As UInt16
-        Dim evolveParam2 As UInt16
-        Dim spriteIndex As UInt16
-        Dim gender As Byte '0=Invalid, 1=Male, 2=Female, 3=Genderless
-        Dim bodySize As Byte
-        Dim mainType As Byte
-        Dim altType As Byte
-        Dim movementType As Byte
-        Dim iqGroup As Byte
-        Dim ability1 As Byte
-        Dim ability2 As Byte
-        Dim unk_1a As UInt16
-        Dim expYield As UInt16 'Possibly
-        Dim recruitRate As UInt16
-        Dim baseHP As UInt16
-        Dim recruitRate2 As UInt16 'Possibly
-        Dim baseATK As Byte
-        Dim baseSPATK As Byte
-        Dim baseDEF As Byte
-        Dim baseSPDEF As Byte
-        Dim weight As UInt16
-        Dim size As UInt16
-        Dim unk_29 As UInt32
-        Dim baseFormIndex As UInt16 'Index of entity in Monster.MD
-        Dim XItem0 As UInt16
-        Dim XItem1 As UInt16
-        Dim XItem2 As UInt16
-        Dim XItem3 As UInt16
-        Dim unk3C As UInt16
-        Dim unk3E As UInt16
-        Dim unk40 As UInt16
-        Dim unk42 As UInt16
+        Public Enum PokemonGender As Byte
+            Invalid = 0
+            Male = 1
+            Female = 2
+            Genderless = 3
+        End Enum
+
+        Public Enum PokemonEvolutionMethod As Byte
+            None = 0
+            Level = 1
+            IQ = 2
+            Items = 3
+            Unknown = 4
+            LinkCable = 5
+        End Enum
+
+        Public Enum EvolutionaryItem As Byte
+            None = 0
+            LinkCable = 1
+            Unknown2 = 2
+            Unknown3 = 3
+            Unknown4 = 4
+            SunRibbon = 5
+            LunarRibbon = 6
+            BeautyScarf = 7
+        End Enum
+
+        Public Enum PokemonMovementType As Byte
+            Standard = 0
+            Unknown1 = 1
+            Hovering = 2
+            Unknown3 = 3
+            Lava = 4
+            Water = 5
+        End Enum
+
+        Public Property EntityID As UInt16
+        Public Property Unk_02 As UInt16
+        Public Property DexNumber As UInt16 'National Pokédex number, as displayed in Chimecho's assembly.
+        Public Property Unk_06 As UInt16 'Classification?
+        Public Property EvolveFrom As UInt16 'Index of entity in Monster.MD.  NOT the EntityID.
+        Public Property EvolveMethod As UInt16
+        Public Property EvolveParam As UInt16
+        Public Property EvolveItem As EvolutionaryItem
+        Public Property SpriteIndex As UInt16
+        Public Property Gender As PokemonGender
+        Public Property BodySize As Byte
+        Public Property MainType As Byte
+        Public Property AltType As Byte
+        Public Property MovementType As PokemonMovementType
+        Public Property IqGroup As Byte
+        Public Property Ability1 As Byte
+        Public Property Ability2 As Byte
+        Public Property Unk_1a As UInt16
+        Public Property ExpYield As UInt16
+        Public Property RecruitRate As UInt16
+        Public Property BaseHP As UInt16
+        Public Property RecruitRate2 As UInt16 'Possibly
+        Public Property BaseATK As Byte
+        Public Property BaseSPATK As Byte
+        Public Property BaseDEF As Byte
+        Public Property BaseSPDEF As Byte
+        Public Property Weight As UInt16
+        Public Property Size As UInt16
+        Public Property Unk_29 As UInt32
+        Public Property BaseFormIndex As UInt16 'Index of entity in Monster.MD
+        Public Property ExclusiveItem1 As UInt16
+        Public Property ExclusiveItem2 As UInt16
+        Public Property ExclusiveItem3 As UInt16
+        Public Property ExclusiveItem4 As UInt16
+        Public Property Unk3C As UInt16
+        Public Property Unk3E As UInt16
+        Public Property Unk40 As UInt16
+        Public Property Unk42 As UInt16
         Public Shared Function FromBytes(RawData As Byte())
             Dim e As New MonsterMDEntry
-            e.entityID = BitConverter.ToUInt16(RawData, 0)
-            e.unk_02 = BitConverter.ToUInt16(RawData, 2)
-            e.dex = BitConverter.ToUInt16(RawData, 4)
-            e.unk_06 = BitConverter.ToUInt16(RawData, 6)
-            e.evolveFrom = BitConverter.ToUInt16(RawData, 8)
-            e.evolveMethod = BitConverter.ToUInt16(RawData, &HA)
-            e.evolveParam1 = BitConverter.ToUInt16(RawData, &HC)
-            e.evolveParam2 = BitConverter.ToUInt16(RawData, &HE)
-            e.spriteIndex = BitConverter.ToUInt16(RawData, &H10)
-            e.gender = RawData(&H12)
-            e.bodySize = RawData(&H13)
-            e.mainType = RawData(&H14)
-            e.altType = RawData(&H15)
-            e.movementType = RawData(&H16)
-            e.iqGroup = RawData(&H17)
-            e.ability1 = RawData(&H18)
-            e.ability2 = RawData(&H19)
-            e.unk_1a = BitConverter.ToUInt16(RawData, &H1A)
-            e.expYield = BitConverter.ToUInt16(RawData, &H1C)
-            e.recruitRate = BitConverter.ToUInt16(RawData, &H1E)
-            e.baseHP = BitConverter.ToUInt16(RawData, &H20)
-            e.recruitRate2 = BitConverter.ToUInt16(RawData, &H22)
-            e.baseATK = RawData(&H24)
-            e.baseSPATK = RawData(&H25)
-            e.baseDEF = RawData(&H26)
-            e.baseSPDEF = RawData(&H27)
-            e.weight = BitConverter.ToUInt16(RawData, &H28)
-            e.size = BitConverter.ToUInt16(RawData, &H2A)
-            'unknown bytes
-            e.baseFormIndex = BitConverter.ToUInt16(RawData, &H32)
-            e.XItem0 = BitConverter.ToUInt16(RawData, &H34)
-            e.XItem1 = BitConverter.ToUInt16(RawData, &H36)
-            e.XItem2 = BitConverter.ToUInt16(RawData, &H38)
-            e.XItem3 = BitConverter.ToUInt16(RawData, &H3A)
-            e.unk3C = BitConverter.ToUInt16(RawData, &H3C)
-            e.unk3E = BitConverter.ToUInt16(RawData, &H3E)
-            e.unk40 = BitConverter.ToUInt16(RawData, &H40)
-            e.unk42 = BitConverter.ToUInt16(RawData, &H42)
+            e.EntityID = BitConverter.ToUInt16(RawData, 0)
+            e.Unk_02 = BitConverter.ToUInt16(RawData, 2)
+            e.DexNumber = BitConverter.ToUInt16(RawData, 4)
+            e.Unk_06 = BitConverter.ToUInt16(RawData, 6)
+            e.EvolveFrom = BitConverter.ToUInt16(RawData, 8)
+            e.EvolveMethod = BitConverter.ToUInt16(RawData, &HA)
+            e.EvolveParam = BitConverter.ToUInt16(RawData, &HC)
+            e.EvolveItem = BitConverter.ToUInt16(RawData, &HE)
+            e.SpriteIndex = BitConverter.ToUInt16(RawData, &H10)
+            e.Gender = RawData(&H12)
+            e.BodySize = RawData(&H13)
+            e.MainType = RawData(&H14)
+            e.AltType = RawData(&H15)
+            e.MovementType = RawData(&H16)
+            e.IqGroup = RawData(&H17)
+            e.Ability1 = RawData(&H18)
+            e.Ability2 = RawData(&H19)
+            e.Unk_1a = BitConverter.ToUInt16(RawData, &H1A)
+            e.ExpYield = BitConverter.ToUInt16(RawData, &H1C)
+            e.RecruitRate = BitConverter.ToUInt16(RawData, &H1E)
+            e.BaseHP = BitConverter.ToUInt16(RawData, &H20)
+            e.RecruitRate2 = BitConverter.ToUInt16(RawData, &H22)
+            e.BaseATK = RawData(&H24)
+            e.BaseSPATK = RawData(&H25)
+            e.BaseDEF = RawData(&H26)
+            e.BaseSPDEF = RawData(&H27)
+            e.Weight = BitConverter.ToUInt16(RawData, &H28)
+            e.Size = BitConverter.ToUInt16(RawData, &H2A)
+            e.Unk_29 = BitConverter.ToUInt16(RawData, &H30)
+            e.BaseFormIndex = BitConverter.ToUInt16(RawData, &H32)
+            e.ExclusiveItem1 = BitConverter.ToUInt16(RawData, &H34)
+            e.ExclusiveItem2 = BitConverter.ToUInt16(RawData, &H36)
+            e.ExclusiveItem3 = BitConverter.ToUInt16(RawData, &H38)
+            e.ExclusiveItem4 = BitConverter.ToUInt16(RawData, &H3A)
+            e.Unk3C = BitConverter.ToUInt16(RawData, &H3C)
+            e.Unk3E = BitConverter.ToUInt16(RawData, &H3E)
+            e.Unk40 = BitConverter.ToUInt16(RawData, &H40)
+            e.Unk42 = BitConverter.ToUInt16(RawData, &H42)
             Return e
         End Function
     End Class
@@ -88,18 +125,31 @@ Namespace MysteryDungeon.Explorers
     ''' </summary>
     ''' <remarks></remarks>
     Public Class MonsterMDFile
-        Dim magic As Int32
-        Dim nEntries As UInt32
-        Dim Entries As Generic.List(Of MonsterMDEntry)
+        Implements IOpenableFile
+
         Public Shared Function FromBytes(RawData As Byte())
             Dim out As New MonsterMDFile
-            out.Entries = New List(Of MonsterMDEntry)
-            out.magic = BitConverter.ToInt32(RawData, 0) 'MD\0\0
-            out.nEntries = BitConverter.ToUInt32(RawData, 4)
-            For count As UInteger = 0 To out.nEntries - 1
-                out.Entries.Add(MonsterMDEntry.FromBytes(RawData.Skip(8 + (count * &H44)).Take(&H44).ToArray))
-            Next
+            out.ProcessData(RawData)
             Return out
         End Function
+
+        Private Property Magic As Int32
+        Private Property NumberOfEntries As UInt32
+        Public Property Entries As Generic.List(Of MonsterMDEntry)
+
+        Public Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+            Dim rawData = provider.ReadAllBytes(filename)
+            ProcessData(rawData)
+            Return Task.CompletedTask
+        End Function
+
+        Protected Sub ProcessData(rawData As Byte())
+            Entries = New List(Of MonsterMDEntry)
+            Magic = BitConverter.ToInt32(rawData, 0) 'MD\0\0
+            NumberOfEntries = BitConverter.ToUInt32(rawData, 4)
+            For count As UInteger = 0 To NumberOfEntries - 1
+                Entries.Add(MonsterMDEntry.FromBytes(rawData.Skip(8 + (count * &H44)).Take(&H44).ToArray))
+            Next
+        End Sub
     End Class
 End Namespace
