@@ -220,6 +220,16 @@ Namespace MysteryDungeon.Explorers
             End If
         End Function
 
+        Public Function GetTypeName(TypeID As Integer) As String
+            If FileRegion = Region.Europe Then
+                Return Item(13772 + TypeID)
+            ElseIf FileRegion = Region.US Then
+                Return Item(13770 + TypeID)
+            Else
+                Return Item(13772 + TypeID)
+            End If
+        End Function
+
         Public Sub UpdatePersonalityTestResult(ResultIndex As Integer, PokemonID As Integer)
             Dim r As New Text.RegularExpressions.Regex("(\[CS\:K\])(.*)(\[CR\])")
             If PokemonID > 600 Then 'In case a female Pokemon was passed in.
