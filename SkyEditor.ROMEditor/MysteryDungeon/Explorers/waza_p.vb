@@ -59,18 +59,22 @@ Namespace MysteryDungeon.Explorers
         End Class
 
         Public Class PokemonMoves
-            Public Property LevelUpMoves As Dictionary(Of Byte, UInt16)
+            ''' <summary>
+            ''' The level-up moveset. Item1=Level, Item2=Move
+            ''' </summary>
+            ''' <returns></returns>
+            Public Property LevelUpMoves As List(Of Tuple(Of Byte, UInt16))
             Public Property TMMoves As List(Of UInt16)
             Public Property EggMoves As List(Of UInt16)
             Public Sub New()
-                LevelUpMoves = New Dictionary(Of Byte, UInt16)
+                LevelUpMoves = New List(Of Tuple(Of Byte, UInt16))
                 TMMoves = New List(Of UInt16)
                 EggMoves = New List(Of UInt16)
             End Sub
             Public Function Clone() As PokemonMoves
                 Dim m As New PokemonMoves
                 For Each item In Me.LevelUpMoves
-                    m.LevelUpMoves.Add(item.Key, item.Value)
+                    m.LevelUpMoves.Add(New Tuple(Of Byte, UShort)(item.Item1, item.Item2))
                 Next
                 For Each item In Me.TMMoves
                     m.TMMoves.Add(item)
@@ -116,28 +120,29 @@ Namespace MysteryDungeon.Explorers
                     Dim moveID As UInt16 = 0
 
                     Dim currentByte = Await ReadAsync(currentLearnPtr)
+                    currentLearnPtr += 1
                     While currentByte > 0
                         'Read move ID
                         If currentByte > 128 Then
                             'Multi-byte move ID
                             Dim part1 = (currentByte - 128) << 7
-                            Dim part2 = Await ReadAsync(currentLearnPtr + 1)
+                            Dim part2 = Await ReadAsync(currentLearnPtr)
+                            currentLearnPtr += 1
                             moveID = part1 Or part2
-                            currentLearnPtr += 2
                         Else
                             'Single-byte move ID
                             moveID = currentByte
-                            currentLearnPtr += 1
                         End If
 
                         'Read learn level
                         currentByte = Await ReadAsync(currentLearnPtr)
+                        currentLearnPtr += 1
 
                         'Set current learnset
-                        If Not moves.LevelUpMoves.ContainsKey(currentByte) Then
-                            moves.LevelUpMoves.Add(currentByte, moveID)
-                        End If
+                        moves.LevelUpMoves.Add(New Tuple(Of Byte, UShort)(currentByte, moveID))
 
+                        'Read byte of next move
+                        currentByte = Await ReadAsync(currentLearnPtr)
                         currentLearnPtr += 1
                     End While
                 End If
@@ -150,18 +155,18 @@ Namespace MysteryDungeon.Explorers
                     Dim moveID As UInt16 = 0
 
                     Dim currentByte = Await ReadAsync(currentLearnPtr)
+                    currentLearnPtr += 1
                     While currentByte > 0
                         'Read move ID
                         If currentByte > 128 Then
                             'Multi-byte move ID
                             Dim part1 = (currentByte - 128) << 7
-                            Dim part2 = Await ReadAsync(currentLearnPtr + 1)
+                            Dim part2 = Await ReadAsync(currentLearnPtr)
+                            currentLearnPtr += 1
                             moveID = part1 Or part2
-                            currentLearnPtr += 2
                         Else
                             'Single-byte move ID
                             moveID = currentByte
-                            currentLearnPtr += 1
                         End If
 
                         'Set current learnset
@@ -169,8 +174,8 @@ Namespace MysteryDungeon.Explorers
                             moves.TMMoves.Add(moveID)
                         End If
 
-                        currentLearnPtr += 1
                         currentByte = Await ReadAsync(currentLearnPtr)
+                        currentLearnPtr += 1
                     End While
                 End If
 
@@ -182,18 +187,18 @@ Namespace MysteryDungeon.Explorers
                     Dim moveID As UInt16 = 0
 
                     Dim currentByte = Await ReadAsync(currentLearnPtr)
+                    currentLearnPtr += 1
                     While currentByte > 0
                         'Read move ID
                         If currentByte > 128 Then
                             'Multi-byte move ID
                             Dim part1 = (currentByte - 128) << 7
-                            Dim part2 = Await ReadAsync(currentLearnPtr + 1)
+                            Dim part2 = Await ReadAsync(currentLearnPtr)
+                            currentLearnPtr += 1
                             moveID = part1 Or part2
-                            currentLearnPtr += 2
                         Else
                             'Single-byte move ID
                             moveID = currentByte
-                            currentLearnPtr += 1
                         End If
 
                         'Set current learnset
@@ -201,8 +206,8 @@ Namespace MysteryDungeon.Explorers
                             moves.EggMoves.Add(moveID)
                         End If
 
-                        currentLearnPtr += 1
                         currentByte = Await ReadAsync(currentLearnPtr)
+                        currentLearnPtr += 1
                     End While
                 End If
 

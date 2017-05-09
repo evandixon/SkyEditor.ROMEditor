@@ -209,6 +209,11 @@ Imports SkyEditor.ROMEditor.Utilities
             'Ensure data is at least somewhat valid
             Assert.AreEqual(559, testFile.Moves.Count, "Incorrect number of moves")
             Assert.AreEqual(553, testFile.PokemonLearnsets.Count, "Incorrect number of Pokemon moveset data")
+
+            'Check Bulbasaur's learnset
+            Assert.AreEqual(14, testFile.PokemonLearnsets(1).LevelUpMoves.Count, "Incorrect number of level-up moves.")
+            Assert.AreEqual(30, testFile.PokemonLearnsets(1).TMMoves.Count, "Incorrect number of TM moves")
+            Assert.AreEqual(12, testFile.PokemonLearnsets(1).EggMoves.Count, "Incorrect number of egg moves")
         End Using
     End Sub
 
