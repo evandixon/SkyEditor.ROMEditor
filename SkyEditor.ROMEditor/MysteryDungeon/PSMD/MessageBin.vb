@@ -47,6 +47,14 @@ Namespace MysteryDungeon.PSMD
             ProcessData()
         End Function
 
+        Private Sub SetOriginalIndexes(strings As IEnumerable(Of MessageBinStringEntry))
+            Dim index = 0
+            For Each item In strings.OrderBy(Function(x) x.Pointer)
+                item.OriginalIndex = index
+                index += 1
+            Next
+        End Sub
+
         Private Sub ProcessData()
             Dim stringCount As Integer = BitConverter.ToInt32(ContentHeader, 0)
             Dim stringInfoPointer As Integer = BitConverter.ToInt32(ContentHeader, 4)
@@ -88,9 +96,10 @@ Namespace MysteryDungeon.PSMD
 
                 Loop Until doEnd
 
-                Dim newEntry = New MessageBinStringEntry With {.Hash = stringHash, .Entry = s.ToString.Trim, .Unknown = unk, .Pointer = stringPointer, .OriginalIndex = i}
+                Dim newEntry = New MessageBinStringEntry With {.Hash = stringHash, .Entry = s.ToString.Trim, .Unknown = unk, .Pointer = stringPointer}
                 Strings.Add(newEntry)
             Next
+            SetOriginalIndexes(Strings)
         End Sub
 
         Public Async Function OpenFileOnlyIDs(Filename As String, provider As IIOProvider) As Task
@@ -106,9 +115,10 @@ Namespace MysteryDungeon.PSMD
 
                 'We're skipping reading the string, since this function only loads the IDs
 
-                Dim newEntry = New MessageBinStringEntry With {.Hash = stringHash, .Entry = "", .Unknown = unk, .OriginalIndex = i}
+                Dim newEntry = New MessageBinStringEntry With {.Hash = stringHash, .Entry = "", .Unknown = unk, .Pointer = stringPointer}
                 Strings.Add(newEntry)
             Next
+            SetOriginalIndexes(Strings)
         End Function
 
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
