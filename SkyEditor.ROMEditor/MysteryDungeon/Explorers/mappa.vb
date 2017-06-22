@@ -263,7 +263,8 @@ Namespace MysteryDungeon.Explorers
 
             Public Sub New(rawData As Byte())
                 Unknown = rawData(0)
-                LevelX2 = rawData(1)
+                UnknownFlag = If((rawData(1) And &H1) = 1, True, False)
+                Level = rawData(1) >> 1
                 Probability1 = BitConverter.ToUInt16(rawData, 2)
                 Probability2 = BitConverter.ToUInt16(rawData, 4)
                 PokemonID = BitConverter.ToUInt16(rawData, 6)
@@ -272,7 +273,7 @@ Namespace MysteryDungeon.Explorers
             Public Function GetBytes() As Byte()
                 Dim out As New List(Of Byte)(8)
                 out.Add(Unknown)
-                out.Add(LevelX2)
+                out.Add(Level << 1 And If(UnknownFlag, 1, 0))
                 out.AddRange(BitConverter.GetBytes(Probability1))
                 out.AddRange(BitConverter.GetBytes(Probability2))
                 out.AddRange(BitConverter.GetBytes(PokemonID))
@@ -280,14 +281,23 @@ Namespace MysteryDungeon.Explorers
             End Function
 
             Public Property Unknown As Byte
-            Public Property LevelX2 As Byte
+            Public Property UnknownFlag As Boolean
+            Public Property Level As Byte
             Public Property Probability1 As UInt16
             Public Property Probability2 As UInt16
             Public Property PokemonID As UInt16
 
             Public Function IsDefault() As Boolean
-                Return Unknown = 0 AndAlso LevelX2 = 0 AndAlso Probability1 = 0 AndAlso Probability2 = 0 AndAlso PokemonID = 0
+                Return Unknown = 0 AndAlso Not UnknownFlag AndAlso Level = 0 AndAlso Probability1 = 0 AndAlso Probability2 = 0 AndAlso PokemonID = 0
             End Function
+
+            Public Shared Operator =(x As PokemonSpawn, y As PokemonSpawn)
+                Return x.Unknown = y.Unknown AndAlso x.UnknownFlag = y.UnknownFlag AndAlso x.Level = y.Level AndAlso x.Probability1 = y.Probability1 AndAlso x.Probability2 = y.Probability2 AndAlso x.PokemonID = y.PokemonID
+            End Operator
+
+            Public Shared Operator <>(x As PokemonSpawn, y As PokemonSpawn)
+                Return x.Unknown <> y.Unknown OrElse x.UnknownFlag <> y.UnknownFlag OrElse x.Level <> y.Level OrElse x.Probability1 <> y.Probability1 OrElse x.Probability2 <> y.Probability2 OrElse x.PokemonID <> y.PokemonID
+            End Operator
         End Structure
 
 #End Region
