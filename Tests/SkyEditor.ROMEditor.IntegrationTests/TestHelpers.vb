@@ -38,4 +38,10 @@ Public Class TestHelpers
         testFile.OpenFile(filePath, provider).Wait()
         Return testFile
     End Function
+
+    Public Shared Function GetFile(Of T As IOpenableFile)(filePath As String, provider As IIOProvider) As T
+        Dim testFile = ReflectionHelpers.CreateInstance(GetType(T))
+        testFile.OpenFile(filePath, provider).Wait()
+        Return testFile
+    End Function
 End Class

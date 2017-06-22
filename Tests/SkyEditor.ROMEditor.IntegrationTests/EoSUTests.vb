@@ -176,13 +176,6 @@ Imports SkyEditor.ROMEditor.Utilities
         End Using
     End Sub
 
-    <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub LanguageString()
-        Using testFile = TestHelpers.GetAndTestFile(Of LanguageString)(Path.Combine(romDir, "data", "message", "text_e.str"), True, provider)
-            'Ensure data is at least somewhat valid
-            Assert.AreEqual(18451, testFile.Items.Count, "Incorrect number of items")
-        End Using
-    End Sub
-
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub mappa_s()
         Using testFile = TestHelpers.GetAndTestFile(Of mappa)(Path.Combine(romDir, "data", "balance", "mappa_s.bin"), False, provider)
             'Ensure data is at least somewhat valid
@@ -262,5 +255,14 @@ Imports SkyEditor.ROMEditor.Utilities
             Next
         Next
     End Sub
+
+#Region "Language Strings"
+    <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub LanguageString_FileOpenAndSave()
+        Using testFile = TestHelpers.GetAndTestFile(Of LanguageString)(Path.Combine(romDir, "data", "message", "text_e.str"), True, provider)
+            'Ensure data is at least somewhat valid
+            Assert.AreEqual(18451, testFile.Items.Count, "Incorrect number of items")
+        End Using
+    End Sub
+#End Region
 
 End Class
