@@ -3,7 +3,7 @@
   "dependencies": {
     "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
     "NETStandard.Library": "1.6.1",
-    "SkyEditor.Core": "4.1.0-CI121"
+    "SkyEditor.Core": "4.1.0-CI161"
   },
   "frameworks": {
     "netstandard1.5": {}

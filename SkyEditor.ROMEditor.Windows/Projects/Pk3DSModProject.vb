@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports SkyEditor.Core
+Imports SkyEditor.Core.Utilities
 
 Namespace Projects
     Public Class Pk3DSModProject

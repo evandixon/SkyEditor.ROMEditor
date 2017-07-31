@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports System.Windows.Media.Imaging
 Imports SkyEditor.Core
+Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.ROMEditor.Windows
 

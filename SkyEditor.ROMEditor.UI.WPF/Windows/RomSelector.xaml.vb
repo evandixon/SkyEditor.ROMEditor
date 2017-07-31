@@ -1,7 +1,7 @@
 ﻿Imports System.IO
 Imports System.Windows.Forms
 Imports SkyEditor.Core
-Imports SkyEditor.Core.Windows
+Imports SkyEditor.Core.Utilities
 
 Public Class RomSelector
     Public Overloads Function ShowDialog(Roms As List(Of String)) As Boolean

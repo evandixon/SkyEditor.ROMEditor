@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports SkyEditor.Core
 Imports SkyEditor.Core.ConsoleCommands
+Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core.Windows
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers

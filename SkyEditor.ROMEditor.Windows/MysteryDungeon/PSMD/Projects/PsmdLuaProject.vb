@@ -347,7 +347,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
                                    If Not sourceText = sourceOrig Then
                                        Dim dest = Item.Replace(scriptSource, scriptDestination)
-                                       Await ConsoleApp.RunProgram(Core.EnvironmentPaths.GetResourceName("lua/luac5.1.exe"), $"-o ""{dest}"" ""{Item}""")
+                                       Await ConsoleApp.RunProgram(EnvironmentPaths.GetResourceName("lua/luac5.1.exe"), $"-o ""{dest}"" ""{Item}""")
                                    End If
                                End Function)
             RemoveHandler f.ProgressChanged, onProgressChanged

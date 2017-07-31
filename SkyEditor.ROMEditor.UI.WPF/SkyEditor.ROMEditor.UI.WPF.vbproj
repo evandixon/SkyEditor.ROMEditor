@@ -68,11 +68,14 @@
     <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.2.101, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.2-CI101\lib\net462\DotNet3dsSoundtrackConverter.dll</HintPath>
     </Reference>
-    <Reference Include="DotNet3dsToolkit, Version=1.4.11.17, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsToolkit.1.4.11-CI17\lib\net462\DotNet3dsToolkit.dll</HintPath>
+    <Reference Include="DotNet3dsToolkit, Version=2.0.0.51, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsToolkit.2.0.0-CI51\lib\net462\DotNet3dsToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="DSPatcher, Version=1.2.0.102, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DS-ROM-Patcher.1.2.0-CI102\lib\net462\DSPatcher.exe</HintPath>
+    <Reference Include="DotNetNdsToolkit, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetNdsToolkit.2.0.0-CI114\lib\net462\DotNetNdsToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="DSPatcher, Version=1.2.0.104, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DS-ROM-Patcher.1.2.0-CI104\lib\net462\DSPatcher.exe</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -107,16 +110,13 @@
       <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.1.0-CI6\lib\net462\SkyEditor.CodeEditor.UI.WPF.exe</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI121\lib\netstandard1.5\SkyEditor.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="SkyEditor.Core.FrameworkCompatibility, Version=4.1.0.119, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.FrameworkCompatibility.4.1.0-CI119\lib\net462\SkyEditor.Core.FrameworkCompatibility.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI161\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.9, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI9\lib\netstandard1.3\SkyEditor.SaveEditor.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.126, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI126\lib\net462\SkyEditor.UI.WPF.dll</HintPath>
+    <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.128, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI128\lib\net462\SkyEditor.UI.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
@@ -152,8 +152,8 @@
     <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
+    <Reference Include="System.Net.Http, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.2\lib\net46\System.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
