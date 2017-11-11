@@ -124,6 +124,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
         Public ReadOnly Property ExportCommand As RelayCommand
 
         Public Sub Save(provider As IIOProvider)
+            UpdateModel(Model)
             Model.Save(provider)
         End Sub
 
