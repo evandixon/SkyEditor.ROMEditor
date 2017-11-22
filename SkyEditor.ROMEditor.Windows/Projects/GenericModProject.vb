@@ -3,7 +3,6 @@ Imports System.Security.Cryptography
 Imports System.Text.RegularExpressions
 Imports DS_ROM_Patcher
 Imports SkyEditor.Core
-Imports SkyEditor.Core.Processes
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 

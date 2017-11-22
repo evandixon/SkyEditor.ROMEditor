@@ -359,9 +359,6 @@
     <None Include="SkyEditor.ROMEditor.UI.WPF.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\SkyEditor.ROMEditor.Windows\SkyEditor.ROMEditor.Windows.vbproj">
       <Project>{f05c12e8-eab7-4b9e-a8d2-d21b80c1a646}</Project>
       <Name>SkyEditor.ROMEditor.Windows</Name>
