@@ -103,17 +103,17 @@
       <HintPath>..\packages\Portable.Text.Encoding.0.8.3.0\lib\portable-net45+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\Portable.Text.Encoding.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI6\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI8\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor.UI.WPF, Version=4.1.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.1.0-CI6\lib\net462\SkyEditor.CodeEditor.UI.WPF.exe</HintPath>
+    <Reference Include="SkyEditor.CodeEditor.UI.WPF, Version=4.1.0.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.1.0-CI8\lib\net462\SkyEditor.CodeEditor.UI.WPF.exe</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.Core.4.1.0-CI161\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.9, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI9\lib\netstandard1.3\SkyEditor.SaveEditor.dll</HintPath>
+    <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI42\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.128, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI128\lib\net462\SkyEditor.UI.WPF.dll</HintPath>

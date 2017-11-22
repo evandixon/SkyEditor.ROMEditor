@@ -125,14 +125,14 @@
       <HintPath>..\packages\ppmdu-wrapper.1.0.3\lib\net46\ppmdu-wrapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI6\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI8\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.Core.4.1.0-CI161\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.9, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI9\lib\netstandard1.3\SkyEditor.SaveEditor.dll</HintPath>
+    <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI42\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
