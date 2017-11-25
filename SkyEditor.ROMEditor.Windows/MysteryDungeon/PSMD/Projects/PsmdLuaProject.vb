@@ -5,6 +5,7 @@ Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Windows
 Imports SkyEditor.ROMEditor.Projects
+Imports System.Collections.Concurrent
 
 Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
@@ -16,7 +17,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Public Sub New()
             MyBase.New
-            ExistingLanguageIds = New HashSet(Of UInteger)
+            ExistingLanguageIds = New ConcurrentBag(Of UInteger)
             AddScriptsToProject = True
         End Sub
 
@@ -25,7 +26,7 @@ Namespace MysteryDungeon.PSMD.Projects
         ''' <summary>
         ''' List of all language IDs that are in use.
         ''' </summary>
-        Private Property ExistingLanguageIds As HashSet(Of UInteger)
+        Private Property ExistingLanguageIds As ConcurrentBag(Of UInteger)
 
         ''' <summary>
         ''' Gets or sets whether or not the scripts will be visibly added to the project during initialization.
@@ -162,6 +163,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                                                                   Next
                                                                               End Using
                                                                           End Function)
+                                                      ExistingLanguageIds = New ConcurrentBag(Of UInteger)(ExistingLanguageIds.Distinct())
                                                   End Function)
             End If
         End Sub
