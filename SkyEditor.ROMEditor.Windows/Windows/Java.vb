@@ -1,6 +1,4 @@
-﻿Imports SkyEditor.Core.Processes
-
-Namespace Windows
+﻿Namespace Windows
     Public Class Java
 
         Public Shared Async Function RunJar(JarPath As String, Arguments As String, WorkingDirectory As String) As Task

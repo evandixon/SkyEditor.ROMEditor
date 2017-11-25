@@ -3,7 +3,6 @@ Imports System.Security.Cryptography
 Imports SkyEditor.Core
 Imports SkyEditor.Core.ConsoleCommands
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.Core.Windows
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace Windows.ConsoleCommands

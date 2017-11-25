@@ -1,7 +1,6 @@
 ﻿Imports System.IO
 Imports DS_ROM_Patcher
 Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.Processes
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 
