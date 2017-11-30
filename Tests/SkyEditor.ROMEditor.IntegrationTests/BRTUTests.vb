@@ -2,6 +2,7 @@
 Imports System.IO
 Imports System.Security.Cryptography
 Imports DotNet3dsToolkit
+Imports DotNetNdsToolkit
 Imports SkyEditor.Core.IO
 Imports SkyEditor.ROMEditor
 Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
@@ -35,7 +36,7 @@ Imports SkyEditor.ROMEditor.Utilities
             End Using
 
             provider.WriteAllBytes(romFilename, My.Resources.brt_u)
-            Using nds As New GenericNDSRom
+            Using nds As New NdsRom
                 nds.OpenFile(romFilename, provider).Wait()
                 nds.Unpack(romDir, provider).Wait()
             End Using
