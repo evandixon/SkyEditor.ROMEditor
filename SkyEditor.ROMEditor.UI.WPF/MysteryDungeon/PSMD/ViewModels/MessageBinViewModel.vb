@@ -205,6 +205,20 @@ Namespace MysteryDungeon.PSMD.ViewModels
 #End Region
 
 #Region "Search Functions"
+        Public Class ItemIndexComparer
+            Implements IComparer(Of MessageBinEntryViewModel)
+
+            Public Sub New(sourceList As List(Of Integer))
+                Me.SourceList = sourceList
+            End Sub
+
+            Private Property SourceList As List(Of Integer)
+
+            Public Function Compare(x As MessageBinEntryViewModel, y As MessageBinEntryViewModel) As Integer Implements IComparer(Of MessageBinEntryViewModel).Compare
+                Return SourceList.IndexOf(x.HashSigned).CompareTo(SourceList.IndexOf(y.HashSigned))
+            End Function
+        End Class
+
         Public Sub Sort(Keys As List(Of Integer))
             Task.Run(New Action(Sub()
                                     DoSort(Keys)
@@ -212,15 +226,10 @@ Namespace MysteryDungeon.PSMD.ViewModels
         End Sub
 
         Private Sub DoSort(Keys As List(Of Integer))
-            Dim toSort = CurrentEntryList
-            Dim results As New ObservableCollection(Of MessageBinEntryViewModel)
-            Application.Current.Dispatcher.Invoke(Sub() CurrentEntryList = results)
-            For Each item In Keys
-                Dim entry = (From s In toSort Where s.HashSigned = item).FirstOrDefault
-                If entry IsNot Nothing Then
-                    Application.Current.Dispatcher.Invoke(Sub() results.Add(entry))
-                End If
-            Next
+            Dim comparer = New ItemIndexComparer(Keys)
+            Dim items = CurrentEntryList.ToList()
+            items.Sort(comparer)
+            Application.Current.Dispatcher.Invoke(Sub() CurrentEntryList = New ObservableCollection(Of MessageBinEntryViewModel)(items))
         End Sub
 
         Private Async Sub searchTimer_Elapsed(sender As Object, e As ElapsedEventArgs) Handles searchTimer.Elapsed
