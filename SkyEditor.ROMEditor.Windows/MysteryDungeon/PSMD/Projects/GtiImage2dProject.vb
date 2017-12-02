@@ -33,11 +33,11 @@ Namespace MysteryDungeon.PSMD.Projects
                                    Using b As New CteImage
                                        Await b.OpenFile(Item, CurrentPluginManager.CurrentIOProvider)
                                        Dim image = b.ContainedImage
-                                       Dim newFilename = IO.Path.Combine(backDir, IO.Path.GetDirectoryName(Item).Replace(rawFilesDir, "").Replace("\romfs", "").Trim("\"), IO.Path.GetFileNameWithoutExtension(Item) & ".bmp")
+                                       Dim newFilename = IO.Path.Combine(backDir, IO.Path.GetDirectoryName(Item).Replace(rawFilesDir, "").Replace("\romfs", "").Trim("\"), IO.Path.GetFileNameWithoutExtension(Item) & ".png")
                                        If Not IO.Directory.Exists(IO.Path.GetDirectoryName(newFilename)) Then
                                            IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(newFilename))
                                        End If
-                                       image.Save(newFilename, Drawing.Imaging.ImageFormat.Bmp)
+                                       image.Save(newFilename, Drawing.Imaging.ImageFormat.Png)
                                        IO.File.Copy(newFilename, newFilename & ".original")
 
                                        Dim internalDir = IO.Path.GetDirectoryName(Item).Replace(rawFilesDir, "").Replace("\romfs", "")
@@ -54,7 +54,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim sourceDir = GetRootDirectory()
             Dim rawFilesDir = GetRawFilesDir()
 
-            For Each background In IO.Directory.GetFiles(GetRootDirectory, "*.bmp", IO.SearchOption.AllDirectories)
+            For Each background In IO.Directory.GetFiles(GetRootDirectory, "*.png", IO.SearchOption.AllDirectories)
                 Dim includeInPack As Boolean
 
                 If IO.File.Exists(background & ".original") Then

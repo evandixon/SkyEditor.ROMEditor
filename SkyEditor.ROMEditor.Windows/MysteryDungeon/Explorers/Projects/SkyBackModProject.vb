@@ -36,12 +36,12 @@ Namespace MysteryDungeon.Explorers.Projects
                                    Using b As New BGP
                                        Await b.OpenFile(Item, CurrentPluginManager.CurrentIOProvider)
 
-                                       Dim newFilename = IO.Path.Combine(BACKdir, IO.Path.GetFileNameWithoutExtension(Item) & ".bmp")
+                                       Dim newFilename = IO.Path.Combine(BACKdir, IO.Path.GetFileNameWithoutExtension(Item) & ".png")
                                        If Not IO.Directory.Exists(IO.Path.GetDirectoryName(newFilename)) Then
                                            IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(newFilename))
                                        End If
 
-                                       b.GetImage.Save(newFilename, Drawing.Imaging.ImageFormat.Bmp)
+                                       b.GetImage.Save(newFilename, Drawing.Imaging.ImageFormat.Png)
                                        IO.File.Copy(newFilename, newFilename & ".original")
 
                                        Me.AddExistingFileToPath("/" & IO.Path.GetFileName(newFilename), newFilename, Nothing, CurrentPluginManager.CurrentIOProvider)
