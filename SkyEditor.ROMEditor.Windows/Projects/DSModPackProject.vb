@@ -74,6 +74,18 @@ Namespace Projects
             End Set
         End Property
 
+        Public Property OutputLuma As Boolean
+            Get
+                If Me.Settings("OutputLuma") Is Nothing Then
+                    Me.Settings("OutputLuma") = False
+                End If
+                Return Me.Settings("OutputLuma")
+            End Get
+            Set(value As Boolean)
+                Me.Settings("OutputLuma") = value
+            End Set
+        End Property
+
         Public Overrides ReadOnly Property CanBuild As Boolean
             Get
                 Dim p As BaseRomProject = ParentSolution.GetProjectsByName(BaseRomProject).FirstOrDefault
@@ -210,7 +222,10 @@ Namespace Projects
                         Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-cia", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "PatchedRom.cia")))
                     End If
                     If OutputHans Then
-                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-hans", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "Hans SD")))
+                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-hans", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "SD Card")))
+                    End If
+                    If OutputLuma Then
+                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-luma", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "SD Card")))
                     End If
                 Case "NDS"
                     Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-nds", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "PatchedRom.nds")))

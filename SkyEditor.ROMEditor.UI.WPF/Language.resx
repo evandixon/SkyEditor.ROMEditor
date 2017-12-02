@@ -486,4 +486,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="OriginalIndex" xml:space="preserve">
     <value>Index</value>
   </data>
+  <data name="BuildLuma" xml:space="preserve">
+    <value>Build Luma Layered FS</value>
+  </data>
 </root>

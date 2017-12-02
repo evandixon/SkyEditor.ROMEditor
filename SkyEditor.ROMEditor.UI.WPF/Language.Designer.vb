@@ -22,7 +22,7 @@ Namespace My.Resources
     '''<summary>
     '''  A strongly-typed resource class, for looking up localized strings, etc.
     '''</summary>
-    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0"),  _
+    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0"),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute()>  _
     Public Class Language
@@ -187,6 +187,15 @@ Namespace My.Resources
         Public Shared ReadOnly Property BuildHans() As String
             Get
                 Return ResourceManager.GetString("BuildHans", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Build Luma Layered FS.
+        '''</summary>
+        Public Shared ReadOnly Property BuildLuma() As String
+            Get
+                Return ResourceManager.GetString("BuildLuma", resourceCulture)
             End Get
         End Property
         
