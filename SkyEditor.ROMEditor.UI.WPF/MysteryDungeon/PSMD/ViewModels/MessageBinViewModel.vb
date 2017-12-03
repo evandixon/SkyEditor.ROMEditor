@@ -161,7 +161,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
         ''' </summary>
         Public Sub Export()
             Dim s As New SaveFileDialog
-            s.Filter = CurrentApplicationViewModel.GetIOFilter({"*.csv"}, False, True)
+            s.Filter = CurrentApplicationViewModel.GetIOFilter({"*.csv"}, False, True, False)
             If s.ShowDialog = DialogResult.OK Then
                 Export(s.FileName)
             End If
