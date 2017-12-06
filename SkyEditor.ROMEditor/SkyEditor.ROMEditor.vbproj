@@ -134,6 +134,7 @@
     <Compile Include="MysteryDungeon\PSMD\JukeboxBin.vb" />
     <Compile Include="MysteryDungeon\PSMD\MessageBin.vb" />
     <Compile Include="MysteryDungeon\PSMD\MessageBinStringEntry.vb" />
+    <Compile Include="MysteryDungeon\PSMD\PGDB.vb" />
     <Compile Include="MysteryDungeon\PSMD\PokemonDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\Pokemon\ActorDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\WazaDataInfo.vb" />
