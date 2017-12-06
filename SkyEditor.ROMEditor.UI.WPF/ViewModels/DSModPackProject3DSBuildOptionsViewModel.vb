@@ -60,6 +60,18 @@ Namespace ViewModels
             End Set
         End Property
 
+        Public Property OutputLuma As Boolean
+            Get
+                Return Model.OutputLuma
+            End Get
+            Set(value As Boolean)
+                If Not Model.OutputLuma = value Then
+                    Model.OutputLuma = value
+                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(OutputLuma)))
+                End If
+            End Set
+        End Property
+
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
             Return MyBase.SupportsObject(Obj) AndAlso DirectCast(Obj, DSModPackProject).GetBaseRomSystem(CurrentApplicationViewModel.CurrentSolution) = BaseRomProject.System3DS
         End Function
