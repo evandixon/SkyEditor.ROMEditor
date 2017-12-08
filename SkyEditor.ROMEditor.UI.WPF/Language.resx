@@ -489,4 +489,10 @@ evandixon (Personality test, bgp files)</value>
   <data name="BuildLuma" xml:space="preserve">
     <value>Build Luma Layered FS</value>
   </data>
+  <data name="FileType_Bin" xml:space="preserve">
+    <value>Binary File</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
 </root>

@@ -26,6 +26,9 @@ Public Class PluginDefinition
         Manager.LoadRequiredPlugin(New SkyEditor.ROMEditor.Windows.PluginDefinition, Me)
         Manager.LoadRequiredPlugin(New SkyEditor.CodeEditor.PluginDefinition, Me)
         Manager.LoadRequiredPlugin(New SkyEditor.CodeEditor.UI.WPF.PluginInfo, Me)
+
+        'Register extensions
+        Manager.RegisterIOFilter("*.bin", My.Resources.Language.FileType_Bin)
     End Sub
 
 End Class

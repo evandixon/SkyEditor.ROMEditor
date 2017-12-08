@@ -230,6 +230,7 @@
     <Compile Include="MysteryDungeon\Explorers\Views\BGPControl.xaml.vb">
       <DependentUpon>BGPControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MysteryDungeon\PSMD\ViewModels\PGDBViewModel.vb" />
     <Compile Include="MysteryDungeon\PSMD\Views\FixedPokemonEntry.xaml.vb">
       <DependentUpon>FixedPokemonEntry.xaml</DependentUpon>
     </Compile>
@@ -238,6 +239,12 @@
     </Compile>
     <Compile Include="MysteryDungeon\PSMD\Views\MessageBinEditor.xaml.vb">
       <DependentUpon>MessageBinEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MysteryDungeon\PSMD\Views\PGDBEntryView.xaml.vb">
+      <DependentUpon>PGDBEntryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MysteryDungeon\PSMD\Views\PGDBView.xaml.vb">
+      <DependentUpon>PGDBView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MysteryDungeon\Rescue\ViewModels\RescueTeamStartersViewModel.vb" />
     <Compile Include="MysteryDungeon\Rescue\Views\RescueTeamPersonalityTest.xaml.vb">
@@ -286,6 +293,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MysteryDungeon\PSMD\Views\MessageBinEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MysteryDungeon\PSMD\Views\PGDBEntryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MysteryDungeon\PSMD\Views\PGDBView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

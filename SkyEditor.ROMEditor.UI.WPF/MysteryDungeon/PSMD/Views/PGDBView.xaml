@@ -1,0 +1,43 @@
+﻿<skyWPF:DataBoundViewControl x:Class="MysteryDungeon.PSMD.Views.PGDBView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:skyWPF="clr-namespace:SkyEditor.UI.WPF;assembly=SkyEditor.UI.WPF"
+             xmlns:psmdVM="clr-namespace:SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.PSMD.ViewModels"
+             xmlns:psmdV="clr-namespace:SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.PSMD.Views"
+             xmlns:res="clr-namespace:SkyEditor.ROMEditor.UI.WPF.My.Resources"
+             TargetType="{x:Type psmdVM:PGDBViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="1000" d:DesignWidth="1000">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="500" />
+            <ColumnDefinition Width="3" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="21" />
+                <RowDefinition Height="3" />
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBox Grid.Row="0" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,80,0"/>
+            <Button Grid.Column="0" Content="{x:Static res:Language.Reset}" Command="{Binding ResetSearchCommand}" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Height="21"/>
+            <ListBox Grid.Row="2" ItemsSource="{Binding CurrentResultSet}" SelectedItem="{Binding SelectedEntry}">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="{x:Static res:Language.Remove}" Command="{Binding RemoveSelectedEntryCommand}" />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+            
+        </Grid>
+        <GridSplitter Grid.Column="1"
+                      ResizeBehavior="PreviousAndNext"
+                      Width="3"
+                      VerticalAlignment="Stretch"/>
+        <psmdV:PGDBEntryView Grid.Column="2" DataContext="{Binding SelectedEntry}" />
+    </Grid>
+</skyWPF:DataBoundViewControl>

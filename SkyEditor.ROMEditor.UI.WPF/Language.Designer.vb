@@ -290,6 +290,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Binary File.
+        '''</summary>
+        Public Shared ReadOnly Property FileType_Bin() As String
+            Get
+                Return ResourceManager.GetString("FileType_Bin", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to French.
         '''</summary>
         Public Shared ReadOnly Property French() As String
@@ -964,6 +973,15 @@ Namespace My.Resources
         Public Shared ReadOnly Property RelaxedMale() As String
             Get
                 Return ResourceManager.GetString("RelaxedMale", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Remove.
+        '''</summary>
+        Public Shared ReadOnly Property Remove() As String
+            Get
+                Return ResourceManager.GetString("Remove", resourceCulture)
             End Get
         End Property
         

@@ -80,7 +80,7 @@ Namespace MysteryDungeon
         ''' Contents of the sub header
         ''' </summary>
         ''' <returns></returns>
-        Protected Property ContentHeader As Byte()
+        Public Property ContentHeader As Byte()
 
         ''' <summary>
         ''' The decoded pointers in the pointers block.
@@ -100,7 +100,7 @@ Namespace MysteryDungeon
         ''' Whether or not to automatically add the SIR0 header relative pointers.
         ''' Defaults to false for backwards compatibility.
         ''' </summary>
-        Protected Property AutoAddSir0HeaderRelativePointers As Boolean
+        Public Property AutoAddSir0HeaderRelativePointers As Boolean
 
         Public Overridable Async Function IsOfType(File As GenericFile) As Task(Of Boolean)
             'Todo: possible parsing of file to ensure file contents are OK.
@@ -111,6 +111,10 @@ Namespace MysteryDungeon
                 (Await File.ReadAsync(2)) = &H52 AndAlso 'R
                 (Await File.ReadAsync(3)) = &H30         '0
         End Function
+
+        Public Overridable Overloads Sub CreateFile()
+            CreateFile("", {})
+        End Sub
 
         Public Overrides Sub CreateFile(Name As String, FileContents() As Byte)
             MyBase.CreateFile(Name, FileContents)
@@ -149,11 +153,17 @@ Namespace MysteryDungeon
             Dim pointerSection As New List(Of Byte)
             Dim pointers As IEnumerable(Of Integer)
             If AutoAddSir0HeaderRelativePointers Then
-                pointers = {4, 4}.Concat(RelativePointers)
+                If RelativePointers.Any() Then
+                    Dim firstPointer = RelativePointers.First()
+                    firstPointer += 8
+                    pointers = {4, 4}.Concat({firstPointer}).Concat(RelativePointers.Skip(1))
+                Else
+                    pointers = {4, 4}.Concat(RelativePointers.Skip(1))
+                End If
             Else
                 pointers = RelativePointers
             End If
-            For Each item In RelativePointers
+            For Each item In pointers
                 If item < 128 Then 'If the most significant bit is not 1
                     pointerSection.Add(CByte(item))
                 Else
@@ -203,6 +213,14 @@ Namespace MysteryDungeon
 
         Public Overrides Function GetSupportedExtensions() As IEnumerable(Of String)
             Return {".bin"}
+        End Function
+
+        ''' <summary>
+        ''' Sets the body of the content to the given data.
+        ''' </summary>
+        Public Async Function SetContent(content As Byte()) As Task
+            Me.Length = &H10 + content.Length
+            Await Me.WriteAsync(&H10, content.Length, content)
         End Function
 
         Public Async Function GetRawData() As Task(Of Byte())
