@@ -4,6 +4,11 @@ Namespace MysteryDungeon.PSMD
     Public Class DatabaseBin
         Implements IOpenableFile
 
+        Public Sub New()
+            MyBase.New
+            Strings = New List(Of String)
+        End Sub
+
         ''' <summary>
         ''' Matches string hashes to the strings contained in the file.
         ''' </summary>
@@ -11,6 +16,7 @@ Namespace MysteryDungeon.PSMD
         Public Property Strings As List(Of String)
 
         Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+            'Todo: parse string pointers and put strings into an actual structure
             Dim total As New Text.StringBuilder
             Using f As New GenericFile
                 f.IsReadOnly = True
@@ -50,10 +56,19 @@ Namespace MysteryDungeon.PSMD
             End Using
         End Function
 
-        Public Sub New()
-            MyBase.New
-            Strings = New List(Of String)
-        End Sub
+        Public Function GenerateHashDictionary() As Dictionary(Of UInteger, String)
+            Dim x = New Force.Crc32.Crc32Algorithm
+            Dim dictionary As New Dictionary(Of UInteger, String)
+            For count = 1 To Strings.Count - 1 Step 4
+                Dim s = Strings(count) & ".img"
+                Dim h = BitConverter.ToUInt32(x.ComputeHash(Text.Encoding.Unicode.GetBytes(s)).Reverse().ToArray(), 0)
+                If Not dictionary.ContainsKey(h) Then
+                    dictionary.Add(h, s)
+                End If
+            Next
+            Return dictionary
+        End Function
+
     End Class
 
 End Namespace

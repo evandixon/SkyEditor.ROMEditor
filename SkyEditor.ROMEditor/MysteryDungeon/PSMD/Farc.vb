@@ -171,21 +171,34 @@ Namespace MysteryDungeon.PSMD
         ''' </summary>
         ''' <param name="Directory">Directory to extract the FARC to.</param>
         Public Async Function Extract(Directory As String, provider As IIOProvider, Optional UseDictionary As Boolean = True) As Task
-            Dim asyncFor As New AsyncFor
             Dim dic As Dictionary(Of UInteger, String)
             If UseDictionary Then
                 dic = GetFileDictionary()
             Else
                 dic = New Dictionary(Of UInteger, String)
             End If
+            Await Extract(Directory, provider)
+        End Function
+
+        ''' <summary>
+        ''' Extracts the FARC to the given directory.
+        ''' </summary>
+        ''' <param name="Directory">Directory to extract the FARC to.</param>
+        Public Async Function Extract(Directory As String, provider As IIOProvider, filenameDictionary As Dictionary(Of UInteger, String)) As Task
+            Dim asyncFor As New AsyncFor
+
+            If Not IO.Directory.Exists(Directory) Then
+                IO.Directory.CreateDirectory(Directory)
+            End If
+
             'Extract the files.
             'Async if thread safe, sync otherwise
-            asyncFor.RunSynchronously = Not Me.IsThreadSafe
+            asyncFor.RunSynchronously = True 'Not Me.IsThreadSafe
             Await asyncFor.RunFor(Sub(Count As Integer)
                                       Dim filename As String
                                       Dim fileHash As UInteger = Header.FileData(Count).FilenamePointer
-                                      If dic.ContainsKey(fileHash) Then
-                                          filename = dic(fileHash)
+                                      If filenameDictionary.ContainsKey(fileHash) Then
+                                          filename = filenameDictionary(fileHash)
                                       Else
                                           filename = fileHash.ToString 'Count.ToString
                                       End If
