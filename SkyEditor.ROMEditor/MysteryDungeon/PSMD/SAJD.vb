@@ -129,7 +129,7 @@ Namespace MysteryDungeon.PSMD
 
                         'Offset of the pointer since the last pointer
                         'The first of these is based on the length of the string section, and we'll update it later
-                        f.RelativePointers.Add(&H4C)
+                        f.RelativePointers.Add(&H4)
 
                         While stringSection.Count Mod 4 <> 0
                             stringSection.Add(0)
@@ -202,7 +202,7 @@ Namespace MysteryDungeon.PSMD
                 f.ContentHeader = contentHeader
 
                 'Add relative pointer in content header
-                f.RelativePointers.Add(&H50)
+                f.RelativePointers.Add(&H8)
 
                 Await f.SetContent(stringSection.Concat(dataSection).ToArray())
 
