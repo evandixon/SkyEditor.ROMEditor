@@ -1,247 +1,314 @@
-﻿Imports SkyEditor.Core.IO
-Imports SkyEditor.Core.Utilities
+﻿Imports System.Text
+Imports System.Text.RegularExpressions
+Imports Force.Crc32
+Imports SkyEditor.Core.IO
 
 Namespace MysteryDungeon.PSMD
-    ''' <summary>
-    ''' Models a type 5 FARC file, one that does not contain embedded filenames.
-    ''' </summary>
-    Public Class FarcF5
-        Inherits GenericFile
+    Public Class Farc
         Implements IOpenableFile
+        Implements IOnDisk
+        Implements ISavableAs
+        Implements IDetectableFileType
+        Implements IDisposable
+        Implements IIOProvider
+
+        Private Shared Function GetFileSearchRegexQuestionMarkOnly(searchPattern As String) As StringBuilder
+            Dim parts = searchPattern.Split("?"c)
+            Dim regexString = New StringBuilder()
+            For Each item In parts
+                regexString.Append(Regex.Escape(item))
+                If item <> parts(parts.Length - 1) Then
+                    regexString.Append(".?")
+                End If
+            Next
+
+            Return regexString
+        End Function
+
+        Private Shared Function GetFileSearchRegex(searchPattern As String) As String
+            Dim asteriskParts = searchPattern.Split("*"c)
+            Dim regexString = New StringBuilder()
+            For Each part In asteriskParts
+                If String.IsNullOrEmpty(part) Then
+                    regexString.Append(".*")
+                Else
+                    regexString.Append(GetFileSearchRegexQuestionMarkOnly(part))
+                End If
+            Next
+
+            Return regexString.ToString()
+        End Function
+
+        Private ReadOnly Crc32 As Crc32Algorithm = New Crc32Algorithm
+
+        Protected Class Entry
+            ''' <summary>
+            ''' Gets or sets the filename, updating the filename hash on set
+            ''' </summary>
+            Public Property Filename As String
+                Get
+                    Return _filename
+                End Get
+                Set(value As String)
+                    _filename = value
+                    FilenameHash = BitConverter.ToUInt32(Crc32.ComputeHash(Text.Encoding.Unicode.GetBytes(value)).Reverse().ToArray(), 0)
+                End Set
+            End Property
+            Dim _filename As String
+
+            Public Property FilenameHash As UInteger?
+            Public Property FileData As Byte()
+            Friend Property DataEntry As FarcFat5.Entry
+            Friend Property Crc32 As Crc32Algorithm
+
+            Public ReadOnly Property DataLength As Integer
+                Get
+                    If FileData IsNot Nothing Then
+                        Return FileData.Length
+                    Else
+                        Return DataEntry.DataLength
+                    End If
+                End Get
+            End Property
+
+            ''' <summary>
+            ''' Sets the filename only if the given filename matches the existing filename hash
+            ''' </summary>
+            ''' <returns>A boolean indictating whether or not the set was successful</returns>
+            Public Function TrySetFilename(filename As String) As Boolean
+                If Not FilenameHash.HasValue Then
+                    Me.Filename = filename
+                    Return True
+                Else
+                    Dim hash = BitConverter.ToUInt32(Crc32.ComputeHash(Text.Encoding.Unicode.GetBytes(filename)).Reverse().ToArray(), 0)
+                    If hash = FilenameHash.Value Then
+                        Me.Filename = filename
+                        Return True
+                    Else
+                        Return False
+                    End If
+                End If
+            End Function
+        End Class
 
         Public Sub New()
-            MyBase.New()
-            Me.EnableInMemoryLoad = True
+            ResetWorkingDirectory()
         End Sub
 
-        Public Property Header As Sir0Fat5
+        Public Event FileSaved As EventHandler Implements ISavable.FileSaved
 
+        Protected Property InnerData As GenericFile
         Protected Property DataOffset As Integer
+        Protected Property UnknownHeaderData As Byte()
+        Protected Property Sir0Type As Integer
 
-        Public ReadOnly Property FileCount As Integer
-            Get
-                Return Header.FileData.Count
-            End Get
-        End Property
+        Public Property PreLoadFiles As Boolean = False
+        Public Property EnableInMemoryLoad As Boolean = False
+        Public Property Filename As String Implements IOnDisk.Filename
+        Private Property Entries As List(Of Entry)
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
-            Await MyBase.OpenFile(Filename, Provider)
+        Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+            Entries = New List(Of Entry)
+            Dim f As New GenericFile
+            f.EnableInMemoryLoad = Me.EnableInMemoryLoad
+            Await f.OpenFile(filename, provider)
 
-            Dim sir0Type = Await Me.ReadInt32Async(&H20)
-            Dim sir0Offset = Await Me.ReadInt32Async(&H24)
-            Dim sir0Length = Await Me.ReadInt32Async(&H28)
-            DataOffset = Await Me.ReadInt32Async(&H2C)
-            Dim datLength = Await Me.ReadInt32Async(&H30)
+            UnknownHeaderData = Await f.ReadAsync(4, &H1C)
+            Sir0Type = Await f.ReadInt32Async(&H20)
+            Dim sir0Offset = Await f.ReadInt32Async(&H24)
+            Dim sir0Length = Await f.ReadInt32Async(&H28)
+            DataOffset = Await f.ReadInt32Async(&H2C)
+            Dim dataLength = Await f.ReadInt32Async(&H30)
 
-            'Todo: use another class for another sir0 type
-            'This code is for sir0 type 5
-            Header = New Sir0Fat5
-            Header.EnableInMemoryLoad = True
-            Header.CreateFile("", Await Me.ReadAsync(sir0Offset, sir0Length))
-        End Function
-
-        Public Shared Async Function Pack(SourceDirectory As String, DestinationFarcFilename As String, provider As IIOProvider) As Task
-            If provider.FileExists(DestinationFarcFilename) Then
-                provider.DeleteFile(DestinationFarcFilename)
+            If Sir0Type <> 5 Then
+                Throw New NotSupportedException("Only FARC v5 is supported for the time being")
             End If
 
-            'Only works for FARC files that lack filenames
-            Dim header As New Sir0Fat5
-            header.CreateFile("")
-            Dim fileNames = provider.GetFiles(SourceDirectory, "*", True)
-            'Dim fileData As New GenericFile({})
-            Dim fileData As New List(Of Byte)
-            Dim filenameDic = GetReverseFileDictionary(DestinationFarcFilename, provider)
+            Dim header = New FarcFat5
+            Await header.OpenFile(Await f.ReadAsync(sir0Offset, sir0Length))
 
-            For Each item In From kv In filenameDic Order By kv.Value
-                Dim entry As New Sir0Fat5.FileInfo
-                entry.DataOffset = fileData.Count
-                entry.FilenamePointer = item.Value
-                Dim current = provider.ReadAllBytes(IO.Path.Combine(SourceDirectory, item.Key))
-                entry.DataLength = current.Length
-                'Using file As New GenericFile(IO.Path.Combine(SourceDirectory, item.Key), True)
-                '    entry.DataLength = file.Length
-                '    Await fileData.AppendFile(file)
-                'End Using
-                fileData.AddRange(current)
-
-                header.FileData.Add(entry)
-            Next
-
-            'For Each item In fileNames
-            '    If filenameDic.ContainsKey(IO.Path.GetFileNameWithoutExtension(item)) Then
-
-            '        Dim entry As New Sir0Fat5.FileInfo
-            '        entry.DataOffset = fileData.Length
-            '        entry.FilenamePointer = filenameDic(IO.Path.GetFileNameWithoutExtension(item))
-
-            '        Using file As New GenericFile(item, True)
-            '            entry.DataLength = file.Length
-            '            Await fileData.AppendFile(file)
-            '        End Using
-
-            '        header.FileData.Add(entry)
-
-            '    Else
-            '        Throw New IndexOutOfRangeException(String.Format("No file hash can be found for filename ""{0}"".", IO.Path.GetFileNameWithoutExtension(item)))
-            '    End If
-            'Next
-
-            Dim headerData = Await header.GetRawData
-
-            Dim archiveBytes As New List(Of Byte)
-            'Dim archive As New FarcF5
-            'archive.CreateFile("")
-            'archive.Length = &H80 '+ header.Length + fileData.Length
-            'archive.RawData(0, 4) = {&H46, &H41, &H52, &H43} 'Magic: FARC
-            'archive.Int(4) = 0 'Unknown value
-            'archive.Int(8) = 0 'Unknown value
-            'archive.Int(&HC) = 2 'Unknown value
-            'archive.Int(&H10) = 0 'Unknown value
-            'archive.Int(&H14) = 0 'Unknown, usually 0
-            'archive.Int(&H18) = 7 'Unknown, usually 7
-            'archive.Int(&H1C) = &H77EA3CA4 'Unknown
-            'archive.Int(&H20) = 5 'SIR0 version
-            'archive.Int(&H24) = &H80 'SIR0 offset, always 0x80
-            'archive.Int(&H28) = headerData.Length
-            'archive.Int(&H2C) = &H80 + headerData.Length 'Data offset
-            'archive.Int(&H30) = fileData.Count
-
-            'archive.Append(headerData)
-            'archive.Append(fileData.ToArray)
-            'archive.Save(DestinationFarcFilename)
-
-            archiveBytes.AddRange({&H46, &H41, &H52, &H43}) 'Magic: FARC)
-            archiveBytes.AddRange(BitConverter.GetBytes(0)) '0x4
-            archiveBytes.AddRange(BitConverter.GetBytes(0)) '0x8
-            archiveBytes.AddRange(BitConverter.GetBytes(2)) '0xC
-            archiveBytes.AddRange(BitConverter.GetBytes(0)) '0x10
-            archiveBytes.AddRange(BitConverter.GetBytes(0)) '0x14
-            archiveBytes.AddRange(BitConverter.GetBytes(7)) '0x18
-            archiveBytes.AddRange(BitConverter.GetBytes(&H77EA3CA4)) '0x1C
-            archiveBytes.AddRange(BitConverter.GetBytes(5)) '0x20
-            archiveBytes.AddRange(BitConverter.GetBytes(&H80)) '0x24
-            archiveBytes.AddRange(BitConverter.GetBytes(headerData.Length)) '0x28
-            archiveBytes.AddRange(BitConverter.GetBytes(&H80 + headerData.Length)) '0x2C
-            archiveBytes.AddRange(BitConverter.GetBytes(fileData.Count)) '0x30
-
-            For count = 0 To &H4C - 1
-                archiveBytes.Add(0)
-            Next
-
-            archiveBytes.AddRange(headerData)
-            archiveBytes.AddRange(fileData.ToArray)
-
-            provider.WriteAllBytes(DestinationFarcFilename, archiveBytes.ToArray)
-
-
-            'archive.Dispose()
-        End Function
-
-
-        Public Function GetFileData(FileIndex As Integer) As Byte()
-            Return Read(Header.FileData(FileIndex).DataOffset + DataOffset, Header.FileData(FileIndex).DataLength)
-        End Function
-
-        ''' <summary>
-        ''' Gets the FARC file with the given filename, if it exists.
-        ''' Otherwise, returns nothing.
-        ''' </summary>
-        ''' <param name="Filename">Name of the file to look for.</param>
-        ''' <returns></returns>
-        Public Function GetFileData(Filename As String) As Byte()
-            'Only works on Farc files without filenames.
-            Dim dic = GetFileDictionary()
-
-            Dim hash As UInteger? = (From kv In dic Where String.Compare(Filename, kv.Value, StringComparison.OrdinalIgnoreCase) = 0 Select kv.Key).FirstOrDefault
-            If hash IsNot Nothing Then
-                Dim info = (From i In Header.FileData Where i.FilenamePointer = hash).FirstOrDefault
-                If info IsNot Nothing Then
-                    Return Read(info.DataOffset + DataOffset, info.DataLength)
+            For Each item In header.Entries
+                Dim fileEntry As New Entry
+                fileEntry.Crc32 = Crc32
+                If item.IsFilenameSet Then
+                    fileEntry.Filename = item.Filename
                 Else
-                    Throw New IndexOutOfRangeException("Unable to find entry with name " & Filename)
+                    fileEntry.FilenameHash = item.FilenameHash
                 End If
-            Else
-                Throw New IndexOutOfRangeException("Unable to find entry with name " & Filename)
-            End If
-        End Function
+                fileEntry.DataEntry = item
 
-        ''' <summary>
-        ''' Extracts the FARC to the given directory.
-        ''' </summary>
-        ''' <param name="Directory">Directory to extract the FARC to.</param>
-        Public Async Function Extract(Directory As String, provider As IIOProvider, Optional UseDictionary As Boolean = True) As Task
-            Dim asyncFor As New AsyncFor
-            Dim dic As Dictionary(Of UInteger, String)
-            If UseDictionary Then
-                dic = GetFileDictionary()
-            Else
-                dic = New Dictionary(Of UInteger, String)
-            End If
-            'Extract the files.
-            'Async if thread safe, sync otherwise
-            asyncFor.RunSynchronously = Not Me.IsThreadSafe
-            Await asyncFor.RunFor(Sub(Count As Integer)
-                                      Dim filename As String
-                                      Dim fileHash As UInteger = Header.FileData(Count).FilenamePointer
-                                      If dic.ContainsKey(fileHash) Then
-                                          filename = dic(fileHash)
-                                      Else
-                                          filename = fileHash.ToString 'Count.ToString
-                                      End If
-                                      provider.WriteAllBytes(IO.Path.Combine(Directory, filename), GetFileData(Count))
-                                  End Sub, 0, FileCount - 1)
-        End Function
-
-        ''' <summary>
-        ''' Gets a dictionary matching file indexes to file names.
-        ''' </summary>
-        ''' <returns></returns>
-        Public Function GetFileDictionary() As Dictionary(Of UInteger, String)
-            Dim out As New Dictionary(Of UInteger, String)
-            Dim resourceFile = My.Resources.FarcFilenames.ResourceManager.GetString(Path.GetFileNameWithoutExtension(Me.Filename)) ' PluginHelper.GetResourceName(IO.Path.Combine("farc", IO.Path.GetFileNameWithoutExtension(Me.OriginalFilename) & ".txt"))
-            If Not String.IsNullOrEmpty(resourceFile) Then
-                Dim i As New BasicIniFile
-                i.CreateFile(resourceFile)
-                For Each item In i.Entries
-                    out.Add(CUInt(item.Key), item.Value)
-                Next
-            End If
-            Return out
-        End Function
-
-        Private Shared Function GetReverseFileDictionary(Filename As String, provider As IIOProvider) As Dictionary(Of String, UInteger)
-            Dim out As New Dictionary(Of String, UInteger)
-            Dim resource = My.Resources.FarcFilenames.ResourceManager.GetString(Path.GetFileNameWithoutExtension(Filename))
-            If Not String.IsNullOrEmpty(resource) Then
-                Dim i As New BasicIniFile
-                i.CreateFile(resource)
-                For Each item In i.Entries
-                    out.Add(item.Value, CUInt(item.Key))
-                Next
-            End If
-            Return out
-        End Function
-
-#Region "IDisposable Support"
-        Private disposedValue As Boolean ' To detect redundant calls
-
-        ' IDisposable
-        Protected Overrides Sub Dispose(disposing As Boolean)
-            MyBase.Dispose(True)
-
-            If Not Me.disposedValue Then
-                If disposing AndAlso Header IsNot Nothing Then
-                    Header.Dispose()
+                If PreLoadFiles Then
+                    Await GetFileData(fileEntry)
+                Else
+                    'Don't load the file data yet, to save time and resources
                 End If
 
-                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
-                ' TODO: set large fields to null.
+                Entries.Add(fileEntry)
+            Next
+
+            Me.InnerData = f
+            Me.Filename = filename
+        End Function
+
+        Protected Function HashFilename(filename As String) As UInteger
+            Return BitConverter.ToUInt32(Crc32.ComputeHash(Text.Encoding.Unicode.GetBytes(filename)).Reverse().ToArray(), 0)
+        End Function
+
+        Protected Async Function GetFileData(entry As Entry) As Task(Of Byte())
+            If entry.FileData Is Nothing Then
+                entry.FileData = Await InnerData.ReadAsync(DataOffset + entry.DataEntry.DataOffset, entry.DataEntry.DataLength).ConfigureAwait(False)
             End If
-            Me.disposedValue = True
+            Return entry.FileData
+        End Function
+
+        Protected Function GetFileEntry(filename As String) As Entry
+            Dim hash = HashFilename(filename)
+            Dim entry = Entries.FirstOrDefault(Function(x) x.FilenameHash = hash)
+            If entry IsNot Nothing AndAlso String.IsNullOrEmpty(entry.Filename) Then
+                entry.Filename = filename
+            End If
+            Return entry
+        End Function
+
+        Public Async Function GetFileData(filename As String) As Task(Of Byte())
+            Dim entry = GetFileEntry(filename)
+            If entry IsNot Nothing Then
+                Return Await GetFileData(entry).ConfigureAwait(False)
+            Else
+                Return Nothing
+            End If
+        End Function
+
+        Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
+            Using f As New GenericFile
+                f.CreateFile({})
+
+                Await f.Save(filename, provider)
+            End Using
+        End Function
+
+        Public Async Function Save(provider As IIOProvider) As Task Implements ISavable.Save
+            Await Save(Filename, provider)
+        End Function
+
+        Public Async Function IsOfType(file As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
+            Return file.Length > &H50 AndAlso
+                (Await file.ReadAsync(0, 4)).SequenceEqual({&H46, &H41, &H52, &H43}) AndAlso
+                (Await file.ReadInt32Async(&H20) = 5)
+        End Function
+
+        Public Function GetDefaultExtension() As String Implements ISavableAs.GetDefaultExtension
+            Return "*.bin"
+        End Function
+
+        Public Function GetSupportedExtensions() As IEnumerable(Of String) Implements ISavableAs.GetSupportedExtensions
+            Return {"*.bin"}
+        End Function
+
+        Public Sub Dispose() Implements IDisposable.Dispose
+            InnerData?.Dispose()
+            Crc32?.Dispose()
         End Sub
-#End Region
 
+#Region "IIOProvider Implementation"
+        Public Property WorkingDirectory As String Implements IIOProvider.WorkingDirectory
+
+        Public Sub ResetWorkingDirectory() Implements IIOProvider.ResetWorkingDirectory
+            WorkingDirectory = "/"
+        End Sub
+        Protected Function FixPath(filePath As String) As String
+            Return filePath.TrimStart("/")
+        End Function
+
+        Public Function GetFileLength(filename As String) As Long Implements IIOProvider.GetFileLength
+            Return GetFileEntry(FixPath(filename)).DataLength
+        End Function
+
+        Public Function FileExists(filename As String) As Boolean Implements IIOProvider.FileExists
+            Return GetFileEntry(FixPath(filename)) IsNot Nothing
+        End Function
+
+        Public Function DirectoryExists(path As String) As Boolean Implements IIOProvider.DirectoryExists
+            Return False
+        End Function
+
+        Public Sub CreateDirectory(path As String) Implements IIOProvider.CreateDirectory
+            Throw New NotSupportedException()
+        End Sub
+
+        Public Function GetFiles(path As String, searchPattern As String, topDirectoryOnly As Boolean) As String() Implements IIOProvider.GetFiles
+            Dim filter = New Regex(GetFileSearchRegex(searchPattern))
+            Dim files = Entries.Select(Function(entry)
+                                           If Not String.IsNullOrEmpty(entry.Filename) Then
+                                               Return "/" & entry.Filename
+                                           Else
+                                               Return "/" & entry.FilenameHash.Value.ToString("X")
+                                           End If
+                                       End Function).
+                        Where(Function(filename) filter.IsMatch(filename))
+            Return files.ToArray()
+        End Function
+
+        Public Function GetDirectories(path As String, topDirectoryOnly As Boolean) As String() Implements IIOProvider.GetDirectories
+            Return {}
+        End Function
+
+        Public Function ReadAllBytes(filename As String) As Byte() Implements IIOProvider.ReadAllBytes
+            Throw New NotImplementedException
+            Return GetFileData(FixPath(filename)).ConfigureAwait(False).GetAwaiter.GetResult
+        End Function
+
+        Public Function ReadAllText(filename As String) As String Implements IIOProvider.ReadAllText
+            Throw New NotImplementedException()
+        End Function
+
+        Public Sub WriteAllBytes(filename As String, data() As Byte) Implements IIOProvider.WriteAllBytes
+            Dim entry = GetFileEntry(FixPath(filename))
+            If entry IsNot Nothing Then
+                entry.FileData = data
+            Else
+                entry = New Entry
+                entry.Filename = FixPath(filename)
+                entry.FileData = data
+                Entries.Add(entry)
+            End If
+        End Sub
+
+        Public Sub WriteAllText(filename As String, data As String) Implements IIOProvider.WriteAllText
+            Throw New NotImplementedException()
+        End Sub
+
+        Public Sub CopyFile(sourceFilename As String, destinationFilename As String) Implements IIOProvider.CopyFile
+            WriteAllBytes(destinationFilename, ReadAllBytes(sourceFilename))
+        End Sub
+
+        Public Sub DeleteFile(filename As String) Implements IIOProvider.DeleteFile
+            Entries.Remove(GetFileEntry(FixPath(filename)))
+        End Sub
+
+        Public Sub DeleteDirectory(path As String) Implements IIOProvider.DeleteDirectory
+            Throw New NotSupportedException()
+        End Sub
+
+        Public Function GetTempFilename() As String Implements IIOProvider.GetTempFilename
+            Throw New NotImplementedException()
+        End Function
+
+        Public Function GetTempDirectory() As String Implements IIOProvider.GetTempDirectory
+            Throw New NotSupportedException()
+        End Function
+
+        Public Function OpenFile(filename As String) As Stream Implements IIOProvider.OpenFile
+            Throw New NotImplementedException()
+        End Function
+
+        Public Function OpenFileReadOnly(filename As String) As Stream Implements IIOProvider.OpenFileReadOnly
+            Throw New NotImplementedException()
+        End Function
+
+        Public Function OpenFileWriteOnly(filename As String) As Stream Implements IIOProvider.OpenFileWriteOnly
+            Throw New NotImplementedException()
+        End Function
+#End Region
     End Class
 End Namespace
-

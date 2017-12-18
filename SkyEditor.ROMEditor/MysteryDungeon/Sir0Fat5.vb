@@ -1,7 +1,7 @@
 ﻿Imports SkyEditor.Core.IO
 
 Namespace MysteryDungeon
-    Public Class Sir0Fat5
+    Public Class Sir0Fat5Old
         Inherits Sir0
         Implements IOpenableFile
 

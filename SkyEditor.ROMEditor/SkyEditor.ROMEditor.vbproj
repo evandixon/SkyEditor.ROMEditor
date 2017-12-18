@@ -129,6 +129,8 @@
     <Compile Include="MysteryDungeon\PSMD\Dungeon\FixedPokemon.vb" />
     <Compile Include="MysteryDungeon\PSMD\Experience.vb" />
     <Compile Include="MysteryDungeon\PSMD\Farc.vb" />
+    <Compile Include="MysteryDungeon\PSMD\FarcF5.vb" />
+    <Compile Include="MysteryDungeon\PSMD\FarcFat5.vb" />
     <Compile Include="MysteryDungeon\PSMD\FlowData.vb" />
     <Compile Include="MysteryDungeon\PSMD\ItemDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\JukeboxBin.vb" />
