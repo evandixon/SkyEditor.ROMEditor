@@ -1,7 +1,9 @@
-﻿Imports System.Text
+﻿Imports System.Globalization
+Imports System.Text
 Imports System.Text.RegularExpressions
 Imports Force.Crc32
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.Utilities
 
 Namespace MysteryDungeon.PSMD
     Public Class Farc
@@ -11,6 +13,7 @@ Namespace MysteryDungeon.PSMD
         Implements IDetectableFileType
         Implements IDisposable
         Implements IIOProvider
+        Implements IReportProgress
 
         Private Shared Function GetFileSearchRegexQuestionMarkOnly(searchPattern As String) As StringBuilder
             Dim parts = searchPattern.Split("?"c)
@@ -39,7 +42,15 @@ Namespace MysteryDungeon.PSMD
             Return regexString.ToString()
         End Function
 
-        Private ReadOnly Crc32 As Crc32Algorithm = New Crc32Algorithm
+        Public Shared Async Function Pack(sourceDirectory As String, outputFile As String, provider As IIOProvider) As Task
+            Using f As New Farc
+                For Each item In provider.GetFiles(sourceDirectory, "*", True)
+                    f.WriteAllBytes(Path.GetFileName(item), provider.ReadAllBytes(item))
+                Next
+
+                Await f.Save(outputFile, provider)
+            End Using
+        End Function
 
         Protected Class Entry
             ''' <summary>
@@ -51,7 +62,7 @@ Namespace MysteryDungeon.PSMD
                 End Get
                 Set(value As String)
                     _filename = value
-                    FilenameHash = BitConverter.ToUInt32(Crc32.ComputeHash(Text.Encoding.Unicode.GetBytes(value)).Reverse().ToArray(), 0)
+                    FilenameHash = PmdFunctions.Crc32Hash(value)
                 End Set
             End Property
             Dim _filename As String
@@ -59,7 +70,6 @@ Namespace MysteryDungeon.PSMD
             Public Property FilenameHash As UInteger?
             Public Property FileData As Byte()
             Friend Property DataEntry As FarcFat5.Entry
-            Friend Property Crc32 As Crc32Algorithm
 
             Public ReadOnly Property DataLength As Integer
                 Get
@@ -80,7 +90,7 @@ Namespace MysteryDungeon.PSMD
                     Me.Filename = filename
                     Return True
                 Else
-                    Dim hash = BitConverter.ToUInt32(Crc32.ComputeHash(Text.Encoding.Unicode.GetBytes(filename)).Reverse().ToArray(), 0)
+                    Dim hash = PmdFunctions.Crc32Hash(filename)
                     If hash = FilenameHash.Value Then
                         Me.Filename = filename
                         Return True
@@ -89,13 +99,103 @@ Namespace MysteryDungeon.PSMD
                     End If
                 End If
             End Function
+
+            Public Overrides Function ToString() As String
+                Return If(Filename,
+                    If(FilenameHash?.ToString("X"),
+                    MyBase.ToString))
+            End Function
+        End Class
+
+        Public Class FarcFileStream
+            Inherits Stream
+
+            Public Sub New(farc As Farc, filename As String, canRead As Boolean, canWrite As Boolean)
+                Me.Farc = farc
+                Me.Filename = filename
+                Me.CanRead = canRead
+                Me.CanWrite = canWrite
+            End Sub
+
+            Protected Property Farc As Farc
+
+            Protected Property Filename As String
+
+            Protected ReadOnly Property UnderlyingArray As Byte()
+                Get
+                    Return Farc.GetFileData(Filename)
+                End Get
+            End Property
+
+            Public Overrides ReadOnly Property CanRead As Boolean
+
+            Public Overrides ReadOnly Property CanSeek As Boolean
+                Get
+                    Return True
+                End Get
+            End Property
+
+            Public Overrides ReadOnly Property CanWrite As Boolean
+
+            Public Overrides ReadOnly Property Length As Long
+                Get
+                    Return UnderlyingArray.Length
+                End Get
+            End Property
+
+            Public Overrides Property Position As Long
+
+            Public Overrides Sub Flush()
+            End Sub
+
+            Public Overrides Sub SetLength(value As Long)
+                Farc.ResizeFileData(Filename, value)
+            End Sub
+
+            Public Overrides Sub Write(buffer() As Byte, offset As Integer, count As Integer)
+                Array.Copy(buffer, Position, UnderlyingArray, offset, count)
+            End Sub
+
+            Public Overrides Function Read(buffer() As Byte, offset As Integer, count As Integer) As Integer
+                count = Math.Min(count, UnderlyingArray.Length - Position)
+                Array.Copy(UnderlyingArray, offset, buffer, Position, count)
+                Return count
+            End Function
+
+            Public Overrides Function Seek(offset As Long, origin As SeekOrigin) As Long
+                Select Case origin
+                    Case SeekOrigin.Begin
+                        Position = offset
+                    Case SeekOrigin.Current
+                        Position += offset
+                    Case SeekOrigin.End
+                        Position = Length - 1 - offset
+                    Case Else
+                        Throw New ArgumentException(NameOf(origin))
+                End Select
+                Return Position
+            End Function
         End Class
 
         Public Sub New()
             ResetWorkingDirectory()
+            Entries = New List(Of Entry)
         End Sub
 
+        ''' <summary>
+        ''' Raised when the file has been saved
+        ''' </summary>
         Public Event FileSaved As EventHandler Implements ISavable.FileSaved
+
+        ''' <summary>
+        ''' Raised when the progress of archive extraction has progressed
+        ''' </summary>
+        Public Event ProgressChanged As EventHandler(Of ProgressReportedEventArgs) Implements IReportProgress.ProgressChanged
+
+        ''' <summary>
+        ''' Raised when the archive extraction has completed
+        ''' </summary>
+        Public Event Completed As EventHandler Implements IReportProgress.Completed
 
         Protected Property InnerData As GenericFile
         Protected Property DataOffset As Integer
@@ -106,6 +206,10 @@ Namespace MysteryDungeon.PSMD
         Public Property EnableInMemoryLoad As Boolean = False
         Public Property Filename As String Implements IOnDisk.Filename
         Private Property Entries As List(Of Entry)
+
+        Public Sub CreateFile()
+            Entries = New List(Of Entry)
+        End Sub
 
         Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Entries = New List(Of Entry)
@@ -129,7 +233,6 @@ Namespace MysteryDungeon.PSMD
 
             For Each item In header.Entries
                 Dim fileEntry As New Entry
-                fileEntry.Crc32 = Crc32
                 If item.IsFilenameSet Then
                     fileEntry.Filename = item.Filename
                 Else
@@ -138,7 +241,7 @@ Namespace MysteryDungeon.PSMD
                 fileEntry.DataEntry = item
 
                 If PreLoadFiles Then
-                    Await GetFileData(fileEntry)
+                    Await GetFileDataAsync(fileEntry)
                 Else
                     'Don't load the file data yet, to save time and resources
                 End If
@@ -148,42 +251,167 @@ Namespace MysteryDungeon.PSMD
 
             Me.InnerData = f
             Me.Filename = filename
+
+            'Try to load filenames
+            Select Case Path.GetFileName(filename).ToLower()
+                Case "image_2d.bin"
+                    Dim dbPath = Path.Combine(Path.GetDirectoryName(filename), "image_2d_database.bin")
+                    If provider.FileExists(dbPath) Then
+                        Dim dbFile As New SAJD
+                        Await dbFile.OpenFile(dbPath, provider)
+                        SetFilenames(dbFile.Entries.Select(Function(e) e.FileName & ".img"))
+                    End If
+                Case "pokemon_graphic.bin"
+                    Dim dbPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon_graphics_database.bin")
+                    If provider.FileExists(dbPath) Then
+                        Dim dbFile As New PGDB
+                        Await dbFile.OpenFile(dbPath, provider)
+                        SetFilenames(dbFile.Entries.Select(Function(e) e.Filename))
+                    End If
+                Case "message.bin",
+                     "message_en.bin",
+                     "message_fr.bin",
+                     "message_de.bin",
+                     "message_it.bin",
+                     "message_sp.bin",
+                     "message_us.bin",
+                     "message_debug.bin",
+                     "message_debug_en.bin",
+                     "message_debug_fr.bin",
+                     "message_debug_de.bin",
+                     "message_debug_it.bin",
+                     "message_debug_sp.bin",
+                     "message_debug_us.bin"
+                    Dim dbPath = Path.ChangeExtension(filename, ".lst")
+                    If provider.FileExists(dbPath) Then
+                        Dim lines = provider.ReadAllText(dbPath).Split(VBConstants.vbLf)
+                        SetFilenames(lines.Select(Function(l) Path.GetFileName(l.Trim)))
+                    End If
+            End Select
+
         End Function
 
-        Protected Function HashFilename(filename As String) As UInteger
-            Return BitConverter.ToUInt32(Crc32.ComputeHash(Text.Encoding.Unicode.GetBytes(filename)).Reverse().ToArray(), 0)
-        End Function
-
-        Protected Async Function GetFileData(entry As Entry) As Task(Of Byte())
-            If entry.FileData Is Nothing Then
-                entry.FileData = Await InnerData.ReadAsync(DataOffset + entry.DataEntry.DataOffset, entry.DataEntry.DataLength).ConfigureAwait(False)
-            End If
-            Return entry.FileData
+        Protected Function GetFileEntry(fileHash As UInteger) As Entry
+            Return Entries.FirstOrDefault(Function(x) x.FilenameHash = fileHash)
         End Function
 
         Protected Function GetFileEntry(filename As String) As Entry
-            Dim hash = HashFilename(filename)
-            Dim entry = Entries.FirstOrDefault(Function(x) x.FilenameHash = hash)
+            Dim hash = PmdFunctions.Crc32Hash(filename)
+            Dim entry = GetFileEntry(hash)
             If entry IsNot Nothing AndAlso String.IsNullOrEmpty(entry.Filename) Then
                 entry.Filename = filename
             End If
             Return entry
         End Function
 
-        Public Async Function GetFileData(filename As String) As Task(Of Byte())
+        Protected Function GetFileData(entry As Entry) As Byte()
+            If entry.FileData Is Nothing Then
+                entry.FileData = InnerData.Read(DataOffset + entry.DataEntry.DataOffset, entry.DataEntry.DataLength)
+            End If
+            Return entry.FileData
+        End Function
+
+        Protected Async Function GetFileDataAsync(entry As Entry) As Task(Of Byte())
+            If entry.FileData Is Nothing Then
+                entry.FileData = Await InnerData.ReadAsync(DataOffset + entry.DataEntry.DataOffset, entry.DataEntry.DataLength)
+            End If
+            Return entry.FileData
+        End Function
+
+        Public Function GetFileData(filename As String) As Byte()
             Dim entry = GetFileEntry(filename)
             If entry IsNot Nothing Then
-                Return Await GetFileData(entry).ConfigureAwait(False)
+                Return GetFileData(entry)
             Else
                 Return Nothing
             End If
         End Function
 
+        Public Sub ResizeFileData(filename As String, newSize As Integer)
+            Dim entry = GetFileEntry(filename)
+            GetFileData(entry) 'Ensure file data is loaded
+            Array.Resize(entry.FileData, newSize)
+        End Sub
+
+        Public Sub SetFilenames(filenames As IEnumerable(Of String))
+            For Each item In filenames
+                Dim hash = PmdFunctions.Crc32Hash(item)
+                Dim entry = GetFileEntry(hash)
+                entry?.TrySetFilename(item)
+            Next
+        End Sub
+
+        Public Async Function Extract(outputDirectory As String, provider As IIOProvider) As Task
+            IsCompleted = False
+
+            Dim onProgressed = Sub(sender As Object, e As ProgressReportedEventArgs)
+                                   Progress = e.Progress
+                                   Message = e.Message
+                                   IsIndeterminate = e.IsIndeterminate
+                               End Sub
+
+            Dim a As New AsyncFor
+            a.RunSynchronously = Not InnerData.IsThreadSafe
+            AddHandler a.ProgressChanged, onProgressed
+            Await a.RunForEach(Entries, Async Function(item As Entry) As Task
+                                            provider.WriteAllBytes(Path.Combine(outputDirectory, If(item.Filename, item.FilenameHash.Value.ToString("X"))), Await GetFileDataAsync(item))
+                                        End Function)
+            RemoveHandler a.ProgressChanged, onProgressed
+            IsCompleted = True
+        End Function
+
         Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
             Using f As New GenericFile
-                f.CreateFile({})
+                f.EnableInMemoryLoad = False
+                Await f.OpenFile(filename, provider)
 
-                Await f.Save(filename, provider)
+                Dim fat As New FarcFat5
+                fat.Sir0Fat5Type = 1
+                Dim fileData As IEnumerable(Of Byte) = {}
+                Dim fileDataLength = 0
+
+                For Each item In Entries
+                    Dim data = Await GetFileDataAsync(item)
+
+                    fat.Entries.Add(New FarcFat5.Entry With {
+                                    .FilenameHash = item.FilenameHash,
+                                    .DataOffset = fileDataLength,
+                                    .DataLength = data.Length
+                                    })
+
+                    fileData = fileData.Concat(data)
+                    fileDataLength += data.Length
+
+                    Dim paddingLength = 16 - (fileDataLength Mod 16)
+                    If paddingLength < 16 Then
+                        fileData = fileData.Concat(Enumerable.Repeat(Of Byte)(0, paddingLength))
+                        fileDataLength += paddingLength
+                    End If
+                Next
+
+                Dim fatData = Await fat.GetRawData()
+                Dim farcHeader As New List(Of Byte)
+                farcHeader.AddRange({&H46, &H41, &H52, &H43}) 'Magic: FARC)
+                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x4
+                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x8
+                farcHeader.AddRange(BitConverter.GetBytes(2)) '0xC
+                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x10
+                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x14
+                farcHeader.AddRange(BitConverter.GetBytes(7)) '0x18
+                farcHeader.AddRange(BitConverter.GetBytes(&H77EA3CA4)) '0x1C
+                farcHeader.AddRange(BitConverter.GetBytes(5)) '0x20
+                farcHeader.AddRange(BitConverter.GetBytes(&H80)) '0x24
+                farcHeader.AddRange(BitConverter.GetBytes(fatData.Length)) '0x28
+                farcHeader.AddRange(BitConverter.GetBytes(&H80 + fatData.Length)) '0x2C
+                farcHeader.AddRange(BitConverter.GetBytes(fileDataLength)) '0x30
+
+                f.Length = farcHeader.Count + fatData.Length + fileDataLength
+                Await f.WriteAsync(farcHeader.Concat(
+                                   Enumerable.Repeat(Of Byte)(0, &H4C).Concat(
+                                   fatData.Concat(
+                                   fileData))))
+
+                Await f.Save(provider)
             End Using
         End Function
 
@@ -207,8 +435,17 @@ Namespace MysteryDungeon.PSMD
 
         Public Sub Dispose() Implements IDisposable.Dispose
             InnerData?.Dispose()
-            Crc32?.Dispose()
         End Sub
+
+#Region "IReportProgress Properties"
+        Public Property Progress As Single Implements IReportProgress.Progress
+
+        Public Property Message As String Implements IReportProgress.Message
+
+        Public Property IsIndeterminate As Boolean Implements IReportProgress.IsIndeterminate
+
+        Public Property IsCompleted As Boolean Implements IReportProgress.IsCompleted
+#End Region
 
 #Region "IIOProvider Implementation"
         Public Property WorkingDirectory As String Implements IIOProvider.WorkingDirectory
@@ -254,12 +491,15 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Public Function ReadAllBytes(filename As String) As Byte() Implements IIOProvider.ReadAllBytes
-            Throw New NotImplementedException
-            Return GetFileData(FixPath(filename)).ConfigureAwait(False).GetAwaiter.GetResult
+            Return GetFileData(FixPath(filename))
         End Function
 
         Public Function ReadAllText(filename As String) As String Implements IIOProvider.ReadAllText
-            Throw New NotImplementedException()
+            Using f = OpenFileReadOnly(filename)
+                Using reader As New StreamReader(f)
+                    Return reader.ReadToEnd()
+                End Using
+            End Using
         End Function
 
         Public Sub WriteAllBytes(filename As String, data() As Byte) Implements IIOProvider.WriteAllBytes
@@ -268,14 +508,23 @@ Namespace MysteryDungeon.PSMD
                 entry.FileData = data
             Else
                 entry = New Entry
-                entry.Filename = FixPath(filename)
+
+                Dim hex As UInteger
+                If UInteger.TryParse(filename, NumberStyles.HexNumber, NumberFormatInfo.CurrentInfo, hex) Then
+                    'Filename is unknown, use raw hash
+                    entry.FilenameHash = hex
+                Else
+                    'Hash the filename
+                    entry.Filename = FixPath(filename)
+                End If
+
                 entry.FileData = data
                 Entries.Add(entry)
             End If
         End Sub
 
         Public Sub WriteAllText(filename As String, data As String) Implements IIOProvider.WriteAllText
-            Throw New NotImplementedException()
+            WriteAllBytes(filename, Text.Encoding.Unicode.GetBytes(data))
         End Sub
 
         Public Sub CopyFile(sourceFilename As String, destinationFilename As String) Implements IIOProvider.CopyFile
@@ -299,15 +548,15 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Public Function OpenFile(filename As String) As Stream Implements IIOProvider.OpenFile
-            Throw New NotImplementedException()
+            Return New FarcFileStream(Me, FixPath(filename), True, True)
         End Function
 
         Public Function OpenFileReadOnly(filename As String) As Stream Implements IIOProvider.OpenFileReadOnly
-            Throw New NotImplementedException()
+            Return New FarcFileStream(Me, FixPath(filename), True, False)
         End Function
 
         Public Function OpenFileWriteOnly(filename As String) As Stream Implements IIOProvider.OpenFileWriteOnly
-            Throw New NotImplementedException()
+            Return New FarcFileStream(Me, FixPath(filename), False, True)
         End Function
 #End Region
     End Class

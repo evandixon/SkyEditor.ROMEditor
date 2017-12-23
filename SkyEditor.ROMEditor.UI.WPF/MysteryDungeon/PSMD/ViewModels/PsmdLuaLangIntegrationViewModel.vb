@@ -70,7 +70,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
         Public Event Modified As EventHandler Implements INotifyModified.Modified
 
-        Private Sub OnModified(sender As Object, e As EventArgs)
+        Protected Sub OnModified(sender As Object, e As EventArgs)
             RaiseEvent Modified(Me, e)
         End Sub
     End Class

@@ -95,11 +95,6 @@
   <ItemGroup>
     <Compile Include="BasicIniFile.vb" />
     <Compile Include="Conversion.vb" />
-    <Compile Include="FarcFilenames.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FarcFilenames.resx</DependentUpon>
-    </Compile>
     <Compile Include="GameStrings.vb" />
     <Compile Include="Language.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -124,18 +119,19 @@
     <Compile Include="MysteryDungeon\PSMD\ActDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\ActHitCountTableDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\ActXlWaza.vb" />
+    <Compile Include="MysteryDungeon\PSMD\ConsoleCommands\Crc32Hash.vb" />
     <Compile Include="MysteryDungeon\PSMD\DatabaseBin.vb" />
     <Compile Include="MysteryDungeon\PSMD\DungeonDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\Dungeon\FixedPokemon.vb" />
     <Compile Include="MysteryDungeon\PSMD\Experience.vb" />
     <Compile Include="MysteryDungeon\PSMD\Farc.vb" />
-    <Compile Include="MysteryDungeon\PSMD\FarcF5.vb" />
     <Compile Include="MysteryDungeon\PSMD\FarcFat5.vb" />
     <Compile Include="MysteryDungeon\PSMD\FlowData.vb" />
     <Compile Include="MysteryDungeon\PSMD\ItemDataInfo.vb" />
     <Compile Include="MysteryDungeon\PSMD\JukeboxBin.vb" />
     <Compile Include="MysteryDungeon\PSMD\MessageBin.vb" />
     <Compile Include="MysteryDungeon\PSMD\MessageBinStringEntry.vb" />
+    <Compile Include="MysteryDungeon\PSMD\PmdFunctions.vb" />
     <Compile Include="MysteryDungeon\PSMD\SAJD.vb" />
     <Compile Include="MysteryDungeon\PSMD\PGDB.vb" />
     <Compile Include="MysteryDungeon\PSMD\PokemonDataInfo.vb" />
@@ -170,12 +166,6 @@
       <Generator>PublicVbMyResourcesResXFileCodeGenerator</Generator>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FarcFilenames.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <CustomToolNamespace>My.Resources</CustomToolNamespace>
-      <SubType>Designer</SubType>
-      <LastGenOutput>FarcFilenames.Designer.vb</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.VisualBasic.targets" />

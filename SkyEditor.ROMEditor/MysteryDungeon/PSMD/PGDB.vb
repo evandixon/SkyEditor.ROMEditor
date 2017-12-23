@@ -9,13 +9,13 @@ Namespace MysteryDungeon.PSMD
         Implements IDetectableFileType
 
         Public Class Entry
-            Public Property String1 As String 'Filename
-            Public Property String2 As String 'Skeleton/animation
-            Public Property String3 As String 'Romanized japanese name
+            Public Property Filename As String 'Filename
+            Public Property Skeleton As String 'Skeleton/animation
+            Public Property ActorName As String 'Romanized japanese name
             Public Property Data As Byte()
 
             Public Overrides Function ToString() As String
-                Return String1 & " | " & String2 & " | " & String3
+                Return Filename & " | " & Skeleton & " | " & ActorName
             End Function
         End Class
 
@@ -43,9 +43,9 @@ Namespace MysteryDungeon.PSMD
 
                     Dim entry As New Entry
 
-                    entry.String1 = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 0))
-                    entry.String2 = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 4))
-                    entry.String3 = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 8))
+                    entry.Filename = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 0))
+                    entry.Skeleton = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 4))
+                    entry.ActorName = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 8))
                     entry.Data = Await f.ReadAsync(entryOffset + 12, &H48)
 
                     Entries.Add(entry)
@@ -107,7 +107,7 @@ Namespace MysteryDungeon.PSMD
                 Dim dataSection As New List(Of Byte)
 
                 For Each item In Entries
-                    Dim str1Bytes = Encoding.Unicode.GetBytes(item.String1)
+                    Dim str1Bytes = Encoding.Unicode.GetBytes(item.Filename)
                     stringSection.AddRange(str1Bytes)
                     stringSection.Add(0)
                     stringSection.Add(0)
@@ -123,7 +123,7 @@ Namespace MysteryDungeon.PSMD
                         currentOffset += 1
                     End While
 
-                    Dim str2Bytes = Encoding.Unicode.GetBytes(item.String2)
+                    Dim str2Bytes = Encoding.Unicode.GetBytes(item.Skeleton)
                     stringSection.AddRange(str2Bytes)
                     stringSection.Add(0)
                     stringSection.Add(0)
@@ -136,7 +136,7 @@ Namespace MysteryDungeon.PSMD
                         currentOffset += 1
                     End While
 
-                    Dim str3Bytes = Encoding.Unicode.GetBytes(item.String3)
+                    Dim str3Bytes = Encoding.Unicode.GetBytes(item.ActorName)
                     stringSection.AddRange(str3Bytes)
                     stringSection.Add(0)
                     stringSection.Add(0)

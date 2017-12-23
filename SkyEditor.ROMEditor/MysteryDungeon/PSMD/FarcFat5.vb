@@ -38,7 +38,7 @@ Namespace MysteryDungeon.PSMD
 
         Public Property Filename As String Implements IOnDisk.Filename
 
-        Protected Property sir0Fat5Type As Integer
+        Public Property Sir0Fat5Type As Integer
 
         Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Entries = New List(Of Entry)
@@ -78,12 +78,12 @@ Namespace MysteryDungeon.PSMD
                     Dim filenameLength = Await sir0.ReadInt32Async(dataOffset + (count + 1) * 12 + 0) - filenameOffset
                     info.Filename = Await sir0.ReadUnicodeStringAsync(filenameOffset, filenameLength / 2)
                     info.IsFilenameSet = True
-                ElseIf sir0Fat5Type = 1 Then
+                ElseIf Sir0Fat5Type = 1 Then
                     info.Filename = Conversion.Hex(filenameOffset).PadLeft(8, "0"c)
                     info.FilenameHash = filenameOffset
                     info.IsFilenameSet = False
                 Else
-                    Throw New NotSupportedException("FAT type not supported: " & sir0Fat5Type.ToString())
+                    Throw New NotSupportedException("FAT type not supported: " & Sir0Fat5Type.ToString())
                 End If
 
                 Entries.Add(info)
@@ -91,13 +91,13 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Public Async Function GetRawData() As Task(Of Byte())
-            If sir0Fat5Type = 0 Then
+            If Sir0Fat5Type = 0 Then
                 Throw New NotImplementedException("Saving FAT type 0 not implemented.")
 
                 'Type 1 is supported
 
-            ElseIf sir0Fat5Type >= 2 Then
-                Throw New NotSupportedException("FAT type not supported: " & sir0Fat5Type.ToString())
+            ElseIf Sir0Fat5Type >= 2 Then
+                Throw New NotSupportedException("FAT type not supported: " & Sir0Fat5Type.ToString())
             End If
 
             Using f As New Sir0
@@ -107,7 +107,7 @@ Namespace MysteryDungeon.PSMD
 
                 'Generate data
                 Dim data As New List(Of Byte)
-                For Each item In Entries
+                For Each item In Entries.OrderBy(Function(x) x.FilenameHash) 'Sorting by filename hash is critical to correct lookups. This is a hash table after all.
                     data.AddRange(BitConverter.GetBytes(item.FilenameHash))
                     data.AddRange(BitConverter.GetBytes(item.DataOffset))
                     data.AddRange(BitConverter.GetBytes(item.DataLength))
@@ -119,7 +119,7 @@ Namespace MysteryDungeon.PSMD
                 Dim contentHeader As New List(Of Byte)
                 contentHeader.AddRange(BitConverter.GetBytes(&H10)) 'Index to content section
                 contentHeader.AddRange(BitConverter.GetBytes(Entries.Count))
-                contentHeader.AddRange(BitConverter.GetBytes(sir0Fat5Type))
+                contentHeader.AddRange(BitConverter.GetBytes(Sir0Fat5Type))
                 f.SubHeaderRelativePointers.Add(0)
 
                 f.ContentHeader = contentHeader.ToArray
