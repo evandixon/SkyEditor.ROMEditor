@@ -367,25 +367,22 @@ Namespace MysteryDungeon.PSMD
 
                 Dim fat As New FarcFat5
                 fat.Sir0Fat5Type = 1
-                Dim fileData As IEnumerable(Of Byte) = {}
-                Dim fileDataLength = 0
+                Dim fileData As New List(Of Byte)
 
                 For Each item In Entries
                     Dim data = Await GetFileDataAsync(item)
 
                     fat.Entries.Add(New FarcFat5.Entry With {
                                     .FilenameHash = item.FilenameHash,
-                                    .DataOffset = fileDataLength,
+                                    .DataOffset = fileData.Count,
                                     .DataLength = data.Length
                                     })
 
-                    fileData = fileData.Concat(data)
-                    fileDataLength += data.Length
+                    fileData.AddRange(data)
 
-                    Dim paddingLength = 16 - (fileDataLength Mod 16)
+                    Dim paddingLength = 16 - (fileData.Count Mod 16)
                     If paddingLength < 16 Then
-                        fileData = fileData.Concat(Enumerable.Repeat(Of Byte)(0, paddingLength))
-                        fileDataLength += paddingLength
+                        fileData.AddRange(Enumerable.Repeat(Of Byte)(0, paddingLength))
                     End If
                 Next
 
@@ -403,13 +400,13 @@ Namespace MysteryDungeon.PSMD
                 farcHeader.AddRange(BitConverter.GetBytes(&H80)) '0x24
                 farcHeader.AddRange(BitConverter.GetBytes(fatData.Length)) '0x28
                 farcHeader.AddRange(BitConverter.GetBytes(&H80 + fatData.Length)) '0x2C
-                farcHeader.AddRange(BitConverter.GetBytes(fileDataLength)) '0x30
+                farcHeader.AddRange(BitConverter.GetBytes(fileData.Count)) '0x30
 
-                f.Length = farcHeader.Count + fatData.Length + fileDataLength
-                Await f.WriteAsync(farcHeader.Concat(
-                                   Enumerable.Repeat(Of Byte)(0, &H4C).Concat(
-                                   fatData.Concat(
-                                   fileData))))
+                f.Length = farcHeader.Count + &H4C + fatData.Length + fileData.Count
+                Await f.WriteAsync(0, farcHeader.ToArray())
+                Await f.WriteAsync(farcHeader.Count, Array.CreateInstance(GetType(Byte), &H4C))
+                Await f.WriteAsync(farcHeader.Count + &H4C, fatData)
+                Await f.WriteAsync(farcHeader.Count + &H4C + fatData.Length, fileData.ToArray())
 
                 Await f.Save(provider)
             End Using
