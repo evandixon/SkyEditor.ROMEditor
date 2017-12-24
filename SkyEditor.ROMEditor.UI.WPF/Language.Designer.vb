@@ -236,6 +236,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Debug.
+        '''</summary>
+        Public Shared ReadOnly Property Debug() As String
+            Get
+                Return ResourceManager.GetString("Debug", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Defense Boost.
         '''</summary>
         Public Shared ReadOnly Property DefenseBoost() As String

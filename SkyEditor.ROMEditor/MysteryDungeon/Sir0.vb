@@ -19,6 +19,7 @@ Namespace MysteryDungeon
             ResizeFileOnLoad = True
             AutoAddSir0HeaderRelativePointers = False
             RelativePointers = New List(Of Integer)
+            SubHeaderRelativePointers = New List(Of Integer)
             EnableInMemoryLoad = True
         End Sub
 

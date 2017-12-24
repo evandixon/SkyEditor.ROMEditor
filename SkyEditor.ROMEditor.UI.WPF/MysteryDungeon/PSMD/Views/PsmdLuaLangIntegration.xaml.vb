@@ -1,4 +1,5 @@
 ﻿Imports System.Reflection
+Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Projects
 Imports SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.PSMD.ViewModels
 Imports SkyEditor.UI.WPF
@@ -9,7 +10,7 @@ Namespace MysteryDungeon.PSMD.Views
         Implements IDisposable
 
         Private Sub PsmdLuaLangIntegration_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-            Me.Header = My.Resources.Language.Message
+            Me.Header = DirectCast(ViewModel, INamed).Name
         End Sub
 
         Public Overrides Function GetSortOrder(currentType As TypeInfo, isTab As Boolean) As Integer

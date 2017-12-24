@@ -47,7 +47,7 @@ Namespace MysteryDungeon.PSMD
             ProcessData()
         End Function
 
-        Private Sub SetOriginalIndexes(strings As IEnumerable(Of MessageBinStringEntry))
+        Protected Sub SetOriginalIndexes(strings As IEnumerable(Of MessageBinStringEntry))
             Dim index = 0
             For Each item In strings.OrderBy(Function(x) x.Pointer)
                 item.OriginalIndex = index
@@ -55,7 +55,7 @@ Namespace MysteryDungeon.PSMD
             Next
         End Sub
 
-        Private Sub ProcessData()
+        Protected Overridable Sub ProcessData()
             Dim stringCount As Integer = BitConverter.ToInt32(ContentHeader, 0)
             Dim stringInfoPointer As Integer = BitConverter.ToInt32(ContentHeader, 4)
 

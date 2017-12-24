@@ -7,6 +7,7 @@ Imports SkyEditor.Core.UI
 Imports SkyEditor.UI.WPF
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports System.Text
+Imports System.IO
 
 Namespace MysteryDungeon.PSMD.ViewModels
     Public Class MessageBinViewModel
@@ -55,6 +56,19 @@ Namespace MysteryDungeon.PSMD.ViewModels
                     End If
                 End Set
             End Property
+
+            Public Property DebugSymbol As String
+                Get
+                    Return _debugSymbol
+                End Get
+                Set(value As String)
+                    If Not _debugSymbol = value Then
+                        _debugSymbol = value
+                        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(DebugSymbol)))
+                    End If
+                End Set
+            End Property
+            Dim _debugSymbol As String
 
             Public ReadOnly Property OriginalIndex As Integer
                 Get
@@ -123,10 +137,19 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
         Public ReadOnly Property ExportCommand As RelayCommand
 
-        Public Sub Save(provider As IIOProvider)
+        Public Async Function Save(provider As IIOProvider) As Task
             UpdateModel(Model)
-            Model.Save(provider)
-        End Sub
+            Await Model.Save(provider)
+
+            'Update debug file for project
+            Dim debugFilename = Path.ChangeExtension(Model.Filename.Replace("\", "/").Replace("Languages/", "Languages/debug_"), ".dbin")
+            If provider.FileExists(debugFilename) Then
+                Dim d As New MessageBinDebug
+                Await d.OpenFile(debugFilename, provider)
+                UpdateDebugSymbols(d)
+                Await d.Save(provider)
+            End If
+        End Function
 
         Public Sub AddBlankEntry(id As UInteger)
             RawEntries.Add(CreateViewModel(New MessageBinStringEntry With {.Hash = id, .OriginalIndex = RawEntries.Count}))
@@ -165,6 +188,26 @@ Namespace MysteryDungeon.PSMD.ViewModels
             If s.ShowDialog = DialogResult.OK Then
                 Export(s.FileName)
             End If
+        End Sub
+
+        Public Sub LoadDebugSymbols(debug As MessageBinDebug)
+            For Each item In debug.Strings
+                Dim target = RawEntries.FirstOrDefault(Function(e) e.Hash = item.Hash)
+                If target IsNot Nothing Then
+                    target.DebugSymbol = item.Entry
+                End If
+            Next
+        End Sub
+
+        Public Sub UpdateDebugSymbols(debug As MessageBinDebug)
+            For Each item In RawEntries
+                Dim target = debug.Strings.FirstOrDefault(Function(x) x.Hash = item.Hash)
+                If target IsNot Nothing Then
+                    target.Entry = item.DebugSymbol
+                Else
+                    debug.Strings.Add(New MessageBinStringEntry With {.Hash = item.Hash, .Entry = item.DebugSymbol})
+                End If
+            Next
         End Sub
 
 #Region "Set/Load ViewModel"
