@@ -1,4 +1,5 @@
-﻿Imports System.Reflection
+﻿Imports System.ComponentModel
+Imports System.Reflection
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
 

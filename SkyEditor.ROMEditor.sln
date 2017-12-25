@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor", "SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj", "{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}"
-EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor.Windows", "SkyEditor.ROMEditor.Windows\SkyEditor.ROMEditor.Windows.vbproj", "{F05C12E8-EAB7-4B9E-A8D2-D21B80C1A646}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor.UI.WPF", "SkyEditor.ROMEditor.UI.WPF\SkyEditor.ROMEditor.UI.WPF.vbproj", "{4E3861A8-1669-4328-90FC-86D76B0FC0B6}"
@@ -32,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{BB222804-9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveryFileExplorer", "Library3DS\EveryFileExplorer.csproj", "{E92DF34A-5CF0-4F9C-9640-A16B7453270D}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor", "SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj", "{F1B430D7-C00D-4673-8816-97C9DF4376BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,18 +42,6 @@ Global
 		Test|x86 = Test|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Debug|x86.Build.0 = Debug|Any CPU
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Release|x86.ActiveCfg = Release|Any CPU
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Release|x86.Build.0 = Release|Any CPU
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Test|Any CPU.ActiveCfg = Test|Any CPU
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Test|Any CPU.Build.0 = Test|Any CPU
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Test|x86.ActiveCfg = Test|Any CPU
-		{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}.Test|x86.Build.0 = Test|Any CPU
 		{F05C12E8-EAB7-4B9E-A8D2-D21B80C1A646}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F05C12E8-EAB7-4B9E-A8D2-D21B80C1A646}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F05C12E8-EAB7-4B9E-A8D2-D21B80C1A646}.Debug|x86.ActiveCfg = Debug|x86
@@ -112,6 +100,18 @@ Global
 		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Test|Any CPU.Build.0 = Release|Any CPU
 		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Test|x86.ActiveCfg = Release|Any CPU
 		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Test|x86.Build.0 = Release|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Debug|x86.Build.0 = Debug|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Release|x86.ActiveCfg = Release|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Release|x86.Build.0 = Release|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Test|x86.ActiveCfg = Debug|Any CPU
+		{F1B430D7-C00D-4673-8816-97C9DF4376BC}.Test|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -345,7 +345,7 @@ Namespace MysteryDungeon.PSMD.Projects
             starterscriptContent = starterscriptContent.Replace("#Starter769#", starter769.ToString)
             starterscriptContent = starterscriptContent.Replace("#Starter772#", starter772.ToString)
 
-            Dim pokemonNameHashes = My.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf).Select(Function(x) Integer.Parse(x.Trim))
+            Dim pokemonNameHashes = MessageBin.PsmdPokemonNameHashes.Replace(vbCrLf, vbLf).Split(vbLf).Select(Function(x) Integer.Parse(x.Trim))
             starterscriptContent = starterscriptContent.Replace("#StarterHash1#", pokemonNameHashes(starter1 - 1))
             starterscriptContent = starterscriptContent.Replace("#StarterHash5#", pokemonNameHashes(starter5 - 1))
             starterscriptContent = starterscriptContent.Replace("#StarterHash10#", pokemonNameHashes(starter10 - 1))

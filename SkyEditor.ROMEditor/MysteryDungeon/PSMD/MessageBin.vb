@@ -1,4 +1,5 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports System.Collections.ObjectModel
+Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
 
 Namespace MysteryDungeon.PSMD
@@ -170,7 +171,7 @@ Namespace MysteryDungeon.PSMD
         Public Function GetCommonPokemonNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
-            For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf).Select(Function(x) x.Trim)
+            For Each item In My.Resources.Resources.PSMD_Pokemon_Name_Hashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf).Select(Function(x) x.Trim)
                 Dim hash As Integer
                 If Integer.TryParse(item, hash) Then
                     pokemonNameHashes.Add(item)
@@ -198,7 +199,7 @@ Namespace MysteryDungeon.PSMD
         Public Function GetCommonMoveNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
-            For Each item In My.Resources.PSMD_Move_Name_Hashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf)
+            For Each item In PsmdMoveNameHashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf)
                 Dim trimmed = item.Trim
                 Dim hash As Integer
                 If Integer.TryParse(trimmed, hash) Then
@@ -218,6 +219,20 @@ Namespace MysteryDungeon.PSMD
 
             Return pokemonNames
         End Function
+
+        Public Shared ReadOnly Property PsmdPokemonNameHashes() As String
+            Get
+
+                Return My.Resources.Resources.PSMD_Pokemon_Name_Hashes
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property PsmdMoveNameHashes() As String
+            Get
+
+                Return My.Resources.Resources.PSMD_Move_Name_Hashes
+            End Get
+        End Property
 
     End Class
 End Namespace

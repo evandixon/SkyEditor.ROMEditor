@@ -12,7 +12,6 @@ Option Strict On
 Option Explicit On
 
 Imports System
-Imports System.Reflection
 
 Namespace My.Resources
     
@@ -25,22 +24,26 @@ Namespace My.Resources
     '''</summary>
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0"),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.Microsoft.VisualBasic.HideModuleNameAttribute()>  _
-    Public Module Resources
+     Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute()>  _
+    Public Class Resources
         
-        Private resourceMan As Global.System.Resources.ResourceManager
+        Private Shared resourceMan As Global.System.Resources.ResourceManager
         
-        Private resourceCulture As Global.System.Globalization.CultureInfo
+        Private Shared resourceCulture As Global.System.Globalization.CultureInfo
+        
+        <Global.System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")>  _
+        Friend Sub New()
+            MyBase.New
+        End Sub
         
         '''<summary>
         '''  Returns the cached ResourceManager instance used by this class.
         '''</summary>
         <Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
-        Public ReadOnly Property ResourceManager() As Global.System.Resources.ResourceManager
+        Public Shared ReadOnly Property ResourceManager() As Global.System.Resources.ResourceManager
             Get
                 If Object.ReferenceEquals(resourceMan, Nothing) Then
-                    Dim temp As Global.System.Resources.ResourceManager = New Global.System.Resources.ResourceManager("SkyEditor.ROMEditor.Resources", GetType(Resources).GetTypeInfo.Assembly)
+                    Dim temp As Global.System.Resources.ResourceManager = New Global.System.Resources.ResourceManager("SkyEditor.ROMEditor.Resources", GetType(Resources).Assembly)
                     resourceMan = temp
                 End If
                 Return resourceMan
@@ -52,7 +55,7 @@ Namespace My.Resources
         '''  resource lookups using this strongly typed resource class.
         '''</summary>
         <Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
-        Public Property Culture() As Global.System.Globalization.CultureInfo
+        Public Shared Property Culture() As Global.System.Globalization.CultureInfo
             Get
                 Return resourceCulture
             End Get
@@ -107,7 +110,7 @@ Namespace My.Resources
         '''1997354599
         '''- [rest of string was truncated]&quot;;.
         '''</summary>
-        Public ReadOnly Property PSMD_Move_Name_Hashes() As String
+        Public Shared ReadOnly Property PSMD_Move_Name_Hashes() As String
             Get
                 Return ResourceManager.GetString("PSMD_Move_Name_Hashes", resourceCulture)
             End Get
@@ -159,10 +162,10 @@ Namespace My.Resources
         '''797602173
         '''-2063448 [rest of string was truncated]&quot;;.
         '''</summary>
-        Public ReadOnly Property PSMD_Pokemon_Name_Hashes() As String
+        Public Shared ReadOnly Property PSMD_Pokemon_Name_Hashes() As String
             Get
                 Return ResourceManager.GetString("PSMD_Pokemon_Name_Hashes", resourceCulture)
             End Get
         End Property
-    End Module
+    End Class
 End Namespace
