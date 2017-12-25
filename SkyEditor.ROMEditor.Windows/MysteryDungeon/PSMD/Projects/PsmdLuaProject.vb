@@ -75,7 +75,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Public Async Function GetPokemonNames() As Task(Of Dictionary(Of Integer, String)) Implements IPsmdMessageBinProject.GetPokemonNames
             If _pokemonNames Is Nothing Then
-                _pokemonNames = (Await GetLanguageFile("common")).GetCommonPokemonNames
+                _pokemonNames = (Await GetLanguageFile("common.bin")).GetCommonPokemonNames
             End If
             Return _pokemonNames
         End Function
@@ -83,7 +83,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Public Async Function GetMoveNames() As Task(Of Dictionary(Of Integer, String)) Implements IPsmdMessageBinProject.GetMoveNames
             If _moveNames Is Nothing Then
-                _moveNames = (Await GetLanguageFile("common")).GetCommonMoveNames
+                _moveNames = (Await GetLanguageFile("common.bin")).GetCommonMoveNames
             End If
             Return _moveNames
         End Function

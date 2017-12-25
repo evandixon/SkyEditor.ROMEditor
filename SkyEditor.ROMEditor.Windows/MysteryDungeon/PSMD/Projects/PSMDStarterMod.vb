@@ -1,4 +1,6 @@
-﻿Imports System.IO
+﻿Imports System.Drawing
+Imports System.Drawing.Imaging
+Imports System.IO
 Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
@@ -22,16 +24,27 @@ Namespace MysteryDungeon.PSMD.Projects
         End Function
 
         Public Overrides Function GetFilesToCopy(solution As Solution, baseRomProjectName As String) As IEnumerable(Of String)
-            Return {IO.Path.Combine("romfs", "script"),
-                    IO.Path.Combine("romfs", "message_en.bin"),
-                    IO.Path.Combine("romfs", "message_fr.bin"),
-                    IO.Path.Combine("romfs", "message_ge.bin"),
-                    IO.Path.Combine("romfs", "message_it.bin"),
-                    IO.Path.Combine("romfs", "message_sp.bin"),
-                    IO.Path.Combine("romfs", "message_us.bin"),
-                    IO.Path.Combine("romfs", "message.bin"),
-                    IO.Path.Combine("romfs", "dungeon", "fixed_pokemon.bin"),
-                    IO.Path.Combine("romfs", "pokemon", "pokemon_actor_data_info.bin")}
+            Return {Path.Combine("romfs", "script"),
+                    Path.Combine("romfs", "message_en.bin"),
+                    Path.Combine("romfs", "message_fr.bin"),
+                    Path.Combine("romfs", "message_ge.bin"),
+                    Path.Combine("romfs", "message_it.bin"),
+                    Path.Combine("romfs", "message_sp.bin"),
+                    Path.Combine("romfs", "message_us.bin"),
+                    Path.Combine("romfs", "message.bin"),
+                    Path.Combine("romfs", "message_en.lst"),
+                    Path.Combine("romfs", "message_fr.lst"),
+                    Path.Combine("romfs", "message_ge.lst"),
+                    Path.Combine("romfs", "message_it.lst"),
+                    Path.Combine("romfs", "message_sp.lst"),
+                    Path.Combine("romfs", "message_us.lst"),
+                    Path.Combine("romfs", "message.lst"),
+                    Path.Combine("romfs", "dungeon", "fixed_pokemon.bin"),
+                    Path.Combine("romfs", "pokemon", "pokemon_actor_data_info.bin"),
+                    Path.Combine("romfs", "face_graphic.bin"),
+                    Path.Combine("romfs", "message_debug.bin"),
+                    Path.Combine("romfs", "message_debug.lst"),
+                    Path.Combine("romfs", "pokemon_graphics_database.bin")}
         End Function
 
         Public Overrides Async Function Initialize() As Task
@@ -39,6 +52,147 @@ Namespace MysteryDungeon.PSMD.Projects
 
             'Add fixed_pokemon to project
             Me.AddExistingFile("", Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), CurrentPluginManager.CurrentIOProvider)
+
+            'Extract face_graphic.bin
+            Me.Message = My.Resources.Language.LoadingExtractingPortraits
+            Me.Progress = 0
+            Me.IsIndeterminate = False
+
+            Dim provider = CurrentPluginManager.CurrentIOProvider
+            Dim faceFarc As New Farc
+            Await faceFarc.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), provider)
+
+            Dim unmatched = faceFarc.GetFiles("/", "*", True).Where(Function(x) x.ToLower <> x).ToList()
+
+            Dim onProgressed = Sub(sender As Object, e As ProgressReportedEventArgs)
+                                   Me.Message = My.Resources.Language.LoadingExtractingPortraits
+                                   Me.Progress = e.Progress
+                                   Me.IsIndeterminate = False
+                               End Sub
+
+            Dim filenameRegex As New Regex("(([a-z0-9]|_)+)(_f)?(_hanten)?(_r)?_([0-9]{2})", RegexOptions.Compiled)
+            Dim directoryCreateLock As New Object
+            Dim a = New AsyncFor
+            AddHandler a.ProgressChanged, onProgressed
+            Await a.RunForEach(faceFarc.GetFiles("/", "*", True),
+                               Sub(portrait As String)
+                                   Dim match = filenameRegex.Match(Path.GetFileNameWithoutExtension(portrait))
+                                   Dim outputPath As String
+
+                                   If match.Success Then
+                                       outputPath = Path.Combine(Me.GetRootDirectory, match.Groups(1).Value, Path.GetFileNameWithoutExtension(portrait) & ".png")
+                                   Else
+                                       outputPath = Path.Combine(Me.GetRootDirectory, "_Unknown", Path.GetFileNameWithoutExtension(portrait) & ".png")
+                                   End If
+
+                                   'Create directory if it doesn't exist
+                                   If Not provider.DirectoryExists(Path.GetDirectoryName(outputPath)) Then
+                                       SyncLock directoryCreateLock
+                                           If Not provider.DirectoryExists(Path.GetDirectoryName(outputPath)) Then 'Check again in case of race condition
+                                               provider.CreateDirectory(Path.GetDirectoryName(outputPath))
+                                           End If
+                                       End SyncLock
+                                   End If
+
+                                   Dim rawData = faceFarc.ReadAllBytes(portrait)
+                                   Using bitmap = PmdGraphics.ReadPortrait(rawData)
+                                       bitmap.Save(outputPath, ImageFormat.Png)
+                                   End Using
+                               End Sub)
+            RemoveHandler a.ProgressChanged, onProgressed
+
+            'Use default portrait for placeholders
+            Const samplePokemon = "amaruruga" 'This is largly arbitrary
+            Dim blankPortrait01 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, "erureido_mega", "erureido_mega" & "_01.png"))
+            Dim blankPortrait02 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, "erureido_mega", "erureido_mega" & "_02.png"))
+            Dim blankPortrait03 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_03.png"))
+            Dim blankPortrait04 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_04.png"))
+            Dim blankPortrait05 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_05.png"))
+            Dim blankPortrait06 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_06.png"))
+            Dim blankPortrait07 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_07.png"))
+            Dim blankPortrait08 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_08.png"))
+            Dim blankPortrait09 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_09.png"))
+            Dim blankPortrait10 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_10.png"))
+            Dim blankPortrait11 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_11.png"))
+            Dim blankPortrait12 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_12.png"))
+            Dim blankPortrait13 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_13.png"))
+            Dim blankPortrait14 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_14.png"))
+            Dim blankPortrait15 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_15.png"))
+            Dim blankPortrait16 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_16.png"))
+
+            Dim defaultPortraitTransformRegex As New Regex("(([a-z0-9]|_)+)_[0-9]{2}\.png")
+            Directory.GetDirectories(Me.GetRootDirectory, "*", SearchOption.TopDirectoryOnly).AsParallel().ForAll(
+                    Sub(pkmDir)
+                        For Each imagePath In Directory.GetFiles(pkmDir, "*.png", SearchOption.TopDirectoryOnly)
+                            Dim sample As Byte() = Nothing
+                            If imagePath.EndsWith("_01.png") Then
+                                sample = blankPortrait01
+                            ElseIf imagePath.EndsWith("_02.png") Then
+                                sample = blankPortrait02
+                            ElseIf imagePath.EndsWith("_03.png") Then
+                                sample = blankPortrait03
+                            ElseIf imagePath.EndsWith("_04.png") Then
+                                sample = blankPortrait04
+                            ElseIf imagePath.EndsWith("_05.png") Then
+                                sample = blankPortrait05
+                            ElseIf imagePath.EndsWith("_06.png") Then
+                                sample = blankPortrait06
+                            ElseIf imagePath.EndsWith("_07.png") Then
+                                sample = blankPortrait07
+                            ElseIf imagePath.EndsWith("_08.png") Then
+                                sample = blankPortrait08
+                            ElseIf imagePath.EndsWith("_09.png") Then
+                                sample = blankPortrait09
+                            ElseIf imagePath.EndsWith("_10.png") Then
+                                sample = blankPortrait10
+                            ElseIf imagePath.EndsWith("_11.png") Then
+                                sample = blankPortrait11
+                            ElseIf imagePath.EndsWith("_12.png") Then
+                                sample = blankPortrait12
+                            ElseIf imagePath.EndsWith("_13.png") Then
+                                sample = blankPortrait13
+                            ElseIf imagePath.EndsWith("_14.png") Then
+                                sample = blankPortrait14
+                            ElseIf imagePath.EndsWith("_15.png") Then
+                                sample = blankPortrait15
+                            ElseIf imagePath.EndsWith("_16.png") Then
+                                sample = blankPortrait16
+                            End If
+
+                            If sample IsNot Nothing AndAlso defaultPortraitTransformRegex.IsMatch(imagePath) Then
+                                If File.ReadAllBytes(imagePath).SequenceEqual(sample) Then
+                                    Dim defaultPortraitPath = Path.Combine(Path.GetDirectoryName(imagePath), defaultPortraitTransformRegex.Match(imagePath).Groups(1).Value & "_00.png")
+                                    If File.Exists(defaultPortraitPath) Then
+                                        File.Copy(defaultPortraitPath, imagePath, True)
+                                    End If
+                                End If
+                            End If
+                        Next
+                    End Sub
+            )
+
+            Dim f As New Farc()
+            f.CreateFile()
+
+            Dim onProgressed2 = Sub(sender As Object, e As ProgressReportedEventArgs)
+                                    Me.Message = My.Resources.Language.LoadingBuildingPortraits
+                                    Me.Progress = e.Progress
+                                    Me.IsIndeterminate = False
+                                End Sub
+
+            Dim a2 = New AsyncFor
+            AddHandler a2.ProgressChanged, onProgressed2
+            Await a2.RunForEach(Directory.GetFiles(Me.GetRootDirectory, "*.png", SearchOption.AllDirectories),
+                               Sub(portrait As String)
+                                   Using img As New Bitmap(portrait)
+                                       f.WriteAllBytes(Path.GetFileNameWithoutExtension(portrait) & ".bin", PmdGraphics.SavePortrait(img))
+                                   End Using
+                               End Sub)
+            RemoveHandler a2.ProgressChanged, onProgressed2
+
+            Await f.Save(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), CurrentPluginManager.CurrentIOProvider)
+
+            Me.IsCompleted = True
         End Function
 
         Public Overrides Async Function Build() As Task
@@ -215,13 +369,13 @@ Namespace MysteryDungeon.PSMD.Projects
             CurrentPluginManager.CurrentIOProvider.WriteAllText(IO.Path.Combine(Me.GetRootDirectory, "script", "event", "other", "seikakushindan", "seikakushindan.lua"), starterscriptContent)
 
             'Create language resources
-            Dim enLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "en", "seikakushindan")
-            Dim frLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "fr", "seikakushindan")
-            Dim geLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "ge", "seikakushindan")
-            Dim itLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "it", "seikakushindan")
-            Dim jpLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "jp", "seikakushindan")
-            Dim spLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "sp", "seikakushindan")
-            Dim usLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "us", "seikakushindan")
+            Dim enLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "en", "seikakushindan.bin")
+            Dim frLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "fr", "seikakushindan.bin")
+            Dim geLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "ge", "seikakushindan.bin")
+            Dim itLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "it", "seikakushindan.bin")
+            Dim jpLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "jp", "seikakushindan.bin")
+            Dim spLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "sp", "seikakushindan.bin")
+            Dim usLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "us", "seikakushindan.bin")
 
             For Each langFilename In {enLangFile, frLangFile, geLangFile, itLangFile, jpLangFile, spLangFile, usLangFile}
                 If IO.File.Exists(langFilename) Then
@@ -252,7 +406,6 @@ Namespace MysteryDungeon.PSMD.Projects
             sourceScript = sourceScript.Replace("SysMsg", "ExplanationB")
             File.WriteAllText(Path.Combine(Me.GetRootDirectory, "script", "include", "inc_charchoice.lua"), sourceScript)
 
-
             '-Patch the script text
             Dim charchoiceLanguageTemplates As New Dictionary(Of String, String) 'Key: Language name, Value: template
             charchoiceLanguageTemplates.Add("en", "\C200{0}!")
@@ -266,12 +419,12 @@ Namespace MysteryDungeon.PSMD.Projects
                 If IO.Directory.Exists(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key)) Then
                     'Get Pokemon names to work with
                     Dim common As New MessageBin
-                    Await common.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "common"), CurrentPluginManager.CurrentIOProvider)
+                    Await common.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "common.bin"), CurrentPluginManager.CurrentIOProvider)
                     Dim pokemonNames = common.GetCommonPokemonNames
 
                     'Open the message bin file
                     Dim charchoiceFile As New MessageBin
-                    Await charchoiceFile.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "inc_charchoice"), CurrentPluginManager.CurrentIOProvider)
+                    Await charchoiceFile.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "inc_charchoice.bin"), CurrentPluginManager.CurrentIOProvider)
 
                     For Each charchoice In charchoiceData
                         Dim pokemonID As Integer

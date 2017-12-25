@@ -245,6 +245,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Building portraits....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingBuildingPortraits() As String
+            Get
+                Return ResourceManager.GetString("LoadingBuildingPortraits", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Comparing files....
         '''</summary>
         Friend Shared ReadOnly Property LoadingComparingFiles() As String

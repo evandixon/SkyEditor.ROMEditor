@@ -66,7 +66,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Public Overrides Async Function Build() As Task
             Dim onProgressed = Sub(sender As Object, e As ProgressReportedEventArgs)
-                                   Me.Message = My.Resources.Language.LoadingExtractingPortraits
+                                   Me.Message = My.Resources.Language.LoadingBuildingPortraits
                                    Me.Progress = e.Progress
                                    Me.IsIndeterminate = False
                                End Sub

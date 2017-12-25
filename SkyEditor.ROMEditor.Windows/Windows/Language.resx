@@ -293,4 +293,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="LoadingExtractingPortraits" xml:space="preserve">
     <value>Extracting portraits...</value>
   </data>
+  <data name="LoadingBuildingPortraits" xml:space="preserve">
+    <value>Building portraits...</value>
+  </data>
 </root>
