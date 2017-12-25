@@ -4,6 +4,8 @@ Namespace MysteryDungeon.PSMD
     Public Class MessageBinDebug
         Inherits MessageBin
 
+        Protected Overrides ReadOnly Property SkipMessageBinSave As Boolean = True
+
         Protected Overrides Sub ProcessData()
             Dim stringCount As Integer = BitConverter.ToInt32(ContentHeader, 0)
             Dim stringInfoPointer As Integer = BitConverter.ToInt32(ContentHeader, 4)

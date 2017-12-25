@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor", "SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj", "{B7F1E33D-EDE9-42BA-8932-6CCA5891D2E0}"
 EndProject
@@ -29,6 +29,8 @@ EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor.IntegrationTests", "Tests\SkyEditor.ROMEditor.IntegrationTests\SkyEditor.ROMEditor.IntegrationTests.vbproj", "{A018D6AA-42E9-4183-8148-FB2CBDB746D2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{BB222804-9C14-4916-A189-6B29493F9017}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveryFileExplorer", "Library3DS\EveryFileExplorer.csproj", "{E92DF34A-5CF0-4F9C-9640-A16B7453270D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +100,18 @@ Global
 		{A018D6AA-42E9-4183-8148-FB2CBDB746D2}.Test|Any CPU.Build.0 = Test|Any CPU
 		{A018D6AA-42E9-4183-8148-FB2CBDB746D2}.Test|x86.ActiveCfg = Test|Any CPU
 		{A018D6AA-42E9-4183-8148-FB2CBDB746D2}.Test|x86.Build.0 = Test|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Debug|x86.Build.0 = Debug|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Release|x86.ActiveCfg = Release|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Release|x86.Build.0 = Release|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Test|Any CPU.Build.0 = Release|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Test|x86.ActiveCfg = Release|Any CPU
+		{E92DF34A-5CF0-4F9C-9640-A16B7453270D}.Test|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

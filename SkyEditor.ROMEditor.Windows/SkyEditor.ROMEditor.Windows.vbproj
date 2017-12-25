@@ -181,6 +181,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MysteryDungeon\Explorers\Kaomado.vb" />
+    <Compile Include="MysteryDungeon\PSMD\PmdGraphics.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Projects\PsmdPortraitProject.vb" />
     <Compile Include="MysteryDungeon\Rescue\KaoFile.vb" />
     <Compile Include="MysteryDungeon\Rescue\Projects\BlueStarterModProject.vb" />
     <Compile Include="Utilities\ConsoleApp.vb" />
@@ -354,6 +356,10 @@
     <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Library3DS\EveryFileExplorer.csproj">
+      <Project>{e92df34a-5cf0-4f9c-9640-a16b7453270d}</Project>
+      <Name>EveryFileExplorer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj">
       <Project>{b7f1e33d-ede9-42ba-8932-6cca5891d2e0}</Project>
       <Name>SkyEditor.ROMEditor</Name>

@@ -34,6 +34,7 @@ Namespace MysteryDungeon.PSMD
         ''' </summary>
         ''' <returns>The games' scripts refer to the strings by this hash.</returns>
         Public Property Strings As ObservableCollection(Of MessageBinStringEntry) ' Dictionary(Of Integer, String)
+        Protected Overridable ReadOnly Property SkipMessageBinSave As Boolean = False
 
         Public Overrides Sub CreateFile(Name As String, FileContents() As Byte)
             MyBase.CreateFile(Name, FileContents)
@@ -122,38 +123,40 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
-            Me.RelativePointers.Clear()
-            'Sir0 header pointers
-            Me.RelativePointers.Add(4)
-            Me.RelativePointers.Add(4)
+            If Not SkipMessageBinSave Then
+                Me.RelativePointers.Clear()
+                'Sir0 header pointers
+                Me.RelativePointers.Add(4)
+                Me.RelativePointers.Add(4)
 
-            'Generate sections
-            Dim stringSection As New List(Of Byte)
-            Dim infoSection As New List(Of Byte)
-            For Each item In From s In Strings Order By s.Hash Ascending
-                infoSection.AddRange(BitConverter.GetBytes(16 + stringSection.Count))
-                infoSection.AddRange(BitConverter.GetBytes(item.Hash))
-                infoSection.AddRange(BitConverter.GetBytes(item.Unknown))
-                stringSection.AddRange(item.GetStringBytes)
-            Next
+                'Generate sections
+                Dim stringSection As New List(Of Byte)
+                Dim infoSection As New List(Of Byte)
+                For Each item In From s In Strings Order By s.Hash Ascending
+                    infoSection.AddRange(BitConverter.GetBytes(16 + stringSection.Count))
+                    infoSection.AddRange(BitConverter.GetBytes(item.Hash))
+                    infoSection.AddRange(BitConverter.GetBytes(item.Unknown))
+                    stringSection.AddRange(item.GetStringBytes)
+                Next
 
-            'Add pointers
-            Me.RelativePointers.Add(stringSection.Count + 8)
-            For count = 0 To Strings.Count - 2
-                Me.RelativePointers.Add(&HC)
-            Next
+                'Add pointers
+                Me.RelativePointers.Add(stringSection.Count + 8)
+                For count = 0 To Strings.Count - 2
+                    Me.RelativePointers.Add(&HC)
+                Next
 
-            'Write sections to file
-            Me.Length = 16 + stringSection.Count + infoSection.Count
-            Await Me.WriteAsync(16, stringSection.Count, stringSection.ToArray)
-            Await Me.WriteAsync(16 + stringSection.Count, infoSection.Count, infoSection.ToArray)
+                'Write sections to file
+                Me.Length = 16 + stringSection.Count + infoSection.Count
+                Await Me.WriteAsync(16, stringSection.Count, stringSection.ToArray)
+                Await Me.WriteAsync(16 + stringSection.Count, infoSection.Count, infoSection.ToArray)
 
-            'Update header
-            Dim headerBytes As New List(Of Byte)
-            headerBytes.AddRange(BitConverter.GetBytes(Strings.Count))
-            headerBytes.AddRange(BitConverter.GetBytes(16 + stringSection.Count))
-            Me.ContentHeader = headerBytes.ToArray
-            Me.RelativePointers.Add(&H10)
+                'Update header
+                Dim headerBytes As New List(Of Byte)
+                headerBytes.AddRange(BitConverter.GetBytes(Strings.Count))
+                headerBytes.AddRange(BitConverter.GetBytes(16 + stringSection.Count))
+                Me.ContentHeader = headerBytes.ToArray
+                Me.RelativePointers.Add(&H10)
+            End If
 
             'Let the general SIR0 stuff happen
             Await MyBase.Save(Destination, provider)

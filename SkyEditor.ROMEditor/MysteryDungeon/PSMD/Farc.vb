@@ -1,6 +1,8 @@
-﻿Imports System.Globalization
+﻿Imports System.Collections.Concurrent
+Imports System.Globalization
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.Threading
 Imports Force.Crc32
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
@@ -92,7 +94,7 @@ Namespace MysteryDungeon.PSMD
                 Else
                     Dim hash = PmdFunctions.Crc32Hash(filename)
                     If hash = FilenameHash.Value Then
-                        Me.Filename = filename
+                        _filename = filename
                         Return True
                     Else
                         Return False
@@ -179,7 +181,8 @@ Namespace MysteryDungeon.PSMD
 
         Public Sub New()
             ResetWorkingDirectory()
-            Entries = New List(Of Entry)
+            Entries = New ConcurrentBag(Of Entry)
+            CachedEntries = New ConcurrentDictionary(Of UInteger, Entry)
         End Sub
 
         ''' <summary>
@@ -205,14 +208,15 @@ Namespace MysteryDungeon.PSMD
         Public Property PreLoadFiles As Boolean = False
         Public Property EnableInMemoryLoad As Boolean = False
         Public Property Filename As String Implements IOnDisk.Filename
-        Private Property Entries As List(Of Entry)
+        Private Property Entries As ConcurrentBag(Of Entry)
+        Private Property CachedEntries As ConcurrentDictionary(Of UInteger, Entry)
 
         Public Sub CreateFile()
-            Entries = New List(Of Entry)
+            Entries = New ConcurrentBag(Of Entry)
         End Sub
 
         Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
-            Entries = New List(Of Entry)
+            Entries = New ConcurrentBag(Of Entry)
             Dim f As New GenericFile
             f.EnableInMemoryLoad = Me.EnableInMemoryLoad
             Await f.OpenFile(filename, provider)
@@ -247,6 +251,7 @@ Namespace MysteryDungeon.PSMD
                 End If
 
                 Entries.Add(fileEntry)
+                CachedEntries(fileEntry.FilenameHash.Value) = fileEntry
             Next
 
             Me.InnerData = f
@@ -291,12 +296,32 @@ Namespace MysteryDungeon.PSMD
 
         End Function
 
+        Protected Sub RefreshEntryCache()
+            CachedEntries.Clear()
+            For Each item In Entries
+                CachedEntries(item.FilenameHash) = item
+            Next
+        End Sub
+
         Protected Function GetFileEntry(fileHash As UInteger) As Entry
-            Return Entries.FirstOrDefault(Function(x) x.FilenameHash = fileHash)
+            If Not CachedEntries.ContainsKey(fileHash) Then
+                Dim entry = Entries.FirstOrDefault(Function(x) x.FilenameHash = fileHash)
+                CachedEntries(fileHash) = entry
+            End If
+            Return CachedEntries(fileHash)
         End Function
 
         Protected Function GetFileEntry(filename As String) As Entry
-            Dim hash = PmdFunctions.Crc32Hash(filename)
+            Dim hex As UInteger
+            Dim hash As UInteger
+            If UInteger.TryParse(filename, NumberStyles.HexNumber, NumberFormatInfo.CurrentInfo, hex) Then
+                'Filename is unknown, use raw hash
+                hash = hex
+            Else
+                'Hash the filename
+                hash = PmdFunctions.Crc32Hash(filename)
+            End If
+
             Dim entry = GetFileEntry(hash)
             If entry IsNot Nothing AndAlso String.IsNullOrEmpty(entry.Filename) Then
                 entry.Filename = filename
@@ -333,13 +358,21 @@ Namespace MysteryDungeon.PSMD
             Array.Resize(entry.FileData, newSize)
         End Sub
 
-        Public Sub SetFilenames(filenames As IEnumerable(Of String))
+        Public Function SetFilenames(filenames As IEnumerable(Of String), Optional ClearCache As Boolean = True) As Integer
+            If ClearCache Then
+                RefreshEntryCache()
+            End If
+
+            Dim numberSet As Integer = 0
             For Each item In filenames
                 Dim hash = PmdFunctions.Crc32Hash(item)
-                Dim entry = GetFileEntry(hash)
-                entry?.TrySetFilename(item)
+                If CachedEntries.ContainsKey(hash) Then
+                    CachedEntries(hash).TrySetFilename(item)
+                    numberSet += 1
+                End If
             Next
-        End Sub
+            Return numberSet
+        End Function
 
         Public Async Function Extract(outputDirectory As String, provider As IIOProvider) As Task
             IsCompleted = False
@@ -529,7 +562,11 @@ Namespace MysteryDungeon.PSMD
         End Sub
 
         Public Sub DeleteFile(filename As String) Implements IIOProvider.DeleteFile
-            Entries.Remove(GetFileEntry(FixPath(filename)))
+            Dim tries = 5
+            While tries > 0 AndAlso Not Entries.TryTake(GetFileEntry(FixPath(filename)))
+                Thread.Sleep(250 + tries)
+                tries -= 1
+            End While
         End Sub
 
         Public Sub DeleteDirectory(path As String) Implements IIOProvider.DeleteDirectory

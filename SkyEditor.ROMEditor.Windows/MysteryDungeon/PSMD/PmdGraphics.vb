@@ -1,0 +1,12 @@
+﻿Imports System.Drawing
+Imports EveryFileExplorer
+
+Namespace MysteryDungeon.PSMD
+    Public Class PmdGraphics
+        Public Shared Function ReadPortrait(data As Byte()) As Bitmap
+            Dim portrait = Textures.ToBitmap(data, 0, 64, 64, Textures.ImageFormat.RGB8)
+            portrait.RotateFlip(RotateFlipType.Rotate180FlipX)
+            Return portrait
+        End Function
+    End Class
+End Namespace
