@@ -8,5 +8,11 @@ Namespace MysteryDungeon.PSMD
             portrait.RotateFlip(RotateFlipType.Rotate180FlipX)
             Return portrait
         End Function
+
+        Public Shared Function SavePortrait(image As Bitmap) As Byte()
+            Dim rotated = image.Clone()
+            rotated.RotateFlip(RotateFlipType.Rotate180FlipX)
+            Return Textures.FromBitmap(rotated, Textures.ImageFormat.RGB8)
+        End Function
     End Class
 End Namespace

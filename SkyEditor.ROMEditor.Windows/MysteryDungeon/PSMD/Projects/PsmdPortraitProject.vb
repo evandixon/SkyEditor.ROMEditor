@@ -1,5 +1,7 @@
-﻿Imports System.Drawing.Imaging
+﻿Imports System.Drawing
+Imports System.Drawing.Imaging
 Imports System.IO
+Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
@@ -20,40 +22,6 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim faceFarc As New Farc
             Await faceFarc.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), provider)
 
-            Dim debugMsg As New Farc
-            Await debugMsg.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "message_debug.bin"), provider)
-            Dim commonDebugMsg As New MessageBinDebug
-            Await commonDebugMsg.OpenFile("common.dbin", debugMsg)
-
-            Dim graphicsDb As New PGDB
-            Await graphicsDb.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphics_database.bin"), provider)
-
-            Dim actorInfo As New ActorDataInfo
-            Await actorInfo.OpenFile(IO.Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon", "pokemon_actor_data_info.bin"), CurrentPluginManager.CurrentIOProvider)
-
-
-
-            Dim pokemonNames = graphicsDb.Entries.Select(Function(x) x.ActorName).ToList()
-            pokemonNames.AddRange(actorInfo.Entries.Select(Function(x) x.Name.ToLower()))
-            pokemonNames.AddRange(commonDebugMsg.GetCommonPokemonNames().Select(Function(p) p.Value.ToLower().Replace("pokemon_", "")))
-            pokemonNames.Add("dummy_pokemon")
-            pokemonNames.Add("houou_rarecolor")
-            pokemonNames.Add("meroetta_step")
-            pokemonNames.Add("meroetta_voice")
-
-            Dim potentialFilenames As New List(Of String)
-            For Each pokemonName In pokemonNames
-                For emotionNumber = 0 To 30
-                    potentialFilenames.Add($"{pokemonName}_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                    potentialFilenames.Add($"{pokemonName}_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                    potentialFilenames.Add($"{pokemonName}_f_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                    potentialFilenames.Add($"{pokemonName}_f{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                    potentialFilenames.Add($"{pokemonName}_f_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                    potentialFilenames.Add($"{pokemonName}_r_{emotionNumber.ToString().PadLeft(2, "0")}.bin") 'Speculation, Not seen in code
-                Next
-            Next
-            faceFarc.SetFilenames(potentialFilenames)
-
             Dim unmatched = faceFarc.GetFiles("/", "*", True).Where(Function(x) x.ToLower <> x).ToList()
 
             Dim onProgressed = Sub(sender As Object, e As ProgressReportedEventArgs)
@@ -62,12 +30,30 @@ Namespace MysteryDungeon.PSMD.Projects
                                    Me.IsIndeterminate = False
                                End Sub
 
+            Dim filenameRegex As New Regex("(([a-z0-9]|_)+)(_f)?(_hanten)?(_r)?_([0-9]{2})", RegexOptions.Compiled)
+            Dim directoryCreateLock As New Object
             Dim a = New AsyncFor
             AddHandler a.ProgressChanged, onProgressed
-            a.RunSynchronously = False
             Await a.RunForEach(faceFarc.GetFiles("/", "*", True),
                                Sub(portrait As String)
-                                   Dim outputPath = Path.Combine(Me.GetRootDirectory, Path.GetFileNameWithoutExtension(portrait) & ".png")
+                                   Dim match = filenameRegex.Match(Path.GetFileNameWithoutExtension(portrait))
+                                   Dim outputPath As String
+
+                                   If match.Success Then
+                                       outputPath = Path.Combine(Me.GetRootDirectory, match.Groups(1).Value, Path.GetFileNameWithoutExtension(portrait) & ".png")
+                                   Else
+                                       outputPath = Path.Combine(Me.GetRootDirectory, "_Unknown", Path.GetFileNameWithoutExtension(portrait) & ".png")
+                                   End If
+
+                                   'Create directory if it doesn't exist
+                                   If Not provider.DirectoryExists(Path.GetDirectoryName(outputPath)) Then
+                                       SyncLock directoryCreateLock
+                                           If Not provider.DirectoryExists(Path.GetDirectoryName(outputPath)) Then 'Check again in case of race condition
+                                               provider.CreateDirectory(Path.GetDirectoryName(outputPath))
+                                           End If
+                                       End SyncLock
+                                   End If
+
                                    Dim rawData = faceFarc.ReadAllBytes(portrait)
                                    Using bitmap = PmdGraphics.ReadPortrait(rawData)
                                        bitmap.Save(outputPath, ImageFormat.Png)
@@ -79,8 +65,28 @@ Namespace MysteryDungeon.PSMD.Projects
         End Function
 
         Public Overrides Async Function Build() As Task
-            '...
-            Throw New NotImplementedException
+            Dim onProgressed = Sub(sender As Object, e As ProgressReportedEventArgs)
+                                   Me.Message = My.Resources.Language.LoadingExtractingPortraits
+                                   Me.Progress = e.Progress
+                                   Me.IsIndeterminate = False
+                               End Sub
+
+            Dim f As New Farc()
+            f.CreateFile()
+
+            Dim a = New AsyncFor
+            AddHandler a.ProgressChanged, onProgressed
+            Await a.RunForEach(Directory.GetFiles(Me.GetRootDirectory, "*.png", SearchOption.AllDirectories),
+                               Sub(portrait As String)
+                                   Using img As New Bitmap(portrait)
+                                       f.WriteAllBytes(Path.GetFileNameWithoutExtension(portrait) & ".bin", PmdGraphics.SavePortrait(img))
+                                   End Using
+                               End Sub)
+            RemoveHandler a.ProgressChanged, onProgressed
+
+            Await f.Save(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), CurrentPluginManager.CurrentIOProvider)
+
+            Me.IsCompleted = True
 
             Await MyBase.Build
         End Function

@@ -6,6 +6,7 @@ Imports System.Threading
 Imports Force.Crc32
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
 
 Namespace MysteryDungeon.PSMD
     Public Class Farc
@@ -292,6 +293,48 @@ Namespace MysteryDungeon.PSMD
                         Dim lines = provider.ReadAllText(dbPath).Split(VBConstants.vbLf)
                         SetFilenames(lines.Select(Function(l) Path.GetFileName(l.Trim)))
                     End If
+                Case "face_graphic.bin"
+                    Dim msgDebugPath = Path.Combine(Path.GetDirectoryName(filename), "message_debug.bin")
+                    Dim graphicsDbPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon_graphics_database.bin")
+                    Dim actorDataPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon", "pokemon_actor_data_info.bin")
+
+                    Dim pokemonNames As New List(Of String)
+                    If provider.FileExists(msgDebugPath) Then
+                        Dim debugMsg As New Farc
+                        Await debugMsg.OpenFile(msgDebugPath, provider)
+
+                        Dim commonDebugMsg As New MessageBinDebug
+                        Await commonDebugMsg.OpenFile("common.dbin", debugMsg)
+
+                        pokemonNames.AddRange(commonDebugMsg.GetCommonPokemonNames().Select(Function(p) p.Value.ToLower().Replace("pokemon_", "")))
+                    End If
+
+                    If provider.FileExists(graphicsDbPath) Then
+                        Dim graphicsDb As New PGDB
+                        Await graphicsDb.OpenFile(graphicsDbPath, provider)
+                        pokemonNames.AddRange(graphicsDb.Entries.Select(Function(x) x.ActorName))
+                    End If
+
+                    If provider.FileExists(actorDataPath) Then
+                        Dim actorInfo As New ActorDataInfo
+                        Await actorInfo.OpenFile(actorDataPath, provider)
+                        pokemonNames.AddRange(actorInfo.Entries.Select(Function(x) x.Name.ToLower()))
+                    End If
+
+                    pokemonNames = pokemonNames.Distinct().ToList()
+
+                    Dim potentialFilenames As New List(Of String)
+                    For Each pokemonName In pokemonNames
+                        For emotionNumber = 0 To 50
+                            potentialFilenames.Add($"{pokemonName}_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                            potentialFilenames.Add($"{pokemonName}_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                            potentialFilenames.Add($"{pokemonName}_f_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                            potentialFilenames.Add($"{pokemonName}_f{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                            potentialFilenames.Add($"{pokemonName}_f_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                            potentialFilenames.Add($"{pokemonName}_r_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                        Next
+                    Next
+                    SetFilenames(potentialFilenames)
             End Select
 
         End Function
