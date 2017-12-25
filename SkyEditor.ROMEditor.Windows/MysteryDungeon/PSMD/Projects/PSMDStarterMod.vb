@@ -50,15 +50,24 @@ Namespace MysteryDungeon.PSMD.Projects
         Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize()
 
+            Dim provider = CurrentPluginManager.CurrentIOProvider
+
             'Add fixed_pokemon to project
             Me.AddExistingFile("", Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), CurrentPluginManager.CurrentIOProvider)
+
+            'Fix Pokemon with a dummy model
+            Dim pgdb As New PGDB
+            Await pgdb.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphics_database.bin"), provider)
+            For Each item In pgdb.Entries.Where(Function(x) x.Filename = "dummypokemon_00.bgrs").ToArray()
+                item.Filename = item.ActorName & "_00.bgrs"
+            Next
+            Await pgdb.Save(provider)
 
             'Extract face_graphic.bin
             Me.Message = My.Resources.Language.LoadingExtractingPortraits
             Me.Progress = 0
             Me.IsIndeterminate = False
 
-            Dim provider = CurrentPluginManager.CurrentIOProvider
             Dim faceFarc As New Farc
             Await faceFarc.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), provider)
 
@@ -106,6 +115,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim blankPortrait01 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, "erureido_mega", "erureido_mega" & "_01.png"))
             Dim blankPortrait02 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, "erureido_mega", "erureido_mega" & "_02.png"))
             Dim blankPortrait03 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_03.png"))
+            Dim blankPortrait03Version2 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, "iibui", "iibui" & "_03.png"))
             Dim blankPortrait04 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_04.png"))
             Dim blankPortrait05 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_05.png"))
             Dim blankPortrait06 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_06.png"))
@@ -115,6 +125,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim blankPortrait10 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_10.png"))
             Dim blankPortrait11 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_11.png"))
             Dim blankPortrait12 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_12.png"))
+            Dim blankPortrait12Version2 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, "iibui", "iibui" & "_12.png"))
             Dim blankPortrait13 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_13.png"))
             Dim blankPortrait14 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_14.png"))
             Dim blankPortrait15 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_15.png"))
@@ -125,12 +136,14 @@ Namespace MysteryDungeon.PSMD.Projects
                     Sub(pkmDir)
                         For Each imagePath In Directory.GetFiles(pkmDir, "*.png", SearchOption.TopDirectoryOnly)
                             Dim sample As Byte() = Nothing
+                            Dim sample2 As Byte() = Nothing
                             If imagePath.EndsWith("_01.png") Then
                                 sample = blankPortrait01
                             ElseIf imagePath.EndsWith("_02.png") Then
                                 sample = blankPortrait02
                             ElseIf imagePath.EndsWith("_03.png") Then
                                 sample = blankPortrait03
+                                sample2 = blankPortrait03Version2
                             ElseIf imagePath.EndsWith("_04.png") Then
                                 sample = blankPortrait04
                             ElseIf imagePath.EndsWith("_05.png") Then
@@ -149,6 +162,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                 sample = blankPortrait11
                             ElseIf imagePath.EndsWith("_12.png") Then
                                 sample = blankPortrait12
+                                sample2 = blankPortrait12Version2
                             ElseIf imagePath.EndsWith("_13.png") Then
                                 sample = blankPortrait13
                             ElseIf imagePath.EndsWith("_14.png") Then
@@ -160,7 +174,15 @@ Namespace MysteryDungeon.PSMD.Projects
                             End If
 
                             If sample IsNot Nothing AndAlso defaultPortraitTransformRegex.IsMatch(imagePath) Then
-                                If File.ReadAllBytes(imagePath).SequenceEqual(sample) Then
+                                Dim doCopy = False
+                                Dim data = File.ReadAllBytes(imagePath)
+                                doCopy = data.SequenceEqual(sample)
+
+                                If Not doCopy AndAlso sample2 IsNot Nothing Then
+                                    doCopy = data.SequenceEqual(sample2)
+                                End If
+
+                                If doCopy Then
                                     Dim defaultPortraitPath = Path.Combine(Path.GetDirectoryName(imagePath), defaultPortraitTransformRegex.Match(imagePath).Groups(1).Value & "_00.png")
                                     If File.Exists(defaultPortraitPath) Then
                                         File.Copy(defaultPortraitPath, imagePath, True)
