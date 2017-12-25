@@ -290,4 +290,10 @@ evandixon (Personality test, bgp files)</value>
   <data name="SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PSMDStarterMod" xml:space="preserve">
     <value>Starter Mod</value>
   </data>
+  <data name="LoadingExtractingPortraits" xml:space="preserve">
+    <value>Extracting portraits...</value>
+  </data>
+  <data name="LoadingBuildingPortraits" xml:space="preserve">
+    <value>Building portraits...</value>
+  </data>
 </root>

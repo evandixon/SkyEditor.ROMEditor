@@ -484,66 +484,27 @@ function seikakushindankekka02_5_start()
       local oldpokemonid = SymAct("HERO"):GetIndex()
 	  WINDOW:SelectStart()	  
 	  WINDOW:SelectChain(200001, 0)
-	  if oldpokemonid ~= #Starter1# then
-          WINDOW:SelectChain(#StarterHash1#,#Starter1#)
-	  end
-	  if oldpokemonid ~= #Starter5# then
-          WINDOW:SelectChain(#StarterHash5#,#Starter5#)
-	  end
-	  if oldpokemonid ~= #Starter10# then
-          WINDOW:SelectChain(#StarterHash10#,#Starter10#)
-	  end
-	  if oldpokemonid ~= #Starter30# then
-          WINDOW:SelectChain(#StarterHash30#,#Starter30#)
-	  end
-	  if oldpokemonid ~= #Starter197# then
-          WINDOW:SelectChain(#StarterHash197#,#Starter197#)
-	  end
-	  if oldpokemonid ~= #Starter200# then
-          WINDOW:SelectChain(#StarterHash200#,#Starter200#)
-	  end
-	  if oldpokemonid ~= #Starter203# then
-          WINDOW:SelectChain(#StarterHash203#,#Starter203#)
-	  end
-	  if oldpokemonid ~= #Starter322# then
-          WINDOW:SelectChain(#StarterHash322#,#Starter322#)
-	  end
-	  if oldpokemonid ~= #Starter325# then
-          WINDOW:SelectChain(#StarterHash325#,#Starter325#)
-	  end
-	  if oldpokemonid ~= #Starter329# then
-          WINDOW:SelectChain(#StarterHash329#,#Starter329#)
-	  end
-	  if oldpokemonid ~= #Starter479# then
-          WINDOW:SelectChain(#StarterHash479#,#Starter479#)
-	  end
-	  if oldpokemonid ~= #Starter482# then
-          WINDOW:SelectChain(#StarterHash482#,#Starter482#)
-	  end
-	  if oldpokemonid ~= #Starter485# then
-          WINDOW:SelectChain(#StarterHash485#,#Starter485#)
-	  end
-	  if oldpokemonid ~= #Starter537# then
-          WINDOW:SelectChain(#StarterHash537#,#Starter537#)
-	  end
-	  if oldpokemonid ~= #Starter592# then
-          WINDOW:SelectChain(#StarterHash592#,#Starter592#)
-	  end
-	  if oldpokemonid ~= #Starter595# then
-          WINDOW:SelectChain(#StarterHash595#,#Starter595#)
-	  end
-	  if oldpokemonid ~= #Starter598# then
-          WINDOW:SelectChain(#StarterHash598#,#Starter598#)
-	  end
-	  if oldpokemonid ~= #Starter766# then
-          WINDOW:SelectChain(#StarterHash766#,#Starter766#)
-	  end
-	  if oldpokemonid ~= #Starter769# then
-          WINDOW:SelectChain(#StarterHash769#,#Starter769#)
-	  end
-	  if oldpokemonid ~= #Starter772# then
-          WINDOW:SelectChain(#StarterHash772#,#Starter772#)
-	  end
+
+	  WINDOW:SelectChain(#StarterHash1#,#Starter1#)	  
+	  WINDOW:SelectChain(#StarterHash5#,#Starter5#)	  
+	  WINDOW:SelectChain(#StarterHash10#,#Starter10#)	  
+	  WINDOW:SelectChain(#StarterHash30#,#Starter30#)	  
+	  WINDOW:SelectChain(#StarterHash197#,#Starter197#)	  
+	  WINDOW:SelectChain(#StarterHash200#,#Starter200#)	 
+	  WINDOW:SelectChain(#StarterHash203#,#Starter203#)	  
+	  WINDOW:SelectChain(#StarterHash322#,#Starter322#)	  
+	  WINDOW:SelectChain(#StarterHash325#,#Starter325#)	  
+	  WINDOW:SelectChain(#StarterHash329#,#Starter329#)	  
+	  WINDOW:SelectChain(#StarterHash479#,#Starter479#)	  
+	  WINDOW:SelectChain(#StarterHash482#,#Starter482#)	  
+	  WINDOW:SelectChain(#StarterHash485#,#Starter485#)	  
+	  WINDOW:SelectChain(#StarterHash537#,#Starter537#)	  
+	  WINDOW:SelectChain(#StarterHash592#,#Starter592#)	  
+	  WINDOW:SelectChain(#StarterHash595#,#Starter595#)	  
+	  WINDOW:SelectChain(#StarterHash598#,#Starter598#)	  
+	  WINDOW:SelectChain(#StarterHash766#,#Starter766#)	  
+	  WINDOW:SelectChain(#StarterHash769#,#Starter769#)	  
+	  WINDOW:SelectChain(#StarterHash772#,#Starter772#)
 	  WINDOW:DefaultCursor(0)
 	  local pkmID = WINDOW:SelectEnd(MENU_SELECT_MODE.DISABLE_CANCEL)
 	  if pkmID == 0 then

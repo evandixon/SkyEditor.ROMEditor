@@ -1,4 +1,5 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports System.Collections.ObjectModel
+Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
 
 Namespace MysteryDungeon.PSMD
@@ -34,6 +35,7 @@ Namespace MysteryDungeon.PSMD
         ''' </summary>
         ''' <returns>The games' scripts refer to the strings by this hash.</returns>
         Public Property Strings As ObservableCollection(Of MessageBinStringEntry) ' Dictionary(Of Integer, String)
+        Protected Overridable ReadOnly Property SkipMessageBinSave As Boolean = False
 
         Public Overrides Sub CreateFile(Name As String, FileContents() As Byte)
             MyBase.CreateFile(Name, FileContents)
@@ -47,7 +49,7 @@ Namespace MysteryDungeon.PSMD
             ProcessData()
         End Function
 
-        Private Sub SetOriginalIndexes(strings As IEnumerable(Of MessageBinStringEntry))
+        Protected Sub SetOriginalIndexes(strings As IEnumerable(Of MessageBinStringEntry))
             Dim index = 0
             For Each item In strings.OrderBy(Function(x) x.Pointer)
                 item.OriginalIndex = index
@@ -55,7 +57,7 @@ Namespace MysteryDungeon.PSMD
             Next
         End Sub
 
-        Private Sub ProcessData()
+        Protected Overridable Sub ProcessData()
             Dim stringCount As Integer = BitConverter.ToInt32(ContentHeader, 0)
             Dim stringInfoPointer As Integer = BitConverter.ToInt32(ContentHeader, 4)
 
@@ -122,38 +124,40 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
-            Me.RelativePointers.Clear()
-            'Sir0 header pointers
-            Me.RelativePointers.Add(4)
-            Me.RelativePointers.Add(4)
+            If Not SkipMessageBinSave Then
+                Me.RelativePointers.Clear()
+                'Sir0 header pointers
+                Me.RelativePointers.Add(4)
+                Me.RelativePointers.Add(4)
 
-            'Generate sections
-            Dim stringSection As New List(Of Byte)
-            Dim infoSection As New List(Of Byte)
-            For Each item In From s In Strings Order By s.Hash Ascending
-                infoSection.AddRange(BitConverter.GetBytes(16 + stringSection.Count))
-                infoSection.AddRange(BitConverter.GetBytes(item.Hash))
-                infoSection.AddRange(BitConverter.GetBytes(item.Unknown))
-                stringSection.AddRange(item.GetStringBytes)
-            Next
+                'Generate sections
+                Dim stringSection As New List(Of Byte)
+                Dim infoSection As New List(Of Byte)
+                For Each item In From s In Strings Order By s.Hash Ascending
+                    infoSection.AddRange(BitConverter.GetBytes(16 + stringSection.Count))
+                    infoSection.AddRange(BitConverter.GetBytes(item.Hash))
+                    infoSection.AddRange(BitConverter.GetBytes(item.Unknown))
+                    stringSection.AddRange(item.GetStringBytes)
+                Next
 
-            'Add pointers
-            Me.RelativePointers.Add(stringSection.Count + 8)
-            For count = 0 To Strings.Count - 2
-                Me.RelativePointers.Add(&HC)
-            Next
+                'Add pointers
+                Me.RelativePointers.Add(stringSection.Count + 8)
+                For count = 0 To Strings.Count - 2
+                    Me.RelativePointers.Add(&HC)
+                Next
 
-            'Write sections to file
-            Me.Length = 16 + stringSection.Count + infoSection.Count
-            Await Me.WriteAsync(16, stringSection.Count, stringSection.ToArray)
-            Await Me.WriteAsync(16 + stringSection.Count, infoSection.Count, infoSection.ToArray)
+                'Write sections to file
+                Me.Length = 16 + stringSection.Count + infoSection.Count
+                Await Me.WriteAsync(16, stringSection.Count, stringSection.ToArray)
+                Await Me.WriteAsync(16 + stringSection.Count, infoSection.Count, infoSection.ToArray)
 
-            'Update header
-            Dim headerBytes As New List(Of Byte)
-            headerBytes.AddRange(BitConverter.GetBytes(Strings.Count))
-            headerBytes.AddRange(BitConverter.GetBytes(16 + stringSection.Count))
-            Me.ContentHeader = headerBytes.ToArray
-            Me.RelativePointers.Add(&H10)
+                'Update header
+                Dim headerBytes As New List(Of Byte)
+                headerBytes.AddRange(BitConverter.GetBytes(Strings.Count))
+                headerBytes.AddRange(BitConverter.GetBytes(16 + stringSection.Count))
+                Me.ContentHeader = headerBytes.ToArray
+                Me.RelativePointers.Add(&H10)
+            End If
 
             'Let the general SIR0 stuff happen
             Await MyBase.Save(Destination, provider)
@@ -167,7 +171,7 @@ Namespace MysteryDungeon.PSMD
         Public Function GetCommonPokemonNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
-            For Each item In My.Resources.PSMD_Pokemon_Name_Hashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf).Select(Function(x) x.Trim)
+            For Each item In My.Resources.Resources.PSMD_Pokemon_Name_Hashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf).Select(Function(x) x.Trim)
                 Dim hash As Integer
                 If Integer.TryParse(item, hash) Then
                     pokemonNameHashes.Add(item)
@@ -195,7 +199,7 @@ Namespace MysteryDungeon.PSMD
         Public Function GetCommonMoveNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
-            For Each item In My.Resources.PSMD_Move_Name_Hashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf)
+            For Each item In PsmdMoveNameHashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf)
                 Dim trimmed = item.Trim
                 Dim hash As Integer
                 If Integer.TryParse(trimmed, hash) Then
@@ -215,6 +219,20 @@ Namespace MysteryDungeon.PSMD
 
             Return pokemonNames
         End Function
+
+        Public Shared ReadOnly Property PsmdPokemonNameHashes() As String
+            Get
+
+                Return My.Resources.Resources.PSMD_Pokemon_Name_Hashes
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property PsmdMoveNameHashes() As String
+            Get
+
+                Return My.Resources.Resources.PSMD_Move_Name_Hashes
+            End Get
+        End Property
 
     End Class
 End Namespace

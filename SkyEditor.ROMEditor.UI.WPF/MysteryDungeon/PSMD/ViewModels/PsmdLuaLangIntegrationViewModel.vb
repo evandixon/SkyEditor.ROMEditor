@@ -3,6 +3,7 @@ Imports System.IO
 Imports SkyEditor.CodeEditor
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
+Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.UI.WPF
 
@@ -10,11 +11,23 @@ Namespace MysteryDungeon.PSMD.ViewModels
     Public Class PsmdLuaLangIntegrationViewModel
         Inherits GenericViewModel(Of LuaCodeFile)
         Implements INotifyModified
+        Implements INamed
+
+        Public Overridable ReadOnly Property Name As String Implements INamed.Name
+            Get
+                Return My.Resources.Language.Message
+            End Get
+        End Property
 
         Public Property MessageTabs As ObservableCollection(Of TabItem)
+        Protected Overridable ReadOnly Property TargetExtension As String = ".bin"
 
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
             Return MyBase.SupportsObject(Obj) AndAlso CurrentApplicationViewModel.GetFileViewModelForModel(Obj)?.ParentProject IsNot Nothing
+        End Function
+
+        Protected Overridable Function InitMessageBin() As MessageBin
+            Return New MessageBin
         End Function
 
         Public Overrides Async Sub SetModel(model As Object)
@@ -22,17 +35,23 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
             Dim codeFile As LuaCodeFile = model
             Dim project = CurrentApplicationViewModel.GetFileViewModelForModel(codeFile).ParentProject
+            Dim scriptName = Path.GetFileNameWithoutExtension(codeFile.Filename)
+
+            'Hack to show common strings in menu_common and related scripts
+            If scriptName.Contains("_common") Then
+                scriptName = "common"
+            End If
 
             Dim messageFiles As New Dictionary(Of String, MessageBin)
             For Each item In Directory.GetDirectories(Path.Combine(project.GetRootDirectory, "Languages"), "*", SearchOption.TopDirectoryOnly)
-                Dim msgfile = New MessageBin
-                Dim filename = Path.Combine(item, Path.GetFileNameWithoutExtension(codeFile.Filename))
+                Dim msgfile = InitMessageBin()
+                Dim filename = Path.Combine(item, scriptName)
 
                 Dim exists As Boolean = False
                 If File.Exists(filename) Then
                     exists = True
-                ElseIf File.Exists(filename & ".bin") Then
-                    filename &= ".bin"
+                ElseIf File.Exists(filename & TargetExtension) Then
+                    filename &= TargetExtension
                     exists = True
                 End If
 
@@ -48,6 +67,13 @@ Namespace MysteryDungeon.PSMD.ViewModels
                 m.SetApplicationViewModel(CurrentApplicationViewModel)
                 m.SetModel(item.Value)
                 AddHandler m.Modified, AddressOf Me.OnModified
+
+                Dim debugFilename = Path.ChangeExtension(item.Value.Filename.Replace("\", "/").Replace("Languages/", "Languages/debug_"), ".dbin")
+                If File.Exists(debugFilename) Then
+                    Dim d As New MessageBinDebug
+                    Await d.OpenFile(debugFilename, CurrentApplicationViewModel.CurrentIOProvider)
+                    m.LoadDebugSymbols(d)
+                End If
 
                 Dim p As New ObjectControlPlaceholder
                 p.CurrentApplicationViewModel = Me.CurrentApplicationViewModel
@@ -70,9 +96,15 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
         Public Event Modified As EventHandler Implements INotifyModified.Modified
 
-        Private Sub OnModified(sender As Object, e As EventArgs)
+        Protected Sub OnModified(sender As Object, e As EventArgs)
             RaiseEvent Modified(Me, e)
         End Sub
+
+        Public Overrides ReadOnly Property SortOrder As Integer
+            Get
+                Return 2
+            End Get
+        End Property
     End Class
 End Namespace
 

@@ -75,7 +75,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Public Async Function GetPokemonNames() As Task(Of Dictionary(Of Integer, String)) Implements IPsmdMessageBinProject.GetPokemonNames
             If _pokemonNames Is Nothing Then
-                _pokemonNames = (Await GetLanguageFile("common")).GetCommonPokemonNames
+                _pokemonNames = (Await GetLanguageFile("common.bin")).GetCommonPokemonNames
             End If
             Return _pokemonNames
         End Function
@@ -83,7 +83,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Public Async Function GetMoveNames() As Task(Of Dictionary(Of Integer, String)) Implements IPsmdMessageBinProject.GetMoveNames
             If _moveNames Is Nothing Then
-                _moveNames = (Await GetLanguageFile("common")).GetCommonMoveNames
+                _moveNames = (Await GetLanguageFile("common.bin")).GetCommonMoveNames
             End If
             Return _moveNames
         End Function
@@ -188,7 +188,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                                       Dim destDir = IO.Path.Combine(Me.GetRootDirectory, "Languages", lang)
                                                       Await FileSystem.EnsureDirectoryExistsEmpty(destDir, CurrentPluginManager.CurrentIOProvider)
 
-                                                      Dim farc As New FarcF5
+                                                      Dim farc As New Farc
                                                       Await farc.OpenFile(item, CurrentPluginManager.CurrentIOProvider)
                                                       Await farc.Extract(destDir, CurrentPluginManager.CurrentIOProvider)
                                                   End Function)
@@ -311,7 +311,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                        Me.Progress = count / dirs.Length
                                        Dim newFilename As String = "message_" & IO.Path.GetFileNameWithoutExtension(dirs(count)) & ".bin"
                                        Dim newFilePath As String = IO.Path.Combine(IO.Path.Combine(Me.GetRawFilesDir, "romfs", newFilename.Replace("_jp", "")))
-                                       Await FarcF5.Pack(dirs(count), newFilePath, CurrentPluginManager.CurrentIOProvider)
+                                       Await Farc.Pack(dirs(count), newFilePath, CurrentPluginManager.CurrentIOProvider)
                                    Next
                                    Me.Progress = 1
                                End Function)
@@ -369,7 +369,28 @@ Namespace MysteryDungeon.PSMD.Projects
                             IO.Path.Combine("romfs", "message_it.bin"),
                             IO.Path.Combine("romfs", "message_sp.bin"),
                             IO.Path.Combine("romfs", "message_us.bin"),
-                            IO.Path.Combine("romfs", "message.bin")}
+                            IO.Path.Combine("romfs", "message.bin"),
+                            IO.Path.Combine("romfs", "message_en.lst"),
+                            IO.Path.Combine("romfs", "message_fr.lst"),
+                            IO.Path.Combine("romfs", "message_ge.lst"),
+                            IO.Path.Combine("romfs", "message_it.lst"),
+                            IO.Path.Combine("romfs", "message_sp.lst"),
+                            IO.Path.Combine("romfs", "message_us.lst"),
+                            IO.Path.Combine("romfs", "message.lst"),
+                            IO.Path.Combine("romfs", "message_debug_en.bin"),
+                            IO.Path.Combine("romfs", "message_debug_fr.bin"),
+                            IO.Path.Combine("romfs", "message_debug_ge.bin"),
+                            IO.Path.Combine("romfs", "message_debug_it.bin"),
+                            IO.Path.Combine("romfs", "message_debug_sp.bin"),
+                            IO.Path.Combine("romfs", "message_debug_us.bin"),
+                            IO.Path.Combine("romfs", "message_debug.bin"),
+                            IO.Path.Combine("romfs", "message_debug_en.lst"),
+                            IO.Path.Combine("romfs", "message_debug_fr.lst"),
+                            IO.Path.Combine("romfs", "message_debug_ge.lst"),
+                            IO.Path.Combine("romfs", "message_debug_it.lst"),
+                            IO.Path.Combine("romfs", "message_debug_sp.lst"),
+                            IO.Path.Combine("romfs", "message_debug_us.lst"),
+                            IO.Path.Combine("romfs", "message_debug.lst")}
                 ElseIf gti.IsMatch(code) Then
                     Return {IO.Path.Combine("romfs", "script"),
                             IO.Path.Combine("romfs", "message_fr"),

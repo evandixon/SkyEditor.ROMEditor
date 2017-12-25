@@ -19,31 +19,28 @@ Namespace MysteryDungeon
             ResizeFileOnLoad = True
             AutoAddSir0HeaderRelativePointers = False
             RelativePointers = New List(Of Integer)
+            SubHeaderRelativePointers = New List(Of Integer)
             EnableInMemoryLoad = True
         End Sub
 
         ''' <summary>
         ''' The byte used to pad blocks that aren't divisible by 0x10.
         ''' </summary>
-        ''' <returns></returns>
         Protected Property PaddingByte As Byte
 
         ''' <summary>
         ''' Offset of the sub header
         ''' </summary>
-        ''' <returns></returns>
         Protected Property HeaderOffset As Integer
 
         ''' <summary>
         ''' Offset of the pointers block
         ''' </summary>
-        ''' <returns></returns>
         Protected Property PointerOffset As Integer
 
         ''' <summary>
         ''' Length of the pointers block
         ''' </summary>
-        ''' <returns></returns>
         Private ReadOnly Property PointerLength As Integer
             Get
                 Return Length - PointerOffset
@@ -53,13 +50,11 @@ Namespace MysteryDungeon
         ''' <summary>
         ''' Length of the padding at the end of the header.
         ''' </summary>
-        ''' <returns></returns>
         Private Property HeaderPadding As Integer
 
         ''' <summary>
         ''' Length of the sub header
         ''' </summary>
-        ''' <returns></returns>
         Private ReadOnly Property HeaderLength As Integer
             Get
                 Return PointerOffset - HeaderOffset - HeaderPadding
@@ -69,7 +64,6 @@ Namespace MysteryDungeon
         ''' <summary>
         ''' Length of the data block
         ''' </summary>
-        ''' <returns></returns>
         Private ReadOnly Property DataLength As Integer
             Get
                 Return Length - 16 - HeaderLength - PointerLength
@@ -79,21 +73,23 @@ Namespace MysteryDungeon
         ''' <summary>
         ''' Contents of the sub header
         ''' </summary>
-        ''' <returns></returns>
         Public Property ContentHeader As Byte()
 
         ''' <summary>
         ''' The decoded pointers in the pointers block.
         ''' Each number is the number of bytes after the previous pointer in the file.
         ''' </summary>
-        ''' <returns></returns>
         Public Property RelativePointers As List(Of Integer)
+
+        ''' <summary>
+        ''' Indexes of pointers in the content header
+        ''' </summary>
+        Public Property SubHeaderRelativePointers As List(Of Integer)
 
         ''' <summary>
         ''' Whether or not to trim the pointers and sub header blocks after the file is loaded.
         ''' If true, it is easier to append data to the data block.
         ''' </summary>
-        ''' <returns></returns>
         Protected Property ResizeFileOnLoad As Boolean
 
         ''' <summary>
@@ -101,6 +97,12 @@ Namespace MysteryDungeon
         ''' Defaults to false for backwards compatibility.
         ''' </summary>
         Public Property AutoAddSir0HeaderRelativePointers As Boolean
+
+        ''' <summary>
+        ''' Whether or not to automatically add the SIR0 header relative pointers for the content header.
+        ''' Defaults to false for backwards compatibility.
+        ''' </summary>
+        Public Property AutoAddSir0SubHeaderRelativePointers As Boolean
 
         Public Overridable Async Function IsOfType(File As GenericFile) As Task(Of Boolean)
             'Todo: possible parsing of file to ensure file contents are OK.
@@ -152,6 +154,7 @@ Namespace MysteryDungeon
             'Write the pointers
             Dim pointerSection As New List(Of Byte)
             Dim pointers As IEnumerable(Of Integer)
+
             If AutoAddSir0HeaderRelativePointers Then
                 If RelativePointers.Any() Then
                     Dim firstPointer = RelativePointers.First()
@@ -163,6 +166,17 @@ Namespace MysteryDungeon
             Else
                 pointers = RelativePointers
             End If
+
+            If AutoAddSir0SubHeaderRelativePointers AndAlso SubHeaderRelativePointers.Any() Then
+                'Assume pointers doesn't contain any pointers in the sub-header
+                Dim lastPointerOffset = pointers.Sum()
+                Dim contentHeaderPointerBase = HeaderOffset - lastPointerOffset
+                pointers = pointers.Concat({contentHeaderPointerBase + SubHeaderRelativePointers.First()})
+                If SubHeaderRelativePointers.Count > 1 Then
+                    pointers = pointers.Concat(SubHeaderRelativePointers.Skip(1))
+                End If
+            End If
+
             For Each item In pointers
                 If item < 128 Then 'If the most significant bit is not 1
                     pointerSection.Add(CByte(item))

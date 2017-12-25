@@ -25,30 +25,30 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
             Public Property String1 As String
                 Get
-                    Return Model.String1
+                    Return Model.Filename
                 End Get
                 Set(value As String)
-                    Model.String1 = value
+                    Model.Filename = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(String1)))
                 End Set
             End Property
 
             Public Property String2 As String
                 Get
-                    Return Model.String2
+                    Return Model.Skeleton
                 End Get
                 Set(value As String)
-                    Model.String2 = value
+                    Model.Skeleton = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(String2)))
                 End Set
             End Property
 
             Public Property String3 As String
                 Get
-                    Return Model.String3
+                    Return Model.ActorName
                 End Get
                 Set(value As String)
-                    Model.String3 = value
+                    Model.ActorName = value
                     RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(String3)))
                 End Set
             End Property
