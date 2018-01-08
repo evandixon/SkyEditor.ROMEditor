@@ -25,25 +25,6 @@ Imports SkyEditor.ROMEditor.Utilities
         Return Directory.Exists(romDir)
     End Function
 
-    Public Shared Sub UnpackFiles(provider As IIOProvider)
-        Try
-            Using md5 As New MD5CryptoServiceProvider
-                Dim hash = md5.ComputeHash(My.Resources.eos_u)
-                If Not hash.SequenceEqual(My.Resources.EoS_U_MD5) Then
-                    Assert.Inconclusive("Incorrect test ROM specified.  Should be a trimmed North America PMD: Explorers of Sky ROM.")
-                End If
-            End Using
-
-            provider.WriteAllBytes(romFilename, My.Resources.eos_u)
-            Using nds As New NdsRom
-                nds.OpenFile(romFilename, provider).Wait()
-                nds.Unpack(romDir, provider).Wait()
-            End Using
-        Catch ex As Exception
-            Assert.Inconclusive("Failed to set up.  Exception message: " & ex.Message)
-        End Try
-    End Sub
-
     Public Shared Sub CleanupFiles(provider As IIOProvider)
         If provider.FileExists(romFilename) Then
             provider.DeleteFile(romFilename)
@@ -55,8 +36,20 @@ Imports SkyEditor.ROMEditor.Utilities
 
 
     <TestInitialize()> Public Sub TestInit()
-        provider = New PhysicalIOProvider
-        UnpackFiles(provider)
+        Try
+            Using md5 As New MD5CryptoServiceProvider
+                Dim hash = md5.ComputeHash(My.Resources.eos_u)
+                If Not hash.SequenceEqual(My.Resources.EoS_U_MD5) Then
+                    Assert.Inconclusive("Incorrect test ROM specified.  Should be a trimmed North America PMD: Explorers of Sky ROM.")
+                End If
+            End Using
+
+            Dim nds As New NdsRom
+            nds.OpenFile(romFilename, New PhysicalIOProvider()).Wait()
+            provider = nds
+        Catch ex As Exception
+            Assert.Inconclusive("Failed to set up.  Exception message: " & ex.Message)
+        End Try
     End Sub
 
     <TestCleanup> Public Sub Cleanup()
@@ -64,7 +57,7 @@ Imports SkyEditor.ROMEditor.Utilities
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub Overlay13()
-        Dim testFile = TestHelpers.GetAndTestFile(Of Overlay13)(Path.Combine(romDir, "overlay", "overlay_0013.bin"), True, provider)
+        Dim testFile = TestHelpers.GetAndTestFile(Of Overlay13)("/overlay/overlay_0013.bin", True, provider)
         'Starters
         'Bulbasaur
         Assert.AreEqual(CUShort(1), testFile.LonelyMale, "Incorrect starter for Lonely Male")
@@ -164,42 +157,42 @@ Imports SkyEditor.ROMEditor.Utilities
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub item_p()
-        Using testFile = TestHelpers.GetAndTestFile(Of item_p)(Path.Combine(romDir, "data", "balance", "item_p.bin"), True, provider)
+        Using testFile = TestHelpers.GetAndTestFile(Of item_p)("/data/balance/item_p.bin", True, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(1400, testFile.Items.Count, "Incorrect number of items")
         End Using
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub item_s_p()
-        Using testFile = TestHelpers.GetAndTestFile(Of item_s_p)(Path.Combine(romDir, "data", "balance", "item_s_p.bin"), True, provider)
+        Using testFile = TestHelpers.GetAndTestFile(Of item_s_p)("/data/balance/item_s_p.bin", True, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(956, testFile.Items.Count, "Incorrect number of items")
         End Using
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub mappa_s()
-        Using testFile = TestHelpers.GetAndTestFile(Of mappa)(Path.Combine(romDir, "data", "balance", "mappa_s.bin"), False, provider)
+        Using testFile = TestHelpers.GetAndTestFile(Of mappa)("/data/balance/mappa_s.bin", False, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(100, testFile.Dungeons.Count, "Incorrect number of items")
         End Using
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub mappa_t()
-        Using testFile = TestHelpers.GetAndTestFile(Of mappa)(Path.Combine(romDir, "data", "balance", "mappa_t.bin"), False, provider)
+        Using testFile = TestHelpers.GetAndTestFile(Of mappa)("/data/balance/mappa_t.bin", False, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(64, testFile.Dungeons.Count, "Incorrect number of items")
         End Using
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub mappa_y()
-        Using testFile = TestHelpers.GetAndTestFile(Of mappa)(Path.Combine(romDir, "data", "balance", "mappa_y.bin"), False, provider)
+        Using testFile = TestHelpers.GetAndTestFile(Of mappa)("data/balance/mappa_y.bin", False, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(64, testFile.Dungeons.Count, "Incorrect number of items")
         End Using
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub waza_p()
-        Using testFile = TestHelpers.GetAndTestFile(Of waza_p)(Path.Combine(romDir, "data", "balance", "waza_p.bin"), False, provider)
+        Using testFile = TestHelpers.GetAndTestFile(Of waza_p)("data/balance/waza_p.bin", False, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(559, testFile.Moves.Count, "Incorrect number of moves")
             Assert.AreEqual(553, testFile.PokemonLearnsets.Count, "Incorrect number of Pokemon moveset data")
@@ -214,7 +207,7 @@ Imports SkyEditor.ROMEditor.Utilities
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub Kaomado()
         'Extract
         Dim kao1 As New Kaomado
-        kao1.OpenFile(Path.Combine(romDir, "data", "font", "kaomado.kao"), provider).Wait()
+        kao1.OpenFile("/data/font/kaomado.kao", provider).Wait()
 
         'Pack
         Dim kao2 As New Kaomado

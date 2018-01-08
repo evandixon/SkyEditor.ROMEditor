@@ -9,20 +9,20 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
 
     Dim provider As IIOProvider
 
-    <TestInitialize> Public Sub TestInit()
-        provider = New PhysicalIOProvider
-        If Not BRTUTests.IsTestInitialized Then
-            BRTUTests.UnpackFiles(provider)
-        End If
-        If Not EoSUTests.IsTestInitialized Then
-            EoSUTests.UnpackFiles(provider)
-        End If
-    End Sub
+    '<TestInitialize> Public Sub TestInit()
+    '    provider = New PhysicalIOProvider
+    '    If Not BRTUTests.IsTestInitialized Then
+    '        BRTUTests.UnpackFiles(provider)
+    '    End If
+    '    If Not EoSUTests.IsTestInitialized Then
+    '        EoSUTests.UnpackFiles(provider)
+    '    End If
+    'End Sub
 
-    <TestCleanup> Public Sub TestCleanup()
-        BRTUTests.CleanupFiles(provider)
-        EoSUTests.CleanupFiles(provider)
-    End Sub
+    '<TestCleanup> Public Sub TestCleanup()
+    '    BRTUTests.CleanupFiles(provider)
+    '    EoSUTests.CleanupFiles(provider)
+    'End Sub
 
     '<TestMethod> <TestCategory(TestCategory)> <TestCategory(TestHelpers.ManualTestCategory)> Public Sub CopyEosToBRTKaomado()
     '    Dim monster As New SBin
