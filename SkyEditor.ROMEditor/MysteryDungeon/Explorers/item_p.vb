@@ -157,7 +157,7 @@ Namespace MysteryDungeon.Explorers
         End Class
 
         Public Sub New()
-            AutoAddSir0HeaderRelativePointers = True
+
         End Sub
 
         Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
@@ -174,6 +174,14 @@ Namespace MysteryDungeon.Explorers
         End Sub
 
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
+            'Let the Sir0 class automatically handle the relative pointers in the SIR0 header
+            AutoAddSir0HeaderRelativePointers = True
+            AutoAddSir0SubHeaderRelativePointers = True
+
+            'There are no pointers in this particular file type
+            RelativePointers.Clear()
+            SubHeaderRelativePointers.Clear()
+
             Dim out As New List(Of Byte)
 
             For Each item In Items

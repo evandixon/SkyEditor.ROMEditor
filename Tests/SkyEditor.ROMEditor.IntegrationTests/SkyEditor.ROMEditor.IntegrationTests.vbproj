@@ -68,7 +68,7 @@
       <HintPath>..\..\packages\DotNet3dsToolkit.2.0.0-CI51\lib\net462\DotNet3dsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNdsToolkit, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DotNetNdsToolkit.2.0.0-CI114\lib\net462\DotNetNdsToolkit.dll</HintPath>
+      <HintPath>..\..\packages\DotNetNdsToolkit.2.0.0-CI117\lib\net462\DotNetNdsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>

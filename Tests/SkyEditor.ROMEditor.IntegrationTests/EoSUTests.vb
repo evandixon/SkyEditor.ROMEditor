@@ -11,49 +11,19 @@ Imports SkyEditor.ROMEditor.Utilities
 
     Private Const EosTestCategory As String = "EOS (U) Files"
 
-    'Files for all tests
-    Private Const romFilename As String = "eos-u.nds"
-    Public Const romDir As String = "extracted-EOS-U"
-
     Dim provider As IIOProvider
 
-    ''' <summary>
-    ''' Determines whether or not the test has been initialized
-    ''' </summary>
-    ''' <remarks>This is not thread safe, and assumes tests are initialized or cleaned sequentially.</remarks>
-    Public Shared Function IsTestInitialized() As Boolean
-        Return Directory.Exists(romDir)
-    End Function
-
-    Public Shared Sub CleanupFiles(provider As IIOProvider)
-        If provider.FileExists(romFilename) Then
-            provider.DeleteFile(romFilename)
-        End If
-        If provider.DirectoryExists(romDir) Then
-            provider.DeleteDirectory(romDir)
-        End If
-    End Sub
-
-
     <TestInitialize()> Public Sub TestInit()
-        Try
-            Using md5 As New MD5CryptoServiceProvider
-                Dim hash = md5.ComputeHash(My.Resources.eos_u)
-                If Not hash.SequenceEqual(My.Resources.EoS_U_MD5) Then
-                    Assert.Inconclusive("Incorrect test ROM specified.  Should be a trimmed North America PMD: Explorers of Sky ROM.")
-                End If
-            End Using
+        Using md5 As New MD5CryptoServiceProvider
+            Dim hash = md5.ComputeHash(My.Resources.eos_u)
+            If Not hash.SequenceEqual(My.Resources.EoS_U_MD5) Then
+                Assert.Fail("Incorrect test ROM specified.  Should be a trimmed North America PMD: Explorers of Sky ROM.")
+            End If
+        End Using
 
-            Dim nds As New NdsRom
-            nds.OpenFile(romFilename, New PhysicalIOProvider()).Wait()
-            provider = nds
-        Catch ex As Exception
-            Assert.Inconclusive("Failed to set up.  Exception message: " & ex.Message)
-        End Try
-    End Sub
-
-    <TestCleanup> Public Sub Cleanup()
-        CleanupFiles(provider)
+        Dim nds As New NdsRom
+        nds.OpenFileInMemory(My.Resources.eos_u).Wait()
+        provider = nds
     End Sub
 
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub Overlay13()
@@ -252,7 +222,7 @@ Imports SkyEditor.ROMEditor.Utilities
 
 #Region "Language Strings"
     <TestMethod> <TestCategory(EosTestCategory)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub LanguageString_FileOpenAndSave()
-        Using testFile = TestHelpers.GetAndTestFile(Of LanguageString)(Path.Combine(romDir, "data", "message", "text_e.str"), True, provider)
+        Using testFile = TestHelpers.GetAndTestFile(Of LanguageString)(Path.Combine("data", "message", "text_e.str"), True, provider)
             'Ensure data is at least somewhat valid
             Assert.AreEqual(18451, testFile.Items.Count, "Incorrect number of items")
         End Using
