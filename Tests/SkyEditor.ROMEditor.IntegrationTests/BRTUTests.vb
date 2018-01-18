@@ -12,21 +12,9 @@ Imports SkyEditor.ROMEditor.Utilities
 
     Private Const Category As String = "BRT (U) Files"
 
-    'Files for all tests
-    Private Shared romFilename As String = "brt-u.nds"
-    Public Shared romDir As String = "extracted-BRT-U"
-
     Dim provider As IIOProvider
 
-    ''' <summary>
-    ''' Determines whether or not the test has been initialized
-    ''' </summary>
-    ''' <remarks>This is not thread safe, and assumes tests are initialized or cleaned sequentially.</remarks>
-    Public Shared Function IsTestInitialized() As Boolean
-        Return Directory.Exists(romDir)
-    End Function
-
-    Public Shared Sub UnpackFiles(provider As IIOProvider)
+    <TestInitialize()> Public Sub TestInit()
         Try
             Using md5 As New MD5CryptoServiceProvider
                 Dim hash = md5.ComputeHash(My.Resources.brt_u)
@@ -35,43 +23,44 @@ Imports SkyEditor.ROMEditor.Utilities
                 End If
             End Using
 
-            provider.WriteAllBytes(romFilename, My.Resources.brt_u)
-            Using nds As New NdsRom
-                nds.OpenFile(romFilename, provider).Wait()
-                nds.Unpack(romDir, provider).Wait()
-            End Using
+            Dim nds As New NdsRom
+            nds.OpenFileInMemory(My.Resources.brt_u).Wait()
+            provider = nds
         Catch ex As Exception
             Assert.Inconclusive("Failed to set up.  Exception message: " & ex.Message)
         End Try
     End Sub
 
-    Public Shared Sub CleanupFiles(provider As IIOProvider)
-        If provider.FileExists(romFilename) Then
-            provider.DeleteFile(romFilename)
-        End If
-        If provider.DirectoryExists(romDir) Then
-            provider.DeleteDirectory(romDir)
-        End If
+    <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub SBinFileFormat_dungeon()
+        Dim dungeon = TestHelpers.GetAndTestFile(Of SBin)("/data/dungeon.sbin", True, provider)
     End Sub
 
-    <TestInitialize()> Public Sub TestInit()
-        provider = New PhysicalIOProvider
-        UnpackFiles(provider)
+    <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub SBinFileFormat_effect()
+        Dim effect = TestHelpers.GetAndTestFile(Of SBin)("/data/effect.sbin", True, provider)
     End Sub
 
-    <TestCleanup> Public Sub Cleanup()
-        CleanupFiles(provider)
+    <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub SBinFileFormat_ground()
+        Dim ground = TestHelpers.GetAndTestFile(Of SBin)("/data/ground.sbin", True, provider)
     End Sub
 
-    <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub SBinFileFormat()
-        Dim dungeon = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "dungeon.sbin"), True, provider)
-        Dim effect = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "effect.sbin"), True, provider)
-        Dim ground = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "ground.sbin"), True, provider)
-        Dim monster = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "monster.sbin"), True, provider)
-        Dim ornament = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "ornament.sbin"), True, provider)
-        Dim sample = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "sample.sbin"), True, provider)
-        Dim system = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "system.sbin"), True, provider)
-        Dim titlemenu = TestHelpers.GetAndTestFile(Of SBin)(Path.Combine(romDir, "data", "titlemenu.sbin"), True, provider)
+    <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub SBinFileFormat_monster()
+        Dim monster = TestHelpers.GetAndTestFile(Of SBin)("/data/monster.sbin", True, provider)
+    End Sub
+
+    <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub SBinFileFormat_ornament()
+        Dim ornament = TestHelpers.GetAndTestFile(Of SBin)("/data/ornament.sbin", True, provider)
+    End Sub
+
+    <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub SBinFileFormat_sample()
+        Dim sample = TestHelpers.GetAndTestFile(Of SBin)("/data/sample.sbin", True, provider)
+    End Sub
+
+    <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub SBinFileFormat_system()
+        Dim system = TestHelpers.GetAndTestFile(Of SBin)("/data/system.sbin", True, provider)
+    End Sub
+
+    <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub SBinFileFormat_titlemenu()
+        Dim titlemenu = TestHelpers.GetAndTestFile(Of SBin)("/data/titlemenu.sbin", True, provider)
     End Sub
 
     <TestMethod> <TestCategory(Category)> <TestCategory(TestHelpers.AutomatedTestCategory)> Public Sub MonsterKaoTest()
@@ -80,9 +69,9 @@ Imports SkyEditor.ROMEditor.Utilities
         Dim repackFilename = "repack-monster.sbin"
         'Extract
         Dim monster1 As New SBin
-        monster1.OpenFile(Path.Combine(romDir, "data", "monster.sbin"), provider).Wait()
+        monster1.OpenFile("/data/monster.sbin", provider).Wait()
 
-        For Each item In monster1.Files.Where(Function(x) x.Key.StartsWith("kao"))
+        For Each item In monster1.Files.Where(Function(x) x.Key.StartsWith("kao")).AsParallel()
             Using kao As New KaoFile
                 kao.Initialize(item.Value).Wait()
                 For count = 0 To kao.Portraits.Count - 1
@@ -96,7 +85,7 @@ Imports SkyEditor.ROMEditor.Utilities
         Next
 
         'Repack
-        For Each d In Directory.GetDirectories(extractDir1)
+        For Each d In Directory.GetDirectories(extractDir1).AsParallel()
             Using kao As New KaoFile
                 kao.CreateFile()
                 kao.Portraits.Clear()
@@ -117,7 +106,7 @@ Imports SkyEditor.ROMEditor.Utilities
         Dim monster2 As New SBin
         monster2.OpenFile(repackFilename, provider).Wait()
 
-        For Each item In monster2.Files.Where(Function(x) x.Key.StartsWith("kao"))
+        For Each item In monster2.Files.Where(Function(x) x.Key.StartsWith("kao")).AsParallel()
             Using kao As New KaoFile
                 kao.Initialize(item.Value).Wait()
                 For count = 0 To kao.Portraits.Count - 1
@@ -135,7 +124,7 @@ Imports SkyEditor.ROMEditor.Utilities
         Next
 
         'Compare
-        For Each originalDirectory In Directory.GetDirectories(extractDir1)
+        For Each originalDirectory In Directory.GetDirectories(extractDir1).AsParallel()
             Dim repackDirectory = Path.Combine(extractDir2, Path.GetFileName(originalDirectory))
             Assert.IsTrue(Directory.Exists(repackDirectory), "Missing data for " & Path.GetFileName(originalDirectory) & " after repack.")
             For Each originalFile In Directory.GetFiles(originalDirectory, "*.png").OrderBy(Function(x) CInt(Path.GetFileNameWithoutExtension(x)))
