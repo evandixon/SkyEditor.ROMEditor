@@ -498,4 +498,10 @@ evandixon (Personality test, bgp files)</value>
   <data name="Debug" xml:space="preserve">
     <value>Debug</value>
   </data>
+  <data name="MenuFarc" xml:space="preserve">
+    <value>FARC</value>
+  </data>
+  <data name="MenuFarcExtract" xml:space="preserve">
+    <value>Extract</value>
+  </data>
 </root>

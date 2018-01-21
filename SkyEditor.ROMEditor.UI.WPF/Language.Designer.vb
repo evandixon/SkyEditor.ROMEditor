@@ -479,6 +479,24 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to FARC.
+        '''</summary>
+        Public Shared ReadOnly Property MenuFarc() As String
+            Get
+                Return ResourceManager.GetString("MenuFarc", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Extract.
+        '''</summary>
+        Public Shared ReadOnly Property MenuFarcExtract() As String
+            Get
+                Return ResourceManager.GetString("MenuFarcExtract", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to _Image.
         '''</summary>
         Public Shared ReadOnly Property MenuImage() As String

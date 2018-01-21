@@ -208,7 +208,7 @@ Namespace MysteryDungeon.PSMD
         Protected Property Sir0Type As Integer
 
         Public Property PreLoadFiles As Boolean = False
-        Public Property EnableInMemoryLoad As Boolean = False
+        Public Property EnableInMemoryLoad As Boolean = True
         Public Property Filename As String Implements IOnDisk.Filename
         Private Property Entries As ConcurrentBag(Of Entry)
         Private Property CachedEntries As ConcurrentDictionary(Of UInteger, Entry)
@@ -273,7 +273,29 @@ Namespace MysteryDungeon.PSMD
                     If provider.FileExists(dbPath) Then
                         Dim dbFile As New PGDB
                         Await dbFile.OpenFile(dbPath, provider)
+
                         SetFilenames(dbFile.Entries.Select(Function(e) e.Filename))
+                        SetFilenames({
+                                        "shadow_00.bgrs"
+                                    }, False) '"2leg_bashaamo_00.bgrs"
+
+                        'Infer BCH files from BGRS
+                        Dim bchFilenames As New List(Of String)
+                        For Each bgrsFilename In Entries.Where(Function(e) e.Filename IsNot Nothing AndAlso e.Filename.EndsWith(".bgrs")).Select(Function(e) e.Filename)
+                            Dim bgrs As New BGRS
+                            Await bgrs.OpenFile("/" & bgrsFilename, Me)
+                            bchFilenames.Add(bgrs.ReferencedBchFileName)
+                            For Each item In bgrs.PartNames
+                                bchFilenames.Add(item & ".bchmata")
+                                bchFilenames.Add(item & ".bchskla")
+                            Next
+                            For Each item In bgrs.SklaNames
+                                bchFilenames.Add(item & ".bchmata")
+                                bchFilenames.Add(item & ".bchskla")
+                            Next
+                        Next
+
+                        SetFilenames(bchFilenames.Distinct(), False)
                     End If
                 Case "message.bin",
                      "message_en.bin",

@@ -209,6 +209,7 @@
     <Import Include="System.Windows.Navigation" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MenuActions\PsmdFarcExtract.vb" />
     <Compile Include="MysteryDungeon\Explorers\ViewModels\BGPViewModel.vb" />
     <Compile Include="Language.Designer.vb">
       <DependentUpon>Language.resx</DependentUpon>
