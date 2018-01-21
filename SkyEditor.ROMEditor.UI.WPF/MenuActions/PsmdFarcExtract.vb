@@ -19,12 +19,18 @@ Namespace MenuActions
             Return {GetType(Farc).GetTypeInfo}
         End Function
 
-        Public Overrides Sub DoAction(Targets As IEnumerable(Of Object))
+        Public Overrides Async Sub DoAction(Targets As IEnumerable(Of Object))
+            Dim loadingTasks As New List(Of Task)
             For Each item As Farc In Targets
                 If Dialog.ShowDialog = DialogResult.OK Then
-                    CurrentApplicationViewModel.ShowLoading(item.Extract(Dialog.SelectedPath, CurrentApplicationViewModel.CurrentIOProvider))
+                    loadingTasks.Add(item.Extract(Dialog.SelectedPath, CurrentApplicationViewModel.CurrentIOProvider))
+                    CurrentApplicationViewModel.ShowLoading(item)
                 End If
             Next
+
+            'While the application view model is handling the extraction display, we need to wait here in case there's exceptions.
+            'Otherwise, they'll be swallowed
+            Await Task.WhenAll(loadingTasks)
         End Sub
     End Class
 End Namespace

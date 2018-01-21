@@ -275,9 +275,26 @@ Namespace MysteryDungeon.PSMD
                         Await dbFile.OpenFile(dbPath, provider)
 
                         SetFilenames(dbFile.Entries.Select(Function(e) e.Filename))
-                        SetFilenames({
-                                        "shadow_00.bgrs"
-                                    }, False) '"2leg_bashaamo_00.bgrs"
+
+                        'Identify BGRS files that were not referenced, then infer the names
+                        'Dim bgrsNameRegex = New Regex("((([a-z0-9]|_)+)_0[0-9])(.*)\.bgrs", RegexOptions.Compiled)
+                        Dim af As New AsyncFor
+                        Await af.RunForEach(Entries.Where(Function(e) e.Filename Is Nothing),
+                                     Async Function(unmatchedFile As Entry) As Task
+                                         Dim data = Await GetFileDataAsync(unmatchedFile)
+
+                                         'Check for magic BGRS0.5 string
+                                         If data.Take(7).SequenceEqual({&H42, &H47, &H52, &H53, &H30, &H2E, &H35}) Then
+                                             Dim bgrs As New BGRS
+                                             Await bgrs.OpenFile(data)
+
+                                             'If the filename is something like 2leg_bird_00__bd_attack, the file we're in is 2leg_bird_00.bgrs.
+                                             'This is because the file format is a little different and doesn't contain a proper Bgrs name
+                                             'We're inferring form one of the BCH filenames.
+                                             'This is definitely a hack, present so we don't have to hard-code filenames
+                                             SetFilenames({bgrs.BgrsName.Replace("__", "!").Split("!")(0) & ".bgrs"}, False)
+                                         End If
+                                     End Function)
 
                         'Infer BCH files from BGRS
                         Dim bchFilenames As New List(Of String)
@@ -447,6 +464,7 @@ Namespace MysteryDungeon.PSMD
                                    Progress = e.Progress
                                    Message = e.Message
                                    IsIndeterminate = e.IsIndeterminate
+                                   RaiseEvent ProgressChanged(Me, New ProgressReportedEventArgs With {.Progress = e.Progress, .Message = Message, .IsIndeterminate = IsIndeterminate})
                                End Sub
 
             Dim a As New AsyncFor
@@ -457,6 +475,7 @@ Namespace MysteryDungeon.PSMD
                                         End Function)
             RemoveHandler a.ProgressChanged, onProgressed
             IsCompleted = True
+            RaiseEvent Completed(Me, New EventArgs)
         End Function
 
         Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
