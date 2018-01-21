@@ -550,6 +550,16 @@ Namespace MysteryDungeon.PSMD
 
         Public Sub Dispose() Implements IDisposable.Dispose
             InnerData?.Dispose()
+            InnerData = Nothing
+
+            CachedEntries?.Clear()
+            CachedEntries = Nothing
+
+            Dim entry As Entry = Nothing
+            While Entries?.TryTake(entry)
+                'Do nothing; just want to clear Entries
+            End While
+            Entries = Nothing
         End Sub
 
 #Region "IReportProgress Properties"
