@@ -288,11 +288,7 @@ Namespace MysteryDungeon.PSMD
                                              Dim bgrs As New BGRS
                                              Await bgrs.OpenFile(data)
 
-                                             'If the filename is something like 2leg_bird_00__bd_attack, the file we're in is 2leg_bird_00.bgrs.
-                                             'This is because the file format is a little different and doesn't contain a proper Bgrs name
-                                             'We're inferring form one of the BCH filenames.
-                                             'This is definitely a hack, present so we don't have to hard-code filenames
-                                             SetFilenames({bgrs.BgrsName.Replace("__", "!").Split("!")(0) & ".bgrs"}, False)
+                                             SetFilenames({bgrs.BgrsName & ".bgrs"}, False)
                                          End If
                                      End Function)
 
@@ -302,13 +298,9 @@ Namespace MysteryDungeon.PSMD
                             Dim bgrs As New BGRS
                             Await bgrs.OpenFile("/" & bgrsFilename, Me)
                             bchFilenames.Add(bgrs.ReferencedBchFileName)
-                            For Each item In bgrs.PartNames
-                                bchFilenames.Add(item & ".bchmata")
-                                bchFilenames.Add(item & ".bchskla")
-                            Next
-                            For Each item In bgrs.SklaNames
-                                bchFilenames.Add(item & ".bchmata")
-                                bchFilenames.Add(item & ".bchskla")
+                            For Each item In bgrs.Animations
+                                bchFilenames.Add(item.Name & ".bchmata")
+                                bchFilenames.Add(item.Name & ".bchskla")
                             Next
                         Next
 

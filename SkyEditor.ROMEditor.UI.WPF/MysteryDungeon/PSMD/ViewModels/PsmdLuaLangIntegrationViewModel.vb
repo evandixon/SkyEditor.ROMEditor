@@ -86,11 +86,11 @@ Namespace MysteryDungeon.PSMD.ViewModels
             Next
         End Sub
 
-        Public Overrides Sub UpdateModel(model As Object)
+        Public Overrides Async Sub UpdateModel(model As Object)
             MyBase.UpdateModel(model)
 
             For Each item As TabItem In MessageTabs
-                DirectCast(DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit, MessageBinViewModel).Save(CurrentApplicationViewModel.CurrentIOProvider)
+                Await DirectCast(DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit, MessageBinViewModel).Save(CurrentApplicationViewModel.CurrentIOProvider)
             Next
         End Sub
 
