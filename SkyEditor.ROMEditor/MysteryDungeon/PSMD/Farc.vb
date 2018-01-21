@@ -274,10 +274,10 @@ Namespace MysteryDungeon.PSMD
                         Dim dbFile As New PGDB
                         Await dbFile.OpenFile(dbPath, provider)
 
-                        SetFilenames(dbFile.Entries.Select(Function(e) e.Filename))
+                        SetFilenames(dbFile.Entries.Select(Function(e) e.PrimaryBgrsFilename).Distinct())
+                        SetFilenames(dbFile.Entries.Select(Function(e) e.SecondaryBgrsName & ".bgrs").Distinct())
 
                         'Identify BGRS files that were not referenced, then infer the names
-                        'Dim bgrsNameRegex = New Regex("((([a-z0-9]|_)+)_0[0-9])(.*)\.bgrs", RegexOptions.Compiled)
                         Dim af As New AsyncFor
                         Await af.RunForEach(Entries.Where(Function(e) e.Filename Is Nothing),
                                      Async Function(unmatchedFile As Entry) As Task

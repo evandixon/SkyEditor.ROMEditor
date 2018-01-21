@@ -23,33 +23,33 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
             Public Property Model As PGDB.Entry
 
-            Public Property String1 As String
+            Public Property PrimaryBgrsFilename As String
                 Get
-                    Return Model.Filename
+                    Return Model.PrimaryBgrsFilename
                 End Get
                 Set(value As String)
-                    Model.Filename = value
-                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(String1)))
+                    Model.PrimaryBgrsFilename = value
+                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(PrimaryBgrsFilename)))
                 End Set
             End Property
 
-            Public Property String2 As String
+            Public Property SecondaryBgrsName As String
                 Get
-                    Return Model.Skeleton
+                    Return Model.SecondaryBgrsName
                 End Get
                 Set(value As String)
-                    Model.Skeleton = value
-                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(String2)))
+                    Model.SecondaryBgrsName = value
+                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(SecondaryBgrsName)))
                 End Set
             End Property
 
-            Public Property String3 As String
+            Public Property ActorName As String
                 Get
                     Return Model.ActorName
                 End Get
                 Set(value As String)
                     Model.ActorName = value
-                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(String3)))
+                    RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(ActorName)))
                 End Set
             End Property
 

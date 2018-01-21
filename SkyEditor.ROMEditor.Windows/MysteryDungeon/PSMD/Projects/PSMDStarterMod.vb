@@ -58,8 +58,8 @@ Namespace MysteryDungeon.PSMD.Projects
             'Fix Pokemon with a dummy model
             Dim pgdb As New PGDB
             Await pgdb.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphics_database.bin"), provider)
-            For Each item In pgdb.Entries.Where(Function(x) x.Filename = "dummypokemon_00.bgrs").ToArray()
-                item.Filename = item.ActorName & "_00.bgrs"
+            For Each item In pgdb.Entries.Where(Function(x) x.PrimaryBgrsFilename = "dummypokemon_00.bgrs").ToArray()
+                item.PrimaryBgrsFilename = item.ActorName & "_00.bgrs"
             Next
             Await pgdb.Save(provider)
 

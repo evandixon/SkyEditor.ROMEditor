@@ -9,13 +9,27 @@ Namespace MysteryDungeon.PSMD
         Implements IDetectableFileType
 
         Public Class Entry
-            Public Property Filename As String 'Filename
-            Public Property Skeleton As String 'Skeleton/animation
-            Public Property ActorName As String 'Romanized japanese name
+
+            ''' <summary>
+            ''' Filename of the primary BGRS file associated with a BCH file. This should include the *.bgrs extension. Ex. "dummy_pokemon_00.bgrs".
+            ''' </summary>
+            Public Property PrimaryBgrsFilename As String
+
+            ''' <summary>
+            ''' Name of the secondary BGRS file defining extended animations. This should NOT include the *.bgrs extension. Ex. "4leg_beast_00"
+            ''' This can be null if the primary BGRS file defines all of the extended animations.
+            ''' </summary>
+            Public Property SecondaryBgrsName As String
+
+            ''' <summary>
+            ''' Romanized Japanese name of the Pokémon or Actor
+            ''' </summary>
+            Public Property ActorName As String
+
             Public Property Data As Byte()
 
             Public Overrides Function ToString() As String
-                Return Filename & " | " & Skeleton & " | " & ActorName
+                Return PrimaryBgrsFilename & " | " & SecondaryBgrsName & " | " & ActorName
             End Function
         End Class
 
@@ -43,8 +57,8 @@ Namespace MysteryDungeon.PSMD
 
                     Dim entry As New Entry
 
-                    entry.Filename = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 0))
-                    entry.Skeleton = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 4))
+                    entry.PrimaryBgrsFilename = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 0))
+                    entry.SecondaryBgrsName = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 4))
                     entry.ActorName = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 8))
                     entry.Data = Await f.ReadAsync(entryOffset + 12, &H48)
 
@@ -107,7 +121,7 @@ Namespace MysteryDungeon.PSMD
                 Dim dataSection As New List(Of Byte)
 
                 For Each item In Entries
-                    Dim str1Bytes = Encoding.Unicode.GetBytes(item.Filename)
+                    Dim str1Bytes = Encoding.Unicode.GetBytes(item.PrimaryBgrsFilename)
                     stringSection.AddRange(str1Bytes)
                     stringSection.Add(0)
                     stringSection.Add(0)
@@ -123,7 +137,7 @@ Namespace MysteryDungeon.PSMD
                         currentOffset += 1
                     End While
 
-                    Dim str2Bytes = Encoding.Unicode.GetBytes(item.Skeleton)
+                    Dim str2Bytes = Encoding.Unicode.GetBytes(item.SecondaryBgrsName)
                     stringSection.AddRange(str2Bytes)
                     stringSection.Add(0)
                     stringSection.Add(0)

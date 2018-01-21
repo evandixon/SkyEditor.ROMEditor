@@ -504,4 +504,13 @@ evandixon (Personality test, bgp files)</value>
   <data name="MenuFarcExtract" xml:space="preserve">
     <value>Extract</value>
   </data>
+  <data name="ActorName" xml:space="preserve">
+    <value>Actor Name</value>
+  </data>
+  <data name="PrimaryBgrsFilename" xml:space="preserve">
+    <value>Primary BGRS Filename</value>
+  </data>
+  <data name="SecondaryBgrsName" xml:space="preserve">
+    <value>Secondary BGRS Name</value>
+  </data>
 </root>

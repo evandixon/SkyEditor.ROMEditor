@@ -65,6 +65,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Actor Name.
+        '''</summary>
+        Public Shared ReadOnly Property ActorName() As String
+            Get
+                Return ResourceManager.GetString("ActorName", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Add.
         '''</summary>
         Public Shared ReadOnly Property Add() As String
@@ -932,6 +941,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Primary BGRS Filename.
+        '''</summary>
+        Public Shared ReadOnly Property PrimaryBgrsFilename() As String
+            Get
+                Return ResourceManager.GetString("PrimaryBgrsFilename", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Quiet Female:.
         '''</summary>
         Public Shared ReadOnly Property QuietFemale() As String
@@ -1072,6 +1090,15 @@ Namespace My.Resources
         Public Shared ReadOnly Property Search() As String
             Get
                 Return ResourceManager.GetString("Search", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Secondary BGRS Name.
+        '''</summary>
+        Public Shared ReadOnly Property SecondaryBgrsName() As String
+            Get
+                Return ResourceManager.GetString("SecondaryBgrsName", resourceCulture)
             End Get
         End Property
         
