@@ -8,7 +8,7 @@ Namespace MenuActions
         Inherits MenuAction
 
         Public Sub New()
-            MyBase.New({My.Resources.Language.MenuImage, My.Resources.Language.MenuImageExport})
+            MyBase.New({My.Resources.Language.MenuFarc, My.Resources.Language.MenuFarcExtract})
             Dialog = New FolderBrowserDialog
             SortOrder = 5
         End Sub
