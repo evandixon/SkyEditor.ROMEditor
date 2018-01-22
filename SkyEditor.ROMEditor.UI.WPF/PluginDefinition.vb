@@ -23,12 +23,10 @@ Public Class PluginDefinition
 
     Public Overrides Sub Load(Manager As PluginManager)
         'Load the plugin this one depends on
+        'Manager.LoadRequiredPlugin(New SkyEditor.ROMEditor.PluginDefinition, Me) 'No need to include this, because it's loaded by SkyEditor.ROMEditor.Windows below
         Manager.LoadRequiredPlugin(New SkyEditor.ROMEditor.Windows.PluginDefinition, Me)
         Manager.LoadRequiredPlugin(New SkyEditor.CodeEditor.PluginDefinition, Me)
         Manager.LoadRequiredPlugin(New SkyEditor.CodeEditor.UI.WPF.PluginInfo, Me)
-
-        'Register extensions
-        Manager.RegisterIOFilter("*.bin", My.Resources.Language.FileType_Bin)
     End Sub
 
 End Class

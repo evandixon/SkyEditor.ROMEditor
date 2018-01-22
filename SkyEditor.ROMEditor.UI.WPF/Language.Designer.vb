@@ -308,15 +308,6 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Binary File.
-        '''</summary>
-        Public Shared ReadOnly Property FileType_Bin() As String
-            Get
-                Return ResourceManager.GetString("FileType_Bin", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
         '''  Looks up a localized string similar to French.
         '''</summary>
         Public Shared ReadOnly Property French() As String

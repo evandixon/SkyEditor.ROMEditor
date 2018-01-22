@@ -277,19 +277,21 @@ Namespace MysteryDungeon.PSMD
                         SetFilenames(dbFile.Entries.Select(Function(e) e.PrimaryBgrsFilename).Distinct())
                         SetFilenames(dbFile.Entries.Select(Function(e) e.SecondaryBgrsName & ".bgrs").Distinct())
 
-                        'Identify BGRS files that were not referenced, then infer the names
+                        'Identify BGRS files that were not referenced, and infer the names
                         Dim af As New AsyncFor
                         Await af.RunForEach(Entries.Where(Function(e) e.Filename Is Nothing),
                                      Async Function(unmatchedFile As Entry) As Task
                                          Dim data = Await GetFileDataAsync(unmatchedFile)
+                                         Using dataFile As New GenericFile()
+                                             dataFile.CreateFile(data)
 
-                                         'Check for magic BGRS0.5 string
-                                         If data.Take(7).SequenceEqual({&H42, &H47, &H52, &H53, &H30, &H2E, &H35}) Then
                                              Dim bgrs As New BGRS
-                                             Await bgrs.OpenFile(data)
+                                             If Await bgrs.IsOfType(dataFile) Then
+                                                 Await bgrs.OpenFile(data)
 
-                                             SetFilenames({bgrs.BgrsName & ".bgrs"}, False)
-                                         End If
+                                                 SetFilenames({bgrs.BgrsName & ".bgrs"}, False)
+                                             End If
+                                         End Using
                                      End Function)
 
                         'Infer BCH files from BGRS

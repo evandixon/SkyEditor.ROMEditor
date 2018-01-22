@@ -117,8 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="FileType_Bgrs" xml:space="preserve">
+    <value>BGRS File</value>
+  </data>
+  <data name="FileType_Bin" xml:space="preserve">
+    <value>Binary File</value>
+  </data>
   <data name="NonePokemon" xml:space="preserve">
     <value>(None)</value>
     <comment>The string representing Pokemon ID 0.</comment>
+  </data>
+  <data name="PluginAuthor" xml:space="preserve">
+    <value>evandixon</value>
+  </data>
+  <data name="PluginCredits" xml:space="preserve">
+    <value>Rom Editor Credits:
+psy_commando (Pokemon portraits, most of the research)
+Grovyle91 (Language strings)
+evandixon (Personality test, bgp files)</value>
+  </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>ROM Editor</value>
   </data>
 </root>

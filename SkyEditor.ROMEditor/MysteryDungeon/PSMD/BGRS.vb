@@ -3,19 +3,11 @@
 Namespace MysteryDungeon.PSMD
     Public Class BGRS
         Implements IOpenableFile
+        Implements IOnDisk
+        Implements ISavableAs
+        Implements IDetectableFileType
 
-        Public Enum BgrsType As Integer
-            Extension = 0
-            Normal = 1
-        End Enum
-
-        Public Enum AnimationType As Integer
-            Unknown = 0
-            SkeletalAnimation = 1
-            TextureAnimation = 2
-            Extension = &H80000001
-        End Enum
-
+#Region "Child Classes"
         Public Class ModelPart
 
             Public Sub New(rawData As Byte(), partName As String)
@@ -26,6 +18,13 @@ Namespace MysteryDungeon.PSMD
             Public Property RawData As Byte()
 
             Public Property PartName As String
+
+            Public Function GetRawData() As Byte()
+                Dim partNameBytes = Text.Encoding.ASCII.GetBytes(PartName)
+                partNameBytes.CopyTo(RawData, &H18)
+                RawData(&H18 + partNameBytes.Length) = 0
+                Return RawData
+            End Function
         End Class
 
         Public Class Animation
@@ -43,6 +42,21 @@ Namespace MysteryDungeon.PSMD
                 Return If(Name, MyBase.ToString())
             End Function
         End Class
+#End Region
+
+        Public Enum BgrsType As Integer
+            Extension = 0
+            Normal = 1
+        End Enum
+
+        Public Enum AnimationType As Integer
+            Unknown = 0
+            SkeletalAnimation = 1
+            TextureAnimation = 2
+            Extension = &H80000001
+        End Enum
+
+        Public Event FileSaved As EventHandler Implements ISavable.FileSaved
 
         Public Property Magic As String
 
@@ -55,6 +69,10 @@ Namespace MysteryDungeon.PSMD
         Public Property Type As BgrsType
 
         Public Property Parts As New List(Of ModelPart)
+
+        Public Property UnknownModelPartsFooter As Byte()
+
+        Public Property Filename As String Implements IOnDisk.Filename
 
         Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Using f As New GenericFile(filename, provider)
@@ -91,10 +109,11 @@ Namespace MysteryDungeon.PSMD
             Dim animationCount = Await f.ReadInt32Async(&H118)
             Dim partCount = Await f.ReadInt32Async(&H11C)
 
-            For partIndex = &H140 To (&H80 * partCount) - 1 Step &H80
+            For partIndex = &H140 To &H140 + (&H80 * partCount) - 1 Step &H80
                 Dim partName = Await f.ReadNullTerminatedStringAsync(partIndex + &H18, Text.Encoding.ASCII)
                 Parts.Add(New ModelPart(Await f.ReadAsync(partIndex, &H80), partName))
             Next
+            UnknownModelPartsFooter = Await f.ReadAsync(&H140 + (&H80 * partCount), &H18)
             Await OpenInternalAnimations(f, &H140 + (&H80 * partCount) + &H18, animationCount)
         End Function
 
@@ -115,5 +134,98 @@ Namespace MysteryDungeon.PSMD
                 Animations.Add(anim)
             Next
         End Function
+
+        Public Async Function IsOfType(file As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
+            Return file.Length >= 8 AndAlso Await file.ReadStringAsync(0, 7, Text.Encoding.ASCII) = "BGRS0.5"
+        End Function
+
+        Public Function GetRawData() As Byte()
+            Dim rawData As New List(Of Byte)
+
+            rawData.AddRange(Text.Encoding.ASCII.GetBytes("BGRS0.5"))
+            rawData.Add(0)
+
+            Dim bchNameBytes As Byte()
+            If Type = BgrsType.Normal Then
+                bchNameBytes = Text.Encoding.ASCII.GetBytes(ReferencedBchFileName)
+            Else
+                bchNameBytes = {}
+            End If
+            rawData.AddRange(bchNameBytes)
+            rawData.AddRange(Enumerable.Repeat(Of Byte)(0, &H40 - bchNameBytes.Length))
+
+            rawData.AddRange(BitConverter.GetBytes(Type))
+
+            Select Case Type
+                Case BgrsType.Normal
+                    rawData.AddRange(Enumerable.Repeat(Of Byte)(0, &HC))
+
+                    Dim bgrsNameBytes = Text.Encoding.ASCII.GetBytes(BgrsName)
+                    rawData.AddRange(bgrsNameBytes)
+                    rawData.AddRange(Enumerable.Repeat(Of Byte)(0, &HC0 - bgrsNameBytes.Length))
+
+                    rawData.AddRange(BitConverter.GetBytes(Animations.Count))
+                    rawData.AddRange(BitConverter.GetBytes(Parts.Count))
+
+                    rawData.AddRange(Enumerable.Repeat(Of Byte)(0, &H20))
+                    rawData.AddRange(GetRawData_ModelPartsSection())
+                    rawData.AddRange(UnknownModelPartsFooter)
+
+                    rawData.AddRange(GetRawData_AnimationSection)
+                Case BgrsType.Extension
+                    rawData.AddRange(BitConverter.GetBytes(Animations.Count))
+                    rawData.AddRange(Enumerable.Repeat(Of Byte)(0, 8))
+                    rawData.AddRange(GetRawData_AnimationSection)
+                Case Else
+                    Throw New NotSupportedException("Unsupported BGRS type: " & Type.ToString())
+            End Select
+
+            Return rawData.ToArray()
+        End Function
+
+        Private Function GetRawData_ModelPartsSection() As IEnumerable(Of Byte)
+            Dim modelPartsSection As New List(Of Byte)(&H80 * Parts.Count)
+
+            For Each item In Parts
+                modelPartsSection.AddRange(item.GetRawData)
+            Next
+
+            Return modelPartsSection.ToArray()
+        End Function
+
+        Private Function GetRawData_AnimationSection() As IEnumerable(Of Byte)
+            Dim animSection As New List(Of Byte)
+
+            For Each item In Animations
+                Dim nameBytes = Text.Encoding.ASCII.GetBytes(item.Name)
+
+                animSection.AddRange(nameBytes)
+                animSection.AddRange(Enumerable.Repeat(Of Byte)(0, &HC0 - nameBytes.Length))
+
+                animSection.AddRange(BitConverter.GetBytes(item.AnimationType))
+            Next
+
+            animSection.AddRange(Enumerable.Repeat(Of Byte)(0, &HC0))
+
+            Return animSection
+        End Function
+
+        Public Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
+            provider.WriteAllBytes(filename, GetRawData())
+            Return Task.CompletedTask
+        End Function
+
+        Public Async Function Save(provider As IIOProvider) As Task Implements ISavable.Save
+            Await Save(Me.Filename, provider)
+        End Function
+
+        Public Function GetDefaultExtension() As String Implements ISavableAs.GetDefaultExtension
+            Return "*.bgrs"
+        End Function
+
+        Public Function GetSupportedExtensions() As IEnumerable(Of String) Implements ISavableAs.GetSupportedExtensions
+            Return {"*.bgrs"}
+        End Function
+
     End Class
 End Namespace

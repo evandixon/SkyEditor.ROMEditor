@@ -65,11 +65,59 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to BGRS File.
+        '''</summary>
+        Friend Shared ReadOnly Property FileType_Bgrs() As String
+            Get
+                Return ResourceManager.GetString("FileType_Bgrs", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Binary File.
+        '''</summary>
+        Friend Shared ReadOnly Property FileType_Bin() As String
+            Get
+                Return ResourceManager.GetString("FileType_Bin", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to (None).
         '''</summary>
         Friend Shared ReadOnly Property NonePokemon() As String
             Get
                 Return ResourceManager.GetString("NonePokemon", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to evandixon.
+        '''</summary>
+        Friend Shared ReadOnly Property PluginAuthor() As String
+            Get
+                Return ResourceManager.GetString("PluginAuthor", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Rom Editor Credits:
+        '''psy_commando (Pokemon portraits, most of the research)
+        '''Grovyle91 (Language strings)
+        '''evandixon (Personality test, bgp files).
+        '''</summary>
+        Friend Shared ReadOnly Property PluginCredits() As String
+            Get
+                Return ResourceManager.GetString("PluginCredits", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to ROM Editor.
+        '''</summary>
+        Friend Shared ReadOnly Property PluginName() As String
+            Get
+                Return ResourceManager.GetString("PluginName", resourceCulture)
             End Get
         End Property
     End Class
