@@ -399,8 +399,8 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim spLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "sp", "seikakushindan.bin")
             Dim usLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "us", "seikakushindan.bin")
 
-            For Each langFilename In {enLangFile, frLangFile, geLangFile, itLangFile, jpLangFile, spLangFile, usLangFile}
-                If IO.File.Exists(langFilename) Then
+            For Each langFilename In {enLangFile, geLangFile, itLangFile, jpLangFile, spLangFile, usLangFile}
+                If File.Exists(langFilename) Then
                     Using langFile As New MessageBin()
                         Await langFile.OpenFile(langFilename, CurrentPluginManager.CurrentIOProvider)
                         If Not langFile.Strings.Any(Function(x) x.Hash = 200000) Then
@@ -415,6 +415,21 @@ Namespace MysteryDungeon.PSMD.Projects
                     End Using
                 End If
             Next
+
+            If File.Exists(frLangFile) Then
+                Using langFile As New MessageBin()
+                    Await langFile.OpenFile(frLangFile, CurrentPluginManager.CurrentIOProvider)
+                    If Not langFile.Strings.Any(Function(x) x.Hash = 200000) Then
+                        langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200000, .Entry = "L'héro: \D301" & vbLf & "Le partenaire: \D302"})
+                        langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200001, .Entry = "Fini"})
+                        langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200002, .Entry = "Définir le héros"})
+                        langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200003, .Entry = "Définir le partenaire"})
+                        langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200004, .Entry = "Définir le héros..."})
+                        langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200005, .Entry = "Définir le partenaire..."})
+                    End If
+                    Await langFile.Save(CurrentPluginManager.CurrentIOProvider)
+                End Using
+            End If
 
             'Patch inc_charchoice script
             '-Get the hashes of the scripts to change
