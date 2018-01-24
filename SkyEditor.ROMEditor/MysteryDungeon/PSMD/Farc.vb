@@ -647,7 +647,10 @@ Namespace MysteryDungeon.PSMD
         End Sub
 
         Public Sub CopyFile(sourceFilename As String, destinationFilename As String) Implements IIOProvider.CopyFile
-            WriteAllBytes(destinationFilename, ReadAllBytes(sourceFilename))
+            Dim source = ReadAllBytes(sourceFilename)
+            If source IsNot Nothing Then
+                WriteAllBytes(destinationFilename, source)
+            End If
         End Sub
 
         Public Sub DeleteFile(filename As String) Implements IIOProvider.DeleteFile
