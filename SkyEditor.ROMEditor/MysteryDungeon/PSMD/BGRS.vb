@@ -77,12 +77,12 @@ Namespace MysteryDungeon.PSMD
         Public Enum AnimationType As Integer
             Unknown = 0
             SkeletalAnimation = 1
-            TextureAnimation = 2
+            MaterialAnimation = 2
 
             ''' <summary>
             ''' A skeletal animation that belongs to another BGRS file
             ''' </summary>
-            RemoteSkeletalAnimation = &H80000001
+            Remote = &H8000000
         End Enum
 
         Public Event FileSaved As EventHandler Implements ISavable.FileSaved
