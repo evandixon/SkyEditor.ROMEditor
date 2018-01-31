@@ -422,7 +422,7 @@ Namespace MysteryDungeon.PSMD.Projects
                     If Not langFile.Strings.Any(Function(x) x.Hash = 200000) Then
                         langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200000, .Entry = "L'héro: \D301" & vbLf & "Le partenaire: \D302"})
                         langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200001, .Entry = "Fini"})
-                        langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200002, .Entry = "Définir le héros"})
+                        langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200002, .Entry = "Définir l'héros"})
                         langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200003, .Entry = "Définir le partenaire"})
                         langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200004, .Entry = "Définir le héros..."})
                         langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200005, .Entry = "Définir le partenaire..."})
