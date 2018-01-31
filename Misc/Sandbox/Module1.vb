@@ -97,14 +97,14 @@ Module Module1
 
                             If oldAnimation IsNot Nothing AndAlso newAnimation Is Nothing Then
                                 Dim copiedAnimation = oldAnimation.Clone
-                                copiedAnimation.Name = copiedAnimation.Name.Replace(substitute.Value, substitute.Key)
+                                copiedAnimation.Name = oldAnimation.Name.Replace(substitute.Value, substitute.Key)
 
                                 If copiedAnimation.AnimationType And BGRS.AnimationType.SkeletalAnimation > 0 Then
-                                    pokemonGraphic.CopyFile("/" & copiedAnimation.Name & ".bchskla", "/" & copiedAnimation.Name & ".bchskla")
+                                    pokemonGraphic.CopyFile("/" & oldAnimation.Name & ".bchskla", "/" & copiedAnimation.Name & ".bchskla")
                                 End If
 
                                 If copiedAnimation.AnimationType And BGRS.AnimationType.MaterialAnimation > 0 Then
-                                    pokemonGraphic.CopyFile("/" & copiedAnimation.Name & ".bchmata", "/" & copiedAnimation.Name & ".bchmata")
+                                    pokemonGraphic.CopyFile("/" & oldAnimation.Name & ".bchmata", "/" & copiedAnimation.Name & ".bchmata")
                                 End If
 
                                 currentBgrs.Animations.Add(copiedAnimation)
