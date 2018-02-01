@@ -12,6 +12,7 @@ Namespace Projects
         Public Const System3DS = "3DS"
         Public Const SystemNDS = "NDS"
 
+#Region "Settings"
         Public Property RomSystem As String
             Get
                 Return Settings("System")
@@ -30,6 +31,23 @@ Namespace Projects
             End Set
         End Property
 
+        Public Property HasRom As Boolean
+            Get
+                Dim value = Settings("HasRom")
+                If value IsNot Nothing AndAlso TypeOf value Is Boolean Then
+                    Return value
+                Else
+                    Return False
+                End If
+            End Get
+            Set(value As Boolean)
+                Settings("HasRom") = value
+            End Set
+        End Property
+
+#End Region
+
+#Region "Solution Stuff"
         Public Overrides ReadOnly Property CanBuild As Boolean
             Get
                 Return (Me.GetItem("/BaseRom") IsNot Nothing)
@@ -49,12 +67,11 @@ Namespace Projects
         End Function
 
         Public Overrides Function CanImportFile(path As String) As Boolean
-            'Only if it's the root, and there isn't already a file named BaseRom.
-            Return (path.Replace("\", "/").TrimStart("/") = "") AndAlso (Me.GetItem("/BaseRom") Is Nothing)
+            Return False
         End Function
 
         Public Overrides Function CanDeleteFile(FilePath As String) As Boolean
-            Return (FilePath.Replace("\", "/").TrimStart("/").ToLower = "baserom")
+            Return False
         End Function
 
         Public Overrides Function GetSupportedImportFileExtensions(parentProjectPath As String) As IEnumerable(Of String)
@@ -68,45 +85,18 @@ Namespace Projects
             End Select
         End Function
 
-        Protected Overrides Function GetImportedFilePath(ParentProjectPath As String, FullFilename As String) As String
-            Return "/BaseRom"
-        End Function
+#End Region
 
-        Private Async Sub BaseRomProject_FileAdded(sender As Object, e As ProjectFileAddedEventArgs) Handles Me.FileAdded
-            'Calling DoBuild directly would result in the solution not raising the build event, which is needed for SolutionBuildProgress
-            Await ParentSolution.Build({Me})
-        End Sub
-
-        Public Overrides Async Function Build() As Task
-            Await MyBase.Build
-            If CanBuild() Then
-                Await DoBuild()
-            End If
-        End Function
-
-        Private Async Function DoBuild() As Task
-            Dim mode As String = Nothing
-            Dim fullPath = Me.GetItem("/BaseRom").Filename
-
-            If Not String.IsNullOrEmpty(Me.RomSystem) Then
-                If Me.RomSystem = SystemNDS Then
-                    mode = "nds"
-                ElseIf Me.RomSystem = System3DS Then
-                    mode = "3ds"
-                End If
-            End If
-
-            If mode Is Nothing Then
-                Select Case Await DotNet3dsToolkit.MetadataReader.GetSystem(fullPath)
-                    Case DotNet3dsToolkit.SystemType.NDS
-                        RomSystem = SystemNDS
-                    Case DotNet3dsToolkit.SystemType.ThreeDS
-                        RomSystem = System3DS
-                    Case Else
-                        'Todo: Replace with better exception
-                        Throw New NotSupportedException("File format not supported.")
-                End Select
-            End If
+        Public Async Function ImportRom(romPath As String) As Task
+            Select Case Await DotNet3dsToolkit.MetadataReader.GetSystem(romPath)
+                Case DotNet3dsToolkit.SystemType.NDS
+                    RomSystem = SystemNDS
+                Case DotNet3dsToolkit.SystemType.ThreeDS
+                    RomSystem = System3DS
+                Case Else
+                    'Todo: Replace with better exception
+                    Throw New NotSupportedException("File format not supported.")
+            End Select
 
             Me.Progress = 0
             Me.Message = My.Resources.Language.LoadingUnpacking
@@ -120,23 +110,23 @@ Namespace Projects
 
                 AddHandler unpacker.UnpackProgressed, unpackProgressEventHandler
 
-                Await unpacker.ExtractAuto(fullPath, GetRawFilesDir)
+                Await unpacker.ExtractAuto(romPath, GetRawFilesDir)
 
                 RemoveHandler unpacker.UnpackProgressed, unpackProgressEventHandler
             End Using
 
             GameCode = Await DotNet3dsToolkit.MetadataReader.GetGameID(GetRawFilesDir)
 
-            Dim baseromFilename = Me.GetFilename("/BaseRom")
-            DeleteFile("/BaseRom")
-            File.Delete(baseromFilename)
-
             Me.IsIndeterminate = False
             Me.Progress = 1
             Me.Message = My.Resources.Language.Complete
             Me.IsCompleted = True
+            Me.HasRom = True
         End Function
 
+        ''' <summary>
+        ''' The directory in which the extracted ROM files are stored
+        ''' </summary>
         Public Overridable Function GetRawFilesDir() As String
             Return Path.Combine(Path.GetDirectoryName(Me.Filename), "Raw Files")
         End Function

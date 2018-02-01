@@ -296,4 +296,16 @@ evandixon (Personality test, bgp files)</value>
   <data name="LoadingBuildingPortraits" xml:space="preserve">
     <value>Building portraits...</value>
   </data>
+  <data name="Solution_DsModSolution_InitializationWizard" xml:space="preserve">
+    <value>DS Modpack Solution Initialization Wizard</value>
+  </data>
+  <data name="Solution_DsModSolution_InitializationWizard_BaseRomStepName" xml:space="preserve">
+    <value>Select Base ROM</value>
+  </data>
+  <data name="Solution_DsModSolution_InitializationWizard_IntroStepDescription" xml:space="preserve">
+    <value>A DS Modpack Solution lets you make modifications to a NDS or 3DS ROM. These modifications consist of one or more Mods, which can be made by creating new projects inside this solution. To begin, this wizard will guide you through the basic setup, including choosing the ROM to modify and setting settings that affect the resulting Modpack.</value>
+  </data>
+  <data name="Solution_DsModSolution_InitializationWizard_IntroStepName" xml:space="preserve">
+    <value>Introduction</value>
+  </data>
 </root>
