@@ -1,4 +1,5 @@
-﻿Imports System.IO
+﻿Imports System.ComponentModel
+Imports System.IO
 Imports SkyEditor.Core
 Imports SkyEditor.Core.ConsoleCommands
 Imports SkyEditor.Core.UI
@@ -11,6 +12,9 @@ Public Class DsModSolutionInitializationWizard
     Public Sub New(appViewModel As ApplicationViewModel, solution As DSModSolution)
         MyBase.New(appViewModel)
         Me.Solution = solution
+
+        StepsInternal.Add(New IntroStep)
+        StepsInternal.Add(New BaseRomStep(solution.GetBaseRomProject))
     End Sub
 
     Public Overrides ReadOnly Property Name As String
@@ -24,13 +28,12 @@ Public Class DsModSolutionInitializationWizard
     Public Class IntroStep
         Implements IWizardStepViewModel
 
-        Public Class IntroStepConsoleCommand
+        Protected Class IntroStepConsoleCommand
             Inherits ConsoleCommand
 
-            Public Overrides Function MainAsync(arguments() As String) As Task
+            Protected Overrides Sub Main(arguments() As String)
                 Console.WriteLine(My.Resources.Language.Solution_DsModSolution_InitializationWizard_IntroStepDescription)
-                Return Task.CompletedTask
-            End Function
+            End Sub
 
         End Class
 
@@ -53,10 +56,35 @@ Public Class DsModSolutionInitializationWizard
 
     Public Class BaseRomStep
         Implements IWizardStepViewModel
+        Implements INotifyPropertyChanged
+
+        Protected Class BaseRomStepConsoleCommand
+            Inherits ConsoleCommand
+
+            Public Sub New(baseRomStep As BaseRomStep)
+                Me.BaseRomStep = baseRomStep
+            End Sub
+
+            Public Property BaseRomStep As BaseRomStep
+
+            Public Overrides Async Function MainAsync(arguments() As String) As Task
+                Console.WriteLine(My.Resources.Language.Solution_DsModSolution_InitializationWizard_BaseRomStep_Console_ChooseRomPath)
+
+                Dim path = Console.ReadLine
+                BaseRomStep.RomFilename = path
+
+                'To-do: add retry if path is invalid
+                'To-do: some kind of status report
+
+                Await BaseRomStep.ExtractRom
+            End Function
+        End Class
 
         Public Sub New(baseRomProject As BaseRomProject)
             Me.BaseRomProject = baseRomProject
         End Sub
+
+        Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
         Protected Property BaseRomProject As BaseRomProject
             Get
@@ -107,8 +135,14 @@ Public Class DsModSolutionInitializationWizard
         End Function
 
         Public Function GetConsoleCommand() As ConsoleCommand Implements IWizardStepViewModel.GetConsoleCommand
-            Throw New NotImplementedException()
+            Return New BaseRomStepConsoleCommand(Me)
         End Function
+
+        Private Sub _baseRomProject_ProgressChanged(sender As Object, e As ProgressReportedEventArgs) Handles _baseRomProject.ProgressChanged
+            RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(ExtractProgress)))
+            RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(IsExtractIndeterminate)))
+        End Sub
+
     End Class
 
     Public Class ModpackDetailsStep

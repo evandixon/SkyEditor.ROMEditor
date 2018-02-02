@@ -76,4 +76,8 @@ Public Class DSModSolution
         'Next
         'PluginHelper.SetLoadingStatusFinished()
     End Function
+
+    Public Function GetBaseRomProject() As BaseRomProject
+        Return GetProjectsByName(Me.Settings("BaseRomProject")).First
+    End Function
 End Class

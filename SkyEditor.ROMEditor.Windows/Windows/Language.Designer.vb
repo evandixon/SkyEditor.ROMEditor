@@ -590,6 +590,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Please enter the path of the ROM you would like to use: .
+        '''</summary>
+        Friend Shared ReadOnly Property Solution_DsModSolution_InitializationWizard_BaseRomStep_Console_ChooseRomPath() As String
+            Get
+                Return ResourceManager.GetString("Solution_DsModSolution_InitializationWizard_BaseRomStep_Console_ChooseRomPath", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Select Base ROM.
         '''</summary>
         Friend Shared ReadOnly Property Solution_DsModSolution_InitializationWizard_BaseRomStepName() As String

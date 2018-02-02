@@ -308,4 +308,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="Solution_DsModSolution_InitializationWizard_IntroStepName" xml:space="preserve">
     <value>Introduction</value>
   </data>
+  <data name="Solution_DsModSolution_InitializationWizard_BaseRomStep_Console_ChooseRomPath" xml:space="preserve">
+    <value>Please enter the path of the ROM you would like to use: </value>
+  </data>
 </root>
