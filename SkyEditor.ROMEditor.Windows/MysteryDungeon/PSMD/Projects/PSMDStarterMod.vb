@@ -1,6 +1,7 @@
 ﻿Imports System.Drawing
 Imports System.Drawing.Imaging
 Imports System.IO
+Imports System.Text
 Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
@@ -543,6 +544,36 @@ Namespace MysteryDungeon.PSMD.Projects
 
                                End Sub)
             Me.Progress = 1
+
+            'Fix incorrectly-placed scarf glow
+            Dim scarfGlowRegex = New Regex("(if(.|\n)*?)(else\s(.|\n)*?)(end)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
+            Dim scarfGlowScripts = {"script/event/main15/120_enteishujinkoushinkaboss1st/enteishujinkoushinkaboss1st.lua"}
+            For Each item In scarfGlowScripts
+                Dim scriptContent = CurrentPluginManager.CurrentIOProvider.ReadAllText(Path.Combine(Me.GetRootDirectory, item))
+
+                For Each targetSection As Match In scarfGlowRegex.Matches(scriptContent)
+                    Dim newContent As New StringBuilder
+
+                    'Keep the first if statements as-is
+                    newContent.Append(targetSection.Groups(1).Value)
+
+                    'Copy/paste the else statement for each normal starter type
+                    'Some of these IDs are already in one of the above If statements. They can probably be removed. Leaving them here in case other scripts are different.
+                    For Each starterId In {1, 5, 10, 30, 197, 200, 203, 322, 325, 329, 479, 482, 485, 537, 592, 595, 598, 766, 769, 722}
+                        newContent.Append(targetSection.Groups(3).Value.Replace("else", "elseif pokemonIndexHero == " & starterId.ToString & " then"))
+                    Next
+
+                    'Change the default value for the else statement
+                    newContent.Append(targetSection.Groups(3).Value.Replace("BODY_POINT.SCARF", "BODY_POINT.CENTER"))
+
+                    'The end statement
+                    newContent.Append(targetSection.Groups(5).Value)
+
+                    scriptContent = scriptContent.Replace(targetSection.Value, newContent.ToString())
+                Next
+
+                CurrentPluginManager.CurrentIOProvider.WriteAllText(Path.Combine(Me.GetRootDirectory, item), scriptContent)
+            Next
 
             'Continue the build (script compilation, mod building, etc.)
             Await MyBase.Build()
