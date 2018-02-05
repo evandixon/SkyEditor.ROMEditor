@@ -9,8 +9,8 @@ Imports SkyEditor.ROMEditor.Projects
 Public Class DsModSolutionInitializationWizard
     Inherits Wizard
 
-    Public Sub New(appViewModel As ApplicationViewModel, solution As DSModSolution)
-        MyBase.New(appViewModel)
+    Public Sub New(solution As DSModSolution)
+        MyBase.New(solution.CurrentPluginManager)
         Me.Solution = solution
 
         StepsInternal.Add(New IntroStep)
@@ -145,7 +145,7 @@ Public Class DsModSolutionInitializationWizard
 
     End Class
 
-    Public Class ModpackDetailsStep
+    'Public Class ModpackDetailsStep
 
-    End Class
+    'End Class
 End Class
