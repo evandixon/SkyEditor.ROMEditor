@@ -21,7 +21,7 @@ Namespace MysteryDungeon.PSMD.Pokemon
                 Data = RawData
 
                 Dim e As New ASCIIEncoding
-                Name = e.GetString(RawData, 0, &H10).Trim(VBConstants.vbNullChar) 'Todo: verify this is really 16 bytes
+                Name = e.GetString(RawData, 0, &H10).Trim(vbNullChar) 'Todo: verify this is really 16 bytes
                 PokemonID = BitConverter.ToInt16(RawData, &H28)
             End Sub
 

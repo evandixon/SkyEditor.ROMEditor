@@ -83,12 +83,12 @@ Namespace MysteryDungeon.PSMD
                     cRaw = Await f.ReadAsync(offset + j * 2, 2)
                     c = e.GetString(cRaw, 0, cRaw.Length)
 
-                    If Not c = VBConstants.vbNullChar Then
+                    If Not c = vbNullChar Then
                         s.Append(c)
                     End If
 
                     j += 1
-                Loop Until c = VBConstants.vbNullChar
+                Loop Until c = vbNullChar
 
                 Return s.ToString
             Else

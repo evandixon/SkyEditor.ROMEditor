@@ -171,7 +171,7 @@ Namespace MysteryDungeon.PSMD
         Public Function GetCommonPokemonNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
-            For Each item In My.Resources.Resources.PSMD_Pokemon_Name_Hashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf).Select(Function(x) x.Trim)
+            For Each item In My.Resources.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf).Select(Function(x) x.Trim)
                 Dim hash As Integer
                 If Integer.TryParse(item, hash) Then
                     pokemonNameHashes.Add(item)
@@ -199,7 +199,7 @@ Namespace MysteryDungeon.PSMD
         Public Function GetCommonMoveNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
-            For Each item In PsmdMoveNameHashes.Replace(VBConstants.vbCrLf, VBConstants.vbLf).Split(VBConstants.vbLf)
+            For Each item In PsmdMoveNameHashes.Replace(vbCrLf, vbLf).Split(vbLf)
                 Dim trimmed = item.Trim
                 Dim hash As Integer
                 If Integer.TryParse(trimmed, hash) Then

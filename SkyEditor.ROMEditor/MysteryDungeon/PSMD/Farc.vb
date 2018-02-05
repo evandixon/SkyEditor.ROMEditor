@@ -324,7 +324,7 @@ Namespace MysteryDungeon.PSMD
                      "message_debug_us.bin"
                     Dim dbPath = Path.ChangeExtension(filename, ".lst")
                     If provider.FileExists(dbPath) Then
-                        Dim lines = provider.ReadAllText(dbPath).Split(VBConstants.vbLf)
+                        Dim lines = provider.ReadAllText(dbPath).Split(vbLf)
                         SetFilenames(lines.Select(Function(l) Path.GetFileName(l.Trim)))
                     End If
                 Case "face_graphic.bin"
