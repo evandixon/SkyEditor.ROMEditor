@@ -44,7 +44,7 @@ Module Module1
         substitutes.Add("bd_ev013_avoid02", "bd_surprise") 'Jump up & back
         substitutes.Add("bd_ev013_avoid03", "bd_damage") 'Jump back & lie down defeated
         substitutes.Add("bd_ev013_avoid04", "bd_sleeploop") 'Lying down defeated
-        substitutes.Add("bd_ev013_start", "bd_swell") 'Swaying forward. Prepping avoid00 or avoid01?
+        substitutes.Add("bd_ev013_start", "bd_wait") 'Swaying forward. Prepping avoid00 or avoid01?
         substitutes.Add("bd_ev013_tired", "bd_wait02") 'Out of breath
 
         'Harmony scarf evolution animations
