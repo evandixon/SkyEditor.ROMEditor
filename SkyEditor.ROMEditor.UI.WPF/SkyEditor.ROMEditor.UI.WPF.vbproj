@@ -73,11 +73,11 @@
     <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.2.106, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.2-CI106\lib\net462\DotNet3dsSoundtrackConverter.dll</HintPath>
     </Reference>
-    <Reference Include="DotNet3dsToolkit, Version=2.0.0.51, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsToolkit.2.0.0-CI51\lib\net462\DotNet3dsToolkit.dll</HintPath>
+    <Reference Include="DotNet3dsToolkit, Version=2.0.0.52, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsToolkit.2.0.0-CI52\lib\net462\DotNet3dsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNdsToolkit, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetNdsToolkit.2.0.0-CI117\lib\net462\DotNetNdsToolkit.dll</HintPath>
+      <HintPath>..\packages\DotNetNdsToolkit.2.0.0-CI118\lib\net462\DotNetNdsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DSPatcher, Version=1.2.0.111, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DS-ROM-Patcher.1.2.0-CI111\lib\net462\DSPatcher.exe</HintPath>
@@ -104,7 +104,7 @@
       <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.1.0-CI9\lib\net462\SkyEditor.CodeEditor.UI.WPF.exe</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI180\lib\net462\SkyEditor.Core.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI182\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI42\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
@@ -270,6 +270,12 @@
     <Compile Include="PluginDefinition.vb" />
     <Compile Include="ROM.vb" />
     <Compile Include="MysteryDungeon\PSMD\ViewModels\PsmdLuaLangIntegrationViewModel.vb" />
+    <Compile Include="Views\WizardSteps\DsModSolutionInitializationWizardBaseRomStepView.xaml.vb">
+      <DependentUpon>DsModSolutionInitializationWizardBaseRomStepView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WizardSteps\DsModSolutionInitializationWizardIntroStepView.xaml.vb">
+      <DependentUpon>DsModSolutionInitializationWizardIntroStepView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\GameCodeSelector.xaml.vb">
       <DependentUpon>GameCodeSelector.xaml</DependentUpon>
     </Compile>
@@ -323,6 +329,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DSModPackProject3DSBuildOptionsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WizardSteps\DsModSolutionInitializationWizardBaseRomStepView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WizardSteps\DsModSolutionInitializationWizardIntroStepView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
