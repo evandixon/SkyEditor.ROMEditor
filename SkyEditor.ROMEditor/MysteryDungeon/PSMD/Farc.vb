@@ -56,130 +56,20 @@ Namespace MysteryDungeon.PSMD
             End Using
         End Function
 
-        Protected Class Entry
-            ''' <summary>
-            ''' Gets or sets the filename, updating the filename hash on set
-            ''' </summary>
-            Public Property Filename As String
-                Get
-                    Return _filename
-                End Get
-                Set(value As String)
-                    _filename = value
-                    FilenameHash = PmdFunctions.Crc32Hash(value)
-                End Set
-            End Property
-            Dim _filename As String
+        Private Shared Function CreateByteArrayHashCode(data As Byte()) As Integer
+            Dim hashCode As Integer = 0
+            Dim byteShift = 0
+            For Each b In data
+                hashCode = hashCode Xor (b << byteShift * 8)
 
-            Public Property FilenameHash As UInteger?
-            Public Property FileData As Byte()
-            Friend Property DataEntry As FarcFat5.Entry
-
-            Public ReadOnly Property DataLength As Integer
-                Get
-                    If FileData IsNot Nothing Then
-                        Return FileData.Length
-                    Else
-                        Return DataEntry.DataLength
-                    End If
-                End Get
-            End Property
-
-            ''' <summary>
-            ''' Sets the filename only if the given filename matches the existing filename hash
-            ''' </summary>
-            ''' <returns>A boolean indictating whether or not the set was successful</returns>
-            Public Function TrySetFilename(filename As String) As Boolean
-                If Not FilenameHash.HasValue Then
-                    Me.Filename = filename
-                    Return True
+                If byteShift >= 3 Then
+                    byteShift = 0
                 Else
-                    Dim hash = PmdFunctions.Crc32Hash(filename)
-                    If hash = FilenameHash.Value Then
-                        _filename = filename
-                        Return True
-                    Else
-                        Return False
-                    End If
+                    byteShift += 1
                 End If
-            End Function
-
-            Public Overrides Function ToString() As String
-                Return If(Filename,
-                    If(FilenameHash?.ToString("X"),
-                    MyBase.ToString))
-            End Function
-        End Class
-
-        Public Class FarcFileStream
-            Inherits Stream
-
-            Public Sub New(farc As Farc, filename As String, canRead As Boolean, canWrite As Boolean)
-                Me.Farc = farc
-                Me.Filename = filename
-                Me.CanRead = canRead
-                Me.CanWrite = canWrite
-            End Sub
-
-            Protected Property Farc As Farc
-
-            Protected Property Filename As String
-
-            Protected ReadOnly Property UnderlyingArray As Byte()
-                Get
-                    Return Farc.GetFileData(Filename)
-                End Get
-            End Property
-
-            Public Overrides ReadOnly Property CanRead As Boolean
-
-            Public Overrides ReadOnly Property CanSeek As Boolean
-                Get
-                    Return True
-                End Get
-            End Property
-
-            Public Overrides ReadOnly Property CanWrite As Boolean
-
-            Public Overrides ReadOnly Property Length As Long
-                Get
-                    Return UnderlyingArray.Length
-                End Get
-            End Property
-
-            Public Overrides Property Position As Long
-
-            Public Overrides Sub Flush()
-            End Sub
-
-            Public Overrides Sub SetLength(value As Long)
-                Farc.ResizeFileData(Filename, value)
-            End Sub
-
-            Public Overrides Sub Write(buffer() As Byte, offset As Integer, count As Integer)
-                Array.Copy(buffer, Position, UnderlyingArray, offset, count)
-            End Sub
-
-            Public Overrides Function Read(buffer() As Byte, offset As Integer, count As Integer) As Integer
-                count = Math.Min(count, UnderlyingArray.Length - Position)
-                Array.Copy(UnderlyingArray, offset, buffer, Position, count)
-                Return count
-            End Function
-
-            Public Overrides Function Seek(offset As Long, origin As SeekOrigin) As Long
-                Select Case origin
-                    Case SeekOrigin.Begin
-                        Position = offset
-                    Case SeekOrigin.Current
-                        Position += offset
-                    Case SeekOrigin.End
-                        Position = Length - 1 - offset
-                    Case Else
-                        Throw New ArgumentException(NameOf(origin))
-                End Select
-                Return Position
-            End Function
-        End Class
+            Next
+            Return hashCode
+        End Function
 
         Public Sub New()
             ResetWorkingDirectory()
@@ -473,6 +363,30 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
+            'Analyze data to identify duplicate entries
+            Dim condensedEntries As New List(Of EntryMapping)
+            For Each item In Entries
+                Dim data = Await GetFileDataAsync(item)
+                Dim hashCode = CreateByteArrayHashCode(data)
+
+                '"Where" criteria first compares hash code to disregard incorrect matches
+                'THEN it double-checks equality by checking the array reference if the hashes match
+                'THEN it compares the actual data if the object reference is different and the hashes match
+                'If changing this, take care to not change this order, because short-circuit logic should greatly improve performance
+                Dim mapping = condensedEntries.Where(Function(x) x.FileDataHashCode = hashCode AndAlso (data Is x.FileData OrElse x.FileData.SequenceEqual(data))).FirstOrDefault
+
+                If mapping IsNot Nothing Then
+                    mapping.FilenameHashes.Add(item.FilenameHash)
+                Else
+                    Dim newMapping As New EntryMapping
+                    newMapping.FileData = item.FileData
+                    newMapping.FilenameHashes = New List(Of UInteger)
+                    newMapping.FilenameHashes.Add(item.FilenameHash)
+                    condensedEntries.Add(newMapping)
+                End If
+            Next
+
+            'Write the data to the file
             Using f As New GenericFile
                 f.EnableInMemoryLoad = False
                 Await f.OpenFile(filename, provider)
@@ -481,16 +395,18 @@ Namespace MysteryDungeon.PSMD
                 fat.Sir0Fat5Type = 1
                 Dim fileData As New List(Of Byte)
 
-                For Each item In Entries
-                    Dim data = Await GetFileDataAsync(item)
-
-                    fat.Entries.Add(New FarcFat5.Entry With {
-                                    .FilenameHash = item.FilenameHash,
+                For Each item In condensedEntries
+                    'Add all filenames/hashes to this particular file at the same time
+                    'fat.GetRawData should properly order these further on
+                    For Each hash In item.FilenameHashes
+                        fat.Entries.Add(New FarcFat5.Entry With {
+                                    .FilenameHash = hash,
                                     .DataOffset = fileData.Count,
-                                    .DataLength = data.Length
+                                    .DataLength = item.FileData.Length
                                     })
+                    Next
 
-                    fileData.AddRange(data)
+                    fileData.AddRange(item.FileData)
 
                     Dim paddingLength = 16 - (fileData.Count Mod 16)
                     If paddingLength < 16 Then
@@ -685,5 +601,151 @@ Namespace MysteryDungeon.PSMD
             Return New FarcFileStream(Me, FixPath(filename), False, True)
         End Function
 #End Region
+
+#Region "Child Classes"
+        Protected Class Entry
+            ''' <summary>
+            ''' Gets or sets the filename, updating the filename hash on set
+            ''' </summary>
+            Public Property Filename As String
+                Get
+                    Return _filename
+                End Get
+                Set(value As String)
+                    _filename = value
+                    FilenameHash = PmdFunctions.Crc32Hash(value)
+                End Set
+            End Property
+            Dim _filename As String
+
+            Public Property FilenameHash As UInteger?
+            Public Property FileData As Byte()
+            Friend Property DataEntry As FarcFat5.Entry
+
+            Public ReadOnly Property DataLength As Integer
+                Get
+                    If FileData IsNot Nothing Then
+                        Return FileData.Length
+                    Else
+                        Return DataEntry.DataLength
+                    End If
+                End Get
+            End Property
+
+            ''' <summary>
+            ''' Sets the filename only if the given filename matches the existing filename hash
+            ''' </summary>
+            ''' <returns>A boolean indictating whether or not the set was successful</returns>
+            Public Function TrySetFilename(filename As String) As Boolean
+                If Not FilenameHash.HasValue Then
+                    Me.Filename = filename
+                    Return True
+                Else
+                    Dim hash = PmdFunctions.Crc32Hash(filename)
+                    If hash = FilenameHash.Value Then
+                        _filename = filename
+                        Return True
+                    Else
+                        Return False
+                    End If
+                End If
+            End Function
+
+            Public Overrides Function ToString() As String
+                Return If(Filename,
+                    If(FilenameHash?.ToString("X"),
+                    MyBase.ToString))
+            End Function
+        End Class
+
+        Protected Class EntryMapping
+            Public Property FileData As Byte()
+
+            Public ReadOnly Property FileDataHashCode As Integer
+                Get
+                    If Not _fileDataHashCode.HasValue Then
+
+                        _fileDataHashCode = CreateByteArrayHashCode(FileData)
+                    End If
+                    Return _fileDataHashCode.Value
+                End Get
+            End Property
+            Dim _fileDataHashCode As Integer?
+
+            Public Property FilenameHashes As List(Of UInteger)
+        End Class
+
+        Public Class FarcFileStream
+            Inherits Stream
+
+            Public Sub New(farc As Farc, filename As String, canRead As Boolean, canWrite As Boolean)
+                Me.Farc = farc
+                Me.Filename = filename
+                Me.CanRead = canRead
+                Me.CanWrite = canWrite
+            End Sub
+
+            Protected Property Farc As Farc
+
+            Protected Property Filename As String
+
+            Protected ReadOnly Property UnderlyingArray As Byte()
+                Get
+                    Return Farc.GetFileData(Filename)
+                End Get
+            End Property
+
+            Public Overrides ReadOnly Property CanRead As Boolean
+
+            Public Overrides ReadOnly Property CanSeek As Boolean
+                Get
+                    Return True
+                End Get
+            End Property
+
+            Public Overrides ReadOnly Property CanWrite As Boolean
+
+            Public Overrides ReadOnly Property Length As Long
+                Get
+                    Return UnderlyingArray.Length
+                End Get
+            End Property
+
+            Public Overrides Property Position As Long
+
+            Public Overrides Sub Flush()
+            End Sub
+
+            Public Overrides Sub SetLength(value As Long)
+                Farc.ResizeFileData(Filename, value)
+            End Sub
+
+            Public Overrides Sub Write(buffer() As Byte, offset As Integer, count As Integer)
+                Array.Copy(buffer, Position, UnderlyingArray, offset, count)
+            End Sub
+
+            Public Overrides Function Read(buffer() As Byte, offset As Integer, count As Integer) As Integer
+                count = Math.Min(count, UnderlyingArray.Length - Position)
+                Array.Copy(UnderlyingArray, offset, buffer, Position, count)
+                Return count
+            End Function
+
+            Public Overrides Function Seek(offset As Long, origin As SeekOrigin) As Long
+                Select Case origin
+                    Case SeekOrigin.Begin
+                        Position = offset
+                    Case SeekOrigin.Current
+                        Position += offset
+                    Case SeekOrigin.End
+                        Position = Length - 1 - offset
+                    Case Else
+                        Throw New ArgumentException(NameOf(origin))
+                End Select
+                Return Position
+            End Function
+        End Class
+
+#End Region
+
     End Class
 End Namespace
