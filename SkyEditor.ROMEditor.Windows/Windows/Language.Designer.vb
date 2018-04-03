@@ -218,6 +218,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Analyzing portraits....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingAnalyzingPortraits() As String
+            Get
+                Return ResourceManager.GetString("LoadingAnalyzingPortraits", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Analyzing files....
         '''</summary>
         Friend Shared ReadOnly Property LoadingAnalzingFiles() As String
@@ -394,6 +403,24 @@ Namespace My.Resources
         Friend Shared ReadOnly Property LoadingPatchingScripts() As String
             Get
                 Return ResourceManager.GetString("LoadingPatchingScripts", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Repacking portraits....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingRepackingPortraits() As String
+            Get
+                Return ResourceManager.GetString("LoadingRepackingPortraits", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Substituting animations....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingSubstitutingAnimations() As String
+            Get
+                Return ResourceManager.GetString("LoadingSubstitutingAnimations", resourceCulture)
             End Get
         End Property
         

@@ -311,4 +311,13 @@ evandixon (Personality test, bgp files)</value>
   <data name="Solution_DsModSolution_InitializationWizard_BaseRomStep_Console_ChooseRomPath" xml:space="preserve">
     <value>Please enter the path of the ROM you would like to use: </value>
   </data>
+  <data name="LoadingAnalyzingPortraits" xml:space="preserve">
+    <value>Analyzing portraits...</value>
+  </data>
+  <data name="LoadingRepackingPortraits" xml:space="preserve">
+    <value>Repacking portraits...</value>
+  </data>
+  <data name="LoadingSubstitutingAnimations" xml:space="preserve">
+    <value>Substituting animations...</value>
+  </data>
 </root>
