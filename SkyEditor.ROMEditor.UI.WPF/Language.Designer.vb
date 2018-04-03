@@ -290,6 +290,42 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Browse....
+        '''</summary>
+        Public Shared ReadOnly Property DsModSolution_InitializationWizard_BaseRom_BrowseFile() As String
+            Get
+                Return ResourceManager.GetString("DsModSolution_InitializationWizard_BaseRom_BrowseFile", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Extract.
+        '''</summary>
+        Public Shared ReadOnly Property DsModSolution_InitializationWizard_BaseRom_Extract() As String
+            Get
+                Return ResourceManager.GetString("DsModSolution_InitializationWizard_BaseRom_Extract", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Source ROM: .
+        '''</summary>
+        Public Shared ReadOnly Property DsModSolution_InitializationWizard_BaseRom_RomLabel() As String
+            Get
+                Return ResourceManager.GetString("DsModSolution_InitializationWizard_BaseRom_RomLabel", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to This wizard will guide you through the creation of your new solution, which will let you modify a DS or 3DS ROM, giving you a convenient means to distribute the patch. To begin, please press &quot;Next&quot;..
+        '''</summary>
+        Public Shared ReadOnly Property DsModSolution_InitializationWizard_Intro_Text() As String
+            Get
+                Return ResourceManager.GetString("DsModSolution_InitializationWizard_Intro_Text", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to English.
         '''</summary>
         Public Shared ReadOnly Property English() As String

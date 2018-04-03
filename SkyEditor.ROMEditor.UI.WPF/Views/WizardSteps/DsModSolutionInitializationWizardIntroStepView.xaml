@@ -1,0 +1,14 @@
+﻿<skywpf:DataBoundViewControl x:Class="DsModSolutionInitializationWizardIntroStepView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:skywpf="clr-namespace:SkyEditor.UI.WPF;assembly=SkyEditor.UI.WPF"
+        xmlns:res="clr-namespace:SkyEditor.ROMEditor.UI.WPF.My.Resources"
+        xmlns:romEditor="clr-namespace:SkyEditor.ROMEditor;assembly=SkyEditor.ROMEditor.Windows"
+        TargetType="{x:Type romEditor:DsModSolutionInitializationWizard+IntroStep}"
+        mc:Ignorable="d">
+    <Grid>
+        <TextBlock Text="{x:Static res:Language.DsModSolution_InitializationWizard_Intro_Text}" TextWrapping="Wrap" />
+    </Grid>
+</skywpf:DataBoundViewControl>

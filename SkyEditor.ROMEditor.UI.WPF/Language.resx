@@ -510,4 +510,16 @@ evandixon (Personality test, bgp files)</value>
   <data name="SecondaryBgrsName" xml:space="preserve">
     <value>Secondary BGRS Name</value>
   </data>
+  <data name="DsModSolution_InitializationWizard_Intro_Text" xml:space="preserve">
+    <value>This wizard will guide you through the creation of your new solution, which will let you modify a DS or 3DS ROM, giving you a convenient means to distribute the patch. To begin, please press "Next".</value>
+  </data>
+  <data name="DsModSolution_InitializationWizard_BaseRom_BrowseFile" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="DsModSolution_InitializationWizard_BaseRom_Extract" xml:space="preserve">
+    <value>Extract</value>
+  </data>
+  <data name="DsModSolution_InitializationWizard_BaseRom_RomLabel" xml:space="preserve">
+    <value>Source ROM: </value>
+  </data>
 </root>

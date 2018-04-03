@@ -1,5 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports System.IO
+Imports System.Windows.Forms
 Imports SkyEditor.Core
 Imports SkyEditor.Core.ConsoleCommands
 Imports SkyEditor.Core.UI
@@ -109,6 +110,15 @@ Public Class DsModSolutionInitializationWizard
         End Property
 
         Public Property RomFilename As String
+            Get
+                Return _romFilename
+            End Get
+            Set(value As String)
+                _romFilename = value
+                RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(RomFilename)))
+            End Set
+        End Property
+        Dim _romFilename As String
 
         ''' <summary>
         ''' The percentage complete the ROM extraction is. Range is 0 to 1.
@@ -143,9 +153,9 @@ Public Class DsModSolutionInitializationWizard
             RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(IsExtractIndeterminate)))
         End Sub
 
+        Private Sub _baseRomProject_Completed(sender As Object, e As EventArgs) Handles _baseRomProject.Completed
+            RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(IsComplete)))
+        End Sub
     End Class
 
-    'Public Class ModpackDetailsStep
-
-    'End Class
 End Class
