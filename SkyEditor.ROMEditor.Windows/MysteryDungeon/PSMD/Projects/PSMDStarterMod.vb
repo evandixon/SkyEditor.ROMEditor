@@ -44,6 +44,7 @@ Namespace MysteryDungeon.PSMD.Projects
                     Path.Combine("romfs", "face_graphic.bin"),
                     Path.Combine("romfs", "message_debug.bin"),
                     Path.Combine("romfs", "message_debug.lst"),
+                    Path.Combine("romfs", "pokemon_graphic.bin"),
                     Path.Combine("romfs", "pokemon_graphics_database.bin")}
         End Function
 
