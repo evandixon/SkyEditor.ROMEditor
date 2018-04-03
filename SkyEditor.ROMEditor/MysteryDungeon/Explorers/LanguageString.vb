@@ -89,7 +89,7 @@ Namespace MysteryDungeon.Explorers
             For count As Integer = 0 To Items.Count - 1
                 Dim offset As UInt32 = offsets.Count * 4 + stringdataBytes.Count
                 offsets(count) = offset
-                Dim strBytes = e.GetBytes(Item(count).Replace(VBConstants.vbCrLf, VBConstants.vbCr))
+                Dim strBytes = e.GetBytes(Item(count).Replace(vbCrLf, vbCr))
                 For Each s In strBytes
                     stringdataBytes.Add(s)
                 Next

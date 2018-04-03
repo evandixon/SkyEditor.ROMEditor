@@ -324,7 +324,7 @@ Namespace MysteryDungeon.PSMD
                      "message_debug_us.bin"
                     Dim dbPath = Path.ChangeExtension(filename, ".lst")
                     If provider.FileExists(dbPath) Then
-                        Dim lines = provider.ReadAllText(dbPath).Split(VBConstants.vbLf)
+                        Dim lines = provider.ReadAllText(dbPath).Split(vbLf)
                         SetFilenames(lines.Select(Function(l) Path.GetFileName(l.Trim)))
                     End If
                 Case "face_graphic.bin"
@@ -647,7 +647,10 @@ Namespace MysteryDungeon.PSMD
         End Sub
 
         Public Sub CopyFile(sourceFilename As String, destinationFilename As String) Implements IIOProvider.CopyFile
-            WriteAllBytes(destinationFilename, ReadAllBytes(sourceFilename))
+            Dim source = ReadAllBytes(sourceFilename)
+            If source IsNot Nothing Then
+                WriteAllBytes(destinationFilename, source)
+            End If
         End Sub
 
         Public Sub DeleteFile(filename As String) Implements IIOProvider.DeleteFile

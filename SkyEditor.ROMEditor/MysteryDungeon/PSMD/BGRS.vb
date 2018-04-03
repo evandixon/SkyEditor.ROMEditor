@@ -34,9 +34,34 @@ Namespace MysteryDungeon.PSMD
                 Me.AnimationType = animationType
             End Sub
 
+            ''' <summary>
+            ''' The raw name of the animation. Ex. bgrs_name__animation_name
+            ''' </summary>
             Public Property Name As String
 
+            ''' <summary>
+            ''' The name of the BGRS to which this animation belongs. If the raw name is bgrs_name__animation_name, this returns bgrs_name
+            ''' </summary>
+            Public ReadOnly Property BgrsName As String
+                Get
+                    Return Name.Replace("__", "!").Split("!")(0) '! is just a temporary character that won't appear in these names
+                End Get
+            End Property
+
+            ''' <summary>
+            ''' The name of the animation action. If the raw name is bgrs_name__animation_name, this returns animation_name
+            ''' </summary>
+            Public ReadOnly Property AnimationName As String
+                Get
+                    Return Name.Replace("__", "!").Split("!")(1) '! is just a temporary character that won't appear in these names
+                End Get
+            End Property
+
             Public Property AnimationType As Integer
+
+            Public Function Clone() As Animation
+                Return New Animation(Name, AnimationType)
+            End Function
 
             Public Overrides Function ToString() As String
                 Return If(Name, MyBase.ToString())
@@ -52,8 +77,12 @@ Namespace MysteryDungeon.PSMD
         Public Enum AnimationType As Integer
             Unknown = 0
             SkeletalAnimation = 1
-            TextureAnimation = 2
-            Extension = &H80000001
+            MaterialAnimation = 2
+
+            ''' <summary>
+            ''' A skeletal animation that belongs to another BGRS file
+            ''' </summary>
+            Remote = &H8000000
         End Enum
 
         Public Event FileSaved As EventHandler Implements ISavable.FileSaved
@@ -78,6 +107,7 @@ Namespace MysteryDungeon.PSMD
             Using f As New GenericFile(filename, provider)
                 Await OpenInternal(f)
             End Using
+            Me.Filename = filename
         End Function
 
         Public Async Function OpenFile(rawData As Byte()) As Task
@@ -123,7 +153,7 @@ Namespace MysteryDungeon.PSMD
             Await OpenInternalAnimations(f, &H58, animationCount)
 
             'Set BGRS name, inferred from the animation names. Animation names are in the form of bgrs_name__animation_name
-            BgrsName = Animations.FirstOrDefault?.Name.Replace("__", "!").Split("!")(0) '! is just a temporary character that won't appear in these names
+            BgrsName = Animations.FirstOrDefault?.AnimationName
         End Function
 
         Private Async Function OpenInternalAnimations(f As GenericFile, animationIndex As Integer, animationCount As Integer) As Task
@@ -196,7 +226,7 @@ Namespace MysteryDungeon.PSMD
         Private Function GetRawData_AnimationSection() As IEnumerable(Of Byte)
             Dim animSection As New List(Of Byte)
 
-            For Each item In Animations
+            For Each item In Animations.OrderBy(Function(a) a.Name)
                 Dim nameBytes = Text.Encoding.ASCII.GetBytes(item.Name)
 
                 animSection.AddRange(nameBytes)

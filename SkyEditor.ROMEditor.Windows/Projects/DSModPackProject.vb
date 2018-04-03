@@ -29,7 +29,7 @@ Namespace Projects
         Public Property OutputEnc3DSFile As Boolean
             Get
                 If Me.Settings("OutputEnc3DSFile") Is Nothing Then
-                    Me.Settings("OutputEnc3DSFile") = True
+                    Me.Settings("OutputEnc3DSFile") = False
                 End If
                 Return Me.Settings("OutputEnc3DSFile")
             End Get
@@ -77,7 +77,7 @@ Namespace Projects
         Public Property OutputLuma As Boolean
             Get
                 If Me.Settings("OutputLuma") Is Nothing Then
-                    Me.Settings("OutputLuma") = False
+                    Me.Settings("OutputLuma") = True
                 End If
                 Return Me.Settings("OutputLuma")
             End Get

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor.Windows", "SkyEditor.ROMEditor.Windows\SkyEditor.ROMEditor.Windows.vbproj", "{F05C12E8-EAB7-4B9E-A8D2-D21B80C1A646}"
 EndProject
@@ -26,11 +26,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test ROMs", "Test ROMs", "{
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor.IntegrationTests", "Tests\SkyEditor.ROMEditor.IntegrationTests\SkyEditor.ROMEditor.IntegrationTests.vbproj", "{A018D6AA-42E9-4183-8148-FB2CBDB746D2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{BB222804-9C14-4916-A189-6B29493F9017}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EveryFileExplorer", "Library3DS\EveryFileExplorer.csproj", "{E92DF34A-5CF0-4F9C-9640-A16B7453270D}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor", "SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj", "{F1B430D7-C00D-4673-8816-97C9DF4376BC}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "SkyEditor.ROMEditor", "SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj", "{F1B430D7-C00D-4673-8816-97C9DF4376BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

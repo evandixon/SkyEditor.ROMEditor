@@ -35,7 +35,7 @@ Namespace MysteryDungeon.PSMD
                     skip -= 1
                 Else
                     Dim item = Entry(count)
-                    If Not item = VBConstants.vbCr Then
+                    If Not item = vbCr Then
                         If item = "\"c AndAlso Entry.Length > count + 4 Then
                             Dim escapeString1 As String = Entry(count + 1) & Entry(count + 2)
                             Dim escapeString2 As String = Entry(count + 3) & Entry(count + 4)

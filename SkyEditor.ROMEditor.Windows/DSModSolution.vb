@@ -2,6 +2,7 @@
 Imports DS_ROM_Patcher
 Imports SkyEditor.Core
 Imports SkyEditor.Core.Projects
+Imports SkyEditor.Core.UI
 Imports SkyEditor.ROMEditor.Projects
 
 Public Class DSModSolution
@@ -75,5 +76,19 @@ Public Class DSModSolution
         '    built += 1
         'Next
         'PluginHelper.SetLoadingStatusFinished()
+    End Function
+
+    Public Function GetBaseRomProject() As BaseRomProject
+        Return GetProjectsByName(Me.Settings("BaseRomProject")).First
+    End Function
+
+    Public Overrides ReadOnly Property RequiresInitializationWizard As Boolean
+        Get
+            Return True
+        End Get
+    End Property
+
+    Public Overrides Function GetInitializationWizard() As Wizard
+        Return New DsModSolutionInitializationWizard(Me)
     End Function
 End Class

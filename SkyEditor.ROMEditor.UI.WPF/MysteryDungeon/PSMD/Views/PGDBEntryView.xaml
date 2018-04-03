@@ -9,11 +9,11 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Label Content="{x:Static res:Language.PrimaryBgrsFilename}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <TextBox Height="23" Margin="66,13,10,0" TextWrapping="Wrap" Text="{Binding PrimaryBgrsFilename, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top"/>
+        <TextBox Height="23" Margin="148,13,10,0" TextWrapping="Wrap" Text="{Binding PrimaryBgrsFilename, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top"/>
         <Label Content="{x:Static res:Language.SecondaryBgrsName}" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"/>
-        <TextBox Height="23" Margin="66,41,10,0" TextWrapping="Wrap" Text="{Binding SecondaryBgrsName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top"/>
+        <TextBox Height="23" Margin="148,41,10,0" TextWrapping="Wrap" Text="{Binding SecondaryBgrsName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top"/>
         <Label Content="{x:Static res:Language.ActorName}" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top"/>
-        <TextBox Height="23" Margin="66,69,10,0" TextWrapping="Wrap" Text="{Binding ActorName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top"/>
+        <TextBox Height="23" Margin="148,69,10,0" TextWrapping="Wrap" Text="{Binding ActorName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top"/>
 
     </Grid>
 </UserControl>

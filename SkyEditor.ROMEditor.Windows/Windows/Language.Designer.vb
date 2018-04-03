@@ -218,6 +218,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Analyzing portraits....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingAnalyzingPortraits() As String
+            Get
+                Return ResourceManager.GetString("LoadingAnalyzingPortraits", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Analyzing files....
         '''</summary>
         Friend Shared ReadOnly Property LoadingAnalzingFiles() As String
@@ -394,6 +403,24 @@ Namespace My.Resources
         Friend Shared ReadOnly Property LoadingPatchingScripts() As String
             Get
                 Return ResourceManager.GetString("LoadingPatchingScripts", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Repacking portraits....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingRepackingPortraits() As String
+            Get
+                Return ResourceManager.GetString("LoadingRepackingPortraits", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Substituting animations....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingSubstitutingAnimations() As String
+            Get
+                Return ResourceManager.GetString("LoadingSubstitutingAnimations", resourceCulture)
             End Get
         End Property
         
@@ -577,6 +604,51 @@ Namespace My.Resources
         Friend Shared ReadOnly Property SkyEditor_ROMEditor_Projects_GenericModProject() As String
             Get
                 Return ResourceManager.GetString("SkyEditor_ROMEditor_Projects_GenericModProject", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to DS Modpack Solution Initialization Wizard.
+        '''</summary>
+        Friend Shared ReadOnly Property Solution_DsModSolution_InitializationWizard() As String
+            Get
+                Return ResourceManager.GetString("Solution_DsModSolution_InitializationWizard", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Please enter the path of the ROM you would like to use: .
+        '''</summary>
+        Friend Shared ReadOnly Property Solution_DsModSolution_InitializationWizard_BaseRomStep_Console_ChooseRomPath() As String
+            Get
+                Return ResourceManager.GetString("Solution_DsModSolution_InitializationWizard_BaseRomStep_Console_ChooseRomPath", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Select Base ROM.
+        '''</summary>
+        Friend Shared ReadOnly Property Solution_DsModSolution_InitializationWizard_BaseRomStepName() As String
+            Get
+                Return ResourceManager.GetString("Solution_DsModSolution_InitializationWizard_BaseRomStepName", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to A DS Modpack Solution lets you make modifications to a NDS or 3DS ROM. These modifications consist of one or more Mods, which can be made by creating new projects inside this solution. To begin, this wizard will guide you through the basic setup, including choosing the ROM to modify and setting settings that affect the resulting Modpack..
+        '''</summary>
+        Friend Shared ReadOnly Property Solution_DsModSolution_InitializationWizard_IntroStepDescription() As String
+            Get
+                Return ResourceManager.GetString("Solution_DsModSolution_InitializationWizard_IntroStepDescription", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Introduction.
+        '''</summary>
+        Friend Shared ReadOnly Property Solution_DsModSolution_InitializationWizard_IntroStepName() As String
+            Get
+                Return ResourceManager.GetString("Solution_DsModSolution_InitializationWizard_IntroStepName", resourceCulture)
             End Get
         End Property
         
