@@ -522,4 +522,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="DsModSolution_InitializationWizard_BaseRom_RomLabel" xml:space="preserve">
     <value>Source ROM: </value>
   </data>
+  <data name="MenuFarcSubstitute" xml:space="preserve">
+    <value>Substitute Missing Animations</value>
+  </data>
 </root>
