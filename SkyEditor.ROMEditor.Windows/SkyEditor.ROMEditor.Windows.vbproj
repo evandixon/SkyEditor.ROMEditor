@@ -114,7 +114,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="ppmdu-wrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ppmdu-wrapper.1.0.14\lib\net462\ppmdu-wrapper.dll</HintPath>
+      <HintPath>..\packages\ppmdu-wrapper.1.0.16\lib\net462\ppmdu-wrapper.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.9, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI9\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
