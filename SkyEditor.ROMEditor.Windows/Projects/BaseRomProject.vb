@@ -88,6 +88,9 @@ Namespace Projects
 #End Region
 
         Public Async Function ImportRom(romPath As String) As Task
+            Me.CurrentBuildStatus = BuildStatus.Building
+            Me.IsCompleted = False
+
             Select Case Await DotNet3dsToolkit.MetadataReader.GetSystem(romPath)
                 Case DotNet3dsToolkit.SystemType.NDS
                     RomSystem = SystemNDS
@@ -117,11 +120,14 @@ Namespace Projects
 
             GameCode = Await DotNet3dsToolkit.MetadataReader.GetGameID(GetRawFilesDir)
 
+            Me.HasRom = True
+
+            Me.CurrentBuildStatus = BuildStatus.Done
+
             Me.IsIndeterminate = False
             Me.Progress = 1
             Me.Message = My.Resources.Language.Complete
             Me.IsCompleted = True
-            Me.HasRom = True
         End Function
 
         ''' <summary>
