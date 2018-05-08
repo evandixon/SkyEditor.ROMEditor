@@ -581,11 +581,38 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Model Mod.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdPokemonGraphicsProject() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdPokemonGraphicsProject", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Portrait Mod.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdPortraitProject() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdPortraitProject", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Starter Mod.
         '''</summary>
-        Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PSMDStarterMod() As String
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdStarterMod() As String
             Get
-                Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PSMDStarterMod", resourceCulture)
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdStarterMod", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Starter Mod.
+        '''</summary>
+        Friend Shared ReadOnly Property SkyEditor_ROMEditor_MysteryDungeon_Rescue_Projects_BlueStarterModProject() As String
+            Get
+                Return ResourceManager.GetString("SkyEditor_ROMEditor_MysteryDungeon_Rescue_Projects_BlueStarterModProject", resourceCulture)
             End Get
         End Property
         

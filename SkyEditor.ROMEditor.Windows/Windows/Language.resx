@@ -287,7 +287,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdLuaProject" xml:space="preserve">
     <value>Script Mod</value>
   </data>
-  <data name="SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PSMDStarterMod" xml:space="preserve">
+  <data name="SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdStarterMod" xml:space="preserve">
     <value>Starter Mod</value>
   </data>
   <data name="LoadingExtractingPortraits" xml:space="preserve">
@@ -319,5 +319,14 @@ evandixon (Personality test, bgp files)</value>
   </data>
   <data name="LoadingSubstitutingAnimations" xml:space="preserve">
     <value>Substituting animations...</value>
+  </data>
+  <data name="SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdPokemonGraphicsProject" xml:space="preserve">
+    <value>Model Mod</value>
+  </data>
+  <data name="SkyEditor_ROMEditor_MysteryDungeon_PSMD_Projects_PsmdPortraitProject" xml:space="preserve">
+    <value>Portrait Mod</value>
+  </data>
+  <data name="SkyEditor_ROMEditor_MysteryDungeon_Rescue_Projects_BlueStarterModProject" xml:space="preserve">
+    <value>Starter Mod</value>
   </data>
 </root>
