@@ -59,7 +59,7 @@ Namespace MysteryDungeon.Explorers.Projects
             Dim projectDir = GetRootDirectory()
             Dim rawDir = GetRawFilesDir()
             If IO.Directory.Exists(IO.Path.Combine(projectDir, "Backgrounds")) Then
-                For Each background In IO.Directory.GetFiles(IO.Path.Combine(projectDir, "Backgrounds"), "*.bmp")
+                For Each background In IO.Directory.GetFiles(IO.Path.Combine(projectDir, "Backgrounds"), "*.png")
                     Dim includeInPack As Boolean
 
                     If IO.File.Exists(background & ".original") Then
