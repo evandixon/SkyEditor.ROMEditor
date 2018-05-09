@@ -8,6 +8,10 @@ Namespace MysteryDungeon.PSMD.Projects
     Public Class PsmdPokemonGraphicsProject
         Inherits GenericModProject
 
+        Public Overrides Function GetSupportedGameCodes() As IEnumerable(Of String)
+            Return {GameStrings.PSMDCode}
+        End Function
+
         Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
 
