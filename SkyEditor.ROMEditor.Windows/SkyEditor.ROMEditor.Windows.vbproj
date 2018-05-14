@@ -230,7 +230,6 @@
     <Compile Include="Windows\FileFormats\Explorers\Script\SSB.vb" />
     <Compile Include="Projects\BaseRomProject.vb" />
     <Compile Include="Windows\ConsoleCommands\BatchCteConvert.vb" />
-    <Compile Include="Windows\ConsoleCommands\ImportLanguage.vb" />
     <Compile Include="Windows\DSIconTool.vb" />
     <Compile Include="Projects\DSModPackProject.vb" />
     <Compile Include="DSModSolution.vb" />
