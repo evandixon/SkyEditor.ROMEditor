@@ -95,45 +95,43 @@ Namespace MysteryDungeon.PSMD.Extensions
 
             Dim numComplete = 0
 
-            entries.AsParallel.ForAll(Async Sub(entry As String)
-                                          If Not String.IsNullOrEmpty(entry) Then
-                                              If pokemonGraphic.FileExists("/" & entry) Then
-                                                  Dim currentBgrs As New BGRS
-                                                  Await currentBgrs.OpenFile("/" & entry, pokemonGraphic)
+            Await af.RunForEach(entries,
+                                Async Function(entry As String) As Task
+                                    If Not String.IsNullOrEmpty(entry) Then
+                                        If pokemonGraphic.FileExists("/" & entry) Then
+                                            Dim currentBgrs As New BGRS
+                                            Await currentBgrs.OpenFile("/" & entry, pokemonGraphic)
 
-                                                  'Dark matter causes a crash in a cutscene. Let's skip it.
-                                                  'Using a "contains" because there's 9 variants
-                                                  If currentBgrs.Filename.Contains("darkmatter") Then
-                                                      Exit Sub
-                                                  End If
+                                            'Dark matter causes a crash in a cutscene. Let's skip it.
+                                            'Using a "contains" because there's 9 variants
+                                            If currentBgrs.Filename.Contains("darkmatter") Then
+                                                Exit Function
+                                            End If
 
-                                                  For Each substitute In substitutes
-                                                      Dim oldAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substitute.Value)
-                                                      Dim newAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substitute.Key)
+                                            For Each substitute In substitutes
+                                                Dim oldAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substitute.Value)
+                                                Dim newAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substitute.Key)
 
-                                                      If oldAnimation IsNot Nothing AndAlso newAnimation Is Nothing Then
-                                                          Dim copiedAnimation = oldAnimation.Clone
-                                                          copiedAnimation.Name = oldAnimation.Name.Replace(substitute.Value, substitute.Key)
+                                                If oldAnimation IsNot Nothing AndAlso newAnimation Is Nothing Then
+                                                    Dim copiedAnimation = oldAnimation.Clone
+                                                    copiedAnimation.Name = oldAnimation.Name.Replace(substitute.Value, substitute.Key)
 
-                                                          If copiedAnimation.AnimationType And BGRS.AnimationType.SkeletalAnimation > 0 Then
-                                                              pokemonGraphic.CopyFile("/" & oldAnimation.Name & ".bchskla", "/" & copiedAnimation.Name & ".bchskla")
-                                                          End If
+                                                    If copiedAnimation.AnimationType And BGRS.AnimationType.SkeletalAnimation > 0 Then
+                                                        pokemonGraphic.CopyFile("/" & oldAnimation.Name & ".bchskla", "/" & copiedAnimation.Name & ".bchskla")
+                                                    End If
 
-                                                          If copiedAnimation.AnimationType And BGRS.AnimationType.MaterialAnimation > 0 Then
-                                                              pokemonGraphic.CopyFile("/" & oldAnimation.Name & ".bchmata", "/" & copiedAnimation.Name & ".bchmata")
-                                                          End If
+                                                    If copiedAnimation.AnimationType And BGRS.AnimationType.MaterialAnimation > 0 Then
+                                                        pokemonGraphic.CopyFile("/" & oldAnimation.Name & ".bchmata", "/" & copiedAnimation.Name & ".bchmata")
+                                                    End If
 
-                                                          currentBgrs.Animations.Add(copiedAnimation)
-                                                      End If
-                                                  Next
+                                                    currentBgrs.Animations.Add(copiedAnimation)
+                                                End If
+                                            Next
 
-                                                  Await currentBgrs.Save(pokemonGraphic)
-                                              End If
-                                          End If
-
-                                          Threading.Interlocked.Increment(numComplete)
-                                          progressReportToken.Progress = numComplete / entries.Count
-                                      End Sub)
+                                            Await currentBgrs.Save(pokemonGraphic)
+                                        End If
+                                    End If
+                                End Function)
 
             If ProgressReportToken IsNot Nothing Then
                 ProgressReportToken.IsCompleted = True
