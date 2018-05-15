@@ -243,7 +243,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
             Dim scriptSource As String = IO.Path.Combine(Me.GetRawFilesDir, "romfs", "script")
             Dim scriptDestination As String = IO.Path.Combine(Me.GetRootDirectory, "script")
-            Dim filesToOpen As New List(Of String)
+            Dim filesToOpen As New ConcurrentBag(Of String)
 
             Dim f As New AsyncFor
             AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)

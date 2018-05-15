@@ -589,6 +589,7 @@ namespace EveryFileExplorer
                 default:
                     throw new NotImplementedException("This format is not implemented yet.");
             }
+            Picture.UnlockBits(d);
             return result;
         }
 
