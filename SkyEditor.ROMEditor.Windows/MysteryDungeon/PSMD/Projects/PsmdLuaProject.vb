@@ -102,8 +102,8 @@ Namespace MysteryDungeon.PSMD.Projects
                 patchers = New List(Of FilePatcher)
             End If
             Dim msPatcher As New FilePatcherJson()
-            Dim patcherPath = Path.GetFileName(GetType(Message_FARC_Patcher.FarcF5).Assembly.Location)
-            Dim toolsDir = Path.GetDirectoryName(GetType(Message_FARC_Patcher.FarcF5).Assembly.Location)
+            Dim patcherPath = Path.GetFileName(GetType(Message_FARC_Patcher.PatchList).Assembly.Location)
+            Dim toolsDir = Path.GetDirectoryName(GetType(Message_FARC_Patcher.PatchList).Assembly.Location)
             With msPatcher
                 .CreatePatchProgram = patcherPath
                 .CreatePatchArguments = "-c ""{0}"" ""{1}"" ""{2}"""

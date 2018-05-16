@@ -1,0 +1,12 @@
+﻿[
+  {
+    "FilePath": ".*message_?[A-Za-z]*\\.bin",
+    "CreatePatchProgram": "MessageFARCPatcher.exe",
+    "CreatePatchArguments": "-c \"{0}\" \"{1}\" \"{2}",
+    "ApplyPatchProgram": "MessageFARCPatcher.exe",
+    "ApplyPatchArguments": "-a \"{0}\" \"{1}\" \"{2}",
+    "IsPatchMergeSafe": true,
+    "PatchExtension": "msgFarcT5",
+    "Dependencies": [ ]
+  }
+]
