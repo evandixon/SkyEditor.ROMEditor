@@ -509,6 +509,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Java could not be run on your system. Please ensure it&apos;s installed and accessible in the PATH environemnt variable..
+        '''</summary>
+        Friend Shared ReadOnly Property ProcessManagement_JavaNotFoundMessage() As String
+            Get
+                Return ResourceManager.GetString("ProcessManagement_JavaNotFoundMessage", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Pokémon Super Mystery Dungeon.
         '''</summary>
         Friend Shared ReadOnly Property PSMDSoundTrackAlbum() As String

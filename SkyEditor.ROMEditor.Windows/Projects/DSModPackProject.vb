@@ -3,6 +3,7 @@ Imports DS_ROM_Patcher
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.ROMEditor.ProcessManagement
 
 Namespace Projects
     Public Class DSModPackProject

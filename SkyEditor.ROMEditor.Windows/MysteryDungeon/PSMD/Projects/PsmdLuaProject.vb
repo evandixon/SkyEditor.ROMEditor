@@ -6,6 +6,8 @@ Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Windows
 Imports SkyEditor.ROMEditor.Projects
 Imports System.Collections.Concurrent
+Imports SkyEditor.Core
+Imports SkyEditor.ROMEditor.ProcessManagement
 
 Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
@@ -65,7 +67,7 @@ Namespace MysteryDungeon.PSMD.Projects
             ElseIf availableDirs.Any(Function(x) Path.GetFileName(x.ToLower) = "jp") Then
                 languageDir = Path.Combine(dir, "jp")
             Else
-                Throw New IO.DirectoryNotFoundException(String.Format(My.Resources.Language.ErrorLocalizedPsmdLanguageFileLanguageNotFound, My.Resources.Language.LocalizedPsmdLanguageFileLanguage))
+                Throw New DirectoryNotFoundException(String.Format(My.Resources.Language.ErrorLocalizedPsmdLanguageFileLanguageNotFound, My.Resources.Language.LocalizedPsmdLanguageFileLanguage))
             End If
 
             Dim message As New MessageBin
@@ -108,7 +110,7 @@ Namespace MysteryDungeon.PSMD.Projects
                 .ApplyPatchProgram = patcherPath
                 .ApplyPatchArguments = "-a ""{0}"" ""{1}"" ""{2}"""
                 .IsPatchMergeSafe = True
-                .PatchExtension = "msgFarcT5"
+                .PatchExtension = "farcT5"
                 .FilePath = ".*message_?[A-Za-z]*\.bin"
                 .Dependencies = New List(Of String)
             End With
@@ -145,9 +147,9 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Private Sub LoadLanguageIDs()
             'Load language IDs
-            Dim dir = IO.Path.Combine(Me.GetRootDirectory, "Languages")
-            If IO.Directory.Exists(dir) Then
-                Dim langDirs = IO.Directory.GetDirectories(dir)
+            Dim dir = Path.Combine(Me.GetRootDirectory, "Languages")
+            If Directory.Exists(dir) Then
+                Dim langDirs = Directory.GetDirectories(dir)
                 Dim f1 As New AsyncFor
                 f1.BatchSize = langDirs.Length
                 _languageLoadTask = f1.RunForEach(langDirs,
@@ -171,7 +173,7 @@ Namespace MysteryDungeon.PSMD.Projects
         Private Async Function StartExtractLanguages() As Task
             'PSMD style
             Dim languageNameRegex As New Regex(".*message_?(.*)\.bin", RegexOptions.IgnoreCase)
-            Dim languageFileNames = Directory.GetFiles(IO.Path.Combine(Me.GetRawFilesDir, "romfs"), "message*.bin", IO.SearchOption.TopDirectoryOnly)
+            Dim languageFileNames = Directory.GetFiles(Path.Combine(Me.GetRawFilesDir, "romfs"), "message*.bin", SearchOption.TopDirectoryOnly)
             Dim f As New AsyncFor
             AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
                                               Me.Progress = e.Progress
@@ -185,7 +187,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                                           lang = match.Groups(1).Value
                                                       End If
 
-                                                      Dim destDir = IO.Path.Combine(Me.GetRootDirectory, "Languages", lang)
+                                                      Dim destDir = Path.Combine(Me.GetRootDirectory, "Languages", lang)
                                                       Await FileSystem.EnsureDirectoryExistsEmpty(destDir, CurrentPluginManager.CurrentIOProvider)
 
                                                       Dim farc As New Farc
@@ -195,7 +197,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
             'GTI style
             Dim languageDirNameRegex As New Regex(".*message_?(.*)", RegexOptions.IgnoreCase)
-            Dim languageDirFilenames = Directory.GetDirectories(IO.Path.Combine(Me.GetRawFilesDir, "romfs"), "message*", IO.SearchOption.TopDirectoryOnly)
+            Dim languageDirFilenames = Directory.GetDirectories(Path.Combine(Me.GetRawFilesDir, "romfs"), "message*", SearchOption.TopDirectoryOnly)
             Dim f2 As New AsyncFor
             AddHandler f2.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
                                                Me.Progress = e.Progress
@@ -209,7 +211,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                                               lang = match.Groups(1).Value
                                                           End If
 
-                                                          Dim destDir = IO.Path.Combine(Me.GetRootDirectory, "Languages", lang)
+                                                          Dim destDir = Path.Combine(Me.GetRootDirectory, "Languages", lang)
                                                           Await FileSystem.EnsureDirectoryExistsEmpty(destDir, CurrentPluginManager.CurrentIOProvider)
                                                           Await FileSystem.CopyDirectory(item, destDir, CurrentPluginManager.CurrentIOProvider)
                                                       End Function)
@@ -241,8 +243,8 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.Message = My.Resources.Language.LoadingDecompilingScripts
             Me.Progress = 0
 
-            Dim scriptSource As String = IO.Path.Combine(Me.GetRawFilesDir, "romfs", "script")
-            Dim scriptDestination As String = IO.Path.Combine(Me.GetRootDirectory, "script")
+            Dim scriptSource As String = Path.Combine(Me.GetRawFilesDir, "romfs", "script")
+            Dim scriptDestination As String = Path.Combine(Me.GetRootDirectory, "script")
             Dim filesToOpen As New ConcurrentBag(Of String)
 
             Dim f As New AsyncFor
@@ -252,41 +254,28 @@ Namespace MysteryDungeon.PSMD.Projects
 
             f.BatchSize = Environment.ProcessorCount * 2
 
-            Await f.RunForEach(Directory.GetFiles(scriptSource, "*.lua", IO.SearchOption.AllDirectories),
-                               Sub(Item As String)
-                                   Dim dest = Item.Replace(scriptSource, scriptDestination)
-                                   If Not IO.Directory.Exists(IO.Path.GetDirectoryName(dest)) Then
-                                       IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(dest))
-                                   End If
+            Try
+                Using unluac As New UnluacManager
+                    Await f.RunForEach(Directory.GetFiles(scriptSource, "*.lua", SearchOption.AllDirectories),
+                              Async Function(item As String) As Task
+                                  Dim dest = item.Replace(scriptSource, scriptDestination)
+                                  If Not Directory.Exists(Path.GetDirectoryName(dest)) Then
+                                      Directory.CreateDirectory(Path.GetDirectoryName(dest))
+                                  End If
 
-                                   unluac.DecompileToFile(Item, dest)
-                                   IO.File.Copy(dest, dest & ".original")
-                                   filesToOpen.Add(dest)
+                                  Await unluac.DecompileScriptAsync(item, dest)
 
-                                   'Add the file to the project
-                                   'Dim d = IO.Path.GetDirectoryName(dest).Replace(scriptDestination, "script")
-                                   'Me.CreateDirectory(d)
-                                   'Await Me.AddExistingFile(d, Item, False)
-                               End Sub)
-
-            'Me.BuildStatusMessage = My.Resources.Language.LoadingAddingFiles
-            'Me.BuildProgress = 0
-            'Dim f2 As New AsyncFor()
-            'f2.RunSynchronously = True
-
-            'AddHandler f2.LoadingStatusChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
-            '                                        Me.Progress = e.Progress
-            '                                    End Sub
-
-            'Await f2.RunForEach(Async Function(Item As String) As Task
-
-            '                        Me.CreateDirectory(d)
-            '                        Await Me.AddExistingFile(d, Item, CurrentPluginManager.CurrentIOProvider)
-            '                    End Function, filesToOpen)
+                                  File.Copy(dest, dest & ".original")
+                                  filesToOpen.Add(dest)
+                              End Function)
+                End Using
+            Catch ex As JavaNotFoundException
+                ReportError(New ErrorInfo(Me) With {.Type = ErrorType.Error, .Message = My.Resources.Language.ProcessManagement_JavaNotFoundMessage})
+            End Try
 
             If AddScriptsToProject Then
                 For Each item In filesToOpen
-                    Dim d = IO.Path.GetDirectoryName(item).Replace(scriptDestination, "script")
+                    Dim d = Path.GetDirectoryName(item).Replace(scriptDestination, "script")
                     Me.AddExistingFile(d, item, CurrentPluginManager.CurrentIOProvider)
                 Next
             End If
@@ -299,18 +288,18 @@ Namespace MysteryDungeon.PSMD.Projects
         Public Overrides Async Function Build() As Task
             Dim farcMode As Boolean = False
 
-            If IO.Directory.GetFiles(IO.Path.Combine(Me.GetRawFilesDir, "romfs"), "message*").Length > 0 Then
+            If Directory.GetFiles(Path.Combine(Me.GetRawFilesDir, "romfs"), "message*").Length > 0 Then
                 farcMode = True
             End If
 
             If farcMode Then
                 Await Task.Run(Async Function() As Task
-                                   Dim dirs = Directory.GetDirectories(IO.Path.Combine(Me.GetRootDirectory, "Languages"))
+                                   Dim dirs = Directory.GetDirectories(Path.Combine(Me.GetRootDirectory, "Languages"))
                                    Me.Message = My.Resources.Language.LoadingBuildingLanguageFiles
                                    For count = 0 To dirs.Length - 1
                                        Me.Progress = count / dirs.Length
-                                       Dim newFilename As String = "message_" & IO.Path.GetFileNameWithoutExtension(dirs(count)) & ".bin"
-                                       Dim newFilePath As String = IO.Path.Combine(IO.Path.Combine(Me.GetRawFilesDir, "romfs", newFilename.Replace("_jp", "")))
+                                       Dim newFilename As String = "message_" & Path.GetFileNameWithoutExtension(dirs(count)) & ".bin"
+                                       Dim newFilePath As String = Path.Combine(Path.Combine(Me.GetRawFilesDir, "romfs", newFilename.Replace("_jp", "")))
                                        Await Farc.Pack(dirs(count), newFilePath, CurrentPluginManager.CurrentIOProvider)
                                    Next
                                    Me.Progress = 1
@@ -318,22 +307,22 @@ Namespace MysteryDungeon.PSMD.Projects
             Else
                 'Then we're in GTI directory mode
                 Await Task.Run(Async Function() As Task
-                                   Dim dirs = IO.Directory.GetDirectories(IO.Path.Combine(Me.GetRootDirectory, "Languages"))
+                                   Dim dirs = Directory.GetDirectories(Path.Combine(Me.GetRootDirectory, "Languages"))
                                    Me.Message = My.Resources.Language.LoadingBuildingLanguageFiles
                                    For count = 0 To dirs.Length - 1
                                        Me.Progress = count / dirs.Length
-                                       Dim newFilename As String = "message_" & IO.Path.GetFileNameWithoutExtension(dirs(count))
-                                       Dim newFilePath As String = IO.Path.Combine(IO.Path.Combine(Me.GetRawFilesDir, "romfs", newFilename.Replace("_en", "")))
+                                       Dim newFilename As String = "message_" & Path.GetFileNameWithoutExtension(dirs(count))
+                                       Dim newFilePath As String = Path.Combine(Path.Combine(Me.GetRawFilesDir, "romfs", newFilename.Replace("_en", "")))
                                        Await FileSystem.CopyDirectory(dirs(count), newFilePath, CurrentPluginManager.CurrentIOProvider)
                                    Next
                                    Me.Progress = 1
                                End Function)
             End If
 
-            Dim scriptDestination As String = IO.Path.Combine(Me.GetRawFilesDir, "romfs", "script")
-            Dim scriptSource As String = IO.Path.Combine(Me.GetRootDirectory, "script")
+            Dim scriptDestination As String = Path.Combine(Me.GetRawFilesDir, "romfs", "script")
+            Dim scriptSource As String = Path.Combine(Me.GetRootDirectory, "script")
 
-            Dim toCompile = From d In IO.Directory.GetFiles(scriptSource, "*.lua", IO.SearchOption.AllDirectories) Where Not d.StartsWith(scriptDestination) Select d
+            Dim toCompile = From d In Directory.GetFiles(scriptSource, "*.lua", SearchOption.AllDirectories) Where Not d.StartsWith(scriptDestination) Select d
 
             Me.Message = My.Resources.Language.LoadingCompilingScripts
             Dim f As New AsyncFor
@@ -343,8 +332,8 @@ Namespace MysteryDungeon.PSMD.Projects
             AddHandler f.ProgressChanged, onProgressChanged
             Await f.RunForEach(toCompile,
                                Async Function(Item As String) As Task
-                                   Dim sourceText = IO.File.ReadAllText(Item)
-                                   Dim sourceOrig = IO.File.ReadAllText(Item & ".original")
+                                   Dim sourceText = File.ReadAllText(Item)
+                                   Dim sourceOrig = File.ReadAllText(Item & ".original")
 
                                    If Not sourceText = sourceOrig Then
                                        Dim dest = Item.Replace(scriptSource, scriptDestination)
@@ -362,47 +351,47 @@ Namespace MysteryDungeon.PSMD.Projects
                 Dim psmd As New Regex(GameStrings.PSMDCode)
                 Dim gti As New Regex(GameStrings.GTICode)
                 If psmd.IsMatch(code) Then
-                    Return {IO.Path.Combine("romfs", "script"),
-                            IO.Path.Combine("romfs", "message_en.bin"),
-                            IO.Path.Combine("romfs", "message_fr.bin"),
-                            IO.Path.Combine("romfs", "message_ge.bin"),
-                            IO.Path.Combine("romfs", "message_it.bin"),
-                            IO.Path.Combine("romfs", "message_sp.bin"),
-                            IO.Path.Combine("romfs", "message_us.bin"),
-                            IO.Path.Combine("romfs", "message.bin"),
-                            IO.Path.Combine("romfs", "message_en.lst"),
-                            IO.Path.Combine("romfs", "message_fr.lst"),
-                            IO.Path.Combine("romfs", "message_ge.lst"),
-                            IO.Path.Combine("romfs", "message_it.lst"),
-                            IO.Path.Combine("romfs", "message_sp.lst"),
-                            IO.Path.Combine("romfs", "message_us.lst"),
-                            IO.Path.Combine("romfs", "message.lst"),
-                            IO.Path.Combine("romfs", "message_debug_en.bin"),
-                            IO.Path.Combine("romfs", "message_debug_fr.bin"),
-                            IO.Path.Combine("romfs", "message_debug_ge.bin"),
-                            IO.Path.Combine("romfs", "message_debug_it.bin"),
-                            IO.Path.Combine("romfs", "message_debug_sp.bin"),
-                            IO.Path.Combine("romfs", "message_debug_us.bin"),
-                            IO.Path.Combine("romfs", "message_debug.bin"),
-                            IO.Path.Combine("romfs", "message_debug_en.lst"),
-                            IO.Path.Combine("romfs", "message_debug_fr.lst"),
-                            IO.Path.Combine("romfs", "message_debug_ge.lst"),
-                            IO.Path.Combine("romfs", "message_debug_it.lst"),
-                            IO.Path.Combine("romfs", "message_debug_sp.lst"),
-                            IO.Path.Combine("romfs", "message_debug_us.lst"),
-                            IO.Path.Combine("romfs", "message_debug.lst")}
+                    Return {Path.Combine("romfs", "script"),
+                            Path.Combine("romfs", "message_en.bin"),
+                            Path.Combine("romfs", "message_fr.bin"),
+                            Path.Combine("romfs", "message_ge.bin"),
+                            Path.Combine("romfs", "message_it.bin"),
+                            Path.Combine("romfs", "message_sp.bin"),
+                            Path.Combine("romfs", "message_us.bin"),
+                            Path.Combine("romfs", "message.bin"),
+                            Path.Combine("romfs", "message_en.lst"),
+                            Path.Combine("romfs", "message_fr.lst"),
+                            Path.Combine("romfs", "message_ge.lst"),
+                            Path.Combine("romfs", "message_it.lst"),
+                            Path.Combine("romfs", "message_sp.lst"),
+                            Path.Combine("romfs", "message_us.lst"),
+                            Path.Combine("romfs", "message.lst"),
+                            Path.Combine("romfs", "message_debug_en.bin"),
+                            Path.Combine("romfs", "message_debug_fr.bin"),
+                            Path.Combine("romfs", "message_debug_ge.bin"),
+                            Path.Combine("romfs", "message_debug_it.bin"),
+                            Path.Combine("romfs", "message_debug_sp.bin"),
+                            Path.Combine("romfs", "message_debug_us.bin"),
+                            Path.Combine("romfs", "message_debug.bin"),
+                            Path.Combine("romfs", "message_debug_en.lst"),
+                            Path.Combine("romfs", "message_debug_fr.lst"),
+                            Path.Combine("romfs", "message_debug_ge.lst"),
+                            Path.Combine("romfs", "message_debug_it.lst"),
+                            Path.Combine("romfs", "message_debug_sp.lst"),
+                            Path.Combine("romfs", "message_debug_us.lst"),
+                            Path.Combine("romfs", "message_debug.lst")}
                 ElseIf gti.IsMatch(code) Then
-                    Return {IO.Path.Combine("romfs", "script"),
-                            IO.Path.Combine("romfs", "message_fr"),
-                            IO.Path.Combine("romfs", "message_ge"),
-                            IO.Path.Combine("romfs", "message_it"),
-                            IO.Path.Combine("romfs", "message_sp"),
-                            IO.Path.Combine("romfs", "message")}
+                    Return {Path.Combine("romfs", "script"),
+                            Path.Combine("romfs", "message_fr"),
+                            Path.Combine("romfs", "message_ge"),
+                            Path.Combine("romfs", "message_it"),
+                            Path.Combine("romfs", "message_sp"),
+                            Path.Combine("romfs", "message")}
                 Else
-                    Return {IO.Path.Combine("romfs", "script")}
+                    Return {Path.Combine("romfs", "script")}
                 End If
             Else
-                Return {IO.Path.Combine("romfs", "script")}
+                Return {Path.Combine("romfs", "script")}
             End If
         End Function
 

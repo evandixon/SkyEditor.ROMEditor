@@ -139,4 +139,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="PluginName" xml:space="preserve">
     <value>ROM Editor</value>
   </data>
+  <data name="ProcessManagement_JavaNotFoundMessage" xml:space="preserve">
+    <value>Java could not be run on your system. Please ensure it's installed and accessible in the PATH environemnt variable.</value>
+  </data>
 </root>

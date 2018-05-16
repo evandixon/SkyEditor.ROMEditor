@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports SkyEditor.Core
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.ROMEditor.ProcessManagement
 
 Namespace Windows
     Public Module DSIconTool

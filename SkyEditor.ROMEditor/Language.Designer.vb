@@ -25,7 +25,7 @@ Namespace My.Resources
     <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0"),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute()>  _
-    Friend Class Language
+    Public Class Language
         
         Private Shared resourceMan As Global.System.Resources.ResourceManager
         
@@ -40,7 +40,7 @@ Namespace My.Resources
         '''  Returns the cached ResourceManager instance used by this class.
         '''</summary>
         <Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
-        Friend Shared ReadOnly Property ResourceManager() As Global.System.Resources.ResourceManager
+        Public Shared ReadOnly Property ResourceManager() As Global.System.Resources.ResourceManager
             Get
                 If Object.ReferenceEquals(resourceMan, Nothing) Then
                     Dim temp As Global.System.Resources.ResourceManager = New Global.System.Resources.ResourceManager("SkyEditor.ROMEditor.Language", GetType(Language).Assembly)
@@ -55,7 +55,7 @@ Namespace My.Resources
         '''  resource lookups using this strongly typed resource class.
         '''</summary>
         <Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
-        Friend Shared Property Culture() As Global.System.Globalization.CultureInfo
+        Public Shared Property Culture() As Global.System.Globalization.CultureInfo
             Get
                 Return resourceCulture
             End Get
@@ -67,7 +67,7 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to BGRS File.
         '''</summary>
-        Friend Shared ReadOnly Property FileType_Bgrs() As String
+        Public Shared ReadOnly Property FileType_Bgrs() As String
             Get
                 Return ResourceManager.GetString("FileType_Bgrs", resourceCulture)
             End Get
@@ -76,7 +76,7 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to Binary File.
         '''</summary>
-        Friend Shared ReadOnly Property FileType_Bin() As String
+        Public Shared ReadOnly Property FileType_Bin() As String
             Get
                 Return ResourceManager.GetString("FileType_Bin", resourceCulture)
             End Get
@@ -85,7 +85,7 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to (None).
         '''</summary>
-        Friend Shared ReadOnly Property NonePokemon() As String
+        Public Shared ReadOnly Property NonePokemon() As String
             Get
                 Return ResourceManager.GetString("NonePokemon", resourceCulture)
             End Get
@@ -94,7 +94,7 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to evandixon.
         '''</summary>
-        Friend Shared ReadOnly Property PluginAuthor() As String
+        Public Shared ReadOnly Property PluginAuthor() As String
             Get
                 Return ResourceManager.GetString("PluginAuthor", resourceCulture)
             End Get
@@ -106,7 +106,7 @@ Namespace My.Resources
         '''Grovyle91 (Language strings)
         '''evandixon (Personality test, bgp files).
         '''</summary>
-        Friend Shared ReadOnly Property PluginCredits() As String
+        Public Shared ReadOnly Property PluginCredits() As String
             Get
                 Return ResourceManager.GetString("PluginCredits", resourceCulture)
             End Get
@@ -115,9 +115,18 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized string similar to ROM Editor.
         '''</summary>
-        Friend Shared ReadOnly Property PluginName() As String
+        Public Shared ReadOnly Property PluginName() As String
             Get
                 Return ResourceManager.GetString("PluginName", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Java could not be run on your system. Please ensure it&apos;s installed and accessible in the PATH environemnt variable..
+        '''</summary>
+        Public Shared ReadOnly Property ProcessManagement_JavaNotFoundMessage() As String
+            Get
+                Return ResourceManager.GetString("ProcessManagement_JavaNotFoundMessage", resourceCulture)
             End Get
         End Property
     End Class

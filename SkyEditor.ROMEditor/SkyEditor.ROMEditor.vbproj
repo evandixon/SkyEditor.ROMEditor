@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Crc32.Net" Version="1.2.0" />
-    <PackageReference Include="SkyEditor.Core" Version="4.1.0-CI187" />
+    <PackageReference Include="SkyEditor.Core" Version="4.1.0-CI188" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Language.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Language.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
     </EmbeddedResource>
@@ -35,6 +35,12 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\unluac.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -120,7 +120,7 @@
       <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI9\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI187\lib\net462\SkyEditor.Core.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI188\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI42\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
@@ -186,7 +186,6 @@
     <Compile Include="MysteryDungeon\PSMD\Projects\PsmdPortraitProject.vb" />
     <Compile Include="MysteryDungeon\Rescue\KaoFile.vb" />
     <Compile Include="MysteryDungeon\Rescue\Projects\BlueStarterModProject.vb" />
-    <Compile Include="Utilities\ConsoleApp.vb" />
     <Compile Include="Utilities\GraphicsHelpers.vb" />
     <Compile Include="Windows\ConsoleCommands\NameListResearcher.vb" />
     <Compile Include="Windows\ConsoleCommands\PackFarc.vb" />
@@ -237,7 +236,6 @@
     <Compile Include="MysteryDungeon\Explorers\BGP.vb" />
     <Compile Include="MysteryDungeon\Explorers\CompressedFile.vb" />
     <Compile Include="Projects\GenericModProject.vb" />
-    <Compile Include="Windows\Java.vb" />
     <Compile Include="MysteryDungeon\PSMD\CteImage.vb" />
     <Compile Include="Windows\Mods\GenericSkyMod.vb" />
     <Compile Include="Windows\PluginDefinition.vb" />
@@ -267,7 +265,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SsbCommandNames.resx</DependentUpon>
     </Compile>
-    <Compile Include="Windows\unluac.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Windows\Language.resx">
@@ -336,9 +333,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="SkyEditor.ROMEditor.Windows\rom_tool.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SkyEditor.ROMEditor.Windows\unluac.jar">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="SkyEditor.ROMEditor.Windows\lua\Microsoft.VC80.CRT\Microsoft.VC80.CRT.manifest">
