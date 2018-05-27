@@ -122,6 +122,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim blankPortrait08 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_08.png"))
             Dim blankPortrait09 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_09.png"))
             Dim blankPortrait10 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_10.png"))
+            Dim blankPortrait10Version2 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, "nyasupaa", "nyasupaa" & "_10.png"))
             Dim blankPortrait11 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_11.png"))
             Dim blankPortrait12 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_12.png"))
             Dim blankPortrait12Version2 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon2, samplePokemon2 & "_12.png"))
@@ -129,6 +130,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim blankPortrait14 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_14.png"))
             Dim blankPortrait15 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_15.png"))
             Dim blankPortrait16 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, samplePokemon, samplePokemon & "_16.png"))
+            Dim blankPortrait17 = File.ReadAllBytes(Path.Combine(Me.GetRootDirectory, "nyasupaa", "nyasupaa" & "_17.png"))
 
             Dim defaultPortraitTransformRegex As New Regex("(([a-z0-9]|_)+)_[0-9]{2}\.png")
             Dim onProgressed2 = Sub(sender As Object, e As ProgressReportedEventArgs)
@@ -165,6 +167,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                            sample = blankPortrait09
                                        ElseIf imagePath.EndsWith("_10.png") Then
                                            sample = blankPortrait10
+                                           sample2 = blankPortrait10Version2
                                        ElseIf imagePath.EndsWith("_11.png") Then
                                            sample = blankPortrait11
                                        ElseIf imagePath.EndsWith("_12.png") Then
@@ -178,6 +181,8 @@ Namespace MysteryDungeon.PSMD.Projects
                                            sample = blankPortrait15
                                        ElseIf imagePath.EndsWith("_16.png") Then
                                            sample = blankPortrait16
+                                       ElseIf imagePath.EndsWith("_17.png") Then
+                                           sample = blankPortrait17
                                        End If
 
                                        If sample IsNot Nothing AndAlso defaultPortraitTransformRegex.IsMatch(imagePath) Then
