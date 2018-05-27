@@ -17,35 +17,35 @@ Namespace MysteryDungeon.PSMD.Extensions
                 progressReportToken.IsIndeterminate = False
             End If
 
-            Dim substitutes As New Dictionary(Of String, String)
+            Dim substitutes As New Dictionary(Of String, IEnumerable(Of String))
 
             'Key: animation to be supplied
-            'Value: animation to substitute it with
+            'Value: animations that can be substituted. The ones that come first will be used first if they exist.
             'Comments are a description of what Fennekin looks like, and should be mostly true of other starters
             'Values are the best guess of animations that Zorua has that would work
-            substitutes.Add("bd_ev000_cswait", "bd_wait") 'Variant of wait
-            substitutes.Add("bd_ev001_down00", "bd_sleep") 'Falling down (just after being defeated)
-            substitutes.Add("bd_ev001_down01", "bd_sleeploop") 'Lying down (defeated)
-            substitutes.Add("bd_ev001_down02", "bd_jump") 'Getting back up after being defeated
-            substitutes.Add("bd_ev001_gasagasa", "bd_walk") 'Digging
-            substitutes.Add("bd_ev001_look01", "bd_wait") 'Looking down
-            substitutes.Add("bd_ev001_sleep00", "bd_sleep") 'Falling asleep
-            substitutes.Add("bd_ev001_sleep01", "bd_sleeploop") 'Asleep
-            substitutes.Add("bd_ev001_sleep02", "bd_jump") 'Waking up
-            substitutes.Add("bd_ev003_relax00", "bd_sleep") 'Starting to sit down
-            substitutes.Add("bd_ev003_relax01", "bd_sleeploop") 'Sitting, looking up
-            substitutes.Add("bd_ev003_relax02", "bd_jump") 'Getting up
-            substitutes.Add("bd_ev003_relax03", "bd_sleeploop") 'Sitting, slowly moving head in a "yes"
-            substitutes.Add("bd_ev003_relax04", "bd_sleeploop") 'Sitting, slowly moving head in a "no"
-            substitutes.Add("bd_ev003_relax05", "bd_sleeploop") 'Variant of bd_ev001_sleep05
-            substitutes.Add("bd_ev003_relax06", "bd_sleeploop") 'Variant of bd_ev001_sleep04
-            substitutes.Add("bd_ev013_avoid00", "bd_damage") 'Jump up
-            substitutes.Add("bd_ev013_avoid01", "bd_damage") 'Jump up & forward
-            substitutes.Add("bd_ev013_avoid02", "bd_surprise") 'Jump up & back
-            substitutes.Add("bd_ev013_avoid03", "bd_damage") 'Jump back & lie down defeated
-            substitutes.Add("bd_ev013_avoid04", "bd_sleeploop") 'Lying down defeated
-            substitutes.Add("bd_ev013_start", "bd_wait") 'Swaying forward. Prepping avoid00 or avoid01?
-            substitutes.Add("bd_ev013_tired", "bd_wait02") 'Out of breath
+            substitutes.Add("bd_ev000_cswait", {"bd_wait00"}) 'Variant of wait
+            substitutes.Add("bd_ev001_down00", {"bd_sleep"}) 'Falling down (just after being defeated)
+            substitutes.Add("bd_ev001_down01", {"bd_sleeploop"}) 'Lying down (defeated)
+            substitutes.Add("bd_ev001_down02", {"bd_jump"}) 'Getting back up after being defeated
+            substitutes.Add("bd_ev001_gasagasa", {"bd_walk"}) 'Digging
+            substitutes.Add("bd_ev001_look01", {"bd_wait00"}) 'Looking down
+            substitutes.Add("bd_ev001_sleep00", {"bd_sleep"}) 'Falling asleep
+            substitutes.Add("bd_ev001_sleep01", {"bd_sleeploop"}) 'Asleep
+            substitutes.Add("bd_ev001_sleep02", {"bd_jump"}) 'Waking up
+            substitutes.Add("bd_ev003_relax00", {"bd_sleep"}) 'Starting to sit down
+            substitutes.Add("bd_ev003_relax01", {"bd_sleeploop"}) 'Sitting, looking up
+            substitutes.Add("bd_ev003_relax02", {"bd_jump"}) 'Getting up
+            substitutes.Add("bd_ev003_relax03", {"bd_sleeploop"}) 'Sitting, slowly moving head in a "yes"
+            substitutes.Add("bd_ev003_relax04", {"bd_sleeploop"}) 'Sitting, slowly moving head in a "no"
+            substitutes.Add("bd_ev003_relax05", {"bd_sleeploop"}) 'Variant of bd_ev001_sleep05
+            substitutes.Add("bd_ev003_relax06", {"bd_sleeploop"}) 'Variant of bd_ev001_sleep04
+            substitutes.Add("bd_ev013_avoid00", {"bd_damage", "bd_ddamage", "bd_ddamege"}) 'Jump up
+            substitutes.Add("bd_ev013_avoid01", {"bd_damage", "bd_ddamage", "bd_ddamege"}) 'Jump up & forward
+            substitutes.Add("bd_ev013_avoid02", {"bd_surprise", "bd_damage", "bd_ddamage", "bd_ddamege"}) 'Jump up & back
+            substitutes.Add("bd_ev013_avoid03", {"bd_damage", "bd_ddamage", "bd_ddamege"}) 'Jump back & lie down defeated
+            substitutes.Add("bd_ev013_avoid04", {"bd_sleeploop"}) 'Lying down defeated
+            substitutes.Add("bd_ev013_start", {"bd_wait00"}) 'Swaying forward. Prepping avoid00 or avoid01?
+            substitutes.Add("bd_ev013_tired", {"bd_wait02"}) 'Out of breath
 
             'Harmony scarf evolution animations
             'I have no idea what to put here.
@@ -56,32 +56,32 @@ Namespace MysteryDungeon.PSMD.Extensions
             'substitutes.Add("bd_ev015_evolve_03", "")
             'substitutes.Add("bd_ev015_evolve_04", "")
 
-            substitutes.Add("bd_ev015_wakeup00", "bd_jump") 'Wake up from being defeated
-            substitutes.Add("bd_ev018_attack", "bd_attack") 'Standard attack?
-            substitutes.Add("bd_ev018_attack00", "bd_attack") 'Slower version of attack, without pullback afterward
-            substitutes.Add("bd_ev018_cry00", "bd_cry") 'Lowering head to cry
-            substitutes.Add("bd_ev018_cry01", "bd_cry") 'Crying
-            substitutes.Add("bd_ev018_kneeattache00", "bd_sleeploop") 'Lying down, defeated
-            substitutes.Add("bd_ev018_lies00", "bd_backwalk") 'Knocked backward, still standing
-            substitutes.Add("bd_ev018_lies00loop", "bd_pain") 'Panting?
-            substitutes.Add("bd_ev018_lies01", "bd_walk") 'Walking forward low to ground, probably lacking the energy to fully stand
-            substitutes.Add("bd_ev021_depress00", "bd_pain") 'Transition to depress01
-            substitutes.Add("bd_ev021_depress01", "bd_pain") 'Trying to stand, but unable?
-            substitutes.Add("bd_ev024_jump00", "bd_jump") 'Jumping
-            substitutes.Add("bd_ev024_jump01", "bd_jumploop") 'Mid-air after jump
-            substitutes.Add("bd_ev024_jump02", "bd_landing") 'Landing
-            substitutes.Add("bd_ev026_doya00", "bd_wait00") 'Transition to bd_ev026_doya01
-            substitutes.Add("bd_ev026_doya01", "bd_wait00") '"I hate it when you make that face, Fennekin" -Espur
-            substitutes.Add("bd_ev026_doya02", "bd_wait00") 'Transition from bd_ev026_doya01 to normal
-            substitutes.Add("bd_ev026_finish00", "bd_jump") 'Some sort of jump?
-            substitutes.Add("bd_ev026_finish01", "bd_wait") 'Variant of tired?
-            substitutes.Add("bd_ev026_finish02", "bd_wait") 'Transition to normal
+            substitutes.Add("bd_ev015_wakeup00", {"bd_jump"}) 'Wake up from being defeated
+            substitutes.Add("bd_ev018_attack", {"bd_attack"}) 'Standard attack?
+            substitutes.Add("bd_ev018_attack00", {"bd_attack"}) 'Slower version of attack, without pullback afterward
+            substitutes.Add("bd_ev018_cry00", {"bd_cry", "bd_endure"}) 'Lowering head to cry
+            substitutes.Add("bd_ev018_cry01", {"bd_cry", "bd_endure"}) 'Crying
+            substitutes.Add("bd_ev018_kneeattache00", {"bd_sleeploop"}) 'Lying down, defeated
+            substitutes.Add("bd_ev018_lies00", {"bd_backwalk", "bd_damage", "bd_ddamage", "bd_ddamege"}) 'Knocked backward, still standing
+            substitutes.Add("bd_ev018_lies00loop", {"bd_pain", "bd_endure"}) 'Panting?
+            substitutes.Add("bd_ev018_lies01", {"bd_walk"}) 'Walking forward low to ground, probably lacking the energy to fully stand
+            substitutes.Add("bd_ev021_depress00", {"bd_pain", "bd_endure"}) 'Transition to depress01
+            substitutes.Add("bd_ev021_depress01", {"bd_pain", "bd_endure"}) 'Trying to stand, but unable?
+            substitutes.Add("bd_ev024_jump00", {"bd_jump"}) 'Jumping
+            substitutes.Add("bd_ev024_jump01", {"bd_jumploop", "bd_endure"}) 'Mid-air after jump
+            substitutes.Add("bd_ev024_jump02", {"bd_landing"}) 'Landing
+            substitutes.Add("bd_ev026_doya00", {"bd_wait00"}) 'Transition to bd_ev026_doya01
+            substitutes.Add("bd_ev026_doya01", {"bd_wait00"}) '"I hate it when you make that face, Fennekin" -Espur
+            substitutes.Add("bd_ev026_doya02", {"bd_wait00"}) 'Transition from bd_ev026_doya01 to normal
+            substitutes.Add("bd_ev026_finish00", {"bd_jump"}) 'Some sort of jump?
+            substitutes.Add("bd_ev026_finish01", {"bd_wait00"}) 'Variant of tired?
+            substitutes.Add("bd_ev026_finish02", {"bd_wait00"}) 'Transition to normal
 
             'On the hill next to the big tree
             'When the parter... (starts crying at the thought)
-            substitutes.Add("bd_ev026_relax00", "bd_jumploop") 'Sitting, then turning left to the player
-            substitutes.Add("bd_ev026_relax01", "bd_jumploop") 'Looking left at the player
-            substitutes.Add("bd_ev026_relax02", "bd_jumploop") 'Turning back ahead
+            substitutes.Add("bd_ev026_relax00", {"bd_wait00"}) 'Sitting, then turning left to the player
+            substitutes.Add("bd_ev026_relax01", {"bd_wait00"}) 'Looking left at the player
+            substitutes.Add("bd_ev026_relax02", {"bd_wait00"}) 'Turning back ahead
 
             Dim entries = pkmDb.Entries.Select(Function(x) x.SecondaryBgrsName & ".bgrs").Distinct().Concat(pkmDb.Entries.Select(Function(y) y.PrimaryBgrsFilename)).ToList()
 
@@ -108,13 +108,24 @@ Namespace MysteryDungeon.PSMD.Extensions
                                                 Exit Function
                                             End If
 
-                                            For Each substitute In substitutes
-                                                Dim oldAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substitute.Value)
-                                                Dim newAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substitute.Key)
+                                            For Each substituteData In substitutes
+                                                For Each substitute In substituteData.Value
+                                                    Dim newAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substituteData.Key)
 
-                                                If oldAnimation IsNot Nothing AndAlso newAnimation Is Nothing Then
+                                                    If newAnimation IsNot Nothing Then
+                                                        'Then we have an animation and there's no need to substitute
+                                                        Continue For
+                                                    End If
+
+                                                    Dim oldAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substitute)
+                                                    If oldAnimation Is Nothing Then
+                                                        'One of our substitute candidates doesn't exist.
+                                                        Continue For
+                                                    End If
+
+                                                    'We now have an animation to use and an empty slot to put it in
                                                     Dim copiedAnimation = oldAnimation.Clone
-                                                    copiedAnimation.Name = oldAnimation.Name.Replace(substitute.Value, substitute.Key)
+                                                    copiedAnimation.Name = oldAnimation.Name.Replace(substitute, substituteData.Key)
 
                                                     If copiedAnimation.AnimationType And BGRS.AnimationType.SkeletalAnimation > 0 Then
                                                         pokemonGraphic.CopyFile("/" & oldAnimation.Name & ".bchskla", "/" & copiedAnimation.Name & ".bchskla")
@@ -125,7 +136,8 @@ Namespace MysteryDungeon.PSMD.Extensions
                                                     End If
 
                                                     currentBgrs.Animations.Add(copiedAnimation)
-                                                End If
+                                                    Exit For
+                                                Next
                                             Next
 
                                             Await currentBgrs.Save(pokemonGraphic)
@@ -133,8 +145,8 @@ Namespace MysteryDungeon.PSMD.Extensions
                                     End If
                                 End Function)
 
-            If ProgressReportToken IsNot Nothing Then
-                ProgressReportToken.IsCompleted = True
+            If progressReportToken IsNot Nothing Then
+                progressReportToken.IsCompleted = True
             End If
         End Function
     End Module
