@@ -1,0 +1,9 @@
+﻿{
+  "ExtensionTypeName": "SkyEditor.Core.Extensions.PluginExtensionType",
+  "ID": "SkyEditor.ROMEditor.UI.WPF",
+  "Name": "ROM Editor (WPF)",
+  "Description": "ROM editor for Pokémon Mystery Dungeon games.",
+  "Author": "evandixon",
+  "IsEnabled": true,
+  "ExtensionFiles": [ "SkyEditor.ROMEditor.UI.WPF.exe" ]
+}
