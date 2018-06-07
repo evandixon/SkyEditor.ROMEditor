@@ -70,8 +70,8 @@
     <Reference Include="Crc32.NET, Version=1.0.0.0, Culture=neutral, PublicKeyToken=dc0b95cf99bf4e99, processorArchitecture=MSIL">
       <HintPath>..\packages\Crc32.NET.1.2.0\lib\net20\Crc32.NET.dll</HintPath>
     </Reference>
-    <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.2.109, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.2-CI109\lib\net462\DotNet3dsSoundtrackConverter.dll</HintPath>
+    <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.2.113, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.2-CI113\lib\net462\DotNet3dsSoundtrackConverter.dll</HintPath>
     </Reference>
     <Reference Include="DotNet3dsToolkit, Version=2.0.0.52, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNet3dsToolkit.2.0.0-CI52\lib\net462\DotNet3dsToolkit.dll</HintPath>
@@ -95,6 +95,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="policy.2.0.taglib-sharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>..\packages\taglib.2.1.0.0\lib\policy.2.0.taglib-sharp.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.9, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI9\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
@@ -143,6 +146,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="taglib-sharp, Version=2.1.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <HintPath>..\packages\taglib.2.1.0.0\lib\taglib-sharp.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
