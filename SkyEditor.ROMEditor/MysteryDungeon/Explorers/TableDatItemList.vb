@@ -4,40 +4,48 @@ Namespace MysteryDungeon.Explorers
     Public Class TableDatItemList
         Inherits GenericFile
 
-        Public Structure TableDatItem
+        Public Class TableDatItem
 
-            Public Sub New(ItemID As UInt16, ObtainPercentage As Single)
-                Me.ItemID = ItemID
-                Me.ObtainPercentage = ObtainPercentage
+            Public Sub New(itemID As UInt16, obtainPercentage As Single)
+                Me.ItemID = itemID
+                Me.ObtainPercentage = obtainPercentage
             End Sub
 
             Public Property ObtainPercentage As Single
 
             Public Property ItemID As UInt16
 
-        End Structure
+            Public Overrides Function ToString() As String
+                Return $"Item {ItemID} ({SaveEditor.Lists.SkyItems(ItemID)}), {ObtainPercentage * 100}%"
+            End Function
+
+        End Class
 
         Public Property Items As List(Of TableDatItem)
 
-        Private Sub InitItems()
+        Private Async Function InitItems() As Task
             Items = New List(Of TableDatItem)
             If Length >= 2 Then
-                Dim itemCount = BitConverter.ToUInt16(Read(0, 2), 0)
-                For count As Integer = 2 To (itemCount - 1) * 4
+                Dim itemCount = BitConverter.ToUInt16(Await ReadAsync(0, 2), 0)
+
+                For count As Integer = 2 To (itemCount - 1) * 4 Step 4
+                    Dim itemId = BitConverter.ToUInt16(Await ReadAsync(count + 2, 2), 0)
+
                     Dim percentage As Single
-                    If count = 0 Then
-                        percentage = BitConverter.ToUInt16(Read(count, 2), 0) / 1024
+                    If count = 2 Then
+                        percentage = BitConverter.ToUInt16(Await ReadAsync(count, 2), 0) / 1024
                     Else
-                        percentage = (BitConverter.ToUInt16(Read(count, 2), 0) - BitConverter.ToUInt16(Read(count - 4, 2), 0)) / 1024
+                        percentage = (BitConverter.ToUInt16(Await ReadAsync(count, 2), 0) - BitConverter.ToUInt16(Await ReadAsync(count - 4, 2), 0)) / 1024
                     End If
-                    Items.Add(New TableDatItem(percentage, BitConverter.ToUInt16(Read(count + 2, 2), 0)))
+
+                    Items.Add(New TableDatItem(itemId, percentage))
                 Next
             End If
-        End Sub
+        End Function
 
         Public Overrides Async Function OpenFile(filename As String, provider As IIOProvider) As Task
             Await MyBase.OpenFile(filename, provider)
-            InitItems()
+            Await InitItems()
         End Function
 
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task

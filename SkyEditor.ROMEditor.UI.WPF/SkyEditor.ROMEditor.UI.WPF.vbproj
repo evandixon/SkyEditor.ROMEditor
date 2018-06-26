@@ -73,8 +73,8 @@
     <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.2.114, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.2-CI114\lib\net462\DotNet3dsSoundtrackConverter.dll</HintPath>
     </Reference>
-    <Reference Include="DotNet3dsToolkit, Version=2.0.0.52, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsToolkit.2.0.0-CI52\lib\net462\DotNet3dsToolkit.dll</HintPath>
+    <Reference Include="DotNet3dsToolkit, Version=2.0.0.53, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsToolkit.2.0.0-CI53\lib\net462\DotNet3dsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNdsToolkit, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetNdsToolkit.2.0.0-CI118\lib\net462\DotNetNdsToolkit.dll</HintPath>
@@ -106,7 +106,7 @@
       <HintPath>..\packages\SkyEditor.Core.4.1.0-CI193\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI42\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI104\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.145, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI145\lib\net462\SkyEditor.UI.WPF.dll</HintPath>
@@ -390,18 +390,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="SkyEditor.ROMEditor.UI.WPF.nuspec" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\de\SkyPokemon.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\de\SkyMoves.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\de\SkyLocations.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\de\SkyItems.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SkyEditor.ROMEditor.Windows\SkyEditor.ROMEditor.Windows.vbproj">

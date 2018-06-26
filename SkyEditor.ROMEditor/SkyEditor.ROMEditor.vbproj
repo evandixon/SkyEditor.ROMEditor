@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Crc32.Net" Version="1.2.0" />
     <PackageReference Include="SkyEditor.Core" Version="4.1.0-CI193" />
+    <PackageReference Include="SkyEditor.SaveEditor" Version="4.1.0-CI104" />
   </ItemGroup>
 
   <ItemGroup>

@@ -89,8 +89,8 @@
     <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.2.114, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.2-CI114\lib\net462\DotNet3dsSoundtrackConverter.dll</HintPath>
     </Reference>
-    <Reference Include="DotNet3dsToolkit, Version=2.0.0.52, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsToolkit.2.0.0-CI52\lib\net462\DotNet3dsToolkit.dll</HintPath>
+    <Reference Include="DotNet3dsToolkit, Version=2.0.0.53, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsToolkit.2.0.0-CI53\lib\net462\DotNet3dsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNdsToolkit, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetNdsToolkit.2.0.0-CI118\lib\net462\DotNetNdsToolkit.dll</HintPath>
@@ -122,7 +122,7 @@
       <HintPath>..\packages\SkyEditor.Core.4.1.0-CI193\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI42\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI104\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -298,10 +298,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Resources\de\SkyItems.txt" />
-    <Content Include="Resources\de\SkyLocations.txt" />
-    <Content Include="Resources\de\SkyMoves.txt" />
-    <Content Include="Resources\de\SkyPokemon.txt" />
     <Content Include="Windows\App.ico" />
     <None Include="SkyEditor.ROMEditor.Windows\lua\bin2c5.1.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
