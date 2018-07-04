@@ -113,7 +113,7 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="ppmdu-wrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ppmdu-wrapper.1.0.21\lib\net462\ppmdu-wrapper.dll</HintPath>
+      <HintPath>..\packages\ppmdu-wrapper.1.0.22\lib\net462\ppmdu-wrapper.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.9, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI9\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
