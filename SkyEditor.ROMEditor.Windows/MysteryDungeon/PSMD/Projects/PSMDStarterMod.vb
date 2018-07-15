@@ -8,6 +8,7 @@ Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Extensions
+Imports SkyEditor.Core.IO
 
 Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
@@ -16,10 +17,17 @@ Namespace MysteryDungeon.PSMD.Projects
     Public Class PsmdStarterMod
         Inherits PsmdLuaProject
 
-        Public Sub New()
-            MyBase.New
+        Public Sub New(ioProvider As IIOProvider)
+            If ioProvider Is Nothing Then
+                Throw New ArgumentNullException(NameOf(ioProvider))
+            End If
+
+            CurrentIOProvider = ioProvider
+
             Me.AddScriptsToProject = False
         End Sub
+
+        Protected Property CurrentIOProvider As IIOProvider
 
         Public Overrides Function GetSupportedGameCodes() As IEnumerable(Of String)
             Return {GameStrings.PSMDCode}
@@ -50,6 +58,31 @@ Namespace MysteryDungeon.PSMD.Projects
                     Path.Combine("romfs", "pokemon_graphics_database.bin")}
         End Function
 
+#Region "Patching functions"
+
+        Private Async Function AddMissingModelAnimations(pgdb As PGDB) As Task
+            Using pokemonGraphic As New Farc
+                Await pokemonGraphic.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphic.bin"), CurrentIOProvider)
+
+                Dim token As New ProgressReportToken
+                WatchProgressReportToken(token, False)
+                Await pokemonGraphic.SubstituteMissingAnimations(pgdb, token)
+                UnwatchProgressReportToken(token)
+
+                Await pokemonGraphic.Save(CurrentIOProvider)
+            End Using
+        End Function
+
+        ''' <summary>
+        ''' Fixes Pokemon with a dummy model reference
+        ''' </summary>
+        ''' <remarks>This will call Save on <paramref name="pgdb"/>. This is not thread safe with regards to <paramref name="pgdb"/>.</remarks>
+        Private Async Function FixPokemonWithDummyModel(pgdb As PGDB) As Task
+            For Each item In pgdb.Entries.Where(Function(x) x.PrimaryBgrsFilename = "dummypokemon_00.bgrs").ToArray()
+                item.PrimaryBgrsFilename = item.ActorName & "_00.bgrs"
+            Next
+            Await pgdb.Save(CurrentIOProvider)
+        End Function
         ''' <summary>
         ''' Replaces placeholder portraits with the default emotion. Build progress is reported too.
         ''' </summary>
@@ -232,215 +265,93 @@ Namespace MysteryDungeon.PSMD.Projects
             Await f.Save(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), CurrentPluginManager.CurrentIOProvider)
         End Function
 
-        Public Overrides Async Function Initialize() As Task
-            Await MyBase.Initialize()
-
-            Dim provider = CurrentPluginManager.CurrentIOProvider
-
-            'Add fixed_pokemon to project
-            Me.AddExistingFile("", Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), CurrentPluginManager.CurrentIOProvider)
-
-            'Add missing animations
-            Dim pgdb As New PGDB
-            Await pgdb.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphics_database.bin"), provider)
-
-            Using pokemonGraphic As New Farc
-                Await pokemonGraphic.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphic.bin"), provider)
-
-                Dim token As New ProgressReportToken
-                WatchProgressReportToken(token, False)
-                Await pokemonGraphic.SubstituteMissingAnimations(pgdb, token)
-                UnwatchProgressReportToken(token)
-
-                Await pokemonGraphic.Save(provider)
-            End Using
-
-            'Fix Pokemon with a dummy model
-            For Each item In pgdb.Entries.Where(Function(x) x.PrimaryBgrsFilename = "dummypokemon_00.bgrs").ToArray()
-                item.PrimaryBgrsFilename = item.ActorName & "_00.bgrs"
-            Next
-            Await pgdb.Save(provider)
-
-            'Use default portrait for placeholders
-            Await SubstituteMissingPortraits()
-
-            Me.IsCompleted = True
-        End Function
-
-        Public Overrides Async Function Build() As Task
-            'Open fixed_pokemon
-            Dim fpFilename = Me.GetItem("fixed_pokemon.bin").Filename
-            Dim fixedPokemon As New FixedPokemon()
-            Await fixedPokemon.OpenFile(fpFilename, Me.CurrentPluginManager.CurrentIOProvider)
-            File.Copy(fpFilename, Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), True)
-
-            'Select just what we want.  Note that the numbers in the variable names are the original, unmodified values
-            'It is safe to use static indexes (at least for now) because the game uses them too.
-            'If it is ever discovered where the game stores the indexes, refactoring will need to be done.
-            Dim starter1 As Integer = fixedPokemon.Entries(19).PokemonID 'FUSHIGIDANE_H (Bulbasaur)
-            Dim starter5 As Integer = fixedPokemon.Entries(21).PokemonID 'HITOKAGE_H (Charmander)
-            Dim starter10 As Integer = fixedPokemon.Entries(23).PokemonID 'ZENIGAME_H (Squirtle)
-            Dim starter30 As Integer = fixedPokemon.Entries(17).PokemonID 'PIKACHUU_H (Pikachu)
-            Dim starter197 As Integer = fixedPokemon.Entries(25).PokemonID 'CHIKORIITA_H (Chikorita)
-            Dim starter200 As Integer = fixedPokemon.Entries(27).PokemonID 'HINOARASHI_H (Cyndaquil)
-            Dim starter203 As Integer = fixedPokemon.Entries(29).PokemonID  'WANINOKO_H (Totodile)
-            Dim starter322 As Integer = fixedPokemon.Entries(31).PokemonID  'KIMORI_H (Treecko)
-            Dim starter325 As Integer = fixedPokemon.Entries(33).PokemonID 'ACHAMO_H (Torchic)
-            Dim starter329 As Integer = fixedPokemon.Entries(35).PokemonID 'MIZUGOROU_H (Mudkip)
-            Dim starter479 As Integer = fixedPokemon.Entries(37).PokemonID 'NAETORU_H (Turtwig)
-            Dim starter482 As Integer = fixedPokemon.Entries(39).PokemonID 'HIKOZARU_H (Chimchar)
-            Dim starter485 As Integer = fixedPokemon.Entries(41).PokemonID  'POTCHAMA_H (Piplup)
-            Dim starter537 As Integer = fixedPokemon.Entries(18).PokemonID 'RIORU_H (Riolu)
-            Dim starter592 As Integer = fixedPokemon.Entries(43).PokemonID  'TSUTAAJA_H (Snivy)
-            Dim starter595 As Integer = fixedPokemon.Entries(45).PokemonID  'POKABU_H (Tepig)
-            Dim starter598 As Integer = fixedPokemon.Entries(47).PokemonID  'MIJUMARU_H (Oshawott)
-            Dim starter766 As Integer = fixedPokemon.Entries(49).PokemonID  'HARIMARON_H (Chespin)
-            Dim starter769 As Integer = fixedPokemon.Entries(51).PokemonID  'FOKKO_H (Fennekin)
-            Dim starter772 As Integer = fixedPokemon.Entries(53).PokemonID  'KEROMATSU_H (Froakie)
-            'These have high res actors, but are not starters.  May or may not be significant to starter patching
-            'Dim starter167 As Integer 'IIBUI_H (Eevee)
-            'Dim starter352 As Integer 'RARUTOSU_H (Ralts)
-
-            Dim evo1 As Integer = fixedPokemon.Entries(57).PokemonID '(Bulbasaur)
-            Dim evo5 As Integer = fixedPokemon.Entries(58).PokemonID '(Charmander)
-            Dim evo10 As Integer = fixedPokemon.Entries(59).PokemonID '(Squirtle)
-            Dim evo30 As Integer = fixedPokemon.Entries(55).PokemonID '(Pikachu)
-            Dim evo197 As Integer = fixedPokemon.Entries(60).PokemonID '(Chikorita)
-            Dim evo200 As Integer = fixedPokemon.Entries(61).PokemonID '(Cyndaquil)
-            Dim evo203 As Integer = fixedPokemon.Entries(62).PokemonID '(Totodile)
-            Dim evo322 As Integer = fixedPokemon.Entries(63).PokemonID '(Treecko)
-            Dim evo325 As Integer = fixedPokemon.Entries(64).PokemonID '(Torchic)
-            Dim evo329 As Integer = fixedPokemon.Entries(65).PokemonID '(Mudkip)
-            Dim evo479 As Integer = fixedPokemon.Entries(66).PokemonID '(Turtwig)
-            Dim evo482 As Integer = fixedPokemon.Entries(67).PokemonID '(Chimchar)
-            Dim evo485 As Integer = fixedPokemon.Entries(68).PokemonID '(Piplup)
-            Dim evo537 As Integer = fixedPokemon.Entries(56).PokemonID '(Riolu)
-            Dim evo592 As Integer = fixedPokemon.Entries(69).PokemonID '(Snivy)
-            Dim evo595 As Integer = fixedPokemon.Entries(70).PokemonID '(Tepig)
-            Dim evo598 As Integer = fixedPokemon.Entries(71).PokemonID '(Oshawott)
-            Dim evo766 As Integer = fixedPokemon.Entries(72).PokemonID '(Chespin)
-            Dim evo769 As Integer = fixedPokemon.Entries(73).PokemonID '(Fennekin)
-            Dim evo772 As Integer = fixedPokemon.Entries(74).PokemonID '(Froakie)
-
-            Dim replacementDictionary As New Dictionary(Of Integer, Integer) 'Key: original ID, Value: edited ID
-            replacementDictionary.Add(1, starter1)
-            replacementDictionary.Add(5, starter5)
-            replacementDictionary.Add(10, starter10)
-            replacementDictionary.Add(30, starter30)
-            replacementDictionary.Add(197, starter197)
-            replacementDictionary.Add(200, starter200)
-            replacementDictionary.Add(203, starter203)
-            replacementDictionary.Add(322, starter322)
-            replacementDictionary.Add(325, starter325)
-            replacementDictionary.Add(329, starter329)
-            replacementDictionary.Add(479, starter479)
-            replacementDictionary.Add(482, starter482)
-            replacementDictionary.Add(485, starter485)
-            replacementDictionary.Add(537, starter537)
-            replacementDictionary.Add(592, starter592)
-            replacementDictionary.Add(595, starter595)
-            replacementDictionary.Add(598, starter598)
-            replacementDictionary.Add(766, starter766)
-            replacementDictionary.Add(769, starter769)
-            replacementDictionary.Add(772, starter772)
-
-            Dim evoDictionary As New Dictionary(Of Integer, Integer) 'Key: original evo ID, value: new evo ID
-            evoDictionary.Add(6, evo1)
-            evoDictionary.Add(7, evo5)
-            evoDictionary.Add(12, evo10)
-            evoDictionary.Add(31, evo30)
-            evoDictionary.Add(199, evo197)
-            evoDictionary.Add(202, evo200)
-            evoDictionary.Add(205, evo203)
-            evoDictionary.Add(324, evo322)
-            evoDictionary.Add(327, evo325)
-            evoDictionary.Add(331, evo329)
-            evoDictionary.Add(481, evo479)
-            evoDictionary.Add(484, evo482)
-            evoDictionary.Add(487, evo485)
-            evoDictionary.Add(538, evo537)
-            evoDictionary.Add(594, evo592)
-            evoDictionary.Add(597, evo595)
-            evoDictionary.Add(600, evo598)
-            evoDictionary.Add(768, evo766)
-            evoDictionary.Add(771, evo769)
-            evoDictionary.Add(774, evo772)
-
-            'Patch actor data info
+        ''' <summary>
+        ''' Replaces the Pokemon IDs of pokemon_actor_data_info.bin to allow displaying models in high-res mode
+        ''' </summary>
+        ''' <param name="starters"></param>
+        ''' <returns></returns>
+        Private Async Function FixHighResModels(starters As StarterDefinitions) As Task
             Dim actorInfo As New ActorDataInfo
             Await actorInfo.OpenFile(IO.Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon", "pokemon_actor_data_info.bin"), CurrentPluginManager.CurrentIOProvider)
-            actorInfo.GetEntryByName("FUSHIGIDANE_H").PokemonID = starter1
-            actorInfo.GetEntryByName("HITOKAGE_H").PokemonID = starter5
-            actorInfo.GetEntryByName("ZENIGAME_H").PokemonID = starter10
-            actorInfo.GetEntryByName("PIKACHUU_H").PokemonID = starter30
-            actorInfo.GetEntryByName("PIKACHUU_F_H").PokemonID = starter30
-            actorInfo.GetEntryByName("CHIKORIITA_H").PokemonID = starter197
-            actorInfo.GetEntryByName("HINOARASHI_H").PokemonID = starter200
-            actorInfo.GetEntryByName("WANINOKO_H").PokemonID = starter203
-            actorInfo.GetEntryByName("KIMORI_H").PokemonID = starter322
-            actorInfo.GetEntryByName("ACHAMO_H").PokemonID = starter325
-            actorInfo.GetEntryByName("ACHAMO_F_H").PokemonID = starter325
-            actorInfo.GetEntryByName("MIZUGOROU_H").PokemonID = starter329
-            actorInfo.GetEntryByName("NAETORU_H").PokemonID = starter479
-            actorInfo.GetEntryByName("HIKOZARU_H").PokemonID = starter482
-            actorInfo.GetEntryByName("POTCHAMA_H").PokemonID = starter485
-            actorInfo.GetEntryByName("RIORU_H").PokemonID = starter537
-            actorInfo.GetEntryByName("TSUTAAJA_H").PokemonID = starter592
-            actorInfo.GetEntryByName("POKABU_H").PokemonID = starter595
-            actorInfo.GetEntryByName("MIJUMARU_H").PokemonID = starter598
-            actorInfo.GetEntryByName("HARIMARON_H").PokemonID = starter766
-            actorInfo.GetEntryByName("FOKKO_H").PokemonID = starter769
-            actorInfo.GetEntryByName("KEROMATSU_H").PokemonID = starter772
+            actorInfo.GetEntryByName("FUSHIGIDANE_H").PokemonID = starters.Starter1
+            actorInfo.GetEntryByName("HITOKAGE_H").PokemonID = starters.Starter5
+            actorInfo.GetEntryByName("ZENIGAME_H").PokemonID = starters.Starter10
+            actorInfo.GetEntryByName("PIKACHUU_H").PokemonID = starters.Starter30
+            actorInfo.GetEntryByName("PIKACHUU_F_H").PokemonID = starters.Starter30
+            actorInfo.GetEntryByName("CHIKORIITA_H").PokemonID = starters.Starter197
+            actorInfo.GetEntryByName("HINOARASHI_H").PokemonID = starters.Starter200
+            actorInfo.GetEntryByName("WANINOKO_H").PokemonID = starters.Starter203
+            actorInfo.GetEntryByName("KIMORI_H").PokemonID = starters.Starter322
+            actorInfo.GetEntryByName("ACHAMO_H").PokemonID = starters.Starter325
+            actorInfo.GetEntryByName("ACHAMO_F_H").PokemonID = starters.Starter325
+            actorInfo.GetEntryByName("MIZUGOROU_H").PokemonID = starters.Starter329
+            actorInfo.GetEntryByName("NAETORU_H").PokemonID = starters.Starter479
+            actorInfo.GetEntryByName("HIKOZARU_H").PokemonID = starters.Starter482
+            actorInfo.GetEntryByName("POTCHAMA_H").PokemonID = starters.Starter485
+            actorInfo.GetEntryByName("RIORU_H").PokemonID = starters.Starter537
+            actorInfo.GetEntryByName("TSUTAAJA_H").PokemonID = starters.Starter592
+            actorInfo.GetEntryByName("POKABU_H").PokemonID = starters.Starter595
+            actorInfo.GetEntryByName("MIJUMARU_H").PokemonID = starters.Starter598
+            actorInfo.GetEntryByName("HARIMARON_H").PokemonID = starters.Starter766
+            actorInfo.GetEntryByName("FOKKO_H").PokemonID = starters.Starter769
+            actorInfo.GetEntryByName("KEROMATSU_H").PokemonID = starters.Starter772
             Await actorInfo.Save(CurrentPluginManager.CurrentIOProvider)
+        End Function
 
-            'Replace intro sequence with custom script
-            ' -- TODO: Figure out how to patch this without storing a modified copy
+
+        Private Function GetCustomPersonalityTestScript(starters As StarterDefinitions) As String
             Dim starterscriptContent = My.Resources.PSMDStarterIntroScript
-            starterscriptContent = starterscriptContent.Replace("#Starter1#", starter1.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter5#", starter5.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter10#", starter10.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter30#", starter30.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter197#", starter197.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter200#", starter200.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter203#", starter203.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter322#", starter322.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter325#", starter325.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter329#", starter329.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter479#", starter479.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter482#", starter482.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter485#", starter485.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter537#", starter537.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter592#", starter592.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter595#", starter595.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter598#", starter598.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter766#", starter766.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter769#", starter769.ToString)
-            starterscriptContent = starterscriptContent.Replace("#Starter772#", starter772.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter1#", starters.Starter1.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter5#", starters.Starter5.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter10#", starters.Starter10.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter30#", starters.Starter30.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter197#", starters.Starter197.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter200#", starters.Starter200.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter203#", starters.Starter203.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter322#", starters.Starter322.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter325#", starters.Starter325.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter329#", starters.Starter329.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter479#", starters.Starter479.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter482#", starters.Starter482.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter485#", starters.Starter485.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter537#", starters.Starter537.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter592#", starters.Starter592.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter595#", starters.Starter595.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter598#", starters.Starter598.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter766#", starters.Starter766.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter769#", starters.Starter769.ToString)
+            starterscriptContent = starterscriptContent.Replace("#Starter772#", starters.Starter772.ToString)
 
             Dim pokemonNameHashes = MessageBin.PsmdPokemonNameHashes.Replace(vbCrLf, vbLf).Split(vbLf).Select(Function(x) Integer.Parse(x.Trim))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash1#", pokemonNameHashes(starter1 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash5#", pokemonNameHashes(starter5 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash10#", pokemonNameHashes(starter10 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash30#", pokemonNameHashes(starter30 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash197#", pokemonNameHashes(starter197 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash200#", pokemonNameHashes(starter200 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash203#", pokemonNameHashes(starter203 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash322#", pokemonNameHashes(starter322 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash325#", pokemonNameHashes(starter325 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash329#", pokemonNameHashes(starter329 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash479#", pokemonNameHashes(starter479 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash482#", pokemonNameHashes(starter482 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash485#", pokemonNameHashes(starter485 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash537#", pokemonNameHashes(starter537 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash592#", pokemonNameHashes(starter592 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash595#", pokemonNameHashes(starter595 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash598#", pokemonNameHashes(starter598 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash766#", pokemonNameHashes(starter766 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash769#", pokemonNameHashes(starter769 - 1))
-            starterscriptContent = starterscriptContent.Replace("#StarterHash772#", pokemonNameHashes(starter772 - 1))
-            CurrentPluginManager.CurrentIOProvider.WriteAllText(IO.Path.Combine(Me.GetRootDirectory, "script", "event", "other", "seikakushindan", "seikakushindan.lua"), starterscriptContent)
+            starterscriptContent = starterscriptContent.Replace("#StarterHash1#", pokemonNameHashes(starters.Starter1 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash5#", pokemonNameHashes(starters.Starter5 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash10#", pokemonNameHashes(starters.Starter10 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash30#", pokemonNameHashes(starters.Starter30 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash197#", pokemonNameHashes(starters.Starter197 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash200#", pokemonNameHashes(starters.Starter200 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash203#", pokemonNameHashes(starters.Starter203 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash322#", pokemonNameHashes(starters.Starter322 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash325#", pokemonNameHashes(starters.Starter325 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash329#", pokemonNameHashes(starters.Starter329 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash479#", pokemonNameHashes(starters.Starter479 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash482#", pokemonNameHashes(starters.Starter482 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash485#", pokemonNameHashes(starters.Starter485 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash537#", pokemonNameHashes(starters.Starter537 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash592#", pokemonNameHashes(starters.Starter592 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash595#", pokemonNameHashes(starters.Starter595 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash598#", pokemonNameHashes(starters.Starter598 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash766#", pokemonNameHashes(starters.Starter766 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash769#", pokemonNameHashes(starters.Starter769 - 1))
+            starterscriptContent = starterscriptContent.Replace("#StarterHash772#", pokemonNameHashes(starters.Starter772 - 1))
 
-            'Create language resources
+            Return starterscriptContent
+        End Function
+
+        Private Sub ReplacePersonalityTestScript(starters As StarterDefinitions)
+            CurrentIOProvider.WriteAllText(IO.Path.Combine(Me.GetRootDirectory, "script", "event", "other", "seikakushindan", "seikakushindan.lua"), GetCustomPersonalityTestScript(starters))
+        End Sub
+
+        Private Async Function UpdateLanguageFilesForCustomPersonalityTestScript() As Task
             Dim enLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "en", "seikakushindan.bin")
             Dim frLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "fr", "seikakushindan.bin")
             Dim geLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "ge", "seikakushindan.bin")
@@ -481,6 +392,12 @@ Namespace MysteryDungeon.PSMD.Projects
                 End Using
             End If
 
+        End Function
+
+        ''' <summary>
+        ''' Patches inc_charchoice.lua for use with reporting the results of the custom personality test result screen
+        ''' </summary>
+        Private Async Function FixIncCharChoiceScript(starters As StarterDefinitions) As Task
             'Patch inc_charchoice script
             '-Get the hashes of the scripts to change
             Dim charchoiceRegex = New Regex("function char([A-Z]+)\(\)\s*WINDOW\:SysMsg\((-?[0-9]+)\)", RegexOptions.IgnoreCase)
@@ -517,45 +434,45 @@ Namespace MysteryDungeon.PSMD.Projects
                         Dim pokemonID As Integer
                         Select Case charchoice.Key
                             Case "FUSHIGIDANE"
-                                pokemonID = starter1
+                                pokemonID = starters.Starter1
                             Case "HITOKAGE"
-                                pokemonID = starter5
+                                pokemonID = starters.Starter5
                             Case "ZENIGAME"
-                                pokemonID = starter10
+                                pokemonID = starters.Starter10
                             Case "PIKACHUU"
-                                pokemonID = starter30
+                                pokemonID = starters.Starter30
                             Case "CHIKORIITA"
-                                pokemonID = starter197
+                                pokemonID = starters.Starter197
                             Case "HINOARASHI"
-                                pokemonID = starter200
+                                pokemonID = starters.Starter200
                             Case "WANINOKO"
-                                pokemonID = starter203
+                                pokemonID = starters.Starter203
                             Case "KIMORI"
-                                pokemonID = starter322
+                                pokemonID = starters.Starter322
                             Case "ACHAMO"
-                                pokemonID = starter325
+                                pokemonID = starters.Starter325
                             Case "MIZUGOROU"
-                                pokemonID = starter329
+                                pokemonID = starters.Starter329
                             Case "NAETORU"
-                                pokemonID = starter479
+                                pokemonID = starters.Starter479
                             Case "HIKOZARU"
-                                pokemonID = starter482
+                                pokemonID = starters.Starter482
                             Case "POTCHAMA"
-                                pokemonID = starter485
+                                pokemonID = starters.Starter485
                             Case "RIORU"
-                                pokemonID = starter537
+                                pokemonID = starters.Starter537
                             Case "TSUTAAJA"
-                                pokemonID = starter592
+                                pokemonID = starters.Starter592
                             Case "POKABU"
-                                pokemonID = starter595
+                                pokemonID = starters.Starter595
                             Case "MIJUMARU"
-                                pokemonID = starter598
+                                pokemonID = starters.Starter598
                             Case "HARIMARON"
-                                pokemonID = starter766
+                                pokemonID = starters.Starter766
                             Case "FOKKO"
-                                pokemonID = starter769
+                                pokemonID = starters.Starter769
                             Case "KEROMATSU"
-                                pokemonID = starter772
+                                pokemonID = starters.Starter772
                             Case Else
                                 'Unknown Pokemon name.  Make no changes.
                                 Exit For
@@ -570,8 +487,15 @@ Namespace MysteryDungeon.PSMD.Projects
                     Await charchoiceFile.Save(CurrentPluginManager.CurrentIOProvider)
                 End If
             Next
+        End Function
 
-            'Patch script ID checks
+        ''' <summary>
+        ''' Fixes hard-coded Pokemon IDs in the LUA scripts.
+        ''' </summary>
+        Private Async Function FixPokemonIDsInScripts(starters As StarterDefinitions) As Task
+            Dim replacementDictionary As Dictionary(Of Integer, Integer) = starters.GetReplacementDictionary
+            Dim evoDictionary As Dictionary(Of Integer, Integer) = starters.GetEvoDictionary
+
             Dim patchExpression As New Regex("if ((pokemonIndexHero)|(pokemonIndexPartner)) \=\= ([0-9]{1,3}) then", RegexOptions.Compiled)
             Me.Progress = 0
             Me.IsIndeterminate = False
@@ -608,12 +532,13 @@ Namespace MysteryDungeon.PSMD.Projects
 
                                End Sub)
             Me.Progress = 1
+        End Function
 
-            'Fix incorrectly-placed scarf glow
+        Private Sub FixHarmonyScarfGlow()
             Dim scarfGlowRegex = New Regex("(if(.|\n)*?)(else\s(.|\n)*?)(end)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
             Dim scarfGlowScripts = {"script/event/main15/120_enteishujinkoushinkaboss1st/enteishujinkoushinkaboss1st.lua"}
             For Each item In scarfGlowScripts
-                Dim scriptContent = CurrentPluginManager.CurrentIOProvider.ReadAllText(Path.Combine(Me.GetRootDirectory, item))
+                Dim scriptContent = CurrentIOProvider.ReadAllText(Path.Combine(Me.GetRootDirectory, item))
 
                 For Each targetSection As Match In scarfGlowRegex.Matches(scriptContent)
                     Dim newContent As New StringBuilder
@@ -636,12 +561,195 @@ Namespace MysteryDungeon.PSMD.Projects
                     scriptContent = scriptContent.Replace(targetSection.Value, newContent.ToString())
                 Next
 
-                CurrentPluginManager.CurrentIOProvider.WriteAllText(Path.Combine(Me.GetRootDirectory, item), scriptContent)
+                CurrentIOProvider.WriteAllText(Path.Combine(Me.GetRootDirectory, item), scriptContent)
             Next
+        End Sub
+
+#End Region
+
+        Public Overrides Async Function Initialize() As Task
+            Await MyBase.Initialize()
+
+            'Add fixed_pokemon to project, so we can edit it with our UI
+            Me.AddExistingFile("", Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), CurrentIOProvider)
+
+            Me.IsCompleted = True
+        End Function
+
+        Public Overrides Async Function Build() As Task
+            'Copy the project's fixed_pokemon.bin to the RawFiles directory, so the parent class can generate a patch
+            Dim fpFilename = Me.GetItem("fixed_pokemon.bin").Filename
+            File.Copy(fpFilename, Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), True)
+
+            'Non Pokemon-dependent patches
+            Dim pgdb As New PGDB
+            Await pgdb.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphics_database.bin"), CurrentIOProvider)
+            Await AddMissingModelAnimations(pgdb)
+            Await FixPokemonWithDummyModel(pgdb)
+            Await SubstituteMissingPortraits()
+
+            'Pokemon-dependent patches
+            Dim fixedPokemon As New FixedPokemon()
+            Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)
+            Dim starters = New StarterDefinitions(fixedPokemon)
+            Await FixHighResModels(starters)
+            Await UpdateLanguageFilesForCustomPersonalityTestScript()
+            Await FixIncCharChoiceScript(starters)
+            Await FixPokemonIDsInScripts(starters)
+            FixHarmonyScarfGlow()
 
             'Continue the build (script compilation, mod building, etc.)
             Await MyBase.Build()
         End Function
+
+        Private Class StarterDefinitions
+            Public Sub New(fixedPokemon As FixedPokemon)
+                'Select just what we want.  Note that the numbers in the variable names are the original, unmodified values
+                'It is safe to use static indexes (at least for now) because the game uses them too.
+                'If it is ever discovered where the game stores the indexes, refactoring will need to be done.
+                Starter1 = fixedPokemon.Entries(19).PokemonID 'FUSHIGIDANE_H (Bulbasaur)
+                Starter5 = fixedPokemon.Entries(21).PokemonID 'HITOKAGE_H (Charmander)
+                Starter10 = fixedPokemon.Entries(23).PokemonID 'ZENIGAME_H (Squirtle)
+                Starter30 = fixedPokemon.Entries(17).PokemonID 'PIKACHUU_H (Pikachu)
+                Starter197 = fixedPokemon.Entries(25).PokemonID 'CHIKORIITA_H (Chikorita)
+                Starter200 = fixedPokemon.Entries(27).PokemonID 'HINOARASHI_H (Cyndaquil)
+                Starter203 = fixedPokemon.Entries(29).PokemonID  'WANINOKO_H (Totodile)
+                Starter322 = fixedPokemon.Entries(31).PokemonID  'KIMORI_H (Treecko)
+                Starter325 = fixedPokemon.Entries(33).PokemonID 'ACHAMO_H (Torchic)
+                Starter329 = fixedPokemon.Entries(35).PokemonID 'MIZUGOROU_H (Mudkip)
+                Starter479 = fixedPokemon.Entries(37).PokemonID 'NAETORU_H (Turtwig)
+                Starter482 = fixedPokemon.Entries(39).PokemonID 'HIKOZARU_H (Chimchar)
+                Starter485 = fixedPokemon.Entries(41).PokemonID  'POTCHAMA_H (Piplup)
+                Starter537 = fixedPokemon.Entries(18).PokemonID 'RIORU_H (Riolu)
+                Starter592 = fixedPokemon.Entries(43).PokemonID  'TSUTAAJA_H (Snivy)
+                Starter595 = fixedPokemon.Entries(45).PokemonID  'POKABU_H (Tepig)
+                Starter598 = fixedPokemon.Entries(47).PokemonID  'MIJUMARU_H (Oshawott)
+                Starter766 = fixedPokemon.Entries(49).PokemonID  'HARIMARON_H (Chespin)
+                Starter769 = fixedPokemon.Entries(51).PokemonID  'FOKKO_H (Fennekin)
+                Starter772 = fixedPokemon.Entries(53).PokemonID  'KEROMATSU_H (Froakie)
+
+                Evo1 = fixedPokemon.Entries(57).PokemonID '(Bulbasaur)
+                Evo5 = fixedPokemon.Entries(58).PokemonID '(Charmander)
+                Evo10 = fixedPokemon.Entries(59).PokemonID '(Squirtle)
+                Evo30 = fixedPokemon.Entries(55).PokemonID '(Pikachu)
+                Evo197 = fixedPokemon.Entries(60).PokemonID '(Chikorita)
+                Evo200 = fixedPokemon.Entries(61).PokemonID '(Cyndaquil)
+                Evo203 = fixedPokemon.Entries(62).PokemonID '(Totodile)
+                Evo322 = fixedPokemon.Entries(63).PokemonID '(Treecko)
+                Evo325 = fixedPokemon.Entries(64).PokemonID '(Torchic)
+                Evo329 = fixedPokemon.Entries(65).PokemonID '(Mudkip)
+                Evo479 = fixedPokemon.Entries(66).PokemonID '(Turtwig)
+                Evo482 = fixedPokemon.Entries(67).PokemonID '(Chimchar)
+                Evo485 = fixedPokemon.Entries(68).PokemonID '(Piplup)
+                Evo537 = fixedPokemon.Entries(56).PokemonID '(Riolu)
+                Evo592 = fixedPokemon.Entries(69).PokemonID '(Snivy)
+                Evo595 = fixedPokemon.Entries(70).PokemonID '(Tepig)
+                Evo598 = fixedPokemon.Entries(71).PokemonID '(Oshawott)
+                Evo766 = fixedPokemon.Entries(72).PokemonID '(Chespin)
+                Evo769 = fixedPokemon.Entries(73).PokemonID '(Fennekin)
+                Evo772 = fixedPokemon.Entries(74).PokemonID '(Froakie)
+            End Sub
+
+            Public Starter1 As Integer
+            Public Starter5 As Integer
+            Public Starter10 As Integer
+            Public Starter30 As Integer
+            Public Starter197 As Integer
+            Public Starter200 As Integer
+            Public Starter203 As Integer
+            Public Starter322 As Integer
+            Public Starter325 As Integer
+            Public Starter329 As Integer
+            Public Starter479 As Integer
+            Public Starter482 As Integer
+            Public Starter485 As Integer
+            Public Starter537 As Integer
+            Public Starter592 As Integer
+            Public Starter595 As Integer
+            Public Starter598 As Integer
+            Public Starter766 As Integer
+            Public Starter769 As Integer
+            Public Starter772 As Integer
+
+            Public Evo1 As Integer
+            Public Evo5 As Integer
+            Public Evo10 As Integer
+            Public Evo30 As Integer
+            Public Evo197 As Integer
+            Public Evo200 As Integer
+            Public Evo203 As Integer
+            Public Evo322 As Integer
+            Public Evo325 As Integer
+            Public Evo329 As Integer
+            Public Evo479 As Integer
+            Public Evo482 As Integer
+            Public Evo485 As Integer
+            Public Evo537 As Integer
+            Public Evo592 As Integer
+            Public Evo595 As Integer
+            Public Evo598 As Integer
+            Public Evo766 As Integer
+            Public Evo769 As Integer
+            Public Evo772 As Integer
+
+            ''' <summary>
+            ''' Gets a dictionary representing matching new starter Pokemon IDs to the old.
+            ''' Key: old ID, value: new ID
+            ''' </summary>
+            Public Function GetReplacementDictionary() As Dictionary(Of Integer, Integer)
+                Dim replacementDictionary As New Dictionary(Of Integer, Integer) 'Key: original ID, Value: edited ID
+                replacementDictionary.Add(1, Starter1)
+                replacementDictionary.Add(5, Starter5)
+                replacementDictionary.Add(10, Starter10)
+                replacementDictionary.Add(30, Starter30)
+                replacementDictionary.Add(197, Starter197)
+                replacementDictionary.Add(200, Starter200)
+                replacementDictionary.Add(203, Starter203)
+                replacementDictionary.Add(322, Starter322)
+                replacementDictionary.Add(325, Starter325)
+                replacementDictionary.Add(329, Starter329)
+                replacementDictionary.Add(479, Starter479)
+                replacementDictionary.Add(482, Starter482)
+                replacementDictionary.Add(485, Starter485)
+                replacementDictionary.Add(537, Starter537)
+                replacementDictionary.Add(592, Starter592)
+                replacementDictionary.Add(595, Starter595)
+                replacementDictionary.Add(598, Starter598)
+                replacementDictionary.Add(766, Starter766)
+                replacementDictionary.Add(769, Starter769)
+                replacementDictionary.Add(772, Starter772)
+                Return replacementDictionary
+            End Function
+
+            ''' <summary>
+            ''' Gets a dictionary representing matching new Harmony Scarf Evolution Pokemon IDs to the old.
+            ''' Key: old ID, value: new ID
+            ''' </summary>
+            Public Function GetEvoDictionary() As Dictionary(Of Integer, Integer)
+                Dim evoDictionary As New Dictionary(Of Integer, Integer) 'Key: original evo ID, value: new evo ID
+                evoDictionary.Add(6, Evo1)
+                evoDictionary.Add(7, Evo5)
+                evoDictionary.Add(12, Evo10)
+                evoDictionary.Add(31, Evo30)
+                evoDictionary.Add(199, Evo197)
+                evoDictionary.Add(202, Evo200)
+                evoDictionary.Add(205, Evo203)
+                evoDictionary.Add(324, Evo322)
+                evoDictionary.Add(327, Evo325)
+                evoDictionary.Add(331, Evo329)
+                evoDictionary.Add(481, Evo479)
+                evoDictionary.Add(484, Evo482)
+                evoDictionary.Add(487, Evo485)
+                evoDictionary.Add(538, Evo537)
+                evoDictionary.Add(594, Evo592)
+                evoDictionary.Add(597, Evo595)
+                evoDictionary.Add(600, Evo598)
+                evoDictionary.Add(768, Evo766)
+                evoDictionary.Add(771, Evo769)
+                evoDictionary.Add(774, Evo772)
+                Return evoDictionary
+            End Function
+        End Class
 
     End Class
 End Namespace

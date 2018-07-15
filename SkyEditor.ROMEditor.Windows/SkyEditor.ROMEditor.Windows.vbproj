@@ -220,7 +220,7 @@
     </Compile>
     <Compile Include="MysteryDungeon\Explorers\Projects\PpmduStatsUtilProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\IPsmdMessageBinProject.vb" />
-    <Compile Include="MysteryDungeon\PSMD\Projects\PSMDStarterMod.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Projects\PsmdStarterMod.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\CommandGroup.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\SSA.vb" />
     <Compile Include="Windows\FileFormats\CTR\Smdh.vb" />
