@@ -1,16 +1,27 @@
 ﻿Imports System.Text
 Imports SkyEditor.Core.ConsoleCommands
+Imports SkyEditor.Core.IO
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace Windows.ConsoleCommands
     Public Class PSMDExpTableCsv
         Inherits ConsoleCommand
 
+        Public Sub New(ioProvider As IIOProvider)
+            If ioProvider Is Nothing Then
+                Throw New ArgumentNullException(NameOf(ioProvider))
+            End If
+
+            CurrentIOProvider = ioProvider
+        End Sub
+
+        Protected Property CurrentIOProvider As IIOProvider
+
         Public Overrides Async Function MainAsync(Arguments() As String) As Task
             If Arguments.Length > 0 Then
                 If IO.File.Exists(Arguments(0)) Then
                     Dim exp As New Experience
-                    Await exp.OpenFile(Arguments(0), CurrentApplicationViewModel.CurrentIOProvider)
+                    Await exp.OpenFile(Arguments(0), CurrentIOProvider)
 
                     For Each item In exp.Entries
                         Dim s As New StringBuilder

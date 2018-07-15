@@ -2,6 +2,7 @@
 Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers.Script.Commands
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.Core
 
 Namespace Windows.FileFormats.Explorers.Script
     Partial Public Class SSB
@@ -29,7 +30,10 @@ Namespace Windows.FileFormats.Explorers.Script
         ''' </summary>
         Public Event Modified As EventHandler Implements INotifyModified.Modified
 
-        Public Sub New()
+        Public Sub New(pluginManager As PluginManager)
+            If pluginManager Is Nothing Then
+                Throw New ArgumentNullException(NameOf(pluginManager))
+            End If
             GotoTargetCommands = New List(Of RawCommand)
             CurrentCommandInfo = GetSkyCommandInfo()
         End Sub
@@ -51,6 +55,8 @@ Namespace Windows.FileFormats.Explorers.Script
                 Return Path.GetFileName(Filename)
             End Get
         End Property
+
+        Protected Property CurrentPluginManager As PluginManager
 
         ''' <summary>
         ''' A list of the indexes of the constants that have not been referenced by a known Command type.

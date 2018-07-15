@@ -413,7 +413,7 @@ Namespace Windows.FileFormats.Explorers.Script
         End Function
 
         Public Function CreateCommand(Info As CommandInfo) As RawCommand
-            Dim instance As RawCommand = SkyEditor.Core.Utilities.ReflectionHelpers.CreateInstance(Info.CommandType)
+            Dim instance As RawCommand = CurrentPluginManager.CreateInstance(Info.CommandType)
 
             instance.CommandID = Info.CommandID
             instance.Params = New List(Of UShort)

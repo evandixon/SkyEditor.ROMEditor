@@ -1,4 +1,5 @@
 ﻿Imports System.Reflection
+Imports SkyEditor.Core
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Projects
 Imports SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.PSMD.ViewModels
@@ -8,6 +9,20 @@ Namespace MysteryDungeon.PSMD.Views
     Public Class PsmdLuaLangIntegration
         Inherits DataBoundViewControl
         Implements IDisposable
+
+        Public Sub New(appViewModel As ApplicationViewModel)
+
+            ' This call is required by the designer.
+            InitializeComponent()
+
+            ' Add any initialization after the InitializeComponent() call.
+            If appViewModel Is Nothing Then
+                Throw New ArgumentNullException(NameOf(appViewModel))
+            End If
+            CurrentApplicationViewModel = appViewModel
+        End Sub
+
+        Protected Property CurrentApplicationViewModel As ApplicationViewModel
 
         Private Sub PsmdLuaLangIntegration_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
             Me.Header = DirectCast(ViewModel, INamed).Name

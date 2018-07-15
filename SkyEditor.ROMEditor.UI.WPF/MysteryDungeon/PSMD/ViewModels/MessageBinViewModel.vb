@@ -15,73 +15,16 @@ Namespace MysteryDungeon.PSMD.ViewModels
         Implements INotifyPropertyChanged
         Implements INotifyModified
 
-        Public Class MessageBinEntryViewModel
-            Inherits GenericViewModel(Of MessageBinStringEntry)
-            Implements INotifyPropertyChanged
+        Public Sub New(ioProvider As IIOProvider)
+            If ioProvider Is Nothing Then
+                Throw New ArgumentNullException(NameOf(ioProvider))
+            End If
 
-            Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
-
-            Public Property Hash As UInteger
-                Get
-                    Return Model.Hash
-                End Get
-                Set(value As UInteger)
-                    If Not Model.Hash = value Then
-                        Model.Hash = value
-                        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Hash)))
-                    End If
-                End Set
-            End Property
-
-            Public Property HashSigned As Integer
-                Get
-                    Return Model.HashSigned
-                End Get
-                Set(value As Integer)
-                    If Not Model.HashSigned = value Then
-                        Model.HashSigned = value
-                        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(HashSigned)))
-                    End If
-                End Set
-            End Property
-
-            Public Property Entry As String
-                Get
-                    Return Model.Entry
-                End Get
-                Set(value As String)
-                    If Not Model.Entry = value Then
-                        Model.Entry = value
-                        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Entry)))
-                    End If
-                End Set
-            End Property
-
-            Public Property DebugSymbol As String
-                Get
-                    Return _debugSymbol
-                End Get
-                Set(value As String)
-                    If Not _debugSymbol = value Then
-                        _debugSymbol = value
-                        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(DebugSymbol)))
-                    End If
-                End Set
-            End Property
-            Dim _debugSymbol As String
-
-            Public ReadOnly Property OriginalIndex As Integer
-                Get
-                    Return Model.OriginalIndex
-                End Get
-            End Property
-        End Class
-
-        Public Sub New()
             searchTimer = New Timers.Timer(500)
             cancelSearch = False
             RawEntries = New ObservableCollection(Of MessageBinEntryViewModel)
             ResetSearchCommand = New RelayCommand(AddressOf ResetSearch)
+            CurrentIOProvider = ioProvider
         End Sub
 
 #Region "Events"
@@ -137,6 +80,8 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
         Public ReadOnly Property ExportCommand As RelayCommand
 
+        Protected Property CurrentIOProvider As IIOProvider
+
         Public Async Function Save(provider As IIOProvider) As Task
             UpdateModel(Model)
             Await Model.Save(provider)
@@ -176,7 +121,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
                 output.Append(",")
                 output.Append(item.Entry)
             Next
-            CurrentApplicationViewModel.CurrentIOProvider.WriteAllText(filename, output.ToString)
+            CurrentIOProvider.WriteAllText(filename, output.ToString)
         End Sub
 
         ''' <summary>
@@ -328,6 +273,68 @@ Namespace MysteryDungeon.PSMD.ViewModels
             End If
         End Sub
 #End Region
+
+        Public Class MessageBinEntryViewModel
+            Inherits GenericViewModel(Of MessageBinStringEntry)
+            Implements INotifyPropertyChanged
+
+            Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
+
+            Public Property Hash As UInteger
+                Get
+                    Return Model.Hash
+                End Get
+                Set(value As UInteger)
+                    If Not Model.Hash = value Then
+                        Model.Hash = value
+                        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Hash)))
+                    End If
+                End Set
+            End Property
+
+            Public Property HashSigned As Integer
+                Get
+                    Return Model.HashSigned
+                End Get
+                Set(value As Integer)
+                    If Not Model.HashSigned = value Then
+                        Model.HashSigned = value
+                        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(HashSigned)))
+                    End If
+                End Set
+            End Property
+
+            Public Property Entry As String
+                Get
+                    Return Model.Entry
+                End Get
+                Set(value As String)
+                    If Not Model.Entry = value Then
+                        Model.Entry = value
+                        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(Entry)))
+                    End If
+                End Set
+            End Property
+
+            Public Property DebugSymbol As String
+                Get
+                    Return _debugSymbol
+                End Get
+                Set(value As String)
+                    If Not _debugSymbol = value Then
+                        _debugSymbol = value
+                        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(NameOf(DebugSymbol)))
+                    End If
+                End Set
+            End Property
+            Dim _debugSymbol As String
+
+            Public ReadOnly Property OriginalIndex As Integer
+                Get
+                    Return Model.OriginalIndex
+                End Get
+            End Property
+        End Class
 
     End Class
 End Namespace

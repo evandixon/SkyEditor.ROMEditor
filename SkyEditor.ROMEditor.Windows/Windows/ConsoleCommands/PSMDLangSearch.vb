@@ -1,9 +1,20 @@
 ﻿Imports SkyEditor.Core.ConsoleCommands
+Imports SkyEditor.Core.IO
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace Windows.ConsoleCommands
     Public Class PSMDLangSearch
         Inherits ConsoleCommand
+
+        Public Sub New(ioProvider As IIOProvider)
+            If ioProvider Is Nothing Then
+                Throw New ArgumentNullException(NameOf(ioProvider))
+            End If
+
+            CurrentIOProvider = ioProvider
+        End Sub
+
+        Protected Property CurrentIOProvider As IIOProvider
 
         Public Overrides Async Function MainAsync(Arguments() As String) As Task
             If IO.Directory.Exists(Arguments(0)) Then
@@ -11,7 +22,7 @@ Namespace Windows.ConsoleCommands
                 Dim totalList As New Dictionary(Of UInteger, String)
                 For Each item In IO.Directory.GetFiles(Arguments(0))
                     Dim msg As New MessageBin
-                    Await msg.OpenFile(item, CurrentApplicationViewModel.CurrentIOProvider)
+                    Await msg.OpenFile(item, CurrentIOProvider)
                     languageEntries.Add(IO.Path.GetFileNameWithoutExtension(item), New Dictionary(Of UInteger, String))
                     For Each s In msg.Strings
                         languageEntries(IO.Path.GetFileNameWithoutExtension(item)).Add(s.Hash, s.Entry)
@@ -28,6 +39,8 @@ Namespace Windows.ConsoleCommands
 
                 Console.WriteLine("Language loaded.")
                 Console.WriteLine("In-console searching not implemented.  Please attach debugger.")
+                Console.ReadLine()
+                Debugger.Break()
             Else
                 Console.WriteLine($"Directory ""{Arguments(0)}"" not found.")
             End If

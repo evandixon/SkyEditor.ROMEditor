@@ -1,4 +1,5 @@
 ﻿Imports System.Reflection
+Imports SkyEditor.Core
 Imports SkyEditor.Core.UI
 Imports SkyEditor.ROMEditor.Projects
 Imports SkyEditor.UI.WPF.ViewModels.Projects
@@ -6,6 +7,20 @@ Imports SkyEditor.UI.WPF.ViewModels.Projects
 Namespace MenuActions
     Public Class PsmdSoundtrackMenuAction
         Inherits MenuAction
+
+        Public Sub New(appViewModel As ApplicationViewModel)
+            MyBase.New({My.Resources.Language.MenuUtilities, My.Resources.Language.MenuUtilitiesExportSoundtrack})
+            SortOrder = 4.1
+            IsContextBased = True
+
+            If appViewModel Is Nothing Then
+                Throw New ArgumentNullException(NameOf(appViewModel))
+            End If
+
+            CurrentApplicationViewModel = appViewModel
+        End Sub
+
+        Protected Property CurrentApplicationViewModel As ApplicationViewModel
 
         Public Overrides Function GetSupportedTypes() As IEnumerable(Of TypeInfo)
             Return {GetType(SolutionHeiarchyItemViewModel).GetTypeInfo}
@@ -25,16 +40,10 @@ Namespace MenuActions
             For Each project As SolutionHeiarchyItemViewModel In targets
                 Dim c As New DotNet3dsSoundtrackConverter.SoundtrackConverter
                 Dim sourceDir = DirectCast(project.GetNodeProject, BaseRomProject).GetRawFilesDir
-                Dim outputDir = IO.Path.Combine(project.GetNodeProject.GetRootDirectory, "Soundtrack")
+                Dim outputDir = System.IO.Path.Combine(project.GetNodeProject.GetRootDirectory, "Soundtrack")
                 c.Convert(sourceDir, outputDir)
                 CurrentApplicationViewModel.ShowLoading(c)
             Next
-        End Sub
-
-        Public Sub New()
-            MyBase.New({My.Resources.Language.MenuUtilities, My.Resources.Language.MenuUtilitiesExportSoundtrack})
-            SortOrder = 4.1
-            IsContextBased = True
         End Sub
     End Class
 

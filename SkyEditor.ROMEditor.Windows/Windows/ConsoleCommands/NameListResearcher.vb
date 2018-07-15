@@ -6,6 +6,16 @@ Namespace Windows.ConsoleCommands
     Public Class NameListResearcher
         Inherits ConsoleCommand
 
+        Public Sub New(ioProvider As IIOProvider)
+            If ioProvider Is Nothing Then
+                Throw New ArgumentNullException(NameOf(ioProvider))
+            End If
+
+            CurrentIOProvider = ioProvider
+        End Sub
+
+        Protected Property CurrentIOProvider As IIOProvider
+
         Private Function GetHash(Search As String, File As MessageBin) As MessageBinStringEntry
             Return (From s In File.Strings Where s.Entry = Search).First
         End Function
@@ -17,8 +27,8 @@ Namespace Windows.ConsoleCommands
                     Dim nameOutput As New Text.StringBuilder
                     Dim msg As New GenericFile()
                     Dim msg2 As New MessageBin
-                    Await msg.OpenFile(Arguments(0), CurrentApplicationViewModel.CurrentIOProvider)
-                    Await msg2.OpenFile(Arguments(0), CurrentApplicationViewModel.CurrentIOProvider)
+                    Await msg.OpenFile(Arguments(0), CurrentIOProvider)
+                    Await msg2.OpenFile(Arguments(0), CurrentIOProvider)
                     'Dim position = &HD0BA 'For Items
                     Dim position = &H14F56 'For Moves
                     For count = 0 To 2000

@@ -1,9 +1,20 @@
 ﻿Imports SkyEditor.Core.ConsoleCommands
+Imports SkyEditor.Core.IO
 Imports SkyEditor.ROMEditor.MysteryDungeon
 
 Namespace Windows.ConsoleCommands
     Public Class Sir0Ptrs
         Inherits ConsoleCommand
+
+        Public Sub New(ioProvider As IIOProvider)
+            If ioProvider Is Nothing Then
+                Throw New ArgumentNullException(NameOf(ioProvider))
+            End If
+
+            CurrentIOProvider = ioProvider
+        End Sub
+
+        Protected Property CurrentIOProvider As IIOProvider
 
         Public Overrides Async Function MainAsync(Arguments() As String) As Task
             If Arguments.Length > 0 Then
@@ -11,7 +22,7 @@ Namespace Windows.ConsoleCommands
                     Dim pointers As New Dictionary(Of UInt32, UInt32)
                     Using f As New Sir0
                         f.IsReadOnly = True
-                        Await f.OpenFile(Arguments(0), CurrentApplicationViewModel.CurrentIOProvider)
+                        Await f.OpenFile(Arguments(0), CurrentIOProvider)
                         Dim offset As UInt32 = 0
                         For Each item In f.RelativePointers
                             offset += item
