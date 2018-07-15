@@ -10,12 +10,43 @@ Namespace MysteryDungeon.PSMD
     Public Class MessageBin
         Inherits Sir0
         Implements IOpenableFile
+        Implements IDetectableFileType
 
-        Public Class EntryAddedEventArgs
-            Inherits EventArgs
+        Public Shared ReadOnly Property PsmdPokemonNameHashes() As String
+            Get
+                Return My.Resources.Resources.PSMD_Pokemon_Name_Hashes
+            End Get
+        End Property
 
-            Public Property NewID As UInteger
-        End Class
+        Public Shared ReadOnly Property PsmdMoveNameHashes() As String
+            Get
+                Return My.Resources.Resources.PSMD_Move_Name_Hashes
+            End Get
+        End Property
+
+        Public Shared Shadows Async Function IsFileOfType(file As GenericFile) As Task(Of Boolean)
+            If Not Await Sir0.IsFileOfType(file) Then
+                Return False
+            End If
+
+            Try
+                Using sir0 As New Sir0(file)
+                    Dim stringCount As Integer = BitConverter.ToInt32(sir0.ContentHeader, 0)
+                    Dim stringInfoPointer As Integer = BitConverter.ToInt32(sir0.ContentHeader, 4)
+
+                    For i = 0 To stringCount - 1
+                        Dim stringPointer As Integer = BitConverter.ToInt32(Await sir0.ReadAsync(stringInfoPointer + i * 12 + &H0, 4), 0)
+                        Dim stringHash As UInteger = BitConverter.ToUInt32(Await sir0.ReadAsync(stringInfoPointer + i * 12 + &H4, 4), 0)
+                        Dim unk As UInt32 = BitConverter.ToUInt32(Await sir0.ReadAsync(stringInfoPointer + i * 12 + &H8, 4), 0)
+                    Next
+                End Using
+            Catch ex As Exception
+                Debug.WriteLine("Encountered exception in MessageBin.IsFileOfType: " & ex.ToString)
+                Return False
+            End Try
+
+            Return True
+        End Function
 
         Public Sub New()
             MyBase.New
@@ -220,19 +251,15 @@ Namespace MysteryDungeon.PSMD
             Return pokemonNames
         End Function
 
-        Public Shared ReadOnly Property PsmdPokemonNameHashes() As String
-            Get
+        Private Async Function IDetectableFileType_IsOfType(file As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
+            Return Await MessageBin.IsFileOfType(file)
+        End Function
 
-                Return My.Resources.Resources.PSMD_Pokemon_Name_Hashes
-            End Get
-        End Property
+        Public Class EntryAddedEventArgs
+            Inherits EventArgs
 
-        Public Shared ReadOnly Property PsmdMoveNameHashes() As String
-            Get
-
-                Return My.Resources.Resources.PSMD_Move_Name_Hashes
-            End Get
-        End Property
+            Public Property NewID As UInteger
+        End Class
 
     End Class
 End Namespace

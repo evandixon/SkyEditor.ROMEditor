@@ -6,6 +6,10 @@ Namespace MysteryDungeon.PSMD.Dungeon
         Inherits Sir0
         Implements IDetectableFileType
 
+        Public Shared Shadows Async Function IsFileOfType(file As GenericFile) As Task(Of Boolean)
+            Return Await Sir0.IsFileOfType(file) AndAlso Path.GetFileName(file.Filename) = "fixed_pokemon.bin"
+        End Function
+
         Public Class PokemonEntry
             Private Property Data As Byte()
             Public Property PokemonID As Int16
@@ -151,9 +155,8 @@ Namespace MysteryDungeon.PSMD.Dungeon
             Await MyBase.Save(Destination, provider)
         End Function
 
-        Public Overrides Async Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
-            'Check to see if it's a SIR0 file named "fixed_pokemon.bin"
-            Return Await MyBase.IsOfType(File) AndAlso Path.GetFileName(File.Filename) = "fixed_pokemon.bin"
+        Private Async Function IDetectableFileType_IsOfType(file As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
+            Return Await FixedPokemon.IsFileOfType(file)
         End Function
     End Class
 

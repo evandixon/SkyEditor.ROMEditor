@@ -13,6 +13,39 @@ Namespace MysteryDungeon
         Inherits GenericFile
         Implements IOpenableFile
 
+        Public Shared Async Function IsFileOfType(file As GenericFile) As Task(Of Boolean)
+            If file.Length < 32 Then
+                'File is too small
+                Return False
+            End If
+
+            If Not ((Await file.ReadAsync(0)) = &H53 AndAlso 'S
+                (Await file.ReadAsync(1)) = &H49 AndAlso 'I
+                (Await file.ReadAsync(2)) = &H52 AndAlso 'R
+                (Await file.ReadAsync(3)) = &H30) Then    '0
+                'Magic doesn't match
+                Return False
+            End If
+
+            Dim HeaderOffset = Await file.ReadInt32Async(&H4)
+            Dim PointerOffset = Await file.ReadInt32Async(&H8)
+
+            If file.Length <= HeaderOffset Then
+                'Header pointer is outside the file
+                Return False
+            End If
+
+            If file.Length <= PointerOffset Then
+                'Pointer section is outside the file
+                Return False
+            End If
+
+            Return True
+        End Function
+
+        ''' <summary>
+        ''' Creates a new instance of <see cref="Sir0"/>
+        ''' </summary>
         Public Sub New()
             MyBase.New
             PaddingByte = &H0
@@ -22,6 +55,23 @@ Namespace MysteryDungeon
             SubHeaderRelativePointers = New List(Of Integer)
             EnableInMemoryLoad = True
         End Sub
+
+        ''' <summary>
+        ''' Creates a new, read-only instance of <see cref="Sir0"/>
+        ''' </summary>
+        ''' <param name="file"></param>
+        Public Sub New(file As GenericFile)
+            MyBase.New(file)
+            PaddingByte = &H0
+            ResizeFileOnLoad = False
+            AutoAddSir0HeaderRelativePointers = False
+            RelativePointers = New List(Of Integer)
+            SubHeaderRelativePointers = New List(Of Integer)
+            EnableInMemoryLoad = True
+            ProcessData()
+        End Sub
+
+#Region "Properties"
 
         ''' <summary>
         ''' The byte used to pad blocks that aren't divisible by 0x10.
@@ -104,15 +154,7 @@ Namespace MysteryDungeon
         ''' </summary>
         Public Property AutoAddSir0SubHeaderRelativePointers As Boolean
 
-        Public Overridable Async Function IsOfType(File As GenericFile) As Task(Of Boolean)
-            'Todo: possible parsing of file to ensure file contents are OK.
-            'Checking the magic should be good enough.
-            Return File.Length >= 32 AndAlso
-                (Await File.ReadAsync(0)) = &H53 AndAlso 'S
-                (Await File.ReadAsync(1)) = &H49 AndAlso 'I
-                (Await File.ReadAsync(2)) = &H52 AndAlso 'R
-                (Await File.ReadAsync(3)) = &H30         '0
-        End Function
+#End Region
 
         Public Overridable Overloads Sub CreateFile()
             CreateFile("", {})
@@ -290,7 +332,6 @@ Namespace MysteryDungeon
             End If
 
         End Sub
-
     End Class
 End Namespace
 
