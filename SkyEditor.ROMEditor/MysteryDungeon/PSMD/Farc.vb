@@ -120,8 +120,8 @@ Namespace MysteryDungeon.PSMD
             DataOffset = Await f.ReadInt32Async(&H2C)
             Dim dataLength = Await f.ReadInt32Async(&H30)
 
-            If Sir0Type <> 5 Then
-                Throw New NotSupportedException("Only FARC v5 is supported for the time being")
+            If Sir0Type <> 5 AndAlso Sir0Type <> 4 Then
+                Throw New NotSupportedException("Only FARC v4 and v5 are supported for the time being")
             End If
 
             Dim header = New FarcFat5
@@ -451,7 +451,7 @@ Namespace MysteryDungeon.PSMD
         Public Async Function IsOfType(file As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
             Return file.Length > &H50 AndAlso
                 (Await file.ReadAsync(0, 4)).SequenceEqual({&H46, &H41, &H52, &H43}) AndAlso
-                (Await file.ReadInt32Async(&H20) = 5)
+                (Await file.ReadInt32Async(&H20) = 5 OrElse Await file.ReadInt32Async(&H20) = 4)
         End Function
 
         Public Function GetDefaultExtension() As String Implements ISavableAs.GetDefaultExtension

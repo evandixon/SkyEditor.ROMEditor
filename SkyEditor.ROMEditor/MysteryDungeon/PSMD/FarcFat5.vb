@@ -65,18 +65,25 @@ Namespace MysteryDungeon.PSMD
             Dim fileCount = BitConverter.ToInt32(sir0.ContentHeader, 4)
             Sir0Fat5Type = BitConverter.ToInt32(sir0.ContentHeader, 8)
 
+            Dim entryLength As Integer
+            If Sir0Fat5Type = 0 Then
+                entryLength = 16
+            ElseIf Sir0Fat5Type = 1 Then
+                entryLength = 12
+            Else
+                Throw New NotSupportedException("FAT type not supported: " & Sir0Fat5Type.ToString())
+            End If
+
             For count = 0 To fileCount - 1
                 Dim info As New Entry
                 info.Index = count
 
-                Dim filenameOffset = Await sir0.ReadUInt32Async(dataOffset + count * 12 + 0)
-                info.DataOffset = Await sir0.ReadInt32Async(dataOffset + count * 12 + 4)
-                info.DataLength = Await sir0.ReadInt32Async(dataOffset + count * 12 + 8)
+                Dim filenameOffset = Await sir0.ReadUInt32Async(dataOffset + count * entryLength + 0)
+                info.DataOffset = Await sir0.ReadInt32Async(dataOffset + count * entryLength + 4)
+                info.DataLength = Await sir0.ReadInt32Async(dataOffset + count * entryLength + 8)
 
                 If Sir0Fat5Type = 0 Then
-                    'We're inferring the length based on the offset of the next filename
-                    Dim filenameLength = Await sir0.ReadInt32Async(dataOffset + (count + 1) * 12 + 0) - filenameOffset
-                    info.Filename = Await sir0.ReadUnicodeStringAsync(filenameOffset, filenameLength / 2)
+                    info.Filename = Await sir0.ReadNullTerminatedUnicodeStringAsync(filenameOffset)
                     info.IsFilenameSet = True
                 ElseIf Sir0Fat5Type = 1 Then
                     info.Filename = Conversion.Hex(filenameOffset).PadLeft(8, "0"c)
