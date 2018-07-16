@@ -73,8 +73,8 @@ Namespace MysteryDungeon.PSMD
 
         Public Sub New()
             ResetWorkingDirectory()
-            Entries = New ConcurrentBag(Of Entry)
-            CachedEntries = New ConcurrentDictionary(Of UInteger, Entry)
+            Entries = New ConcurrentBag(Of FarcEntry)
+            CachedEntries = New ConcurrentDictionary(Of UInteger, FarcEntry)
         End Sub
 
         ''' <summary>
@@ -100,15 +100,15 @@ Namespace MysteryDungeon.PSMD
         Public Property PreLoadFiles As Boolean = False
         Public Property EnableInMemoryLoad As Boolean = True
         Public Property Filename As String Implements IOnDisk.Filename
-        Private Property Entries As ConcurrentBag(Of Entry)
-        Private Property CachedEntries As ConcurrentDictionary(Of UInteger, Entry)
+        Private Property Entries As ConcurrentBag(Of FarcEntry)
+        Private Property CachedEntries As ConcurrentDictionary(Of UInteger, FarcEntry)
 
         Public Sub CreateFile()
-            Entries = New ConcurrentBag(Of Entry)
+            Entries = New ConcurrentBag(Of FarcEntry)
         End Sub
 
         Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
-            Entries = New ConcurrentBag(Of Entry)
+            Entries = New ConcurrentBag(Of FarcEntry)
             Dim f As New GenericFile
             f.EnableInMemoryLoad = Me.EnableInMemoryLoad
             Await f.OpenFile(filename, provider)
@@ -128,7 +128,7 @@ Namespace MysteryDungeon.PSMD
             Await header.OpenFile(Await f.ReadAsync(sir0Offset, sir0Length))
 
             For Each item In header.Entries
-                Dim fileEntry As New Entry
+                Dim fileEntry As New FarcEntry
                 If item.IsFilenameSet Then
                     fileEntry.Filename = item.Filename
                 Else
@@ -170,7 +170,7 @@ Namespace MysteryDungeon.PSMD
                         'Identify BGRS files that were not referenced, and infer the names
                         Dim af As New AsyncFor
                         Await af.RunForEach(Entries.Where(Function(e) e.Filename Is Nothing),
-                                     Async Function(unmatchedFile As Entry) As Task
+                                     Async Function(unmatchedFile As FarcEntry) As Task
                                          Dim data = Await GetFileDataAsync(unmatchedFile)
                                          Using dataFile As New GenericFile()
                                              dataFile.CreateFile(data)
@@ -270,7 +270,7 @@ Namespace MysteryDungeon.PSMD
             Next
         End Sub
 
-        Protected Function GetFileEntry(fileHash As UInteger) As Entry
+        Protected Function GetFileEntry(fileHash As UInteger) As FarcEntry
             If Not CachedEntries.ContainsKey(fileHash) Then
                 Dim entry = Entries.FirstOrDefault(Function(x) x.FilenameHash = fileHash)
                 CachedEntries(fileHash) = entry
@@ -278,7 +278,7 @@ Namespace MysteryDungeon.PSMD
             Return CachedEntries(fileHash)
         End Function
 
-        Protected Function GetFileEntry(filename As String) As Entry
+        Protected Function GetFileEntry(filename As String) As FarcEntry
             Dim hex As UInteger
             Dim hash As UInteger
             If UInteger.TryParse(filename, NumberStyles.HexNumber, NumberFormatInfo.CurrentInfo, hex) Then
@@ -296,14 +296,14 @@ Namespace MysteryDungeon.PSMD
             Return entry
         End Function
 
-        Protected Function GetFileData(entry As Entry) As Byte()
+        Protected Function GetFileData(entry As FarcEntry) As Byte()
             If entry.FileData Is Nothing Then
                 entry.FileData = InnerData.Read(DataOffset + entry.DataEntry.DataOffset, entry.DataEntry.DataLength)
             End If
             Return entry.FileData
         End Function
 
-        Protected Async Function GetFileDataAsync(entry As Entry) As Task(Of Byte())
+        Protected Async Function GetFileDataAsync(entry As FarcEntry) As Task(Of Byte())
             If entry.FileData Is Nothing Then
                 entry.FileData = Await InnerData.ReadAsync(DataOffset + entry.DataEntry.DataOffset, entry.DataEntry.DataLength)
             End If
@@ -317,6 +317,10 @@ Namespace MysteryDungeon.PSMD
             Else
                 Return Nothing
             End If
+        End Function
+
+        Public Function GetEntries() As IEnumerable(Of FarcEntry)
+            Return Entries
         End Function
 
         Public Sub ResizeFileData(filename As String, newSize As Integer)
@@ -354,7 +358,7 @@ Namespace MysteryDungeon.PSMD
             Dim a As New AsyncFor
             a.RunSynchronously = Not InnerData.IsThreadSafe
             AddHandler a.ProgressChanged, onProgressed
-            Await a.RunForEach(Entries, Async Function(item As Entry) As Task
+            Await a.RunForEach(Entries, Async Function(item As FarcEntry) As Task
                                             provider.WriteAllBytes(Path.Combine(outputDirectory, If(item.Filename, item.FilenameHash.Value.ToString("X"))), Await GetFileDataAsync(item))
                                         End Function)
             RemoveHandler a.ProgressChanged, onProgressed
@@ -465,7 +469,7 @@ Namespace MysteryDungeon.PSMD
             CachedEntries?.Clear()
             CachedEntries = Nothing
 
-            Dim entry As Entry = Nothing
+            Dim entry As FarcEntry = Nothing
             While Entries?.TryTake(entry)
                 'Do nothing; just want to clear Entries
             End While
@@ -542,7 +546,7 @@ Namespace MysteryDungeon.PSMD
             If entry IsNot Nothing Then
                 entry.FileData = data
             Else
-                entry = New Entry
+                entry = New FarcEntry
 
                 Dim hex As UInteger
                 If UInteger.TryParse(filename, NumberStyles.HexNumber, NumberFormatInfo.CurrentInfo, hex) Then
@@ -603,7 +607,7 @@ Namespace MysteryDungeon.PSMD
 #End Region
 
 #Region "Child Classes"
-        Protected Class Entry
+        Public Class FarcEntry
             ''' <summary>
             ''' Gets or sets the filename, updating the filename hash on set
             ''' </summary>

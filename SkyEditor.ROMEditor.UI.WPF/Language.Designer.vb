@@ -344,6 +344,24 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Filename.
+        '''</summary>
+        Public Shared ReadOnly Property Filename() As String
+            Get
+                Return ResourceManager.GetString("Filename", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to File Size.
+        '''</summary>
+        Public Shared ReadOnly Property FileSize() As String
+            Get
+                Return ResourceManager.GetString("FileSize", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to French.
         '''</summary>
         Public Shared ReadOnly Property French() As String

@@ -565,7 +565,7 @@ Namespace Windows.FileFormats.Explorers.Script
 
         Public Function IsOfType(File As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
             'Todo: actually look at the file contents to verify its integrity
-            Return Task.FromResult(File.Filename.ToLower.EndsWith(".ssb"))
+            Return Task.FromResult(If(File.Filename?.ToLower.EndsWith(".ssb"), False))
         End Function
 
         Public Sub RaiseModified()

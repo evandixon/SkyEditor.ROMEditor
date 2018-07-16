@@ -103,13 +103,13 @@
       <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.1.0-CI9\lib\net462\SkyEditor.CodeEditor.UI.WPF.exe</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI203\lib\net462\SkyEditor.Core.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI213\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI108\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.149, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI149\lib\net462\SkyEditor.UI.WPF.dll</HintPath>
+    <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.150, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI150\lib\net462\SkyEditor.UI.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -221,6 +221,7 @@
     <Compile Include="MenuActions\CteImageExport.vb" />
     <Compile Include="MenuActions\CteImageImport.vb" />
     <Compile Include="MenuActions\PsmdSoundtrackAction.vb" />
+    <Compile Include="MysteryDungeon\PSMD\ViewModels\FarcViewModel.vb" />
     <Compile Include="MysteryDungeon\PSMD\ViewModels\FixedPokemonEntryViewModel.vb" />
     <Compile Include="MysteryDungeon\PSMD\ViewModels\FixedPokemonStarterViewModel.vb" />
     <Compile Include="MysteryDungeon\PSMD\ViewModels\MessageBinViewModel.vb" />
@@ -228,6 +229,9 @@
       <DependentUpon>BGPControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="MysteryDungeon\PSMD\ViewModels\PGDBViewModel.vb" />
+    <Compile Include="MysteryDungeon\PSMD\Views\FarcView.xaml.vb">
+      <DependentUpon>FarcView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MysteryDungeon\PSMD\Views\FixedPokemonEntry.xaml.vb">
       <DependentUpon>FixedPokemonEntry.xaml</DependentUpon>
     </Compile>
@@ -286,6 +290,10 @@
     <Page Include="MysteryDungeon\Explorers\Views\BGPControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MysteryDungeon\PSMD\Views\FarcView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MysteryDungeon\PSMD\Views\FixedPokemonEntry.xaml">
       <SubType>Designer</SubType>

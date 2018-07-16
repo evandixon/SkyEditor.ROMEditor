@@ -10,6 +10,7 @@ Namespace MysteryDungeon.PSMD
     Public Class MessageBin
         Inherits Sir0
         Implements IOpenableFile
+        Implements IOpenableFromGenericFile
         Implements IDetectableFileType
 
         Public Shared ReadOnly Property PsmdPokemonNameHashes() As String
@@ -76,6 +77,12 @@ Namespace MysteryDungeon.PSMD
 
         Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
+
+            ProcessData()
+        End Function
+
+        Public Overrides Async Function OpenFile(file As GenericFile) As Task Implements IOpenableFromGenericFile.OpenFile
+            Await MyBase.OpenFile(file)
 
             ProcessData()
         End Function

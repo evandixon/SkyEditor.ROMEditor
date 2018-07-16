@@ -525,4 +525,10 @@ evandixon (Personality test, bgp files)</value>
   <data name="MenuFarcSubstitute" xml:space="preserve">
     <value>Substitute Missing Animations</value>
   </data>
+  <data name="Filename" xml:space="preserve">
+    <value>Filename</value>
+  </data>
+  <data name="FileSize" xml:space="preserve">
+    <value>File Size</value>
+  </data>
 </root>

@@ -3,6 +3,24 @@
 Namespace MysteryDungeon.PSMD
     Public Class MessageBinDebug
         Inherits MessageBin
+        Implements IDetectableFileType
+
+        Public Shared Shadows Async Function IsFileOfType(file As GenericFile) As Task(Of Boolean)
+            If Not Await Sir0.IsFileOfType(file) Then
+                Return False
+            End If
+
+            Try
+                Using messageBinDebug As New MessageBinDebug()
+                    Await messageBinDebug.OpenFile(file)
+                End Using
+            Catch ex As Exception
+                Debug.WriteLine("Encountered exception in MessageBinDebug.IsFileOfType: " & ex.ToString)
+                Return False
+            End Try
+
+            Return True
+        End Function
 
         Protected Overrides ReadOnly Property SkipMessageBinSave As Boolean = True
 
@@ -87,6 +105,11 @@ Namespace MysteryDungeon.PSMD
 
             'Let the general SIR0 stuff happen
             Await MyBase.Save(Destination, provider)
+        End Function
+
+
+        Private Async Function IDetectableFileType_IsOfType(file As GenericFile) As Task(Of Boolean) Implements IDetectableFileType.IsOfType
+            Return Await MessageBinDebug.IsFileOfType(file)
         End Function
     End Class
 End Namespace
