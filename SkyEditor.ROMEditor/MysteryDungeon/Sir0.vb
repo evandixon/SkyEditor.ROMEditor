@@ -12,7 +12,6 @@ Namespace MysteryDungeon
     Public Class Sir0
         Inherits GenericFile
         Implements IOpenableFile
-        Implements IOpenableFromGenericFile
 
         Public Shared Async Function IsFileOfType(file As GenericFile) As Task(Of Boolean)
             If file.Length < 32 Then
@@ -174,7 +173,7 @@ Namespace MysteryDungeon
             ProcessData()
         End Function
 
-        Public Overrides Async Function OpenFile(file As GenericFile) As Task Implements IOpenableFromGenericFile.OpenFile
+        Public Overrides Async Function OpenFile(file As GenericFile) As Task
             Await MyBase.OpenFile(file)
             ProcessData()
         End Function

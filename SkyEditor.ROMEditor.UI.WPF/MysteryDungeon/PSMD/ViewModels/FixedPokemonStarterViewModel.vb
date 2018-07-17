@@ -9,10 +9,21 @@ Namespace MysteryDungeon.PSMD.ViewModels
         Implements INotifyModified
         Implements INotifyPropertyChanged
 
+        Public Sub New(ioProvider As IIOProvider)
+            If ioProvider Is Nothing Then
+                Throw New ArgumentNullException(NameOf(ioProvider))
+            End If
+
+            CurrentIOProvider = ioProvider
+        End Sub
+
         Public Event Modified As EventHandler Implements INotifyModified.Modified
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
+        Protected Property CurrentIOProvider As IIOProvider
+
         Public Property StarterEntries As List(Of FixedPokemonEntryViewModel)
+
         Public Property EvolutionEntries As List(Of FixedPokemonEntryViewModel)
 
         Public Property SelectedStarterEntry As FixedPokemonEntryViewModel
@@ -143,8 +154,8 @@ Namespace MysteryDungeon.PSMD.ViewModels
             RaiseEvent Modified(Me, New EventArgs)
         End Sub
 
-        Private Async Function CreateFileViewModel(model As Object) As Task(Of FixedPokemonEntryViewModel)
-            Dim vm As New FixedPokemonEntryViewModel
+        Private Async Function CreateFileViewModel(model As FixedPokemon.PokemonEntry) As Task(Of FixedPokemonEntryViewModel)
+            Dim vm As New FixedPokemonEntryViewModel(Me.Model, CurrentIOProvider)
             vm.SetApplicationViewModel(CurrentApplicationViewModel)
             vm.SetModel(model)
             Await vm.SetLanguageProject(CurrentApplicationViewModel.GetFileViewModelForModel(Me.Model).ParentProject)
@@ -157,7 +168,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
         ''' Clears the list, or initializes it if null.
         ''' </summary>
         ''' <param name="list">List to clear or initialize.</param>
-        ''' <remarks>Also removes event handlers added by <see cref="CreateFileViewModel(Object)"/>.</remarks>
+        ''' <remarks>Also removes event handlers added by <see cref="CreateFileViewModel(FixedPokemon.PokemonEntry)"/>.</remarks>
         Private Sub ClearList(ByRef list As List(Of FixedPokemonEntryViewModel))
             If list Is Nothing Then
                 list = New List(Of FixedPokemonEntryViewModel)
