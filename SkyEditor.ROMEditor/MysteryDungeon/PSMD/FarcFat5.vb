@@ -40,6 +40,12 @@ Namespace MysteryDungeon.PSMD
 
         Public Property Sir0Fat5Type As Integer
 
+        Public ReadOnly Property UsesFilenames As Boolean
+            Get
+                Return Sir0Fat5Type = 0
+            End Get
+        End Property
+
         Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Entries = New List(Of Entry)
 

@@ -150,117 +150,119 @@ Namespace MysteryDungeon.PSMD
             Me.Filename = filename
 
             'Try to load filenames
-            Select Case Path.GetFileName(filename).ToLower()
-                Case "image_2d.bin"
-                    Dim dbPath = Path.Combine(Path.GetDirectoryName(filename), "image_2d_database.bin")
-                    If provider.FileExists(dbPath) Then
-                        Dim dbFile As New SAJD
-                        Await dbFile.OpenFile(dbPath, provider)
-                        SetFilenames(dbFile.Entries.Select(Function(e) e.FileName & ".img"))
-                    End If
-                Case "pokemon_graphic.bin"
-                    Dim dbPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon_graphics_database.bin")
-                    If provider.FileExists(dbPath) Then
-                        Dim dbFile As New PGDB
-                        Await dbFile.OpenFile(dbPath, provider)
+            If Not header.UsesFilenames Then
+                Select Case Path.GetFileName(filename).ToLower()
+                    Case "image_2d.bin"
+                        Dim dbPath = Path.Combine(Path.GetDirectoryName(filename), "image_2d_database.bin")
+                        If provider.FileExists(dbPath) Then
+                            Dim dbFile As New SAJD
+                            Await dbFile.OpenFile(dbPath, provider)
+                            SetFilenames(dbFile.Entries.Select(Function(e) e.FileName & ".img"))
+                        End If
+                    Case "pokemon_graphic.bin"
+                        Dim dbPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon_graphics_database.bin")
+                        If provider.FileExists(dbPath) Then
+                            Dim dbFile As New PGDB
+                            Await dbFile.OpenFile(dbPath, provider)
 
-                        SetFilenames(dbFile.Entries.Select(Function(e) e.PrimaryBgrsFilename).Distinct())
-                        SetFilenames(dbFile.Entries.Select(Function(e) e.SecondaryBgrsName & ".bgrs").Distinct())
+                            SetFilenames(dbFile.Entries.Select(Function(e) e.PrimaryBgrsFilename).Distinct())
+                            SetFilenames(dbFile.Entries.Select(Function(e) e.SecondaryBgrsName & ".bgrs").Distinct())
 
-                        'Identify BGRS files that were not referenced, and infer the names
-                        Dim af As New AsyncFor
-                        Await af.RunForEach(Entries.Where(Function(e) e.Filename Is Nothing),
-                                     Async Function(unmatchedFile As FarcEntry) As Task
-                                         Dim data = Await GetFileDataAsync(unmatchedFile)
-                                         Using dataFile As New GenericFile()
-                                             dataFile.CreateFile(data)
+                            'Identify BGRS files that were not referenced, and infer the names
+                            Dim af As New AsyncFor
+                            Await af.RunForEach(Entries.Where(Function(e) e.Filename Is Nothing),
+                                         Async Function(unmatchedFile As FarcEntry) As Task
+                                             Dim data = Await GetFileDataAsync(unmatchedFile)
+                                             Using dataFile As New GenericFile()
+                                                 dataFile.CreateFile(data)
 
-                                             Dim bgrs As New BGRS
-                                             If Await bgrs.IsOfType(dataFile) Then
-                                                 Await bgrs.OpenFile(data)
+                                                 Dim bgrs As New BGRS
+                                                 If Await bgrs.IsOfType(dataFile) Then
+                                                     Await bgrs.OpenFile(data)
 
-                                                 SetFilenames({bgrs.BgrsName & ".bgrs"}, False)
-                                             End If
-                                         End Using
-                                     End Function)
+                                                     SetFilenames({bgrs.BgrsName & ".bgrs"}, False)
+                                                 End If
+                                             End Using
+                                         End Function)
 
-                        'Infer BCH files from BGRS
-                        Dim bchFilenames As New List(Of String)
-                        For Each bgrsFilename In Entries.Where(Function(e) e.Filename IsNot Nothing AndAlso e.Filename.EndsWith(".bgrs")).Select(Function(e) e.Filename)
-                            Dim bgrs As New BGRS
-                            Await bgrs.OpenFile("/" & bgrsFilename, Me)
-                            bchFilenames.Add(bgrs.ReferencedBchFileName)
-                            For Each item In bgrs.Animations
-                                bchFilenames.Add(item.Name & ".bchmata")
-                                bchFilenames.Add(item.Name & ".bchskla")
+                            'Infer BCH files from BGRS
+                            Dim bchFilenames As New List(Of String)
+                            For Each bgrsFilename In Entries.Where(Function(e) e.Filename IsNot Nothing AndAlso e.Filename.EndsWith(".bgrs")).Select(Function(e) e.Filename)
+                                Dim bgrs As New BGRS
+                                Await bgrs.OpenFile("/" & bgrsFilename, Me)
+                                bchFilenames.Add(bgrs.ReferencedBchFileName)
+                                For Each item In bgrs.Animations
+                                    bchFilenames.Add(item.Name & ".bchmata")
+                                    bchFilenames.Add(item.Name & ".bchskla")
+                                Next
+                            Next
+
+                            SetFilenames(bchFilenames.Distinct(), False)
+                        End If
+                    Case "message.bin",
+                         "message_en.bin",
+                         "message_fr.bin",
+                         "message_ge.bin",
+                         "message_it.bin",
+                         "message_sp.bin",
+                         "message_us.bin",
+                         "message_debug.bin",
+                         "message_debug_en.bin",
+                         "message_debug_fr.bin",
+                         "message_debug_ge.bin",
+                         "message_debug_it.bin",
+                         "message_debug_sp.bin",
+                         "message_debug_us.bin"
+                        Dim dbPath = Path.ChangeExtension(filename, ".lst")
+                        If provider.FileExists(dbPath) Then
+                            Dim lines = provider.ReadAllText(dbPath).Split(vbLf)
+                            SetFilenames(lines.Select(Function(l) Path.GetFileName(l.Trim)))
+                        End If
+                    Case "face_graphic.bin"
+                        Dim msgDebugPath = Path.Combine(Path.GetDirectoryName(filename), "message_debug.bin")
+                        Dim graphicsDbPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon_graphics_database.bin")
+                        Dim actorDataPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon", "pokemon_actor_data_info.bin")
+
+                        Dim pokemonNames As New List(Of String)
+                        If provider.FileExists(msgDebugPath) Then
+                            Dim debugMsg As New Farc
+                            Await debugMsg.OpenFile(msgDebugPath, provider)
+
+                            Dim commonDebugMsg As New MessageBinDebug
+                            Await commonDebugMsg.OpenFile("common.dbin", debugMsg)
+
+                            pokemonNames.AddRange(commonDebugMsg.GetCommonPokemonNames().Select(Function(p) p.Value.ToLower().Replace("pokemon_", "")))
+                        End If
+
+                        If provider.FileExists(graphicsDbPath) Then
+                            Dim graphicsDb As New PGDB
+                            Await graphicsDb.OpenFile(graphicsDbPath, provider)
+                            pokemonNames.AddRange(graphicsDb.Entries.Select(Function(x) x.ActorName))
+                        End If
+
+                        If provider.FileExists(actorDataPath) Then
+                            Dim actorInfo As New ActorDataInfo
+                            Await actorInfo.OpenFile(actorDataPath, provider)
+                            pokemonNames.AddRange(actorInfo.Entries.Select(Function(x) x.Name.ToLower()))
+                        End If
+
+                        pokemonNames = pokemonNames.Distinct().ToList()
+
+                        Dim potentialFilenames As New List(Of String)
+                        For Each pokemonName In pokemonNames
+                            For emotionNumber = 0 To 50
+                                potentialFilenames.Add($"{pokemonName}_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                                potentialFilenames.Add($"{pokemonName}_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                                potentialFilenames.Add($"{pokemonName}_f_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                                potentialFilenames.Add($"{pokemonName}_f{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                                potentialFilenames.Add($"{pokemonName}_f_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                                potentialFilenames.Add($"{pokemonName}_r_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
                             Next
                         Next
+                        SetFilenames(potentialFilenames)
+                End Select
 
-                        SetFilenames(bchFilenames.Distinct(), False)
-                    End If
-                Case "message.bin",
-                     "message_en.bin",
-                     "message_fr.bin",
-                     "message_ge.bin",
-                     "message_it.bin",
-                     "message_sp.bin",
-                     "message_us.bin",
-                     "message_debug.bin",
-                     "message_debug_en.bin",
-                     "message_debug_fr.bin",
-                     "message_debug_ge.bin",
-                     "message_debug_it.bin",
-                     "message_debug_sp.bin",
-                     "message_debug_us.bin"
-                    Dim dbPath = Path.ChangeExtension(filename, ".lst")
-                    If provider.FileExists(dbPath) Then
-                        Dim lines = provider.ReadAllText(dbPath).Split(vbLf)
-                        SetFilenames(lines.Select(Function(l) Path.GetFileName(l.Trim)))
-                    End If
-                Case "face_graphic.bin"
-                    Dim msgDebugPath = Path.Combine(Path.GetDirectoryName(filename), "message_debug.bin")
-                    Dim graphicsDbPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon_graphics_database.bin")
-                    Dim actorDataPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon", "pokemon_actor_data_info.bin")
-
-                    Dim pokemonNames As New List(Of String)
-                    If provider.FileExists(msgDebugPath) Then
-                        Dim debugMsg As New Farc
-                        Await debugMsg.OpenFile(msgDebugPath, provider)
-
-                        Dim commonDebugMsg As New MessageBinDebug
-                        Await commonDebugMsg.OpenFile("common.dbin", debugMsg)
-
-                        pokemonNames.AddRange(commonDebugMsg.GetCommonPokemonNames().Select(Function(p) p.Value.ToLower().Replace("pokemon_", "")))
-                    End If
-
-                    If provider.FileExists(graphicsDbPath) Then
-                        Dim graphicsDb As New PGDB
-                        Await graphicsDb.OpenFile(graphicsDbPath, provider)
-                        pokemonNames.AddRange(graphicsDb.Entries.Select(Function(x) x.ActorName))
-                    End If
-
-                    If provider.FileExists(actorDataPath) Then
-                        Dim actorInfo As New ActorDataInfo
-                        Await actorInfo.OpenFile(actorDataPath, provider)
-                        pokemonNames.AddRange(actorInfo.Entries.Select(Function(x) x.Name.ToLower()))
-                    End If
-
-                    pokemonNames = pokemonNames.Distinct().ToList()
-
-                    Dim potentialFilenames As New List(Of String)
-                    For Each pokemonName In pokemonNames
-                        For emotionNumber = 0 To 50
-                            potentialFilenames.Add($"{pokemonName}_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                            potentialFilenames.Add($"{pokemonName}_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                            potentialFilenames.Add($"{pokemonName}_f_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                            potentialFilenames.Add($"{pokemonName}_f{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                            potentialFilenames.Add($"{pokemonName}_f_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                            potentialFilenames.Add($"{pokemonName}_r_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                        Next
-                    Next
-                    SetFilenames(potentialFilenames)
-            End Select
-
+            End If
         End Function
 
         Protected Sub RefreshEntryCache()
