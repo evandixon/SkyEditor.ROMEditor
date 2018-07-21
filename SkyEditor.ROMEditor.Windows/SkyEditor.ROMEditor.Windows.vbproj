@@ -179,6 +179,7 @@
   <ItemGroup>
     <Compile Include="DsModSolutionInitializationWizard.vb" />
     <Compile Include="MysteryDungeon\Explorers\Kaomado.vb" />
+    <Compile Include="MysteryDungeon\PSMD\FarcExtensions.vb" />
     <Compile Include="MysteryDungeon\PSMD\PmdGraphics.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\PsmdPokemonGraphicsProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\PsmdPortraitProject.vb" />

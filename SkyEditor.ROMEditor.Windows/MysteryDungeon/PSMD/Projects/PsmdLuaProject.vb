@@ -443,10 +443,7 @@ Namespace MysteryDungeon.PSMD.Projects
         Public Overrides Function GetFilesToCopy(Solution As Solution, BaseRomProjectName As String) As IEnumerable(Of String)
             Dim project As Project = Solution.GetProjectsByName(BaseRomProjectName).FirstOrDefault
             If project IsNot Nothing AndAlso TypeOf project Is BaseRomProject Then
-                Dim code = DirectCast(project, BaseRomProject).GameCode
-                Dim psmd As New Regex(GameStrings.PSMDCode)
-                Dim gti As New Regex(GameStrings.GTICode)
-                If psmd.IsMatch(code) Then
+                If IsPsmd Then
                     Return {Path.Combine("romfs", "script"),
                             Path.Combine("romfs", "message_en.bin"),
                             Path.Combine("romfs", "message_fr.bin"),
@@ -475,19 +472,23 @@ Namespace MysteryDungeon.PSMD.Projects
                             Path.Combine("romfs", "message_debug_it.lst"),
                             Path.Combine("romfs", "message_debug_sp.lst"),
                             Path.Combine("romfs", "message_debug_us.lst"),
-                            Path.Combine("romfs", "message_debug.lst")}
-                ElseIf gti.IsMatch(code) Then
+                            Path.Combine("romfs", "message_debug.lst"),
+                            Path.Combine("ExHeader.bin")}
+                ElseIf IsGti Then
                     Return {Path.Combine("romfs", "script"),
                             Path.Combine("romfs", "message_fr"),
                             Path.Combine("romfs", "message_ge"),
                             Path.Combine("romfs", "message_it"),
                             Path.Combine("romfs", "message_sp"),
-                            Path.Combine("romfs", "message")}
+                            Path.Combine("romfs", "message"),
+                            Path.Combine("ExHeader.bin")}
                 Else
-                    Return {Path.Combine("romfs", "script")}
+                    Return {Path.Combine("romfs", "script"),
+                            Path.Combine("ExHeader.bin")}
                 End If
             Else
-                Return {Path.Combine("romfs", "script")}
+                Return {Path.Combine("romfs", "script"),
+                            Path.Combine("ExHeader.bin")}
             End If
         End Function
 
