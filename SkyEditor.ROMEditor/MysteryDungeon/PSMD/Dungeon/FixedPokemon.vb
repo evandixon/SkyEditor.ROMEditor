@@ -11,6 +11,33 @@ Namespace MysteryDungeon.PSMD.Dungeon
         End Function
 
         Public Class PokemonEntry
+            Public Sub New(RawData As Byte())
+                Data = RawData
+
+                PokemonID = BitConverter.ToInt16(RawData, 0)
+                HPBoost = BitConverter.ToInt16(RawData, 2)
+                Move1 = BitConverter.ToUInt16(RawData, 8)
+                Move2 = BitConverter.ToUInt16(RawData, &HA)
+                Move3 = BitConverter.ToUInt16(RawData, &HC)
+                Move4 = BitConverter.ToUInt16(RawData, &HE)
+                Level = RawData(&H16)
+                AttackBoost = Data(&H17)
+                SpAttackBoost = Data(&H18)
+                DefenseBoost = Data(&H19)
+                SpDefenseBoost = Data(&H1A)
+                SpeedBoost = Data(&H1B)
+            End Sub
+
+            Public Sub New()
+                Dim tmp(&H30 - 1) As Byte
+                PokemonID = 0
+                Move1 = 0
+                Move2 = 0
+                Move3 = 0
+                Move4 = 0
+                Data = tmp
+            End Sub
+
             Private Property Data As Byte()
             Public Property PokemonID As Int16
             Public Property Move1 As UInt16
@@ -23,6 +50,8 @@ Namespace MysteryDungeon.PSMD.Dungeon
             Public Property DefenseBoost As Byte
             Public Property SpDefenseBoost As Byte
             Public Property SpeedBoost As Byte
+            Public Property Level As Byte
+
             Public Function GetBytes() As Byte()
                 Dim pid = BitConverter.GetBytes(PokemonID)
                 Dim m1 = BitConverter.GetBytes(Move1)
@@ -38,6 +67,7 @@ Namespace MysteryDungeon.PSMD.Dungeon
                     Data(&HE + count) = m4(count)
                 Next
 
+                Data(&H16) = Level
                 Data(&H17) = AttackBoost
                 Data(&H18) = SpAttackBoost
                 Data(&H19) = DefenseBoost
@@ -46,33 +76,11 @@ Namespace MysteryDungeon.PSMD.Dungeon
 
                 Return Data
             End Function
+
             Public Overrides Function ToString() As String
                 Return PokemonID.ToString
             End Function
-            Public Sub New(RawData As Byte())
-                Data = RawData
 
-                PokemonID = BitConverter.ToInt16(RawData, 0)
-                HPBoost = BitConverter.ToInt16(RawData, 2)
-                Move1 = BitConverter.ToUInt16(RawData, 8)
-                Move2 = BitConverter.ToUInt16(RawData, &HA)
-                Move3 = BitConverter.ToUInt16(RawData, &HC)
-                Move4 = BitConverter.ToUInt16(RawData, &HE)
-                AttackBoost = Data(&H17)
-                SpAttackBoost = Data(&H18)
-                DefenseBoost = Data(&H19)
-                SpDefenseBoost = Data(&H1A)
-                SpeedBoost = Data(&H1B)
-            End Sub
-            Public Sub New()
-                Dim tmp(&H30 - 1) As Byte
-                PokemonID = 0
-                Move1 = 0
-                Move2 = 0
-                Move3 = 0
-                Move4 = 0
-                Data = tmp
-            End Sub
         End Class
 
         Public Sub New()
