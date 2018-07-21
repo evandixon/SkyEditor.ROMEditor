@@ -495,7 +495,6 @@ Namespace MysteryDungeon.PSMD.Projects
             Return {GameStrings.GTICode, GameStrings.PSMDCode}
         End Function
 
-
     End Class
 
 End Namespace

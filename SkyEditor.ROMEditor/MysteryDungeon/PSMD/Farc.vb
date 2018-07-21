@@ -96,6 +96,7 @@ Namespace MysteryDungeon.PSMD
         Protected Property DataOffset As Integer
         Protected Property UnknownHeaderData As Byte()
         Protected Property Sir0Type As Integer
+        Protected Property Sir0FatType As Integer
 
         Public Property PreLoadFiles As Boolean = False
         Public Property EnableInMemoryLoad As Boolean = True
@@ -126,6 +127,7 @@ Namespace MysteryDungeon.PSMD
 
             Dim header = New FarcFat5
             Await header.OpenFile(Await f.ReadAsync(sir0Offset, sir0Length))
+            Sir0FatType = header.Sir0Fat5Type
 
             For Each item In header.Entries
                 Dim fileEntry As New FarcEntry
@@ -369,7 +371,7 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
-            'Analyze data to identify duplicate entries
+            'Analyze data to identify duplicate entries (i.e. make sure files with the same data are not added multiple times, instead having multiple references to the same data)
             Dim condensedEntries As New List(Of EntryMapping)
             For Each item In Entries
                 Dim data = Await GetFileDataAsync(item)
@@ -388,6 +390,7 @@ Namespace MysteryDungeon.PSMD
                     newMapping.FileData = item.FileData
                     newMapping.FilenameHashes = New List(Of UInteger)
                     newMapping.FilenameHashes.Add(item.FilenameHash)
+                    newMapping.Filename = item.Filename
                     condensedEntries.Add(newMapping)
                 End If
             Next
@@ -398,7 +401,7 @@ Namespace MysteryDungeon.PSMD
                 Await f.OpenFile(filename, provider)
 
                 Dim fat As New FarcFat5
-                fat.Sir0Fat5Type = 1
+                fat.Sir0Fat5Type = Me.Sir0FatType
                 Dim fileData As New List(Of Byte)
 
                 For Each item In condensedEntries
@@ -407,6 +410,7 @@ Namespace MysteryDungeon.PSMD
                     For Each hash In item.FilenameHashes
                         fat.Entries.Add(New FarcFat5.Entry With {
                                     .FilenameHash = hash,
+                                    .Filename = item.Filename,
                                     .DataOffset = fileData.Count,
                                     .DataLength = item.FileData.Length
                                     })
@@ -430,7 +434,7 @@ Namespace MysteryDungeon.PSMD
                 farcHeader.AddRange(BitConverter.GetBytes(0)) '0x14
                 farcHeader.AddRange(BitConverter.GetBytes(7)) '0x18
                 farcHeader.AddRange(BitConverter.GetBytes(&H77EA3CA4)) '0x1C
-                farcHeader.AddRange(BitConverter.GetBytes(5)) '0x20
+                farcHeader.AddRange(BitConverter.GetBytes(Sir0Type)) '0x20
                 farcHeader.AddRange(BitConverter.GetBytes(&H80)) '0x24
                 farcHeader.AddRange(BitConverter.GetBytes(fatData.Length)) '0x28
                 farcHeader.AddRange(BitConverter.GetBytes(&H80 + fatData.Length)) '0x2C
@@ -679,6 +683,8 @@ Namespace MysteryDungeon.PSMD
             Dim _fileDataHashCode As Integer?
 
             Public Property FilenameHashes As List(Of UInteger)
+
+            Public Property Filename As String
         End Class
 
         Public Class FarcFileStream

@@ -629,6 +629,7 @@ Namespace MysteryDungeon.PSMD.Projects
                 Dim fixedPokemon As New FixedPokemon()
                 Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)
                 Dim starters = New StarterDefinitionsPsmd(fixedPokemon)
+
                 Await FixHighResModelsPsmd(starters)
                 Await UpdateLanguageFilesForCustomPersonalityTestScriptPsmd()
                 Await FixIncCharChoiceScriptPsmd(starters)
@@ -640,9 +641,10 @@ Namespace MysteryDungeon.PSMD.Projects
                 Dim fixedPokemon As New FixedPokemon()
                 Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)
                 Dim starters = New StarterDefinitionsGti(fixedPokemon)
+
+                Await FixCodeBinGti(starters)
                 Await FixHighResModelsGti(starters)
                 Await FixPokemonIDsInScriptsGti(starters)
-                Await FixCodeBinGti(starters)
             Else
                 Throw New Exception("Unexpected ROM title ID: " & GetTitleId())
             End If
@@ -802,8 +804,32 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Private Class StarterDefinitionsGti
             Public Sub New(fixedPokemon As FixedPokemon)
-
+                Starter1 = fixedPokemon.Entries(71).PokemonID
+                Starter39 = fixedPokemon.Entries(72).PokemonID
+                Starter42 = fixedPokemon.Entries(73).PokemonID
+                Starter45 = fixedPokemon.Entries(74).PokemonID
+                Starter122 = fixedPokemon.Entries(75).PokemonID
             End Sub
+
+            Public Starter1 As Integer
+            Public Starter39 As Integer
+            Public Starter42 As Integer
+            Public Starter45 As Integer
+            Public Starter122 As Integer
+
+            ''' <summary>
+            ''' Gets a dictionary representing matching new starter Pokemon IDs to the old.
+            ''' Key: old ID, value: new ID
+            ''' </summary>
+            Public Function GetReplacementDictionary() As Dictionary(Of Integer, Integer)
+                Dim replacementDictionary As New Dictionary(Of Integer, Integer) 'Key: original ID, Value: edited ID
+                replacementDictionary.Add(1, Starter1)
+                replacementDictionary.Add(39, Starter39)
+                replacementDictionary.Add(42, Starter42)
+                replacementDictionary.Add(45, Starter45)
+                replacementDictionary.Add(122, Starter122)
+                Return replacementDictionary
+            End Function
         End Class
 
     End Class

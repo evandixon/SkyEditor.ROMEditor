@@ -104,40 +104,70 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Public Async Function GetRawData() As Task(Of Byte())
-            If Sir0Fat5Type = 0 Then
-                Throw New NotImplementedException("Saving FAT type 0 not implemented.")
+            Select Case Sir0Fat5Type
+                Case 0
+                    Using f As New Sir0
+                        f.AutoAddSir0HeaderRelativePointers = True
+                        f.AutoAddSir0SubHeaderRelativePointers = True
+                        f.CreateFile()
 
-                'Type 1 is supported
+                        'Generate data
+                        Dim data As New List(Of Byte)
+                        Dim stringData As New List(Of Byte)
+                        For Each item In Entries.OrderBy(Function(x) x.FilenameHash) 'Sorting by filename hash is critical to correct lookups. This is a hash table after all.
+                            data.AddRange(BitConverter.GetBytes(&H10 + stringData.Count))
+                            data.AddRange(BitConverter.GetBytes(item.DataOffset))
+                            data.AddRange(BitConverter.GetBytes(item.DataLength))
+                            data.AddRange(BitConverter.GetBytes(0))
 
-            ElseIf Sir0Fat5Type >= 2 Then
-                Throw New NotSupportedException("FAT type not supported: " & Sir0Fat5Type.ToString())
-            End If
+                            stringData.AddRange(Text.Encoding.Unicode.GetBytes(item.Filename))
+                            stringData.AddRange(Enumerable.Repeat(0, 2))
+                        Next
 
-            Using f As New Sir0
-                f.AutoAddSir0HeaderRelativePointers = True
-                f.AutoAddSir0SubHeaderRelativePointers = True
-                f.CreateFile()
+                        Dim combinedData As New List(Of Byte)(stringData.Count + data.Count)
+                        combinedData.AddRange(stringData)
+                        combinedData.AddRange(data)
+                        Await f.SetContent(combinedData.ToArray())
 
-                'Generate data
-                Dim data As New List(Of Byte)
-                For Each item In Entries.OrderBy(Function(x) x.FilenameHash) 'Sorting by filename hash is critical to correct lookups. This is a hash table after all.
-                    data.AddRange(BitConverter.GetBytes(item.FilenameHash))
-                    data.AddRange(BitConverter.GetBytes(item.DataOffset))
-                    data.AddRange(BitConverter.GetBytes(item.DataLength))
-                Next
+                        'Generate content header
+                        Dim contentHeader As New List(Of Byte)
+                        contentHeader.AddRange(BitConverter.GetBytes(&H10)) 'Index to content section
+                        contentHeader.AddRange(BitConverter.GetBytes(Entries.Count))
+                        contentHeader.AddRange(BitConverter.GetBytes(Sir0Fat5Type))
+                        f.SubHeaderRelativePointers.Add(0)
 
-                Await f.SetContent(data.ToArray())
+                        f.ContentHeader = contentHeader.ToArray
+                        Return Await f.GetRawData()
+                    End Using
+                Case 1
+                    Using f As New Sir0
+                        f.AutoAddSir0HeaderRelativePointers = True
+                        f.AutoAddSir0SubHeaderRelativePointers = True
+                        f.CreateFile()
 
-                'Generate content header
-                Dim contentHeader As New List(Of Byte)
-                contentHeader.AddRange(BitConverter.GetBytes(&H10)) 'Index to content section
-                contentHeader.AddRange(BitConverter.GetBytes(Entries.Count))
-                contentHeader.AddRange(BitConverter.GetBytes(Sir0Fat5Type))
-                f.SubHeaderRelativePointers.Add(0)
+                        'Generate data
+                        Dim data As New List(Of Byte)
+                        For Each item In Entries.OrderBy(Function(x) x.FilenameHash) 'Sorting by filename hash is critical to correct lookups. This is a hash table after all.
+                            data.AddRange(BitConverter.GetBytes(item.FilenameHash))
+                            data.AddRange(BitConverter.GetBytes(item.DataOffset))
+                            data.AddRange(BitConverter.GetBytes(item.DataLength))
+                        Next
 
-                f.ContentHeader = contentHeader.ToArray
-                Return Await f.GetRawData()
-            End Using
+                        Await f.SetContent(data.ToArray())
+
+                        'Generate content header
+                        Dim contentHeader As New List(Of Byte)
+                        contentHeader.AddRange(BitConverter.GetBytes(&H10)) 'Index to content section
+                        contentHeader.AddRange(BitConverter.GetBytes(Entries.Count))
+                        contentHeader.AddRange(BitConverter.GetBytes(Sir0Fat5Type))
+                        f.SubHeaderRelativePointers.Add(0)
+
+                        f.ContentHeader = contentHeader.ToArray
+                        Return Await f.GetRawData()
+                    End Using
+                Case Else
+                    Throw New NotSupportedException("FAT type not supported: " & Sir0Fat5Type.ToString())
+            End Select
         End Function
 
         Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save

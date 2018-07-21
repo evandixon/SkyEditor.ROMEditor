@@ -49,18 +49,22 @@ Namespace MysteryDungeon.PSMD
                 f.IsReadOnly = True
                 Await f.OpenFile(Filename, Provider)
                 Dim subHeaderPointer = Await f.ReadInt32Async(4)
+                Dim sir0RelativePointerOffset = Await f.ReadInt32Async(8)
                 Dim dataOffset = Await f.ReadInt32Async(subHeaderPointer + 4)
                 Dim numEntries = Await f.ReadInt32Async(subHeaderPointer + 8)
 
+                Dim dataSize = sir0RelativePointerOffset - dataOffset
+                Dim entrySize = Math.Floor(dataSize / numEntries) 'Math.Floor needed because this won't be exact due to the sub header and padding
+
                 For count = 0 To numEntries - 1
-                    Dim entryOffset = dataOffset + count * &H54
+                    Dim entryOffset = dataOffset + count * entrySize
 
                     Dim entry As New Entry
 
                     entry.PrimaryBgrsFilename = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 0))
                     entry.SecondaryBgrsName = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 4))
                     entry.ActorName = Await ReadString(f, Await f.ReadInt32Async(entryOffset + 8))
-                    entry.Data = Await f.ReadAsync(entryOffset + 12, &H48)
+                    entry.Data = Await f.ReadAsync(entryOffset + 12, entrySize - &HC)
 
                     Entries.Add(entry)
 
@@ -130,7 +134,7 @@ Namespace MysteryDungeon.PSMD
 
                     'Offset of the pointer since the last pointer
                     'The first of these is based on the length of the string section, and we'll update it later
-                    f.RelativePointers.Add(&H4C)
+                    f.RelativePointers.Add(item.Data.Length + 4)
 
                     While stringSection.Count Mod 4 <> 0
                         stringSection.Add(0)
@@ -177,7 +181,7 @@ Namespace MysteryDungeon.PSMD
                 f.ContentHeader = contentHeader
 
                 'Add relative pointer in content header
-                f.RelativePointers.Add(&H50)
+                f.RelativePointers.Add(Entries.First().Data.Length + 8)
 
                 Await f.SetContent(stringSection.Concat(dataSection).ToArray())
 
