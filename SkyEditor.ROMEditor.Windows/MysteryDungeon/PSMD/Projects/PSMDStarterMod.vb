@@ -60,7 +60,8 @@ Namespace MysteryDungeon.PSMD.Projects
                     Path.Combine("romfs", "message_debug.bin"), 'PSMD
                     Path.Combine("romfs", "message_debug.lst"), 'PSMD
                     Path.Combine("romfs", "pokemon_graphic.bin"), 'Both
-                    Path.Combine("romfs", "pokemon_graphics_database.bin") 'Both
+                    Path.Combine("romfs", "pokemon_graphics_database.bin"), 'Both
+                    Path.Combine("ExHeader.bin")  'Both
             }
         End Function
 
@@ -276,6 +277,22 @@ Namespace MysteryDungeon.PSMD.Projects
 #Region "GTI Patching Functions"
 
         Private Async Function FixCodeBinGti(starters As StarterDefinitionsGti) As Task
+            If IsGtiUS Then
+                Throw New NotImplementedException("US regions of GTI are not currently implemented.")
+            ElseIf IsGtiEU Then
+                Throw New NotImplementedException("EU regions of GTI are not currently implemented.")
+            ElseIf IsGtiJP Then
+                Throw New NotImplementedException("JP regions of GTI are not currently implemented.")
+            Else
+                Throw New NotSupportedException("Only the US, EU, and JP regions of GTI are supported.")
+            End If
+        End Function
+
+        Private Async Function FixHighResModelsGti(starters As StarterDefinitionsGti) As Task
+            Throw New NotImplementedException()
+        End Function
+
+        Private Async Function FixPokemonIDsInScriptsGti(starters As StarterDefinitionsGti) As Task
             Throw New NotImplementedException()
         End Function
 
@@ -442,7 +459,7 @@ Namespace MysteryDungeon.PSMD.Projects
                     'Get Pokemon names to work with
                     Dim common As New MessageBin
                     Await common.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "common.bin"), CurrentPluginManager.CurrentIOProvider)
-                    Dim pokemonNames = common.GetCommonPokemonNames
+                    Dim pokemonNames = common.GetPsmdCommonPokemonNames
 
                     'Open the message bin file
                     Dim charchoiceFile As New MessageBin
@@ -583,45 +600,6 @@ Namespace MysteryDungeon.PSMD.Projects
             Next
         End Sub
 
-#End Region
-
-#Region "Game Detection"
-
-        Protected ReadOnly Property IsPsmd As Boolean
-            Get
-                If Not _isPsmd.HasValue Then
-                    _isPsmd = GetIsPsmd()
-                End If
-                Return _isPsmd.Value
-            End Get
-        End Property
-        Private _isPsmd As Boolean?
-
-        Protected ReadOnly Property IsGti As Boolean
-            Get
-                If Not _isGti.HasValue Then
-                    _isGti = GetIsGti()
-                End If
-                Return _isGti.Value
-            End Get
-        End Property
-        Private _isGti As Boolean?
-
-        Protected Function GetTitleId() As String
-            Dim exHeaderFilename = Path.Combine(Me.GetRawFilesDir, "ExHeader.bin")
-            Dim bytes = File.ReadAllBytes(exHeaderFilename)
-            Return BitConverter.ToUInt64(bytes, &H1C8).ToString("X").PadLeft(16, "0")
-        End Function
-
-        Protected Function GetIsPsmd() As Boolean
-            Dim psmdRegex As New Regex(GameStrings.PSMDCode)
-            Return psmdRegex.IsMatch(GetTitleId)
-        End Function
-
-        Protected Function GetIsGti() As Boolean
-            Dim gtiRegex As New Regex(GameStrings.GTICode)
-            Return gtiRegex.IsMatch(GetTitleId)
-        End Function
 #End Region
 
         Public Overrides Async Function Initialize() As Task
@@ -820,6 +798,12 @@ Namespace MysteryDungeon.PSMD.Projects
                 evoDictionary.Add(774, Evo772)
                 Return evoDictionary
             End Function
+        End Class
+
+        Private Class StarterDefinitionsGti
+            Public Sub New(fixedPokemon As FixedPokemon)
+
+            End Sub
         End Class
 
     End Class

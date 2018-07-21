@@ -1,4 +1,4 @@
-﻿<skyUI:DataBoundViewControl xmlns:Views="clr-namespace:SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.PSMD.Views"  x:Class="FixedPokemonStarter"
+﻿<skyUI:DataBoundViewControl xmlns:Views="clr-namespace:SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.PSMD.Views"  x:Class="FixedPokemonStarterPsmd"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,6 +8,7 @@
              xmlns:skyUI="clr-namespace:SkyEditor.UI.WPF;assembly=SkyEditor.UI.WPF"
              xmlns:psmdVM="clr-namespace:SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.PSMD.ViewModels"
              TargetType="{x:Type psmdVM:FixedPokemonStarterViewModel}"
+             IsBackupControl="True"
              mc:Ignorable="d" 
              d:DesignHeight="330" d:DesignWidth="820">
     <Grid>
@@ -29,9 +30,9 @@
                   ItemsSource="{Binding StarterEntries}" SelectedItem="{Binding SelectedStarterEntry}" DisplayMemberPath="Name" />
 
         <TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Text="{x:Static res:Language.Starter}" FontWeight="Bold" />
-        <Views:FixedPokemonEntry  Grid.Row="2" Grid.Column="2" DataContext="{Binding SelectedStarterEntry}" VerticalAlignment="Top" />
+        <Views:FixedPokemonEntryPsmd  Grid.Row="2" Grid.Column="2" DataContext="{Binding SelectedStarterEntry}" VerticalAlignment="Top" />
 
         <TextBlock Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Text="{x:Static res:Language.StarterEvolution}" FontWeight="Bold" />
-        <Views:FixedPokemonEntry  Grid.Row="2" Grid.Column="4" DataContext="{Binding SelectedEvolutionEntry}" VerticalAlignment="Top" />
+        <Views:FixedPokemonEntryPsmd Grid.Row="2" Grid.Column="4" DataContext="{Binding SelectedEvolutionEntry}" VerticalAlignment="Top" />
     </Grid>
 </skyUI:DataBoundViewControl>

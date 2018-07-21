@@ -231,7 +231,7 @@ Namespace MysteryDungeon.PSMD
                             Dim commonDebugMsg As New MessageBinDebug
                             Await commonDebugMsg.OpenFile("common.dbin", debugMsg)
 
-                            pokemonNames.AddRange(commonDebugMsg.GetCommonPokemonNames().Select(Function(p) p.Value.ToLower().Replace("pokemon_", "")))
+                            pokemonNames.AddRange(commonDebugMsg.GetPsmdCommonPokemonNames().Select(Function(p) p.Value.ToLower().Replace("pokemon_", "")))
                         End If
 
                         If provider.FileExists(graphicsDbPath) Then

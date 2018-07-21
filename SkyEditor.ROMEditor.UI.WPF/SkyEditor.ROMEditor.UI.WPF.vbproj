@@ -222,7 +222,8 @@
     <Compile Include="MenuActions\CteImageImport.vb" />
     <Compile Include="MenuActions\PsmdSoundtrackAction.vb" />
     <Compile Include="MysteryDungeon\PSMD\ViewModels\FarcViewModel.vb" />
-    <Compile Include="MysteryDungeon\PSMD\ViewModels\FixedPokemonEntryViewModel.vb" />
+    <Compile Include="MysteryDungeon\PSMD\ViewModels\FixedPokemonEntryGtiViewModel.vb" />
+    <Compile Include="MysteryDungeon\PSMD\ViewModels\FixedPokemonEntryPsmdViewModel.vb" />
     <Compile Include="MysteryDungeon\PSMD\ViewModels\FixedPokemonStarterViewModel.vb" />
     <Compile Include="MysteryDungeon\PSMD\ViewModels\MessageBinViewModel.vb" />
     <Compile Include="MysteryDungeon\Explorers\Views\BGPControl.xaml.vb">
@@ -232,11 +233,17 @@
     <Compile Include="MysteryDungeon\PSMD\Views\FarcView.xaml.vb">
       <DependentUpon>FarcView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MysteryDungeon\PSMD\Views\FixedPokemonEntry.xaml.vb">
-      <DependentUpon>FixedPokemonEntry.xaml</DependentUpon>
+    <Compile Include="MysteryDungeon\PSMD\Views\FixedPokemonEntryPsmd.xaml.vb">
+      <DependentUpon>FixedPokemonEntryPsmd.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MysteryDungeon\PSMD\Views\FixedPokemonStarter.xaml.vb">
-      <DependentUpon>FixedPokemonStarter.xaml</DependentUpon>
+    <Compile Include="MysteryDungeon\PSMD\Views\FixedPokemonEntryGti.xaml.vb">
+      <DependentUpon>FixedPokemonEntryGti.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MysteryDungeon\PSMD\Views\FixedPokemonStarterGti.xaml.vb">
+      <DependentUpon>FixedPokemonStarterGti.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MysteryDungeon\PSMD\Views\FixedPokemonStarterPsmd.xaml.vb">
+      <DependentUpon>FixedPokemonStarterPsmd.xaml</DependentUpon>
     </Compile>
     <Compile Include="MysteryDungeon\PSMD\Views\MessageBinEditor.xaml.vb">
       <DependentUpon>MessageBinEditor.xaml</DependentUpon>
@@ -295,11 +302,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MysteryDungeon\PSMD\Views\FixedPokemonEntry.xaml">
+    <Page Include="MysteryDungeon\PSMD\Views\FixedPokemonEntryPsmd.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MysteryDungeon\PSMD\Views\FixedPokemonEntryGti.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MysteryDungeon\PSMD\Views\FixedPokemonStarter.xaml">
+    <Page Include="MysteryDungeon\PSMD\Views\FixedPokemonStarterGti.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MysteryDungeon\PSMD\Views\FixedPokemonStarterPsmd.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -47,6 +47,90 @@ Namespace MysteryDungeon.PSMD.Projects
 
 #End Region
 
+#Region "Game Detection"
+
+        Protected ReadOnly Property IsPsmd As Boolean
+            Get
+                If Not _isPsmd.HasValue Then
+                    _isPsmd = GetIsPsmd()
+                End If
+                Return _isPsmd.Value
+            End Get
+        End Property
+        Private _isPsmd As Boolean?
+
+        Protected ReadOnly Property IsGti As Boolean
+            Get
+                If Not _isGti.HasValue Then
+                    _isGti = GetIsGti()
+                End If
+                Return _isGti.Value
+            End Get
+        End Property
+        Private _isGti As Boolean?
+
+        Protected ReadOnly Property IsGtiUS As Boolean
+            Get
+                If Not _isGtiUS.HasValue Then
+                    _isGtiUS = GetIsGtiUS()
+                End If
+                Return _isGtiUS.Value
+            End Get
+        End Property
+        Private _isGtiUS As Boolean?
+
+        Protected ReadOnly Property IsGtiEU As Boolean
+            Get
+                If Not _isGtiEU.HasValue Then
+                    _isGtiEU = GetIsGtiEU()
+                End If
+                Return _isGtiEU.Value
+            End Get
+        End Property
+        Private _isGtiEU As Boolean?
+
+        Protected ReadOnly Property IsGtiJP As Boolean
+            Get
+                If Not _isGtiJP.HasValue Then
+                    _isGtiJP = GetIsGtiJP()
+                End If
+                Return _isGtiJP.Value
+            End Get
+        End Property
+        Private _isGtiJP As Boolean?
+
+        Protected Function GetTitleId() As String
+            Dim exHeaderFilename = Path.Combine(Me.GetRawFilesDir, "ExHeader.bin")
+            Dim bytes = File.ReadAllBytes(exHeaderFilename)
+            Return BitConverter.ToUInt64(bytes, &H1C8).ToString("X").PadLeft(16, "0")
+        End Function
+
+        Protected Function GetIsPsmd() As Boolean
+            Dim psmdRegex As New Regex(GameStrings.PSMDCode)
+            Return psmdRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGti() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICode)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGtiUS() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICodeUS)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGtiEU() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICodeEU)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGtiJP() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICodeJP)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+#End Region
+
 #Region "IPsmdMessageBinProject Implementation"
         ''' <summary>
         ''' Gets the localized language file with the given name.
@@ -77,7 +161,13 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Public Async Function GetPokemonNames() As Task(Of Dictionary(Of Integer, String)) Implements IPsmdMessageBinProject.GetPokemonNames
             If _pokemonNames Is Nothing Then
-                _pokemonNames = (Await GetLanguageFile("common.bin")).GetCommonPokemonNames
+                If IsPsmd Then
+                    _pokemonNames = (Await GetLanguageFile("common.bin")).GetPsmdCommonPokemonNames
+                ElseIf IsGti Then
+                    _pokemonNames = (Await GetLanguageFile("common.bin")).GetGtiCommonPokemonNames
+                Else
+                    Throw New NotSupportedException("Only GTI and PSMD are supported")
+                End If
             End If
             Return _pokemonNames
         End Function
@@ -85,7 +175,13 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Public Async Function GetMoveNames() As Task(Of Dictionary(Of Integer, String)) Implements IPsmdMessageBinProject.GetMoveNames
             If _moveNames Is Nothing Then
-                _moveNames = (Await GetLanguageFile("common.bin")).GetCommonMoveNames
+                If IsPsmd Then
+                    _pokemonNames = (Await GetLanguageFile("common.bin")).GetPsmdCommonMoveNames
+                ElseIf IsGti Then
+                    _pokemonNames = (Await GetLanguageFile("common.bin")).GetGtiCommonMoveNames
+                Else
+                    Throw New NotSupportedException("Only GTI and PSMD are supported")
+                End If
             End If
             Return _moveNames
         End Function

@@ -531,4 +531,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="FileSize" xml:space="preserve">
     <value>File Size</value>
   </data>
+  <data name="MenuExport" xml:space="preserve">
+    <value>_Export</value>
+  </data>
 </root>

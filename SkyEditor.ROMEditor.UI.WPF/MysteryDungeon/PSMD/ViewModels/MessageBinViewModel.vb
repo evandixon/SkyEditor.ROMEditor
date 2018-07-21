@@ -110,16 +110,28 @@ Namespace MysteryDungeon.PSMD.ViewModels
         ''' <summary>
         ''' Saves the current entries as a CSV file
         ''' </summary>
-        ''' <param name="filename"></param>
-        Public Sub Export(filename As String)
+        ''' <param name="filename">The path of the file to save the resulting CSV</param>
+        ''' <param name="entries">The entries to export, or an empty list to export everything</param>
+        Public Sub Export(filename As String, entries As IList)
+            Dim hashes As New HashSet(Of UInteger)
+            For Each item In entries
+                If TypeOf item Is MessageBinEntryViewModel Then
+                    hashes.Add(DirectCast(item, MessageBinEntryViewModel).Hash)
+                End If
+            Next
+
             Dim output As New StringBuilder
             output.AppendLine("Index,Hash,Entry")
-            For Each item In CurrentEntryList
+            For Each item In CurrentEntryList.
+                Where(Function(currentEntry) Not hashes.Any OrElse hashes.Contains(currentEntry.Hash)).
+                OrderBy(Function(currentEntry) currentEntry.OriginalIndex)
+
                 output.Append(item.OriginalIndex)
                 output.Append(",")
                 output.Append(item.HashSigned)
                 output.Append(",")
                 output.Append(item.Entry)
+                output.AppendLine()
             Next
             CurrentIOProvider.WriteAllText(filename, output.ToString)
         End Sub
@@ -127,11 +139,12 @@ Namespace MysteryDungeon.PSMD.ViewModels
         ''' <summary>
         ''' Saves the current entries as a CSV file, the path of which determined by an SaveFileDialog
         ''' </summary>
-        Public Sub Export()
+        ''' <param name="entries">The entries to export, or an empty list to export everything</param>
+        Public Sub Export(entries As IList)
             Dim s As New SaveFileDialog
             s.Filter = CurrentApplicationViewModel.GetIOFilter({"*.csv"}, False, True, False)
             If s.ShowDialog = DialogResult.OK Then
-                Export(s.FileName)
+                Export(s.FileName, entries)
             End If
         End Sub
 
