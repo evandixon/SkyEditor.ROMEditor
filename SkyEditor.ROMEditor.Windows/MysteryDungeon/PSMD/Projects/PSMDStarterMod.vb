@@ -30,36 +30,41 @@ Namespace MysteryDungeon.PSMD.Projects
         Protected Property CurrentIOProvider As IIOProvider
 
         Public Overrides Function GetSupportedGameCodes() As IEnumerable(Of String)
-            Return {GameStrings.PSMDCode}
+            Return {GameStrings.PSMDCode, GameStrings.GTICode}
         End Function
 
         Public Overrides Function GetFilesToCopy(solution As Solution, baseRomProjectName As String) As IEnumerable(Of String)
-            Return {Path.Combine("romfs", "script"),
-                    Path.Combine("romfs", "message_en.bin"),
-                    Path.Combine("romfs", "message_fr.bin"),
-                    Path.Combine("romfs", "message_ge.bin"),
-                    Path.Combine("romfs", "message_it.bin"),
-                    Path.Combine("romfs", "message_sp.bin"),
-                    Path.Combine("romfs", "message_us.bin"),
-                    Path.Combine("romfs", "message.bin"),
-                    Path.Combine("romfs", "message_en.lst"),
-                    Path.Combine("romfs", "message_fr.lst"),
-                    Path.Combine("romfs", "message_ge.lst"),
-                    Path.Combine("romfs", "message_it.lst"),
-                    Path.Combine("romfs", "message_sp.lst"),
-                    Path.Combine("romfs", "message_us.lst"),
-                    Path.Combine("romfs", "message.lst"),
-                    Path.Combine("romfs", "dungeon", "fixed_pokemon.bin"),
-                    Path.Combine("romfs", "pokemon", "pokemon_actor_data_info.bin"),
-                    Path.Combine("romfs", "face_graphic.bin"),
-                    Path.Combine("romfs", "message_debug.bin"),
-                    Path.Combine("romfs", "message_debug.lst"),
-                    Path.Combine("romfs", "pokemon_graphic.bin"),
-                    Path.Combine("romfs", "pokemon_graphics_database.bin")}
+            Return {Path.Combine("romfs", "script"), 'Both
+                    Path.Combine("romfs", "message_fr"), 'GTI
+                    Path.Combine("romfs", "message_ge"), 'GTI
+                    Path.Combine("romfs", "message_it"), 'GTI
+                    Path.Combine("romfs", "message_sp"), 'GTI
+                    Path.Combine("romfs", "message"), 'GTI
+                    Path.Combine("romfs", "message_en.bin"), 'PSMD
+                    Path.Combine("romfs", "message_fr.bin"), 'PSMD
+                    Path.Combine("romfs", "message_ge.bin"), 'PSMD
+                    Path.Combine("romfs", "message_it.bin"), 'PSMD
+                    Path.Combine("romfs", "message_sp.bin"), 'PSMD
+                    Path.Combine("romfs", "message_us.bin"), 'PSMD
+                    Path.Combine("romfs", "message.bin"), 'PSMD
+                    Path.Combine("romfs", "message_en.lst"), 'PSMD
+                    Path.Combine("romfs", "message_fr.lst"), 'PSMD
+                    Path.Combine("romfs", "message_ge.lst"), 'PSMD
+                    Path.Combine("romfs", "message_it.lst"), 'PSMD
+                    Path.Combine("romfs", "message_sp.lst"), 'PSMD
+                    Path.Combine("romfs", "message_us.lst"), 'PSMD
+                    Path.Combine("romfs", "message.lst"), 'PSMD
+                    Path.Combine("romfs", "dungeon", "fixed_pokemon.bin"), 'Both
+                    Path.Combine("romfs", "pokemon", "pokemon_actor_data_info.bin"), 'Both
+                    Path.Combine("romfs", "face_graphic.bin"), 'Both
+                    Path.Combine("romfs", "message_debug.bin"), 'PSMD
+                    Path.Combine("romfs", "message_debug.lst"), 'PSMD
+                    Path.Combine("romfs", "pokemon_graphic.bin"), 'Both
+                    Path.Combine("romfs", "pokemon_graphics_database.bin") 'Both
+            }
         End Function
 
-#Region "Patching functions"
-
+#Region "Shared Patching Functions"
         Private Async Function AddMissingModelAnimations(pgdb As PGDB) As Task
             Using pokemonGraphic As New Farc
                 Await pokemonGraphic.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphic.bin"), CurrentIOProvider)
@@ -83,6 +88,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Next
             Await pgdb.Save(CurrentIOProvider)
         End Function
+
         ''' <summary>
         ''' Replaces placeholder portraits with the default emotion. Build progress is reported too.
         ''' </summary>
@@ -265,12 +271,24 @@ Namespace MysteryDungeon.PSMD.Projects
             Await f.Save(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), CurrentPluginManager.CurrentIOProvider)
         End Function
 
+#End Region
+
+#Region "GTI Patching Functions"
+
+        Private Async Function FixCodeBinGti(starters As StarterDefinitionsGti) As Task
+            Throw New NotImplementedException()
+        End Function
+
+#End Region
+
+#Region "PSMD Patching Functions"
+
         ''' <summary>
         ''' Replaces the Pokemon IDs of pokemon_actor_data_info.bin to allow displaying models in high-res mode
         ''' </summary>
         ''' <param name="starters"></param>
         ''' <returns></returns>
-        Private Async Function FixHighResModels(starters As StarterDefinitions) As Task
+        Private Async Function FixHighResModelsPsmd(starters As StarterDefinitionsPsmd) As Task
             Dim actorInfo As New ActorDataInfo
             Await actorInfo.OpenFile(IO.Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon", "pokemon_actor_data_info.bin"), CurrentPluginManager.CurrentIOProvider)
             actorInfo.GetEntryByName("FUSHIGIDANE_H").PokemonID = starters.Starter1
@@ -299,7 +317,7 @@ Namespace MysteryDungeon.PSMD.Projects
         End Function
 
 
-        Private Function GetCustomPersonalityTestScript(starters As StarterDefinitions) As String
+        Private Function GetCustomPersonalityTestScriptPsmd(starters As StarterDefinitionsPsmd) As String
             Dim starterscriptContent = My.Resources.PSMDStarterIntroScript
             starterscriptContent = starterscriptContent.Replace("#Starter1#", starters.Starter1.ToString)
             starterscriptContent = starterscriptContent.Replace("#Starter5#", starters.Starter5.ToString)
@@ -347,11 +365,11 @@ Namespace MysteryDungeon.PSMD.Projects
             Return starterscriptContent
         End Function
 
-        Private Sub ReplacePersonalityTestScript(starters As StarterDefinitions)
-            CurrentIOProvider.WriteAllText(IO.Path.Combine(Me.GetRootDirectory, "script", "event", "other", "seikakushindan", "seikakushindan.lua"), GetCustomPersonalityTestScript(starters))
+        Private Sub ReplacePersonalityTestScriptPsmd(starters As StarterDefinitionsPsmd)
+            CurrentIOProvider.WriteAllText(IO.Path.Combine(Me.GetRootDirectory, "script", "event", "other", "seikakushindan", "seikakushindan.lua"), GetCustomPersonalityTestScriptPsmd(starters))
         End Sub
 
-        Private Async Function UpdateLanguageFilesForCustomPersonalityTestScript() As Task
+        Private Async Function UpdateLanguageFilesForCustomPersonalityTestScriptPsmd() As Task
             Dim enLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "en", "seikakushindan.bin")
             Dim frLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "fr", "seikakushindan.bin")
             Dim geLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "ge", "seikakushindan.bin")
@@ -397,7 +415,7 @@ Namespace MysteryDungeon.PSMD.Projects
         ''' <summary>
         ''' Patches inc_charchoice.lua for use with reporting the results of the custom personality test result screen
         ''' </summary>
-        Private Async Function FixIncCharChoiceScript(starters As StarterDefinitions) As Task
+        Private Async Function FixIncCharChoiceScriptPsmd(starters As StarterDefinitionsPsmd) As Task
             'Patch inc_charchoice script
             '-Get the hashes of the scripts to change
             Dim charchoiceRegex = New Regex("function char([A-Z]+)\(\)\s*WINDOW\:SysMsg\((-?[0-9]+)\)", RegexOptions.IgnoreCase)
@@ -492,7 +510,7 @@ Namespace MysteryDungeon.PSMD.Projects
         ''' <summary>
         ''' Fixes hard-coded Pokemon IDs in the LUA scripts.
         ''' </summary>
-        Private Async Function FixPokemonIDsInScripts(starters As StarterDefinitions) As Task
+        Private Async Function FixPokemonIDsInScriptsPsmd(starters As StarterDefinitionsPsmd) As Task
             Dim replacementDictionary As Dictionary(Of Integer, Integer) = starters.GetReplacementDictionary
             Dim evoDictionary As Dictionary(Of Integer, Integer) = starters.GetEvoDictionary
 
@@ -534,7 +552,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.Progress = 1
         End Function
 
-        Private Sub FixHarmonyScarfGlow()
+        Private Sub FixHarmonyScarfGlowPsmd()
             Dim scarfGlowRegex = New Regex("(if(.|\n)*?)(else\s(.|\n)*?)(end)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
             Dim scarfGlowScripts = {"script/event/main15/120_enteishujinkoushinkaboss1st/enteishujinkoushinkaboss1st.lua"}
             For Each item In scarfGlowScripts
@@ -567,6 +585,45 @@ Namespace MysteryDungeon.PSMD.Projects
 
 #End Region
 
+#Region "Game Detection"
+
+        Protected ReadOnly Property IsPsmd As Boolean
+            Get
+                If Not _isPsmd.HasValue Then
+                    _isPsmd = GetIsPsmd()
+                End If
+                Return _isPsmd.Value
+            End Get
+        End Property
+        Private _isPsmd As Boolean?
+
+        Protected ReadOnly Property IsGti As Boolean
+            Get
+                If Not _isGti.HasValue Then
+                    _isGti = GetIsGti()
+                End If
+                Return _isGti.Value
+            End Get
+        End Property
+        Private _isGti As Boolean?
+
+        Protected Function GetTitleId() As String
+            Dim exHeaderFilename = Path.Combine(Me.GetRawFilesDir, "ExHeader.bin")
+            Dim bytes = File.ReadAllBytes(exHeaderFilename)
+            Return BitConverter.ToUInt64(bytes, &H1C8).ToString("X").PadLeft(16, "0")
+        End Function
+
+        Protected Function GetIsPsmd() As Boolean
+            Dim psmdRegex As New Regex(GameStrings.PSMDCode)
+            Return psmdRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGti() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICode)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+#End Region
+
         Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize()
 
@@ -588,21 +645,35 @@ Namespace MysteryDungeon.PSMD.Projects
             Await FixPokemonWithDummyModel(pgdb)
             Await SubstituteMissingPortraits()
 
-            'Pokemon-dependent patches
-            Dim fixedPokemon As New FixedPokemon()
-            Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)
-            Dim starters = New StarterDefinitions(fixedPokemon)
-            Await FixHighResModels(starters)
-            Await UpdateLanguageFilesForCustomPersonalityTestScript()
-            Await FixIncCharChoiceScript(starters)
-            Await FixPokemonIDsInScripts(starters)
-            FixHarmonyScarfGlow()
+            If IsPsmd Then
+
+                'Pokemon-dependent patches
+                Dim fixedPokemon As New FixedPokemon()
+                Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)
+                Dim starters = New StarterDefinitionsPsmd(fixedPokemon)
+                Await FixHighResModelsPsmd(starters)
+                Await UpdateLanguageFilesForCustomPersonalityTestScriptPsmd()
+                Await FixIncCharChoiceScriptPsmd(starters)
+                Await FixPokemonIDsInScriptsPsmd(starters)
+                FixHarmonyScarfGlowPsmd()
+
+            ElseIf IsGti Then
+                'Pokemon-dependent patches
+                Dim fixedPokemon As New FixedPokemon()
+                Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)
+                Dim starters = New StarterDefinitionsGti(fixedPokemon)
+                Await FixHighResModelsGti(starters)
+                Await FixPokemonIDsInScriptsGti(starters)
+                Await FixCodeBinGti(starters)
+            Else
+                Throw New Exception("Unexpected ROM title ID: " & GetTitleId())
+            End If
 
             'Continue the build (script compilation, mod building, etc.)
             Await MyBase.Build()
         End Function
 
-        Private Class StarterDefinitions
+        Private Class StarterDefinitionsPsmd
             Public Sub New(fixedPokemon As FixedPokemon)
                 'Select just what we want.  Note that the numbers in the variable names are the original, unmodified values
                 'It is safe to use static indexes (at least for now) because the game uses them too.
