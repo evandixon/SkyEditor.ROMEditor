@@ -114,14 +114,14 @@ Namespace MysteryDungeon.PSMD
                         'Generate data
                         Dim data As New List(Of Byte)
                         Dim stringData As New List(Of Byte)
-                        For Each item In Entries.OrderBy(Function(x) x.FilenameHash) 'Sorting by filename hash is critical to correct lookups. This is a hash table after all.
+                        For Each item In Entries.OrderBy(Function(x) x.Filename) 'Sorting by filename hash is critical to correct lookups. This is a hash table after all.
                             data.AddRange(BitConverter.GetBytes(&H10 + stringData.Count))
                             data.AddRange(BitConverter.GetBytes(item.DataOffset))
                             data.AddRange(BitConverter.GetBytes(item.DataLength))
                             data.AddRange(BitConverter.GetBytes(0))
 
                             stringData.AddRange(Text.Encoding.Unicode.GetBytes(item.Filename))
-                            stringData.AddRange(Enumerable.Repeat(0, 2))
+                            stringData.AddRange(Enumerable.Repeat(Of Byte)(0, 2))
                         Next
 
                         Dim combinedData As New List(Of Byte)(stringData.Count + data.Count)
@@ -131,7 +131,7 @@ Namespace MysteryDungeon.PSMD
 
                         'Generate content header
                         Dim contentHeader As New List(Of Byte)
-                        contentHeader.AddRange(BitConverter.GetBytes(&H10)) 'Index to content section
+                        contentHeader.AddRange(BitConverter.GetBytes(&H10 + stringData.Count)) 'Index to content section
                         contentHeader.AddRange(BitConverter.GetBytes(Entries.Count))
                         contentHeader.AddRange(BitConverter.GetBytes(Sir0Fat5Type))
                         f.SubHeaderRelativePointers.Add(0)

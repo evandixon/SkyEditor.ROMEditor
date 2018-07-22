@@ -9,6 +9,7 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Extensions
 Imports SkyEditor.Core.IO
+Imports SkyEditor.ROMEditor.MysteryDungeon.GTI
 
 Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
@@ -55,7 +56,8 @@ Namespace MysteryDungeon.PSMD.Projects
                     Path.Combine("romfs", "message_us.lst"), 'PSMD
                     Path.Combine("romfs", "message.lst"), 'PSMD
                     Path.Combine("romfs", "dungeon", "fixed_pokemon.bin"), 'Both
-                    Path.Combine("romfs", "pokemon", "pokemon_actor_data_info.bin"), 'Both
+                    Path.Combine("romfs", "pokemon", "pokemon_actor_data_info.bin"), 'PSMD
+                    Path.Combine("romfs", "script", "pokemon_actor_data.bin"), 'GTI
                     Path.Combine("romfs", "face_graphic.bin"), 'Both
                     Path.Combine("romfs", "message_debug.bin"), 'PSMD
                     Path.Combine("romfs", "message_debug.lst"), 'PSMD
@@ -91,6 +93,51 @@ Namespace MysteryDungeon.PSMD.Projects
             Await pgdb.Save(CurrentIOProvider)
         End Function
 
+        ''' <summary>
+        ''' Fixes hard-coded Pokemon IDs in the LUA scripts.
+        ''' </summary>
+        Private Async Function FixPokemonIDsInScripts(starters As StarterDefinitions) As Task
+            Dim replacementDictionary As Dictionary(Of Integer, Integer) = starters.GetReplacementDictionary
+            Dim evoDictionary As Dictionary(Of Integer, Integer) = starters.GetEvoDictionary
+
+            Dim patchExpression As New Regex("if ((pokemonIndexHero)|(pokemonIndexPartner)) \=\= ([0-9]{1,3}) then", RegexOptions.Compiled)
+            Me.Progress = 0
+            Me.IsIndeterminate = False
+            Me.Message = My.Resources.Language.LoadingPatchingScripts
+            Dim f As New AsyncFor
+            AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                              Me.Progress = e.Progress
+                                          End Sub
+            Await f.RunForEach(Directory.GetFiles(IO.Path.Combine(Me.GetRootDirectory, "script"), "*.lua", SearchOption.AllDirectories),
+                               Sub(filename As String)
+                                   Dim script = CurrentPluginManager.CurrentIOProvider.ReadAllText(filename & ".original")
+
+                                   Dim edited As Boolean = False
+                                   For Each item As Match In patchExpression.Matches(script)
+                                       Dim originalID = CInt(item.Groups(4).Value)
+                                       If replacementDictionary.ContainsKey(originalID) Then
+                                           Dim newId = replacementDictionary(originalID)
+                                           script = script.Replace(item.Value, item.Value.Replace(item.Groups(4).Value, newId.ToString))
+                                           edited = True
+                                       ElseIf evoDictionary.ContainsKey(originalID) Then
+                                           Dim newId = evoDictionary(originalID)
+                                           script = script.Replace(item.Value, item.Value.Replace(item.Groups(4).Value, newId.ToString))
+                                           edited = True
+                                       Else
+                                           Console.WriteLine("Unknown ID in script: " & filename)
+                                       End If
+                                   Next
+
+                                   If edited Then
+                                       'Preserves filesystem timestamp if we don't overwrite all the files
+                                       CurrentPluginManager.CurrentIOProvider.WriteAllText(filename, script)
+                                       Console.WriteLine("Edited script: " & filename)
+                                   End If
+
+                               End Sub)
+            Me.Progress = 1
+        End Function
+
 #End Region
 
 #Region "GTI Patching Functions"
@@ -111,7 +158,15 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Private Async Function FixCodeBinGti(starters As StarterDefinitionsGti) As Task
             If IsGtiUS Then
-                Throw New NotImplementedException("US regions of GTI are not currently implemented.")
+                Using codeBin As New CodeBinGtiUS
+                    Await codeBin.OpenFile(Path.Combine(Me.GetRawFilesDir, "exefs", "code.bin"), CurrentPluginManager.CurrentIOProvider)
+                    Await codeBin.SetStarter1(starters.Starter1)
+                    Await codeBin.SetStarter39(starters.Starter39)
+                    Await codeBin.SetStarter42(starters.Starter42)
+                    Await codeBin.SetStarter45(starters.Starter45)
+                    Await codeBin.SetStarter122(starters.Starter122)
+                    Await codeBin.Save(CurrentPluginManager.CurrentIOProvider)
+                End Using
             ElseIf IsGtiEU Then
                 Throw New NotImplementedException("EU regions of GTI are not currently implemented.")
             ElseIf IsGtiJP Then
@@ -122,12 +177,80 @@ Namespace MysteryDungeon.PSMD.Projects
         End Function
 
         Private Async Function FixHighResModelsGti(starters As StarterDefinitionsGti) As Task
-            Throw New NotImplementedException()
+            Dim actorInfo As New ActorDataInfoGti
+            Await actorInfo.OpenFile(IO.Path.Combine(Me.GetRawFilesDir, "romfs", "script", "pokemon_actor_data.bin"), CurrentPluginManager.CurrentIOProvider)
+            actorInfo.GetEntryByName("PIKACHUU_H").PokemonID = starters.Starter1
+            actorInfo.GetEntryByName("TSUTAAJA_H").PokemonID = starters.Starter39
+            actorInfo.GetEntryByName("POKABU_H").PokemonID = starters.Starter42
+            actorInfo.GetEntryByName("MIJUMARU_H").PokemonID = starters.Starter45
+            actorInfo.GetEntryByName("KIBAGO_H").PokemonID = starters.Starter122
+            Await actorInfo.Save(CurrentPluginManager.CurrentIOProvider)
         End Function
 
-        Private Async Function FixPokemonIDsInScriptsGti(starters As StarterDefinitionsGti) As Task
-            Throw New NotImplementedException()
-        End Function
+        Private Sub FixPersonalityTestGti(starters As StarterDefinitionsGti)
+            Dim sourceScript = File.ReadAllText(Path.Combine(Me.GetRootDirectory, "script", "menu", "menu_ground_chara_select.lua.original"))
+            Dim toReplaceCharaSet =
+"  local charaSet = {
+    45,
+    122,
+    39,
+    1,
+    42
+  }"
+
+            Dim toReplaceTable =
+"  local pokeTbl = {
+      [45] = -391927830,
+      [122] = -757706441,
+      [39] = 446223748,
+      [1] = 494718355,
+      [42] = 989755712
+    }
+"
+
+            Dim toReplaceOffsets =
+"  local faceImgOffsTbl = {
+    [1] = {u = 0, v = 0},
+    [39] = {u = 80, v = 0},
+    [42] = {u = 160, v = 0},
+    [45] = {u = 0, v = 80},
+    [122] = {u = 80, v = 80}
+  }"
+
+            Dim repalceWithCharaSet =
+"  local charaSet = {
+    " & starters.Starter45 & ",
+    " & starters.Starter122 & ",
+    " & starters.Starter39 & ",
+    " & starters.Starter1 & ",
+    " & starters.Starter42 & "
+  }"
+
+            Dim repalceWithTable =
+"  local pokeTbl = {
+      [" & starters.Starter45 & "] = -391927830,
+      [" & starters.Starter122 & "] = -757706441,
+      [" & starters.Starter39 & "] = 446223748,
+      [" & starters.Starter1 & "] = 494718355,
+      [" & starters.Starter42 & "] = 989755712
+    }
+"
+
+            Dim repalceWithOffsets =
+"  local faceImgOffsTbl = {
+    [" & starters.Starter1 & "] = {u = 0, v = 0},
+    [" & starters.Starter39 & "] = {u = 80, v = 0},
+    [" & starters.Starter42 & "] = {u = 160, v = 0},
+    [" & starters.Starter45 & "] = {u = 0, v = 80},
+    [" & starters.Starter122 & "] = {u = 80, v = 80}
+  }"
+
+            sourceScript = sourceScript.Replace(toReplaceCharaSet, repalceWithCharaSet)
+            sourceScript = sourceScript.Replace(toReplaceTable, repalceWithTable)
+            sourceScript = sourceScript.Replace(toReplaceOffsets, repalceWithOffsets)
+
+            File.WriteAllText(Path.Combine(Me.GetRootDirectory, "script", "menu", "menu_ground_chara_select.lua"), sourceScript)
+        End Sub
 
 #End Region
 
@@ -539,51 +662,6 @@ Namespace MysteryDungeon.PSMD.Projects
             Next
         End Function
 
-        ''' <summary>
-        ''' Fixes hard-coded Pokemon IDs in the LUA scripts.
-        ''' </summary>
-        Private Async Function FixPokemonIDsInScriptsPsmd(starters As StarterDefinitionsPsmd) As Task
-            Dim replacementDictionary As Dictionary(Of Integer, Integer) = starters.GetReplacementDictionary
-            Dim evoDictionary As Dictionary(Of Integer, Integer) = starters.GetEvoDictionary
-
-            Dim patchExpression As New Regex("if ((pokemonIndexHero)|(pokemonIndexPartner)) \=\= ([0-9]{1,3}) then", RegexOptions.Compiled)
-            Me.Progress = 0
-            Me.IsIndeterminate = False
-            Me.Message = My.Resources.Language.LoadingPatchingScripts
-            Dim f As New AsyncFor
-            AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
-                                              Me.Progress = e.Progress
-                                          End Sub
-            Await f.RunForEach(Directory.GetFiles(IO.Path.Combine(Me.GetRootDirectory, "script"), "*.lua", SearchOption.AllDirectories),
-                               Sub(filename As String)
-                                   Dim script = CurrentPluginManager.CurrentIOProvider.ReadAllText(filename & ".original")
-
-                                   Dim edited As Boolean = False
-                                   For Each item As Match In patchExpression.Matches(script)
-                                       Dim originalID = CInt(item.Groups(4).Value)
-                                       If replacementDictionary.ContainsKey(originalID) Then
-                                           Dim newId = replacementDictionary(originalID)
-                                           script = script.Replace(item.Value, item.Value.Replace(item.Groups(4).Value, newId.ToString))
-                                           edited = True
-                                       ElseIf evoDictionary.ContainsKey(originalID) Then
-                                           Dim newId = evoDictionary(originalID)
-                                           script = script.Replace(item.Value, item.Value.Replace(item.Groups(4).Value, newId.ToString))
-                                           edited = True
-                                       Else
-                                           Console.WriteLine("Unknown ID in script: " & filename)
-                                       End If
-                                   Next
-
-                                   If edited Then
-                                       'Preserves filesystem timestamp if we don't overwrite all the files
-                                       CurrentPluginManager.CurrentIOProvider.WriteAllText(filename, script)
-                                       Console.WriteLine("Edited script: " & filename)
-                                   End If
-
-                               End Sub)
-            Me.Progress = 1
-        End Function
-
         Private Sub FixHarmonyScarfGlowPsmd()
             Dim scarfGlowRegex = New Regex("(if(.|\n)*?)(else\s(.|\n)*?)(end)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
             Dim scarfGlowScripts = {"script/event/main15/120_enteishujinkoushinkaboss1st/enteishujinkoushinkaboss1st.lua"}
@@ -634,8 +712,8 @@ Namespace MysteryDungeon.PSMD.Projects
             'Non Pokemon-dependent patches
             Dim pgdb As New PGDB
             Await pgdb.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphics_database.bin"), CurrentIOProvider)
-            Await AddMissingModelAnimations(pgdb)
-            Await FixPokemonWithDummyModel(pgdb)
+            'Await AddMissingModelAnimations(pgdb)
+            'Await FixPokemonWithDummyModel(pgdb)
 
             If IsPsmd Then
                 Await SubstituteMissingPortraitsPsmd()
@@ -648,20 +726,21 @@ Namespace MysteryDungeon.PSMD.Projects
                 Await FixHighResModelsPsmd(starters)
                 Await UpdateLanguageFilesForCustomPersonalityTestScriptPsmd()
                 Await FixIncCharChoiceScriptPsmd(starters)
-                Await FixPokemonIDsInScriptsPsmd(starters)
+                Await FixPokemonIDsInScripts(starters)
                 FixHarmonyScarfGlowPsmd()
 
             ElseIf IsGti Then
-                Await SubstituteMissingPortraitsGti()
+                'Await SubstituteMissingPortraitsGti()
 
                 'Pokemon-dependent patches
                 Dim fixedPokemon As New FixedPokemon()
                 Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)
                 Dim starters = New StarterDefinitionsGti(fixedPokemon)
 
+                FixPersonalityTestGti(starters)
                 Await FixCodeBinGti(starters)
                 Await FixHighResModelsGti(starters)
-                Await FixPokemonIDsInScriptsGti(starters)
+                Await FixPokemonIDsInScripts(starters)
             Else
                 Throw New Exception("Unexpected ROM title ID: " & GetTitleId())
             End If
@@ -670,7 +749,13 @@ Namespace MysteryDungeon.PSMD.Projects
             Await MyBase.Build()
         End Function
 
+        Private MustInherit Class StarterDefinitions
+            Public MustOverride Function GetReplacementDictionary() As Dictionary(Of Integer, Integer)
+            Public MustOverride Function GetEvoDictionary() As Dictionary(Of Integer, Integer)
+        End Class
+
         Private Class StarterDefinitionsPsmd
+            Inherits StarterDefinitions
             Public Sub New(fixedPokemon As FixedPokemon)
                 'Select just what we want.  Note that the numbers in the variable names are the original, unmodified values
                 'It is safe to use static indexes (at least for now) because the game uses them too.
@@ -764,7 +849,7 @@ Namespace MysteryDungeon.PSMD.Projects
             ''' Gets a dictionary representing matching new starter Pokemon IDs to the old.
             ''' Key: old ID, value: new ID
             ''' </summary>
-            Public Function GetReplacementDictionary() As Dictionary(Of Integer, Integer)
+            Public Overrides Function GetReplacementDictionary() As Dictionary(Of Integer, Integer)
                 Dim replacementDictionary As New Dictionary(Of Integer, Integer) 'Key: original ID, Value: edited ID
                 replacementDictionary.Add(1, Starter1)
                 replacementDictionary.Add(5, Starter5)
@@ -793,7 +878,7 @@ Namespace MysteryDungeon.PSMD.Projects
             ''' Gets a dictionary representing matching new Harmony Scarf Evolution Pokemon IDs to the old.
             ''' Key: old ID, value: new ID
             ''' </summary>
-            Public Function GetEvoDictionary() As Dictionary(Of Integer, Integer)
+            Public Overrides Function GetEvoDictionary() As Dictionary(Of Integer, Integer)
                 Dim evoDictionary As New Dictionary(Of Integer, Integer) 'Key: original evo ID, value: new evo ID
                 evoDictionary.Add(6, Evo1)
                 evoDictionary.Add(7, Evo5)
@@ -820,6 +905,7 @@ Namespace MysteryDungeon.PSMD.Projects
         End Class
 
         Private Class StarterDefinitionsGti
+            Inherits StarterDefinitions
             Public Sub New(fixedPokemon As FixedPokemon)
                 Starter1 = fixedPokemon.Entries(71).PokemonID
                 Starter39 = fixedPokemon.Entries(72).PokemonID
@@ -838,7 +924,7 @@ Namespace MysteryDungeon.PSMD.Projects
             ''' Gets a dictionary representing matching new starter Pokemon IDs to the old.
             ''' Key: old ID, value: new ID
             ''' </summary>
-            Public Function GetReplacementDictionary() As Dictionary(Of Integer, Integer)
+            Public Overrides Function GetReplacementDictionary() As Dictionary(Of Integer, Integer)
                 Dim replacementDictionary As New Dictionary(Of Integer, Integer) 'Key: original ID, Value: edited ID
                 replacementDictionary.Add(1, Starter1)
                 replacementDictionary.Add(39, Starter39)
@@ -846,6 +932,10 @@ Namespace MysteryDungeon.PSMD.Projects
                 replacementDictionary.Add(45, Starter45)
                 replacementDictionary.Add(122, Starter122)
                 Return replacementDictionary
+            End Function
+
+            Public Overrides Function GetEvoDictionary() As Dictionary(Of Integer, Integer)
+                Return New Dictionary(Of Integer, Integer)
             End Function
         End Class
 
