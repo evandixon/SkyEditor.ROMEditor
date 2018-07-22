@@ -522,8 +522,8 @@ evandixon (Personality test, bgp files)</value>
   <data name="DsModSolution_InitializationWizard_BaseRom_RomLabel" xml:space="preserve">
     <value>Source ROM: </value>
   </data>
-  <data name="MenuFarcSubstitute" xml:space="preserve">
-    <value>Substitute Missing Animations</value>
+  <data name="MenuFarcSubstitutePsmdAnimations" xml:space="preserve">
+    <value>Substitute Missing Animations (PSMD)</value>
   </data>
   <data name="Filename" xml:space="preserve">
     <value>Filename</value>
@@ -533,5 +533,11 @@ evandixon (Personality test, bgp files)</value>
   </data>
   <data name="MenuExport" xml:space="preserve">
     <value>_Export</value>
+  </data>
+  <data name="MenuFarcExtractPortraits" xml:space="preserve">
+    <value>_Extract Portraits</value>
+  </data>
+  <data name="MenuFarcSubstituteGtiPortraits" xml:space="preserve">
+    <value>Substitute Missing Portraits (GTI)</value>
   </data>
 </root>

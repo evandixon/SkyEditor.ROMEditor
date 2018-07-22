@@ -1,4 +1,5 @@
 ﻿Imports System.Runtime.CompilerServices
+Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
@@ -144,6 +145,44 @@ Namespace MysteryDungeon.PSMD.Extensions
                                         End If
                                     End If
                                 End Function)
+
+            If progressReportToken IsNot Nothing Then
+                progressReportToken.IsCompleted = True
+            End If
+        End Function
+
+        ''' <summary>
+        ''' Adds missing portraits in GTI's face_graphic.bin
+        ''' </summary>
+        ''' <param name="faceGraphic"></param>
+        ''' <param name="progressReportToken"></param>
+        ''' <returns></returns>
+        <Extension>
+        Public Async Function SubstituteMissingPortraitsGti(faceGraphic As Farc, Optional progressReportToken As ProgressReportToken = Nothing) As Task
+            Dim filenameRegex As New Regex("((([a-z0-9]|_)+)(_f)?(_hanten)?(_r)?)_([0-9]{2})", RegexOptions.Compiled)
+            Dim files = faceGraphic.GetFiles("/", "*", True)
+
+            Dim pokemonNames = files.Select(Function(x) filenameRegex.Match(x).Groups(1).Value).Distinct().ToList()
+
+            Dim a As New AsyncFor
+            AddHandler a.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                              If progressReportToken IsNot Nothing Then
+                                                  progressReportToken.Progress = e.Progress
+                                                  progressReportToken.Message = e.Message
+                                                  progressReportToken.IsIndeterminate = e.IsIndeterminate
+                                              End If
+                                          End Sub
+            a.RunSynchronously = True
+            Await a.RunForEach(pokemonNames,
+                               Async Function(pokemonName As String) As Task
+                                   Dim sourceFile = $"/{pokemonName}_00.bin"
+                                   For i = 1 To 21
+                                       Dim destFile = $"/{pokemonName}_{i.ToString().PadLeft(2, "0")}.bin"
+                                       If Not faceGraphic.FileExists(destFile) Then
+                                           Await faceGraphic.CopyFileAsync(sourceFile, destFile)
+                                       End If
+                                   Next
+                               End Function)
 
             If progressReportToken IsNot Nothing Then
                 progressReportToken.IsCompleted = True

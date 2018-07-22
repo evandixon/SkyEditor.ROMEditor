@@ -274,14 +274,6 @@ Namespace MysteryDungeon.PSMD
             Next
         End Sub
 
-        Protected Function GetFileEntry(fileHash As UInteger) As FarcEntry
-            If Not CachedEntries.ContainsKey(fileHash) Then
-                Dim entry = Entries.FirstOrDefault(Function(x) x.FilenameHash = fileHash)
-                CachedEntries(fileHash) = entry
-            End If
-            Return CachedEntries(fileHash)
-        End Function
-
         Protected Function GetFileEntry(filename As String) As FarcEntry
             Dim hex As UInteger
             Dim hash As UInteger
@@ -293,10 +285,20 @@ Namespace MysteryDungeon.PSMD
                 hash = PmdFunctions.Crc32Hash(filename)
             End If
 
-            Dim entry = GetFileEntry(hash)
+            Dim entry As FarcEntry = Nothing
+            If CachedEntries.ContainsKey(hash) Then
+                entry = CachedEntries(hash)
+            ElseIf Not CachedEntries.ContainsKey(hash) Then
+                entry = Entries.FirstOrDefault(Function(x) x.FilenameHash = hash OrElse x.Filename = filename)
+                If entry IsNot Nothing Then
+                    CachedEntries(hash) = entry
+                End If
+            End If
+
             If entry IsNot Nothing AndAlso String.IsNullOrEmpty(entry.Filename) Then
                 entry.Filename = filename
             End If
+
             Return entry
         End Function
 
@@ -307,6 +309,15 @@ Namespace MysteryDungeon.PSMD
             Return entry.FileData
         End Function
 
+        Public Function GetFileData(filename As String) As Byte()
+            Dim entry = GetFileEntry(filename)
+            If entry IsNot Nothing Then
+                Return GetFileData(entry)
+            Else
+                Return Nothing
+            End If
+        End Function
+
         Protected Async Function GetFileDataAsync(entry As FarcEntry) As Task(Of Byte())
             If entry.FileData Is Nothing Then
                 entry.FileData = Await InnerData.ReadAsync(DataOffset + entry.DataEntry.DataOffset, entry.DataEntry.DataLength)
@@ -314,10 +325,10 @@ Namespace MysteryDungeon.PSMD
             Return entry.FileData
         End Function
 
-        Public Function GetFileData(filename As String) As Byte()
+        Public Async Function GetFileDataAsync(filename As String) As Task(Of Byte())
             Dim entry = GetFileEntry(filename)
             If entry IsNot Nothing Then
-                Return GetFileData(entry)
+                Return Await GetFileDataAsync(entry)
             Else
                 Return Nothing
             End If
@@ -539,6 +550,10 @@ Namespace MysteryDungeon.PSMD
             Return GetFileData(FixPath(filename))
         End Function
 
+        Public Async Function ReadAllBytesAsync(filename As String) As Task(Of Byte())
+            Return Await GetFileDataAsync(FixPath(filename))
+        End Function
+
         Public Function ReadAllText(filename As String) As String Implements IIOProvider.ReadAllText
             Using f = OpenFileReadOnly(filename)
                 Using reader As New StreamReader(f)
@@ -559,7 +574,6 @@ Namespace MysteryDungeon.PSMD
                     'Filename is unknown, use raw hash
                     entry.FilenameHash = hex
                 Else
-                    'Hash the filename
                     entry.Filename = FixPath(filename)
                 End If
 
@@ -578,6 +592,13 @@ Namespace MysteryDungeon.PSMD
                 WriteAllBytes(destinationFilename, source)
             End If
         End Sub
+
+        Public Async Function CopyFileAsync(sourceFilename As String, destinationFilename As String) As Task
+            Dim source = Await ReadAllBytesAsync(sourceFilename)
+            If source IsNot Nothing Then
+                WriteAllBytes(destinationFilename, source)
+            End If
+        End Function
 
         Public Sub DeleteFile(filename As String) Implements IIOProvider.DeleteFile
             Dim tries = 5

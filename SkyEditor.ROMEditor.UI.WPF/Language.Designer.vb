@@ -560,11 +560,29 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Substitute Missing Animations.
+        '''  Looks up a localized string similar to _Extract Portraits.
         '''</summary>
-        Public Shared ReadOnly Property MenuFarcSubstitute() As String
+        Public Shared ReadOnly Property MenuFarcExtractPortraits() As String
             Get
-                Return ResourceManager.GetString("MenuFarcSubstitute", resourceCulture)
+                Return ResourceManager.GetString("MenuFarcExtractPortraits", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Substitute Missing Portraits (GTI).
+        '''</summary>
+        Public Shared ReadOnly Property MenuFarcSubstituteGtiPortraits() As String
+            Get
+                Return ResourceManager.GetString("MenuFarcSubstituteGtiPortraits", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Substitute Missing Animations (PSMD).
+        '''</summary>
+        Public Shared ReadOnly Property MenuFarcSubstitutePsmdAnimations() As String
+            Get
+                Return ResourceManager.GetString("MenuFarcSubstitutePsmdAnimations", resourceCulture)
             End Get
         End Property
         

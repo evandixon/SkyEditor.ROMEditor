@@ -61,6 +61,7 @@ Namespace MysteryDungeon.PSMD.Projects
                     Path.Combine("romfs", "message_debug.lst"), 'PSMD
                     Path.Combine("romfs", "pokemon_graphic.bin"), 'Both
                     Path.Combine("romfs", "pokemon_graphics_database.bin"), 'Both
+                    Path.Combine("exefs", "code.bin"), 'GTI
                     Path.Combine("ExHeader.bin")  'Both
             }
         End Function
@@ -90,10 +91,52 @@ Namespace MysteryDungeon.PSMD.Projects
             Await pgdb.Save(CurrentIOProvider)
         End Function
 
+#End Region
+
+#Region "GTI Patching Functions"
+        Private Async Function SubstituteMissingPortraitsGti() As Task
+            Dim provider = CurrentPluginManager.CurrentIOProvider
+
+            'Extract face_graphic.bin
+            Me.Message = My.Resources.Language.LoadingExtractingPortraits
+            Me.Progress = 0
+            Me.IsIndeterminate = False
+
+            Using faceFarc As New Farc
+                Await faceFarc.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), provider)
+                Await faceFarc.SubstituteMissingPortraitsGti()
+                Await faceFarc.Save(provider)
+            End Using
+        End Function
+
+        Private Async Function FixCodeBinGti(starters As StarterDefinitionsGti) As Task
+            If IsGtiUS Then
+                Throw New NotImplementedException("US regions of GTI are not currently implemented.")
+            ElseIf IsGtiEU Then
+                Throw New NotImplementedException("EU regions of GTI are not currently implemented.")
+            ElseIf IsGtiJP Then
+                Throw New NotImplementedException("JP regions of GTI are not currently implemented.")
+            Else
+                Throw New NotSupportedException("Only the US, EU, and JP regions of GTI are supported.")
+            End If
+        End Function
+
+        Private Async Function FixHighResModelsGti(starters As StarterDefinitionsGti) As Task
+            Throw New NotImplementedException()
+        End Function
+
+        Private Async Function FixPokemonIDsInScriptsGti(starters As StarterDefinitionsGti) As Task
+            Throw New NotImplementedException()
+        End Function
+
+#End Region
+
+#Region "PSMD Patching Functions"
+
         ''' <summary>
         ''' Replaces placeholder portraits with the default emotion. Build progress is reported too.
         ''' </summary>
-        Private Async Function SubstituteMissingPortraits() As Task
+        Private Async Function SubstituteMissingPortraitsPsmd() As Task
             Dim provider = CurrentPluginManager.CurrentIOProvider
 
             'Extract face_graphic.bin
@@ -271,34 +314,6 @@ Namespace MysteryDungeon.PSMD.Projects
 
             Await f.Save(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), CurrentPluginManager.CurrentIOProvider)
         End Function
-
-#End Region
-
-#Region "GTI Patching Functions"
-
-        Private Async Function FixCodeBinGti(starters As StarterDefinitionsGti) As Task
-            If IsGtiUS Then
-                Throw New NotImplementedException("US regions of GTI are not currently implemented.")
-            ElseIf IsGtiEU Then
-                Throw New NotImplementedException("EU regions of GTI are not currently implemented.")
-            ElseIf IsGtiJP Then
-                Throw New NotImplementedException("JP regions of GTI are not currently implemented.")
-            Else
-                Throw New NotSupportedException("Only the US, EU, and JP regions of GTI are supported.")
-            End If
-        End Function
-
-        Private Async Function FixHighResModelsGti(starters As StarterDefinitionsGti) As Task
-            Throw New NotImplementedException()
-        End Function
-
-        Private Async Function FixPokemonIDsInScriptsGti(starters As StarterDefinitionsGti) As Task
-            Throw New NotImplementedException()
-        End Function
-
-#End Region
-
-#Region "PSMD Patching Functions"
 
         ''' <summary>
         ''' Replaces the Pokemon IDs of pokemon_actor_data_info.bin to allow displaying models in high-res mode
@@ -621,9 +636,9 @@ Namespace MysteryDungeon.PSMD.Projects
             Await pgdb.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphics_database.bin"), CurrentIOProvider)
             Await AddMissingModelAnimations(pgdb)
             Await FixPokemonWithDummyModel(pgdb)
-            Await SubstituteMissingPortraits()
 
             If IsPsmd Then
+                Await SubstituteMissingPortraitsPsmd()
 
                 'Pokemon-dependent patches
                 Dim fixedPokemon As New FixedPokemon()
@@ -637,6 +652,8 @@ Namespace MysteryDungeon.PSMD.Projects
                 FixHarmonyScarfGlowPsmd()
 
             ElseIf IsGti Then
+                Await SubstituteMissingPortraitsGti()
+
                 'Pokemon-dependent patches
                 Dim fixedPokemon As New FixedPokemon()
                 Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)

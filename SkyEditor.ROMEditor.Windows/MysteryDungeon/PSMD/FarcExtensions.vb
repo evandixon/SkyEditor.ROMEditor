@@ -7,7 +7,9 @@ Imports SkyEditor.Core.Utilities
 
 Namespace MysteryDungeon.PSMD
     Public Module FarcExtensions
-        <Extension>
+
+        'Can't define this as an extension method due to conflicting definitions :(
+        '<Extension>
         Public Async Function ExtractPortraits(farc As Farc, outputDirectory As String, ioProvider As IIOProvider, Optional progressToken As ProgressReportToken = Nothing) As Task
             Dim onProgressed = Sub(sender As Object, e As ProgressReportedEventArgs)
                                    If progressToken IsNot Nothing Then
@@ -41,7 +43,7 @@ Namespace MysteryDungeon.PSMD
                                        End SyncLock
                                    End If
 
-                                   Dim rawData = ioProvider.ReadAllBytes(portrait)
+                                   Dim rawData = farc.ReadAllBytes(portrait)
                                    Using bitmap = PmdGraphics.ReadPortrait(rawData)
                                        bitmap.Save(outputPath, ImageFormat.Png)
                                    End Using

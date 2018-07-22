@@ -31,7 +31,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
             Dim progressToken As New ProgressReportToken()
             'Todo: use the progress token
-            Await faceFarc.ExtractPortraits(Me.GetRootDirectory, provider, progressToken)
+            Await FarcExtensions.ExtractPortraits(faceFarc, Me.GetRootDirectory, provider, progressToken)
 
             'Dim onProgressed = Sub(sender As Object, e As ProgressReportedEventArgs)
             '                       Me.Message = My.Resources.Language.LoadingExtractingPortraits

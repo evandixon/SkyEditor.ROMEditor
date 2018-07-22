@@ -9,11 +9,11 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Extensions
 
 Namespace MenuActions
-    Public Class PsmdFarcSubstitute
+    Public Class PsmdFarcSubstitutePsmdAnimations
         Inherits MenuAction
 
         Public Sub New(ioProvider As IIOProvider, appViewModel As ApplicationViewModel)
-            MyBase.New({My.Resources.Language.MenuFarc, My.Resources.Language.MenuFarcSubstitute})
+            MyBase.New({My.Resources.Language.MenuFarc, My.Resources.Language.MenuFarcSubstitutePsmdAnimations})
 
             If ioProvider Is Nothing Then
                 Throw New ArgumentNullException(NameOf(ioProvider))
