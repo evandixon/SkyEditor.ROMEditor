@@ -49,7 +49,7 @@ Namespace MysteryDungeon.PSMD
             RemoveHandler a.ProgressChanged, onProgressed
 
             If progressToken IsNot Nothing Then
-                progressToken.IsComplete = True
+                progressToken.IsCompleted = True
             End If
         End Function
     End Module
