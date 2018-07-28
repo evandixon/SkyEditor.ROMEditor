@@ -83,8 +83,7 @@
       <HintPath>..\packages\DS-ROM-Patcher.1.2.0-CI112\lib\net462\DSPatcher.exe</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="ListViewDragDropManager, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ListViewDragDropManager.1.2.0\lib\net45\ListViewDragDropManager.dll</HintPath>
@@ -96,20 +95,20 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.9, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI9\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.10, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI10\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor.UI.WPF, Version=4.1.0.9, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.1.0-CI9\lib\net462\SkyEditor.CodeEditor.UI.WPF.exe</HintPath>
+    <Reference Include="SkyEditor.CodeEditor.UI.WPF, Version=4.1.0.10, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.1.0-CI10\lib\net462\SkyEditor.CodeEditor.UI.WPF.exe</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI213\lib\net462\SkyEditor.Core.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI216\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI108\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.150, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI150\lib\net462\SkyEditor.UI.WPF.dll</HintPath>
+    <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.151, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI151\lib\net462\SkyEditor.UI.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -150,29 +149,23 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="Zlib.Portable, Version=1.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Zlib.Portable.1.11.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>

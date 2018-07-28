@@ -129,5 +129,14 @@ Namespace My.Resources
                 Return ResourceManager.GetString("ProcessManagement_JavaNotFoundMessage", resourceCulture)
             End Get
         End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to The program &quot;{0}&quot; exited with an unsuccessful exit code: {1}..
+        '''</summary>
+        Public Shared ReadOnly Property ProcessManagement_UnsuccessfulExitCodeExceptionMessage() As String
+            Get
+                Return ResourceManager.GetString("ProcessManagement_UnsuccessfulExitCodeExceptionMessage", resourceCulture)
+            End Get
+        End Property
     End Class
 End Namespace

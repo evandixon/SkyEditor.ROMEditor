@@ -13,7 +13,7 @@ Namespace Windows
             'extractTask.Wait()
             Await ConsoleApp.RunProgram(Path.Combine(romDirectory, "DSIconTool.exe"),
                                                   String.Format("{0} {1}",
-                                                                RomPath, OutputPath))
+                                                                RomPath, OutputPath), False)
         End Function
     End Module
 End Namespace

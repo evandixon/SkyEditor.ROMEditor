@@ -21,15 +21,9 @@ Namespace ProcessManagement
 
         Public ReadOnly Property Filename As String
 
-        Public Sub DecompileScript(sourceScriptFilename As String, destinationScriptFilename As String)
+        Public Async Function DecompileScript(sourceScriptFilename As String, destinationScriptFilename As String) As Task
             Using unluac As New Unluac(Filename, sourceScriptFilename)
-                unluac.SaveAllOutput(destinationScriptFilename)
-            End Using
-        End Sub
-
-        Public Async Function DecompileScriptAsync(sourceScriptFilename As String, destinationScriptFilename As String) As Task
-            Using unluac As New Unluac(Filename, sourceScriptFilename)
-                Await unluac.SaveAllOutputAsync(destinationScriptFilename)
+                Await unluac.SaveAllOutput(destinationScriptFilename)
             End Using
         End Function
 
