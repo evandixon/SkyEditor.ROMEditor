@@ -160,9 +160,9 @@ Namespace MysteryDungeon.PSMD.Projects
             If IsGtiUS Then
                 Using codeBin As New CodeBinGtiUS
                     Await codeBin.OpenFile(Path.Combine(Me.GetRawFilesDir, "exefs", "code.bin"), CurrentPluginManager.CurrentIOProvider)
-                    Await codeBin.SetStarter1(starters.Starter1)
+                    'Await codeBin.SetStarter1(starters.Starter1)
                     Await codeBin.SetStarter39(starters.Starter39)
-                    Await codeBin.SetStarter42(starters.Starter42)
+                    'Await codeBin.SetStarter42(starters.Starter42)
                     Await codeBin.SetStarter45(starters.Starter45)
                     Await codeBin.SetStarter122(starters.Starter122)
                     Await codeBin.Save(CurrentPluginManager.CurrentIOProvider)
@@ -179,9 +179,9 @@ Namespace MysteryDungeon.PSMD.Projects
         Private Async Function FixHighResModelsGti(starters As StarterDefinitionsGti) As Task
             Dim actorInfo As New ActorDataInfoGti
             Await actorInfo.OpenFile(IO.Path.Combine(Me.GetRawFilesDir, "romfs", "script", "pokemon_actor_data.bin"), CurrentPluginManager.CurrentIOProvider)
-            actorInfo.GetEntryByName("PIKACHUU_H").PokemonID = starters.Starter1
+            'actorInfo.GetEntryByName("PIKACHUU_H").PokemonID = starters.Starter1
             actorInfo.GetEntryByName("TSUTAAJA_H").PokemonID = starters.Starter39
-            actorInfo.GetEntryByName("POKABU_H").PokemonID = starters.Starter42
+            'actorInfo.GetEntryByName("POKABU_H").PokemonID = starters.Starter42
             actorInfo.GetEntryByName("MIJUMARU_H").PokemonID = starters.Starter45
             actorInfo.GetEntryByName("KIBAGO_H").PokemonID = starters.Starter122
             Await actorInfo.Save(CurrentPluginManager.CurrentIOProvider)
@@ -222,8 +222,8 @@ Namespace MysteryDungeon.PSMD.Projects
     " & starters.Starter45 & ",
     " & starters.Starter122 & ",
     " & starters.Starter39 & ",
-    " & starters.Starter1 & ",
-    " & starters.Starter42 & "
+    1,
+    42
   }"
 
             Dim repalceWithTable =
@@ -231,16 +231,16 @@ Namespace MysteryDungeon.PSMD.Projects
       [" & starters.Starter45 & "] = -391927830,
       [" & starters.Starter122 & "] = -757706441,
       [" & starters.Starter39 & "] = 446223748,
-      [" & starters.Starter1 & "] = 494718355,
-      [" & starters.Starter42 & "] = 989755712
+      [1] = 494718355,
+      [42] = 989755712
     }
 "
 
             Dim repalceWithOffsets =
 "  local faceImgOffsTbl = {
-    [" & starters.Starter1 & "] = {u = 0, v = 0},
+    [1] = {u = 0, v = 0},
     [" & starters.Starter39 & "] = {u = 80, v = 0},
-    [" & starters.Starter42 & "] = {u = 160, v = 0},
+    [42] = {u = 160, v = 0},
     [" & starters.Starter45 & "] = {u = 0, v = 80},
     [" & starters.Starter122 & "] = {u = 80, v = 80}
   }"
@@ -907,16 +907,16 @@ Namespace MysteryDungeon.PSMD.Projects
         Private Class StarterDefinitionsGti
             Inherits StarterDefinitions
             Public Sub New(fixedPokemon As FixedPokemon)
-                Starter1 = fixedPokemon.Entries(71).PokemonID
+                'Starter1 = fixedPokemon.Entries(71).PokemonID
                 Starter39 = fixedPokemon.Entries(72).PokemonID
-                Starter42 = fixedPokemon.Entries(73).PokemonID
+                'Starter42 = fixedPokemon.Entries(73).PokemonID
                 Starter45 = fixedPokemon.Entries(74).PokemonID
                 Starter122 = fixedPokemon.Entries(75).PokemonID
             End Sub
 
-            Public Starter1 As Integer
+            'Public Starter1 As Integer
             Public Starter39 As Integer
-            Public Starter42 As Integer
+            'Public Starter42 As Integer
             Public Starter45 As Integer
             Public Starter122 As Integer
 
@@ -926,9 +926,9 @@ Namespace MysteryDungeon.PSMD.Projects
             ''' </summary>
             Public Overrides Function GetReplacementDictionary() As Dictionary(Of Integer, Integer)
                 Dim replacementDictionary As New Dictionary(Of Integer, Integer) 'Key: original ID, Value: edited ID
-                replacementDictionary.Add(1, Starter1)
+                'replacementDictionary.Add(1, Starter1)
                 replacementDictionary.Add(39, Starter39)
-                replacementDictionary.Add(42, Starter42)
+                'replacementDictionary.Add(42, Starter42)
                 replacementDictionary.Add(45, Starter45)
                 replacementDictionary.Add(122, Starter122)
                 Return replacementDictionary
