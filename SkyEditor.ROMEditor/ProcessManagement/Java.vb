@@ -4,13 +4,14 @@ Namespace ProcessManagement
     Public Class Java
         Inherits ConsoleApp
 
-        Public Sub New(jarFilename As String, arguments As String)
+        Public Sub New(jarFilename As String, arguments As String, Optional captureConsoleOutput As Boolean = True, Optional captureConsoleError As Boolean = True)
             MyBase.New("java",
                        $"-jar ""{jarFilename}""" &
                        If( 'If arguments are present, add a space before them; otherwise, don't
                            Not String.IsNullOrEmpty(arguments),
                            $" ""{arguments}""",
-                           "")
+                           ""),
+                       captureConsoleOutput, captureConsoleError
                        )
         End Sub
 

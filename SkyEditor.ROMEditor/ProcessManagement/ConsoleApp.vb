@@ -12,9 +12,8 @@ Namespace ProcessManagement
         ''' Runs a program and returns the standard input and output, or null if disabled
         ''' </summary>
         ''' <exception cref="UnsuccessfulExitCodeException">Thrown if the process exit code is unsuccessful</exception>
-        Public Shared Async Function RunProgram(filename As String, arguments As String, redirectOutput As Boolean) As Task(Of String)
-            Using app As New ConsoleApp(filename, arguments)
-                app.CaptureConsoleOutput = redirectOutput
+        Public Shared Async Function RunProgram(filename As String, arguments As String, Optional redirectOutput As Boolean = True, Optional redirectError As Boolean = True) As Task(Of String)
+            Using app As New ConsoleApp(filename, arguments, redirectOutput, redirectError)
 
                 Dim output = Await app.GetAllOutput()
 
@@ -26,39 +25,31 @@ Namespace ProcessManagement
             End Using
         End Function
 
-        Public Sub New(filename As String, arguments As String)
+        Public Sub New(filename As String, arguments As String, Optional captureConsoleOutput As Boolean = True, Optional captureConsoleError As Boolean = True)
             Dim p As New Process
             p.StartInfo.FileName = filename
             p.StartInfo.WorkingDirectory = Path.GetDirectoryName(filename)
             p.StartInfo.Arguments = arguments
             p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden
             p.StartInfo.CreateNoWindow = True
-            p.StartInfo.RedirectStandardOutput = CaptureConsoleOutput
-            p.StartInfo.RedirectStandardError = p.StartInfo.RedirectStandardOutput
+            p.StartInfo.RedirectStandardOutput = captureConsoleOutput
+            p.StartInfo.RedirectStandardError = captureConsoleError
             p.StartInfo.UseShellExecute = False
-
-            If p.StartInfo.RedirectStandardOutput Then
-                AddHandler p.OutputDataReceived, AddressOf Instance_OutputDataReceived
-                AddHandler p.ErrorDataReceived, AddressOf Instance_OutputDataReceived
-                _handlersRegistered = True
-            End If
 
             _process = p
         End Sub
 
         Private WithEvents _process As Process
-        Private _handlersRegistered As Boolean
 
-        Private Property Output As New Text.StringBuilder
-
-        ''' <summary>
-        ''' Whether or not to forward console output of child processes to the current process.
-        ''' </summary>
-        ''' <returns></returns>
-        Public Property CaptureConsoleOutput As Boolean = True
+        Private Property StandardOut As New Text.StringBuilder
+        Private Property StandardError As New Text.StringBuilder
 
         Private Sub Instance_OutputDataReceived(sender As Object, e As DataReceivedEventArgs) Handles _process.OutputDataReceived
-            Output.AppendLine(e.Data)
+            StandardOut.AppendLine(e.Data)
+        End Sub
+
+        Private Sub Instance_ErrorDataReceived(sender As Object, e As DataReceivedEventArgs) Handles _process.ErrorDataReceived
+            StandardError.AppendLine(e.Data)
         End Sub
 
         Protected Async Function WaitForExit() As Task(Of ExecutionResult)
@@ -69,8 +60,12 @@ Namespace ProcessManagement
 
         Protected Overridable Sub Start()
             _process.Start()
-            _process.BeginOutputReadLine()
-            _process.BeginErrorReadLine()
+            If _process.StartInfo.RedirectStandardOutput Then
+                _process.BeginOutputReadLine()
+            End If
+            If _process.StartInfo.RedirectStandardError Then
+                _process.BeginErrorReadLine()
+            End If
         End Sub
 
 
@@ -78,8 +73,8 @@ Namespace ProcessManagement
         Public Async Function GetAllOutput() As Task(Of String)
             Start()
             Dim result = Await WaitForExit()
-            result.EnsureExitCodeSuccessful(Output.ToString)
-            Return Output.ToString()
+            result.EnsureExitCodeSuccessful(StandardError.ToString)
+            Return StandardOut.ToString()
         End Function
 
 #Region "IDisposable Support"
@@ -88,12 +83,7 @@ Namespace ProcessManagement
         ' IDisposable
         Protected Overridable Sub Dispose(disposing As Boolean)
             If Not disposedValue Then
-                If disposing Then
-                    If _handlersRegistered Then
-                        RemoveHandler _process.OutputDataReceived, AddressOf Instance_OutputDataReceived
-                        RemoveHandler _process.ErrorDataReceived, AddressOf Instance_OutputDataReceived
-                    End If
-
+                If disposing AndAlso _process IsNot Nothing Then
                     ' TODO: dispose managed state (managed objects).
                     _process.Dispose()
                 End If
