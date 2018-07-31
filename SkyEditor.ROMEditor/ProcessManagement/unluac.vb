@@ -14,7 +14,7 @@ Namespace ProcessManagement
         ''' </summary>
         ''' <param name="scriptFilename">Filename of the compiled lua script.</param>
         Public Sub New(jarFilename As String, scriptFilename As String)
-            MyBase.New(jarFilename, scriptFilename, True, False)
+            MyBase.New(jarFilename, scriptFilename)
         End Sub
 
         ''' <summary>

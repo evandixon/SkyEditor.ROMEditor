@@ -23,8 +23,11 @@ Namespace ProcessManagement
                     Assert.AreEqual(My.Resources.testScript, actual, "Decompiled script does not match source")
                 End Using
             Finally
-                If File.Exists("LuaTestScript.lua") Then
-                    File.Delete("LuaTestScript.lua")
+                If File.Exists(testFilename) Then
+                    File.Delete(testFilename)
+                End If
+                If File.Exists(outputFilename) Then
+                    File.Delete(outputFilename)
                 End If
             End Try
         End Sub
