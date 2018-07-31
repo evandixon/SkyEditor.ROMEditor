@@ -36,13 +36,6 @@ Namespace ProcessManagement
             p.StartInfo.RedirectStandardError = captureConsoleError
             p.StartInfo.UseShellExecute = False
 
-            If p.StartInfo.RedirectStandardOutput Then
-                AddHandler p.OutputDataReceived, AddressOf Instance_OutputDataReceived
-            End If
-            If p.StartInfo.RedirectStandardError Then
-                AddHandler p.ErrorDataReceived, AddressOf Instance_ErrorDataReceived
-            End If
-
             _process = p
         End Sub
 
@@ -55,7 +48,7 @@ Namespace ProcessManagement
             StandardOut.AppendLine(e.Data)
         End Sub
 
-        Private Sub Instance_ErrorDataReceived(sender As Object, e As DataReceivedEventArgs) Handles _process.OutputDataReceived
+        Private Sub Instance_ErrorDataReceived(sender As Object, e As DataReceivedEventArgs) Handles _process.ErrorDataReceived
             StandardError.AppendLine(e.Data)
         End Sub
 
@@ -91,15 +84,6 @@ Namespace ProcessManagement
         Protected Overridable Sub Dispose(disposing As Boolean)
             If Not disposedValue Then
                 If disposing AndAlso _process IsNot Nothing Then
-                    If _process.StartInfo.RedirectStandardOutput Then
-                        RemoveHandler _process.OutputDataReceived, AddressOf Instance_OutputDataReceived
-                        RemoveHandler _process.ErrorDataReceived, AddressOf Instance_OutputDataReceived
-                    End If
-
-                    If _process.StartInfo.RedirectStandardError Then
-                        RemoveHandler _process.ErrorDataReceived, AddressOf Instance_OutputDataReceived
-                    End If
-
                     ' TODO: dispose managed state (managed objects).
                     _process.Dispose()
                 End If
