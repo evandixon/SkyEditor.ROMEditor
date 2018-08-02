@@ -39,8 +39,8 @@ Namespace MysteryDungeon.PSMD.Dungeon
                 Next
 
                 Data(&H17) = AttackBoost
-                Data(&H18) = SpAttackBoost
-                Data(&H19) = DefenseBoost
+                Data(&H18) = DefenseBoost
+                Data(&H19) = SpAttackBoost
                 Data(&H1A) = SpDefenseBoost
                 Data(&H1B) = SpeedBoost
 
@@ -59,8 +59,8 @@ Namespace MysteryDungeon.PSMD.Dungeon
                 Move3 = BitConverter.ToUInt16(RawData, &HC)
                 Move4 = BitConverter.ToUInt16(RawData, &HE)
                 AttackBoost = Data(&H17)
-                SpAttackBoost = Data(&H18)
-                DefenseBoost = Data(&H19)
+                DefenseBoost = Data(&H18)
+                SpAttackBoost = Data(&H19)
                 SpDefenseBoost = Data(&H1A)
                 SpeedBoost = Data(&H1B)
             End Sub
