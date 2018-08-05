@@ -27,6 +27,12 @@ Namespace ProcessManagement
             End Using
         End Function
 
+        Public Async Function DecompileScript(sourceScriptFilename As String) As Task(Of String)
+            Using unluac As New Unluac(Filename, sourceScriptFilename)
+                Return Await unluac.GetAllOutput()
+            End Using
+        End Function
+
 #Region "IDisposable Support"
         Private disposedValue As Boolean ' To detect redundant calls
 

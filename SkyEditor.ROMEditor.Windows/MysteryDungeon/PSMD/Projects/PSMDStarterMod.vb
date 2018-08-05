@@ -298,7 +298,6 @@ Namespace MysteryDungeon.PSMD.Projects
             Await actorInfo.Save(CurrentPluginManager.CurrentIOProvider)
         End Function
 
-
         Private Function GetCustomPersonalityTestScript(starters As StarterDefinitions) As String
             Dim starterscriptContent = My.Resources.PSMDStarterIntroScript
             starterscriptContent = starterscriptContent.Replace("#Starter1#", starters.Starter1.ToString)
@@ -593,6 +592,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)
             Dim starters = New StarterDefinitions(fixedPokemon)
             Await FixHighResModels(starters)
+            ReplacePersonalityTestScript(starters)
             Await UpdateLanguageFilesForCustomPersonalityTestScript()
             Await FixIncCharChoiceScript(starters)
             Await FixPokemonIDsInScripts(starters)
