@@ -25,7 +25,7 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp.SpecflowStepDefinitions
             var applicationViewModel = ScenarioContext.Current.Get<ApplicationViewModel>("ApplicationViewModel");
 
             var solutionBasePath = Path.Combine(Environment.CurrentDirectory, "Projects");
-            var solution = await ProjectBase.CreateProject<DSModSolution>(solutionBasePath, "psmd-mod-solution", pluginManager);            
+            var solution = await ProjectBase.CreateProject<DSModSolution>(solutionBasePath, "psmd-mod-solution", pluginManager);
 
             await solution.Initialize();
 
@@ -125,17 +125,12 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp.SpecflowStepDefinitions
             }
 
             var outputDirectory = modpackProject.GetOutputDir();
-            if (!Path.IsPathRooted(outputDirectory))
-            {
-                // Get around a quirk with the .Net 3DS Toolkit.
-                outputDirectory = Path.Combine(Environment.CurrentDirectory, outputDirectory);
-            }
             var outputFilename = Path.Combine(outputDirectory, "PatchedRom.3ds");
             Assert.IsTrue(File.Exists(outputFilename), "Failed to find output file: " + outputFilename);
 
             using (var converter = new DotNet3dsToolkit.Converter())
             {
-                await converter.ExtractCCI(outputFilename, "extracted-rom");
+                await converter.ExtractCCI(outputFilename, Path.Combine(Environment.CurrentDirectory, "extracted-rom"));
             }
         }
 
