@@ -2,9 +2,11 @@
 using SkyEditor.Core;
 using SkyEditor.Core.Projects;
 using SkyEditor.ROMEditor.MysteryDungeon.PSMD.Projects;
+using SkyEditor.ROMEditor.ProcessManagement;
 using SkyEditor.ROMEditor.Projects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,6 +27,8 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp.SpecflowStepDefinitions
             var applicationViewModel = ScenarioContext.Current.Get<ApplicationViewModel>("ApplicationViewModel");
 
             var solutionBasePath = Path.Combine(Environment.CurrentDirectory, "Projects");
+            ScenarioContext.Current.Get<List<string>>("CleanupFiles").Add(solutionBasePath);
+
             var solution = await ProjectBase.CreateProject<DSModSolution>(solutionBasePath, "psmd-mod-solution", pluginManager);
 
             await solution.Initialize();
@@ -128,18 +132,45 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp.SpecflowStepDefinitions
             var outputFilename = Path.Combine(outputDirectory, "PatchedRom.3ds");
             Assert.IsTrue(File.Exists(outputFilename), "Failed to find output file: " + outputFilename);
 
+            var extractedDirectory = Path.Combine(Environment.CurrentDirectory, "extracted-rom");
+            ScenarioContext.Current.Get<List<string>>("CleanupFiles").Add(extractedDirectory);
+
             using (var converter = new DotNet3dsToolkit.Converter())
             {
-                await converter.ExtractCCI(outputFilename, Path.Combine(Environment.CurrentDirectory, "extracted-rom"));
+                await converter.ExtractCCI(outputFilename, extractedDirectory);
             }
         }
 
         [Then("The personality test script should have been properly patched")]
-        public void ThePersonalityTestShouldHaveBeenProperlyPatched()
+        public async Task ThePersonalityTestShouldHaveBeenProperlyPatched()
         {
-            //TODO: implement assert (verification) logic
+            var applicationViewModel = ScenarioContext.Current.Get<ApplicationViewModel>("ApplicationViewModel");
+            var baseromProject = applicationViewModel.CurrentSolution.GetAllProjects().FirstOrDefault(p => p is BaseRomProject) as BaseRomProject;
+            if (baseromProject == null)
+            {
+                Assert.Fail("Failed to find a BaseRomProject");
+            }            
 
-            ScenarioContext.Current.Pending();
+            var originalScript = Path.Combine(baseromProject.GetRawFilesDir(), "RomFS", "script", "event", "other", "seikakushindan", "seikakushindan.lua");
+            if (!File.Exists(originalScript))
+            {
+                Assert.Inconclusive("Failed to find original personality test script: " + originalScript);
+            }
+
+            var modifiedScript = Path.Combine(Environment.CurrentDirectory, "extracted-rom", "RomFS", "script", "event", "other", "seikakushindan", "seikakushindan.lua");
+            if (!File.Exists(modifiedScript))
+            {
+                Assert.Fail("Failed to find modified personality test script: " + modifiedScript);
+            }
+
+            using (var unluacManager = new UnluacManager())
+            {
+                var originalScriptContents = await unluacManager.DecompileScript(originalScript);
+                var modifiedScriptContents = await unluacManager.DecompileScript(modifiedScript);
+
+                Assert.AreNotEqual(originalScriptContents, modifiedScriptContents, "The personality test script should be different than what it was before being patched.");
+                Assert.IsTrue(modifiedScriptContents.Contains("WINDOW:SysMsg(200000)"), "The modified script should contain 'WINDOW:SysMsg(200000)', which is evidence of Sky Editor's modifications.");
+            }
         }
     }
 }

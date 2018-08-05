@@ -1,6 +1,7 @@
 ﻿using SkyEditor.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +37,7 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp
 
             ScenarioContext.Current.Add("PluginManager", pluginManager);
             ScenarioContext.Current.Add("ApplicationViewModel", applicationViewModel);
+            ScenarioContext.Current.Add("CleanupFiles", new List<string>());
         }
 
         [AfterScenario]
@@ -43,6 +45,17 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp
         {
             ScenarioContext.Current.Get<ApplicationViewModel>("ApplicationViewModel").Dispose();
             ScenarioContext.Current.Get<PluginManager>("PluginManager").Dispose();
+            foreach (var path in ScenarioContext.Current.Get<List<string>>("CleanupFiles"))
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+                else if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+            }
         }
     }
 }

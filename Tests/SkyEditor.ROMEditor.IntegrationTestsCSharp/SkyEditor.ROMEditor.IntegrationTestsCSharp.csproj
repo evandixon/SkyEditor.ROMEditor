@@ -110,6 +110,10 @@
       <Project>{F05C12E8-EAB7-4B9E-A8D2-D21B80C1A646}</Project>
       <Name>SkyEditor.ROMEditor.Windows</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj">
+      <Project>{F1B430D7-C00D-4673-8816-97C9DF4376BC}</Project>
+      <Name>SkyEditor.ROMEditor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
