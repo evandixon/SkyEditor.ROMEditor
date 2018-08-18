@@ -30,6 +30,26 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Protected Property CurrentIOProvider As IIOProvider
 
+#Region "Settings"
+        Public Property EnableModelPatching As Boolean
+            Get
+                Return Settings(NameOf(EnableModelPatching))
+            End Get
+            Set(value As Boolean)
+                Settings(NameOf(EnableModelPatching)) = value
+            End Set
+        End Property
+
+        Public Property EnablePortraitPatching As Boolean
+            Get
+                Return Settings(NameOf(EnablePortraitPatching))
+            End Get
+            Set(value As Boolean)
+                Settings(NameOf(EnablePortraitPatching)) = value
+            End Set
+        End Property
+#End Region
+
         Public Overrides Function GetSupportedGameCodes() As IEnumerable(Of String)
             Return {GameStrings.PSMDCode, GameStrings.GTICode}
         End Function
@@ -698,6 +718,9 @@ Namespace MysteryDungeon.PSMD.Projects
         Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize()
 
+            Me.EnableModelPatching = True
+            Me.EnablePortraitPatching = True
+
             'Add fixed_pokemon to project, so we can edit it with our UI
             Me.AddExistingFile("", Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), CurrentIOProvider)
 
@@ -712,11 +735,17 @@ Namespace MysteryDungeon.PSMD.Projects
             'Non Pokemon-dependent patches
             Dim pgdb As New PGDB
             Await pgdb.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphics_database.bin"), CurrentIOProvider)
-            'Await AddMissingModelAnimations(pgdb)
-            'Await FixPokemonWithDummyModel(pgdb)
+
+            If EnableModelPatching Then
+                Await AddMissingModelAnimations(pgdb)
+            End If
+
+            Await FixPokemonWithDummyModel(pgdb)
 
             If IsPsmd Then
-                Await SubstituteMissingPortraitsPsmd()
+                If EnablePortraitPatching Then
+                    Await SubstituteMissingPortraitsPsmd()
+                End If
 
                 'Pokemon-dependent patches
                 Dim fixedPokemon As New FixedPokemon()
@@ -731,7 +760,9 @@ Namespace MysteryDungeon.PSMD.Projects
                 FixHarmonyScarfGlowPsmd()
 
             ElseIf IsGti Then
-                'Await SubstituteMissingPortraitsGti()
+                If EnablePortraitPatching Then
+                    Await SubstituteMissingPortraitsGti()
+                End If
 
                 'Pokemon-dependent patches
                 Dim fixedPokemon As New FixedPokemon()

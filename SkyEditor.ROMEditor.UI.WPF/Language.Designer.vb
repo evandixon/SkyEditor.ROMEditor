@@ -1326,5 +1326,32 @@ Namespace My.Resources
                 Return ResourceManager.GetString("Version", resourceCulture)
             End Get
         End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Enable Model Patching.
+        '''</summary>
+        Public Shared ReadOnly Property Views_PsmdStarterModSettings_EnableModelPatching() As String
+            Get
+                Return ResourceManager.GetString("Views_PsmdStarterModSettings_EnableModelPatching", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Enable Portrait Patching.
+        '''</summary>
+        Public Shared ReadOnly Property Views_PsmdStarterModSettings_EnablePortraitPatching() As String
+            Get
+                Return ResourceManager.GetString("Views_PsmdStarterModSettings_EnablePortraitPatching", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to PSMD/GTI Starter Mod Settings.
+        '''</summary>
+        Public Shared ReadOnly Property Views_PsmdStarterModSettings_Title() As String
+            Get
+                Return ResourceManager.GetString("Views_PsmdStarterModSettings_Title", resourceCulture)
+            End Get
+        End Property
     End Class
 End Namespace

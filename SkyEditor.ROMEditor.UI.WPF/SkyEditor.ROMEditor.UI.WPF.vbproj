@@ -255,6 +255,10 @@
     <Compile Include="ViewModels\DSModPackProject3DSBuildOptionsViewModel.vb" />
     <Compile Include="ViewModels\ModpackInfoViewModel.vb" />
     <Compile Include="ViewModels\GenericModProjectMetadataViewModel.vb" />
+    <Compile Include="ViewModels\PsmdStarterModSettingsViewModel.vb" />
+    <Compile Include="Views\PsmdStarterModSettingsView.xaml.vb">
+      <DependentUpon>PsmdStarterModSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ModpackInfoControl.xaml.vb">
       <DependentUpon>ModpackInfoControl.xaml</DependentUpon>
     </Compile>
@@ -325,6 +329,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MysteryDungeon\Rescue\Views\RescueTeamPersonalityTest.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PsmdStarterModSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
