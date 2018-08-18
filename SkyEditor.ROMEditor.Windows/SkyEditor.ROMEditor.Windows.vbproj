@@ -122,7 +122,7 @@
       <HintPath>..\packages\SkyEditor.Core.4.1.0-CI218\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI108\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI109\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
