@@ -384,7 +384,7 @@ Namespace MysteryDungeon.PSMD
         Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
             'Analyze data to identify duplicate entries (i.e. make sure files with the same data are not added multiple times, instead having multiple references to the same data)
             Dim condensedEntries As New List(Of EntryMapping)
-            For Each item In Entries
+            For Each item In Entries.OrderBy(Function(e) If(e.Filename, e.FilenameHash))
                 Dim data = Await GetFileDataAsync(item)
                 Dim hashCode = CreateByteArrayHashCode(data)
 
@@ -392,7 +392,9 @@ Namespace MysteryDungeon.PSMD
                 'THEN it double-checks equality by checking the array reference if the hashes match
                 'THEN it compares the actual data if the object reference is different and the hashes match
                 'If changing this, take care to not change this order, because short-circuit logic should greatly improve performance
-                Dim mapping = condensedEntries.Where(Function(x) x.FileDataHashCode = hashCode AndAlso (data Is x.FileData OrElse x.FileData.SequenceEqual(data))).FirstOrDefault
+                Dim mapping = condensedEntries.
+                    Where(Function(x) x.FileDataHashCode = hashCode AndAlso (data Is x.FileData OrElse x.FileData.SequenceEqual(data))).
+                    FirstOrDefault
 
                 If mapping IsNot Nothing Then
                     mapping.FilenameHashes.Add(item.FilenameHash)

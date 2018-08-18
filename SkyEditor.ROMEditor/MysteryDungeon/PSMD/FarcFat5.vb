@@ -114,15 +114,25 @@ Namespace MysteryDungeon.PSMD
                         'Generate data
                         Dim data As New List(Of Byte)
                         Dim stringData As New List(Of Byte)
-                        For Each item In Entries.OrderBy(Function(x) x.Filename) 'Sorting by filename hash is critical to correct lookups. This is a hash table after all.
+                        For Each item In Entries.OrderBy(Function(x) x.Filename) 'Sorting by filename is critical to correct lookups.
                             data.AddRange(BitConverter.GetBytes(&H10 + stringData.Count))
                             data.AddRange(BitConverter.GetBytes(item.DataOffset))
                             data.AddRange(BitConverter.GetBytes(item.DataLength))
                             data.AddRange(BitConverter.GetBytes(0))
 
                             stringData.AddRange(Text.Encoding.Unicode.GetBytes(item.Filename))
-                            stringData.AddRange(Enumerable.Repeat(Of Byte)(0, 2))
+                            stringData.AddRange(Enumerable.Repeat(Of Byte)(0, 2)) 'Null terminator
+
+                            'Add padding to make sure strings start at an index divisible by 4
+                            While stringData.Count Mod 4 <> 0
+                                stringData.Add(0)
+                            End While
                         Next
+
+                        'Add padding to make sure data section's start index is divisible by 0x10
+                        While stringData.Count Mod &H10 <> 0
+                            stringData.Add(0)
+                        End While
 
                         Dim combinedData As New List(Of Byte)(stringData.Count + data.Count)
                         combinedData.AddRange(stringData)
@@ -134,7 +144,12 @@ Namespace MysteryDungeon.PSMD
                         contentHeader.AddRange(BitConverter.GetBytes(&H10 + stringData.Count)) 'Index to content section
                         contentHeader.AddRange(BitConverter.GetBytes(Entries.Count))
                         contentHeader.AddRange(BitConverter.GetBytes(Sir0Fat5Type))
+
+                        'SIR0 pointer offsets
                         f.SubHeaderRelativePointers.Add(0)
+
+                        f.RelativePointers.Add(stringData.Count)
+                        f.RelativePointers.AddRange(Enumerable.Repeat(&H10, Entries.Count - 1))
 
                         f.ContentHeader = contentHeader.ToArray
                         Return Await f.GetRawData()
