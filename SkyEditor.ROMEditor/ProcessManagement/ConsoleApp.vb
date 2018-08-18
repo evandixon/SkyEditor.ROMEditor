@@ -8,66 +8,73 @@ Namespace ProcessManagement
     Public Class ConsoleApp
         Implements IDisposable
 
-        Public Shared Async Function RunProgram(Filename As String, Arguments As String) As Task
-            Using p As New Process()
-                p.StartInfo.FileName = Filename
-                p.StartInfo.Arguments = Arguments
-                p.StartInfo.RedirectStandardOutput = False
-                p.StartInfo.UseShellExecute = False
-                p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden
-                p.StartInfo.CreateNoWindow = True
-                p.StartInfo.WorkingDirectory = Path.GetDirectoryName(Filename)
+        ''' <summary>
+        ''' Runs a program and returns the standard input and output, or null if disabled
+        ''' </summary>
+        ''' <exception cref="UnsuccessfulExitCodeException">Thrown if the process exit code is unsuccessful</exception>
+        Public Shared Async Function RunProgram(filename As String, arguments As String, Optional redirectOutput As Boolean = True, Optional redirectError As Boolean = True) As Task(Of String)
+            Using app As New ConsoleApp(filename, arguments, redirectOutput, redirectError)
 
-                p.Start()
+                Dim output = Await app.GetAllOutput()
 
-                Await WaitForProcess(p).ConfigureAwait(False)
+                If redirectOutput Then
+                    Return output
+                Else
+                    Return Nothing
+                End If
             End Using
         End Function
 
-        Private Shared Async Function WaitForProcess(p As Process) As Task
-            Await Task.Run(Sub()
-                               p.WaitForExit()
-                           End Sub)
-        End Function
+        Public Sub New(filename As String, arguments As String, Optional captureConsoleOutput As Boolean = True, Optional captureConsoleError As Boolean = True)
+            Dim p As New Process
+            p.StartInfo.FileName = filename
+            p.StartInfo.WorkingDirectory = Path.GetDirectoryName(filename)
+            p.StartInfo.Arguments = arguments
+            p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden
+            p.StartInfo.CreateNoWindow = True
+            p.StartInfo.RedirectStandardOutput = captureConsoleOutput
+            p.StartInfo.RedirectStandardError = captureConsoleError
+            p.StartInfo.UseShellExecute = False
 
-        ''' <summary>
-        ''' Creates a new instance of the lua decompiler.
-        ''' </summary>
-        ''' <param name="Filename">Filename of the compiled lua script.</param>
-        Public Sub New(filename As String, arguments As String)
-            Dim args As New Text.StringBuilder
-
-            _process = New Process
-            _process.StartInfo.FileName = filename
-            _process.StartInfo.Arguments = arguments
-            _process.StartInfo.RedirectStandardOutput = True
-            _process.StartInfo.UseShellExecute = False
-            _process.StartInfo.CreateNoWindow = True
+            _process = p
         End Sub
 
         Private WithEvents _process As Process
 
-        Private Property Output As New Text.StringBuilder
+        Private Property StandardOut As New Text.StringBuilder
+        Private Property StandardError As New Text.StringBuilder
 
         Private Sub Instance_OutputDataReceived(sender As Object, e As DataReceivedEventArgs) Handles _process.OutputDataReceived
-            Output.AppendLine(e.Data)
+            StandardOut.AppendLine(e.Data)
         End Sub
+
+        Private Sub Instance_ErrorDataReceived(sender As Object, e As DataReceivedEventArgs) Handles _process.ErrorDataReceived
+            StandardError.AppendLine(e.Data)
+        End Sub
+
+        Protected Async Function WaitForExit() As Task(Of ExecutionResult)
+            Await Task.Run(Sub() _process.WaitForExit())
+
+            Return New ExecutionResult With {.ExitCode = _process.ExitCode, .ProgramName = Path.GetFileName(_process.StartInfo.FileName)}
+        End Function
 
         Protected Overridable Sub Start()
             _process.Start()
-            _process.BeginOutputReadLine()
+            If _process.StartInfo.RedirectStandardOutput Then
+                _process.BeginOutputReadLine()
+            End If
+            If _process.StartInfo.RedirectStandardError Then
+                _process.BeginErrorReadLine()
+            End If
         End Sub
 
-        Public Function GetAllOutput() As String
-            Start()
-            _process.WaitForExit()
-            Return Output.ToString()
-        End Function
 
-        Public Async Function GetAllOutputAsync() As Task(Of String)
+        ''' <exception cref="UnsuccessfulExitCodeException">Thrown if the process exit code is unsuccessful</exception>
+        Public Async Function GetAllOutput() As Task(Of String)
             Start()
-            Await WaitForProcess(_process)
-            Return Output.ToString()
+            Dim result = Await WaitForExit()
+            result.EnsureExitCodeSuccessful(StandardError.ToString)
+            Return StandardOut.ToString()
         End Function
 
 #Region "IDisposable Support"
@@ -76,7 +83,7 @@ Namespace ProcessManagement
         ' IDisposable
         Protected Overridable Sub Dispose(disposing As Boolean)
             If Not disposedValue Then
-                If disposing Then
+                If disposing AndAlso _process IsNot Nothing Then
                     ' TODO: dispose managed state (managed objects).
                     _process.Dispose()
                 End If

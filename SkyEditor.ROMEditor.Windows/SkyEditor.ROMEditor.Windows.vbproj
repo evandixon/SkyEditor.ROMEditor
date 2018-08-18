@@ -115,11 +115,11 @@
     <Reference Include="ppmdu-wrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ppmdu-wrapper.1.0.22\lib\net462\ppmdu-wrapper.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.9, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI9\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.10, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI10\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI215\lib\net462\SkyEditor.Core.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI218\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI108\lib\net462\SkyEditor.SaveEditor.dll</HintPath>

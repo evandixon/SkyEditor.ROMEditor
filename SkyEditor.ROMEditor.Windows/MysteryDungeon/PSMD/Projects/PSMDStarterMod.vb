@@ -723,6 +723,7 @@ Namespace MysteryDungeon.PSMD.Projects
                 Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)
                 Dim starters = New StarterDefinitionsPsmd(fixedPokemon)
 
+                ReplacePersonalityTestScriptPsmd(starters)
                 Await FixHighResModelsPsmd(starters)
                 Await UpdateLanguageFilesForCustomPersonalityTestScriptPsmd()
                 Await FixIncCharChoiceScriptPsmd(starters)

@@ -95,20 +95,20 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.9, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI9\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.10, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI10\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor.UI.WPF, Version=4.1.0.9, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.1.0-CI9\lib\net462\SkyEditor.CodeEditor.UI.WPF.exe</HintPath>
+    <Reference Include="SkyEditor.CodeEditor.UI.WPF, Version=4.1.0.10, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.1.0-CI10\lib\net462\SkyEditor.CodeEditor.UI.WPF.exe</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI215\lib\net462\SkyEditor.Core.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI218\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI108\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.150, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI150\lib\net462\SkyEditor.UI.WPF.dll</HintPath>
+    <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.151, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI151\lib\net462\SkyEditor.UI.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -163,6 +163,9 @@
     </Reference>
     <Reference Include="Xceed.Wpf.DataGrid, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>

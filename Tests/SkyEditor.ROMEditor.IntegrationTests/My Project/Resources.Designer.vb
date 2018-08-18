@@ -22,7 +22,7 @@ Namespace My.Resources
     '''<summary>
     '''  A strongly-typed resource class, for looking up localized strings, etc.
     '''</summary>
-    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0"),  _
+    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0"),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
      Global.Microsoft.VisualBasic.HideModuleNameAttribute()>  _
@@ -83,6 +83,16 @@ Namespace My.Resources
         '''<summary>
         '''  Looks up a localized resource of type System.Byte[].
         '''</summary>
+        Friend ReadOnly Property compiled() As Byte()
+            Get
+                Dim obj As Object = ResourceManager.GetObject("compiled", resourceCulture)
+                Return CType(obj,Byte())
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Byte[].
+        '''</summary>
         Friend ReadOnly Property eos_u() As Byte()
             Get
                 Dim obj As Object = ResourceManager.GetObject("eos_u", resourceCulture)
@@ -97,6 +107,18 @@ Namespace My.Resources
             Get
                 Dim obj As Object = ResourceManager.GetObject("EoS_U_MD5", resourceCulture)
                 Return CType(obj,Byte())
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to function addTheNumbers(numberA, numberB)
+        '''  return numberA + numberB
+        '''end
+        '''print(addTheNumbers(10, 20)).
+        '''</summary>
+        Friend ReadOnly Property testScript() As String
+            Get
+                Return ResourceManager.GetString("testScript", resourceCulture)
             End Get
         End Property
     End Module

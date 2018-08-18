@@ -130,4 +130,10 @@
   <data name="EoS_U_MD5" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Test ROMs\EoS-U-MD5;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="testScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\lua\testScript.lua;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="compiled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\lua\compiled.out;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
