@@ -203,6 +203,7 @@
   <ItemGroup>
     <Compile Include="MenuActions\PsmdFarcPsmdExtractPortraits.vb" />
     <Compile Include="MenuActions\PsmdFarcPsmdFarcSubstituteGtiPortraits.vb" />
+    <Compile Include="MenuActions\GtiFarcPsmdFarcSubstitutePsmdAnimations.vb" />
     <Compile Include="MenuActions\PsmdFarcPsmdFarcSubstitutePsmdAnimations.vb" />
     <Compile Include="MenuActions\PsmdFarcExtract.vb" />
     <Compile Include="MysteryDungeon\Explorers\ViewModels\BGPViewModel.vb" />

@@ -9,11 +9,11 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Extensions
 
 Namespace MenuActions
-    Public Class PsmdFarcSubstitutePsmdAnimations
+    Public Class GtiFarcSubstitutePsmdAnimations
         Inherits MenuAction
 
         Public Sub New(ioProvider As IIOProvider, appViewModel As ApplicationViewModel)
-            MyBase.New({My.Resources.Language.MenuFarc, My.Resources.Language.MenuFarcSubstitutePsmdAnimations})
+            MyBase.New({My.Resources.Language.MenuFarc, My.Resources.Language.MenuFarcSubstituteGtiAnimations})
 
             If ioProvider Is Nothing Then
                 Throw New ArgumentNullException(NameOf(ioProvider))
@@ -59,7 +59,7 @@ Namespace MenuActions
                 Dim token As New ProgressReportToken
                 CurrentApplicationViewModel.ShowLoading(token)
 
-                loadingTasks.Add(Task.Run(Function() item.SubstituteMissingAnimationsPsmd(pgdb, token)))
+                loadingTasks.Add(Task.Run(Function() item.SubstituteMissingAnimationsGti(pgdb, token)))
             Next
 
             'While the application view model is handling the extraction display, we need to wait here in case there's exceptions.

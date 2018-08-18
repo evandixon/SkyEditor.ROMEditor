@@ -569,6 +569,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Substitute Missing Animations (GTI).
+        '''</summary>
+        Public Shared ReadOnly Property MenuFarcSubstituteGtiAnimations() As String
+            Get
+                Return ResourceManager.GetString("MenuFarcSubstituteGtiAnimations", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Substitute Missing Portraits (GTI).
         '''</summary>
         Public Shared ReadOnly Property MenuFarcSubstituteGtiPortraits() As String

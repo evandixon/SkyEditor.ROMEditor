@@ -89,18 +89,6 @@ Namespace MysteryDungeon.PSMD.Projects
         End Function
 
 #Region "Shared Patching Functions"
-        Private Async Function AddMissingModelAnimations(pgdb As PGDB) As Task
-            Using pokemonGraphic As New Farc
-                Await pokemonGraphic.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphic.bin"), CurrentIOProvider)
-
-                Dim token As New ProgressReportToken
-                WatchProgressReportToken(token, False)
-                Await pokemonGraphic.SubstituteMissingAnimations(pgdb, token)
-                UnwatchProgressReportToken(token)
-
-                Await pokemonGraphic.Save(CurrentIOProvider)
-            End Using
-        End Function
 
         ''' <summary>
         ''' Fixes Pokemon with a dummy model reference
@@ -161,6 +149,19 @@ Namespace MysteryDungeon.PSMD.Projects
 #End Region
 
 #Region "GTI Patching Functions"
+        Private Async Function AddMissingModelAnimationsGti(pgdb As PGDB) As Task
+            Using pokemonGraphic As New Farc
+                Await pokemonGraphic.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphic.bin"), CurrentIOProvider)
+
+                Dim token As New ProgressReportToken
+                WatchProgressReportToken(token, False)
+                Await pokemonGraphic.SubstituteMissingAnimationsGti(pgdb, token)
+                UnwatchProgressReportToken(token)
+
+                Await pokemonGraphic.Save(CurrentIOProvider)
+            End Using
+        End Function
+
         Private Async Function SubstituteMissingPortraitsGti() As Task
             Dim provider = CurrentPluginManager.CurrentIOProvider
 
@@ -275,6 +276,19 @@ Namespace MysteryDungeon.PSMD.Projects
 #End Region
 
 #Region "PSMD Patching Functions"
+
+        Private Async Function AddMissingModelAnimationsPsmd(pgdb As PGDB) As Task
+            Using pokemonGraphic As New Farc
+                Await pokemonGraphic.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphic.bin"), CurrentIOProvider)
+
+                Dim token As New ProgressReportToken
+                WatchProgressReportToken(token, False)
+                Await pokemonGraphic.SubstituteMissingAnimationsPsmd(pgdb, token)
+                UnwatchProgressReportToken(token)
+
+                Await pokemonGraphic.Save(CurrentIOProvider)
+            End Using
+        End Function
 
         ''' <summary>
         ''' Replaces placeholder portraits with the default emotion. Build progress is reported too.
@@ -736,13 +750,13 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim pgdb As New PGDB
             Await pgdb.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphics_database.bin"), CurrentIOProvider)
 
-            If EnableModelPatching Then
-                Await AddMissingModelAnimations(pgdb)
-            End If
-
             Await FixPokemonWithDummyModel(pgdb)
 
             If IsPsmd Then
+                If EnableModelPatching Then
+                    Await AddMissingModelAnimationsPsmd(pgdb)
+                End If
+
                 If EnablePortraitPatching Then
                     Await SubstituteMissingPortraitsPsmd()
                 End If
@@ -760,6 +774,10 @@ Namespace MysteryDungeon.PSMD.Projects
                 FixHarmonyScarfGlowPsmd()
 
             ElseIf IsGti Then
+                If EnableModelPatching Then
+                    Await AddMissingModelAnimationsGti(pgdb)
+                End If
+
                 If EnablePortraitPatching Then
                     Await SubstituteMissingPortraitsGti()
                 End If
