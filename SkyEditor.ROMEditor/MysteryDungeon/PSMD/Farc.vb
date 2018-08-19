@@ -288,14 +288,14 @@ Namespace MysteryDungeon.PSMD
             Dim entry As FarcEntry = Nothing
             If CachedEntries.ContainsKey(hash) Then
                 entry = CachedEntries(hash)
-            ElseIf Not CachedEntries.ContainsKey(hash) Then
+            Else
                 entry = Entries.FirstOrDefault(Function(x) x.FilenameHash = hash OrElse x.Filename = filename)
                 If entry IsNot Nothing Then
                     CachedEntries(hash) = entry
                 End If
             End If
 
-            If entry IsNot Nothing AndAlso String.IsNullOrEmpty(entry.Filename) Then
+            If entry IsNot Nothing AndAlso Not String.IsNullOrEmpty(entry.Filename) Then
                 entry.Filename = filename
             End If
 
@@ -397,12 +397,12 @@ Namespace MysteryDungeon.PSMD
                     FirstOrDefault
 
                 If mapping IsNot Nothing Then
-                    mapping.FilenameHashes.Add(item.FilenameHash)
+                    mapping.PossibleFilenames.Add(item.Filename)
                 Else
                     Dim newMapping As New EntryMapping
                     newMapping.FileData = item.FileData
-                    newMapping.FilenameHashes = New List(Of UInteger)
-                    newMapping.FilenameHashes.Add(item.FilenameHash)
+                    newMapping.PossibleFilenames = New List(Of String)
+                    newMapping.PossibleFilenames.Add(item.Filename)
                     newMapping.Filename = item.Filename
                     condensedEntries.Add(newMapping)
                 End If
@@ -420,10 +420,9 @@ Namespace MysteryDungeon.PSMD
                 For Each item In condensedEntries
                     'Add all filenames/hashes to this particular file at the same time
                     'fat.GetRawData should properly order these further on
-                    For Each hash In item.FilenameHashes
+                    For Each filename In item.PossibleFilenames
                         fat.Entries.Add(New FarcFat5.Entry With {
-                                    .FilenameHash = hash,
-                                    .Filename = item.Filename,
+                                    .Filename = filename,
                                     .DataOffset = fileData.Count,
                                     .DataLength = item.FileData.Length
                                     })
@@ -705,7 +704,7 @@ Namespace MysteryDungeon.PSMD
             End Property
             Dim _fileDataHashCode As Integer?
 
-            Public Property FilenameHashes As List(Of UInteger)
+            Public Property PossibleFilenames As List(Of String)
 
             Public Property Filename As String
         End Class

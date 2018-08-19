@@ -11,7 +11,21 @@ Namespace MysteryDungeon.PSMD
             Public Property Index As Integer
             Public Property DataOffset As Integer
             Public Property DataLength As Integer
+
+            ''' <summary>
+            ''' Gets or sets the filename, updating the filename hash on set
+            ''' </summary>
             Public Property Filename As String
+                Get
+                    Return _filename
+                End Get
+                Set(value As String)
+                    _filename = value
+                    FilenameHash = PmdFunctions.Crc32Hash(value)
+                End Set
+            End Property
+            Dim _filename As String
+
             Public Property FilenameHash As UInteger
 
             ''' <summary>
