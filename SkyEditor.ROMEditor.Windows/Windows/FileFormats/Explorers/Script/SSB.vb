@@ -3,6 +3,7 @@ Imports SkyEditor.ROMEditor.Windows.FileFormats.Explorers.Script.Commands
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core
+Imports SkyEditor.ROMEditor.CustomEncoding
 
 Namespace Windows.FileFormats.Explorers.Script
     Partial Public Class SSB
@@ -520,7 +521,7 @@ Namespace Windows.FileFormats.Explorers.Script
 #End Region
 
         Private Sub LoadStringList(numStrings As Integer, stringStart As Integer, f As GenericFile, currentDictionary As List(Of String), IsContantTable As Boolean)
-            Dim e = Text.Encoding.GetEncoding("Windows-1252")
+            Dim e = New Windows1252Encoding
             Dim stringPosition As Integer = stringStart
             If Not IsContantTable Then
                 stringPosition += 2 * numStrings
@@ -534,7 +535,7 @@ Namespace Windows.FileFormats.Explorers.Script
 
 
         Private Function GenerateStringTable(SourceDictionary As List(Of String), sizeConstantsWords As UShort) As List(Of Byte)
-            Dim e = Text.Encoding.GetEncoding("Windows-1252")
+            Dim e = New Windows1252Encoding
             Dim stringSection As New List(Of Byte)
             Dim pointerSection As New List(Of Byte)
             Dim offset As UShort = SourceDictionary.Count * 2 + sizeConstantsWords * 2 'Looks like this is the only thing in Bytes and not Words.
