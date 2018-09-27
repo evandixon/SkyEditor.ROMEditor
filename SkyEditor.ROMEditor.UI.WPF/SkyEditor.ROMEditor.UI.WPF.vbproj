@@ -77,7 +77,7 @@
       <HintPath>..\packages\DotNet3dsToolkit.2.0.0-CI53\lib\net462\DotNet3dsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNdsToolkit, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetNdsToolkit.2.0.0-CI118\lib\net462\DotNetNdsToolkit.dll</HintPath>
+      <HintPath>..\packages\DotNetNdsToolkit.2.0.0\lib\net462\DotNetNdsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DSPatcher, Version=1.2.0.112, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DS-ROM-Patcher.1.2.0-CI112\lib\net462\DSPatcher.exe</HintPath>
@@ -102,13 +102,13 @@
       <HintPath>..\packages\SkyEditor.CodeEditor.UI.WPF.4.1.0-CI10\lib\net462\SkyEditor.CodeEditor.UI.WPF.exe</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI218\lib\net462\SkyEditor.Core.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.4.2.0\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI109\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.UI.WPF, Version=4.1.0.152, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.UI.WPF.4.1.0-CI152\lib\net462\SkyEditor.UI.WPF.dll</HintPath>
+    <Reference Include="SkyEditor.UI.WPF, Version=0.0.0.156, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.UI.WPF.4.2.0\lib\net462\SkyEditor.UI.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
