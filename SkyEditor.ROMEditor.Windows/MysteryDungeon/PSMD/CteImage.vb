@@ -1,5 +1,6 @@
 ﻿Imports System.Drawing
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.IO.PluginInfrastructure
 
 Namespace MysteryDungeon.PSMD
     Public Class CteImage
@@ -88,7 +89,7 @@ Namespace MysteryDungeon.PSMD
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
             Dim empty64(64) As Byte
             Dim dataLength = Width * Height * PixelLength
-            Length = dataLength + &H80
+            SetLength(dataLength + &H80)
             Await WriteAsync(0, 0)
             Await WriteAsync(1, &H63)
             Await WriteAsync(2, &H74)

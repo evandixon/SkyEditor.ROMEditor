@@ -1,5 +1,6 @@
 ﻿Imports System.Collections.ObjectModel
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.IO.PluginInfrastructure
 Imports SkyEditor.Core.Utilities
 
 Namespace MysteryDungeon.PSMD
@@ -185,7 +186,7 @@ Namespace MysteryDungeon.PSMD
                 Next
 
                 'Write sections to file
-                Me.Length = 16 + stringSection.Count + infoSection.Count
+                Me.SetLength(16 + stringSection.Count + infoSection.Count)
                 Await Me.WriteAsync(16, stringSection.Count, stringSection.ToArray)
                 Await Me.WriteAsync(16 + stringSection.Count, infoSection.Count, infoSection.ToArray)
 

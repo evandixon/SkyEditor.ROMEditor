@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports DS_ROM_Patcher
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.IO.PluginInfrastructure
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers.ViewModels
