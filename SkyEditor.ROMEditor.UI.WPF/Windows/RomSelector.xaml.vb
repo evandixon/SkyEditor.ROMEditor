@@ -12,7 +12,7 @@ Public Class RomSelector
     End Function
     Public Property RomName As String
     Sub OnOK()
-        Dim romDirectory As String = EnvironmentPaths.GetResourceName("Roms/NDS/")
+        Dim romDirectory As String = Core.Utilities.EnvironmentPaths.GetResourceName("Roms/NDS/")
         If Not Directory.Exists(romDirectory) Then
             Directory.CreateDirectory(romDirectory)
         End If

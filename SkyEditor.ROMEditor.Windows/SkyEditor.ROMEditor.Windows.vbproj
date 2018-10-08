@@ -89,14 +89,14 @@
     <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.2.101, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.2-CI101\lib\net462\DotNet3dsSoundtrackConverter.dll</HintPath>
     </Reference>
-    <Reference Include="DotNet3dsToolkit, Version=0.0.0.83, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsToolkit.1.5.1-v1-legacy.1\lib\net462\DotNet3dsToolkit.dll</HintPath>
+    <Reference Include="DotNet3dsToolkit, Version=0.0.0.86, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsToolkit.1.5.1-v1-legacy.2\lib\net462\DotNet3dsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNdsToolkit, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetNdsToolkit.2.0.1\lib\net462\DotNetNdsToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="DSPatcher, Version=1.2.0.112, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DS-ROM-Patcher.1.2.0-CI112\lib\net462\DSPatcher.exe</HintPath>
+    <Reference Include="DSPatcher, Version=1.2.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DS-ROM-Patcher.1.2.0-CI3\lib\net46\DSPatcher.exe</HintPath>
     </Reference>
     <Reference Include="LanguageStringPatcher, Version=1.0.0.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LanguageStringPatcher.1.0.1\lib\net46\LanguageStringPatcher.exe</HintPath>
@@ -115,11 +115,14 @@
     <Reference Include="ppmdu-wrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ppmdu-wrapper.1.0.22\lib\net462\ppmdu-wrapper.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor, Version=4.1.0.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.4.1.0-CI10\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor, Version=0.0.0.11, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.4.2.1\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.Core.4.2.3\lib\net462\SkyEditor.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SkyEditor.Core.Windows, Version=4.1.0.63, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.Core.Windows.4.1.0-CI63\lib\net46\SkyEditor.Core.Windows.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.SaveEditor.4.1.0-CI109\lib\net462\SkyEditor.SaveEditor.dll</HintPath>
@@ -208,6 +211,7 @@
     <Compile Include="Windows\ConsoleCommands\PSMDExpTableCsv.vb" />
     <Compile Include="Windows\ConsoleCommands\PSMDLangSearch.vb" />
     <Compile Include="Windows\ConsoleCommands\Sir0Ptrs.vb" />
+    <Compile Include="Windows\DSIconTool.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\CommandParameterAttribute.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\Commands\BasicTalkCommand.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\Commands\BgmFadeIn.vb" />
@@ -241,11 +245,9 @@
     <Compile Include="MysteryDungeon\PSMD\Projects\PsmdStarterMod.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\CommandGroup.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\SSA.vb" />
-    <Compile Include="Windows\FileFormats\CTR\Smdh.vb" />
     <Compile Include="Windows\FileFormats\Explorers\Script\SSB.vb" />
     <Compile Include="Projects\BaseRomProject.vb" />
     <Compile Include="Windows\ConsoleCommands\BatchCteConvert.vb" />
-    <Compile Include="Windows\DSIconTool.vb" />
     <Compile Include="Projects\DSModPackProject.vb" />
     <Compile Include="DSModSolution.vb" />
     <Compile Include="Windows\GameCodeRegistry.vb" />

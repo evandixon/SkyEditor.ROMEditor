@@ -44,7 +44,7 @@ Namespace Windows
         End Sub
 
         Public Overrides Sub UnLoad(manager As PluginManager)
-            Dim dir As String = EnvironmentPaths.GetResourceName("Temp")
+            Dim dir As String = Core.Utilities.EnvironmentPaths.GetResourceName("Temp")
             If Directory.Exists(dir) Then
                 On Error Resume Next
                 Directory.Delete(dir, True)
