@@ -86,8 +86,8 @@
     <Reference Include="Crc32.NET, Version=1.0.0.0, Culture=neutral, PublicKeyToken=dc0b95cf99bf4e99, processorArchitecture=MSIL">
       <HintPath>..\packages\Crc32.NET.1.2.0\lib\net20\Crc32.NET.dll</HintPath>
     </Reference>
-    <Reference Include="DotNet3dsSoundtrackConverter, Version=1.1.2.101, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.2-CI101\lib\net462\DotNet3dsSoundtrackConverter.dll</HintPath>
+    <Reference Include="DotNet3dsSoundtrackConverter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsSoundtrackConverter.1.1.2\lib\net462\DotNet3dsSoundtrackConverter.dll</HintPath>
     </Reference>
     <Reference Include="DotNet3dsToolkit, Version=0.0.0.86, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNet3dsToolkit.1.5.1-v1-legacy.2\lib\net462\DotNet3dsToolkit.dll</HintPath>
@@ -115,8 +115,8 @@
     <Reference Include="ppmdu-wrapper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ppmdu-wrapper.1.0.22\lib\net462\ppmdu-wrapper.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.CodeEditor, Version=0.0.0.11, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.CodeEditor.4.2.1\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
+    <Reference Include="SkyEditor.CodeEditor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkyEditor.CodeEditor.4.2.2\lib\net462\SkyEditor.CodeEditor.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.Core.4.2.3\lib\net462\SkyEditor.Core.dll</HintPath>
