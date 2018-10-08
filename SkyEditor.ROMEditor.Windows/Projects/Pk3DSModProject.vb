@@ -11,7 +11,7 @@ Namespace Projects
 
         Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize
-            File.Copy(EnvironmentPaths.GetResourceName("pk3DS.exe"), Path.Combine(GetRootDirectory, "pk3DS.exe"))
+            File.Copy(Core.Utilities.EnvironmentPaths.GetResourceName("pk3DS.exe"), Path.Combine(GetRootDirectory, "pk3DS.exe"))
             Me.AddExistingFile("", Path.Combine(GetRootDirectory, "pk3DS.exe"), CurrentPluginManager.CurrentIOProvider)
             File.WriteAllText(Path.Combine(GetRootDirectory, "config.ini"), Path.GetFileName(Me.GetRawFilesDir))
         End Function
