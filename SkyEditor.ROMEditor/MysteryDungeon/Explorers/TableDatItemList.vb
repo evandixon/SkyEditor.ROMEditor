@@ -49,7 +49,7 @@ Namespace MysteryDungeon.Explorers
         End Function
 
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
-            Me.Length = 2 + (Items.Count * 4)
+            SetLength(2 + (Items.Count * 4))
             Await WriteAsync(0, 2, BitConverter.GetBytes(Items.Count))
             For count As Integer = 0 To Items.Count - 1
                 If count = 0 Then
