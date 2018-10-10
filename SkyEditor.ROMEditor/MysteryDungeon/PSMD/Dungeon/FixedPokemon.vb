@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.IO.PluginInfrastructure
 
 Namespace MysteryDungeon.PSMD.Dungeon
     Public Class FixedPokemon
@@ -92,7 +93,7 @@ Namespace MysteryDungeon.PSMD.Dungeon
             Next
 
             'Write sections to file
-            Me.Length = 16 + dataSection.Count
+            Me.SetLength(16 + dataSection.Count)
             Await Me.WriteAsync(16, dataSection.Count, dataSection.ToArray)
 
             'Update header

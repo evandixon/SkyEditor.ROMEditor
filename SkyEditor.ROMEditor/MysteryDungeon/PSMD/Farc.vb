@@ -6,6 +6,7 @@ Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports Force.Crc32
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.IO.PluginInfrastructure
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
 
@@ -469,7 +470,7 @@ Namespace MysteryDungeon.PSMD
                 farcHeader.AddRange(BitConverter.GetBytes(&H80 + fatData.Length)) '0x2C
                 farcHeader.AddRange(BitConverter.GetBytes(fileData.Count)) '0x30
 
-                f.Length = farcHeader.Count + &H4C + fatData.Length + fileData.Count
+                f.SetLength(farcHeader.Count + &H4C + fatData.Length + fileData.Count)
                 Await f.WriteAsync(0, farcHeader.ToArray())
                 Await f.WriteAsync(farcHeader.Count, Array.CreateInstance(GetType(Byte), &H4C))
                 Await f.WriteAsync(farcHeader.Count + &H4C, fatData)

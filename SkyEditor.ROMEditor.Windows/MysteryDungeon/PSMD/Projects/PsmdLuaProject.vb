@@ -435,7 +435,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                    If Not sourceText = sourceOrig Then
                                        Dim dest = Item.Replace(scriptSource, scriptDestination)
                                        Try
-                                           Await ConsoleApp.RunProgram(EnvironmentPaths.GetResourceName("lua/luac5.1.exe"), $"-o ""{dest}"" ""{Item}""", True)
+                                           Await ConsoleApp.RunProgram(Core.Utilities.EnvironmentPaths.GetResourceName("lua/luac5.1.exe"), $"-o ""{dest}"" ""{Item}""", True)
                                        Catch ex As UnsuccessfulExitCodeException
                                            'Can't report the error right now because of threading issues
                                            Throw

@@ -1,5 +1,6 @@
 ﻿Imports System.Text
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.IO.PluginInfrastructure
 
 Namespace MysteryDungeon.PSMD
     Public Class SAJD

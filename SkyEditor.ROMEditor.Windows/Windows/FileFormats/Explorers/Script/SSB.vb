@@ -4,6 +4,7 @@ Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.Core
 Imports SkyEditor.ROMEditor.CustomEncoding
+Imports SkyEditor.Core.IO.PluginInfrastructure
 
 Namespace Windows.FileFormats.Explorers.Script
     Partial Public Class SSB

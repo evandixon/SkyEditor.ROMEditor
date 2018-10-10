@@ -114,7 +114,7 @@ Namespace MysteryDungeon.Explorers
                 totalData.Add(b)
             Next
             'Write buffer to stream
-            Length = totalData.Count
+            SetLength(totalData.Count)
             Await WriteAsync(0, totalData.Count, totalData.ToArray)
             Await MyBase.Save(Destination, provider)
         End Function

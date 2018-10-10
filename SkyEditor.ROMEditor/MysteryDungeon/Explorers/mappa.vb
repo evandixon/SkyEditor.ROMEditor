@@ -772,7 +772,7 @@ Namespace MysteryDungeon.Explorers
             RelativePointers.Add(4)
             RelativePointers.Add(0) ' In original file, possibly a terminator
 
-            Me.Length = &H10 + dataBlock.Count
+            SetLength(&H10 + dataBlock.Count)
             Await Me.WriteAsync(&H10, dataBlock.Count, dataBlock.ToArray)
 
             'Finish

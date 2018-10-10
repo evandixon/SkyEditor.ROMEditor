@@ -8,14 +8,14 @@ Public Class ROM
     Public Property Name As String
     Public ReadOnly Property Filename As String
         Get
-            Dim romDirectory As String = EnvironmentPaths.GetResourceName("Roms/NDS/")
+            Dim romDirectory As String = Core.Utilities.EnvironmentPaths.GetResourceName("Roms/NDS/")
             Return Path.Combine(romDirectory, Name.Replace(":", ""))
         End Get
     End Property
     Public ReadOnly Property ImageUri As Uri
         Get
             If File.Exists(Filename) Then
-                Dim newpath = Path.Combine(EnvironmentPaths.GetResourceName("Temp"), Path.GetFileNameWithoutExtension(Name.Replace(":", "")) & ".bmp")
+                Dim newpath = Path.Combine(Core.Utilities.EnvironmentPaths.GetResourceName("Temp"), Path.GetFileNameWithoutExtension(Name.Replace(":", "")) & ".bmp")
                 If Not File.Exists(newpath) Then
                     If Not Directory.Exists(Path.GetDirectoryName(newpath)) Then
                         Directory.CreateDirectory(Path.GetDirectoryName(newpath))

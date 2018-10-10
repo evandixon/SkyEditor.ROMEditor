@@ -6,28 +6,59 @@ using SkyEditor.ROMEditor.ProcessManagement;
 using SkyEditor.ROMEditor.Projects;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TechTalk.SpecFlow;
 
-namespace SkyEditor.ROMEditor.IntegrationTestsCSharp.SpecflowStepDefinitions
+namespace SkyEditor.ROMEditor.BigTestsCSharp.PSMD.Projects
 {
-    [Binding]
-    public sealed class SpecflowStepDefinitions
+    [TestClass]
+    public class TestStarterMod
     {
-        // For additional details on SpecFlow step definitions see http://go.specflow.org/doc-stepdef
+        private PluginManager PluginManager { get; set; }
+        private ApplicationViewModel ApplicationViewModel { get; set; }
+        private List<string> CleanupFiles { get; set; }
 
-        [Given("I have a DS Mod solution")]
-        public async Task GivenIHaveADSModSolution()
+        [TestInitialize]
+        public async Task BeforeScenario()
         {
-            var pluginManager = ScenarioContext.Current.Get<PluginManager>("PluginManager");
-            var applicationViewModel = ScenarioContext.Current.Get<ApplicationViewModel>("ApplicationViewModel");
+            var corePlugin = new CorePlugin();
+
+            PluginManager = new PluginManager();
+            await PluginManager.LoadCore(corePlugin);
+
+            ApplicationViewModel = new ApplicationViewModel(PluginManager);
+
+            this.CleanupFiles = new List<string>();
+        }
+
+        [TestCleanup]
+        public void AfterScenario()
+        {
+            ApplicationViewModel.Dispose();
+            PluginManager.Dispose();
+            foreach (var path in CleanupFiles)
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+                else if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+            }
+        }
+
+        #region Steps
+        private async Task GivenIHaveADSModSolution()
+        {
+            var pluginManager = PluginManager;
+            var applicationViewModel = ApplicationViewModel;
 
             var solutionBasePath = Path.Combine(Environment.CurrentDirectory, "Projects");
-            ScenarioContext.Current.Get<List<string>>("CleanupFiles").Add(solutionBasePath);
+            CleanupFiles.Add(solutionBasePath);
 
             var solution = await ProjectBase.CreateProject<DSModSolution>(solutionBasePath, "psmd-mod-solution", pluginManager);
 
@@ -55,11 +86,10 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp.SpecflowStepDefinitions
             }
         }
 
-        [Given("I initialize the solution with a (.*) ROM")]
-        public async Task IInitializeTheSolutionWithAPSMDUSROM(string romName)
+        private async Task IInitializeTheSolutionWithAPSMDUSROM(string romName)
         {
-            var pluginManager = ScenarioContext.Current.Get<PluginManager>("PluginManager");
-            var applicationViewModel = ScenarioContext.Current.Get<ApplicationViewModel>("ApplicationViewModel");
+            var pluginManager = PluginManager;
+            var applicationViewModel = ApplicationViewModel;
 
             var solution = applicationViewModel.CurrentSolution;
             if (solution == null)
@@ -84,19 +114,14 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp.SpecflowStepDefinitions
             Assert.IsTrue(wizard.IsComplete, "Wizard should be complete after extracting ROM");
         }
 
-        [Given("The solution has a PsmdStarterMod project")]
-        public async Task GivenTheSolutionHasAPsmdStarterModProject()
+        private async Task GivenTheSolutionHasAPsmdStarterModProject()
         {
-            var pluginManager = ScenarioContext.Current.Get<PluginManager>("PluginManager");
-            var applicationViewModel = ScenarioContext.Current.Get<ApplicationViewModel>("ApplicationViewModel");
-            await applicationViewModel.CurrentSolution.AddNewProject("/", "starters", typeof(PsmdStarterMod), pluginManager);
+            await ApplicationViewModel.CurrentSolution.AddNewProject("/", "starters", typeof(PsmdStarterMod), PluginManager);
         }
 
-        [Given("The modpack project will output a decrypted ROM only")]
-        public void TheModpackProjectWillOutputADecryptedROM()
+        private void TheModpackProjectWillOutputADecryptedROM()
         {
-            var applicationViewModel = ScenarioContext.Current.Get<ApplicationViewModel>("ApplicationViewModel");
-            var modpackProject = applicationViewModel.CurrentSolution.GetAllProjects().FirstOrDefault(p => p is DSModPackProject) as DSModPackProject;
+            var modpackProject = ApplicationViewModel.CurrentSolution.GetAllProjects().FirstOrDefault(p => p is DSModPackProject) as DSModPackProject;
             if (modpackProject == null)
             {
                 Assert.Fail("Failed to find a DSModPackProject");
@@ -110,19 +135,15 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp.SpecflowStepDefinitions
             modpackProject.OutputLuma = false;
         }
 
-        [When("I build the project")]
-        public async Task WhenIBuildTheProject()
+        private async Task WhenIBuildTheProject()
         {
-            var applicationViewModel = ScenarioContext.Current.Get<ApplicationViewModel>("ApplicationViewModel");
-            Assert.IsTrue(applicationViewModel.CurrentSolution.CanBuild, "Solution should be able to build");
-            await applicationViewModel.CurrentSolution.Build();
+            Assert.IsTrue(ApplicationViewModel.CurrentSolution.CanBuild, "Solution should be able to build");
+            await ApplicationViewModel.CurrentSolution.Build();
         }
 
-        [When("I unpack the resulting ROM")]
-        public async Task WhenIUnpackTheResultingROM()
+        private async Task WhenIUnpackTheResultingROM()
         {
-            var applicationViewModel = ScenarioContext.Current.Get<ApplicationViewModel>("ApplicationViewModel");
-            var modpackProject = applicationViewModel.CurrentSolution.GetAllProjects().FirstOrDefault(p => p is DSModPackProject) as DSModPackProject;
+            var modpackProject = ApplicationViewModel.CurrentSolution.GetAllProjects().FirstOrDefault(p => p is DSModPackProject) as DSModPackProject;
             if (modpackProject == null)
             {
                 Assert.Fail("Failed to find a DSModPackProject");
@@ -133,7 +154,7 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp.SpecflowStepDefinitions
             Assert.IsTrue(File.Exists(outputFilename), "Failed to find output file: " + outputFilename);
 
             var extractedDirectory = Path.Combine(Environment.CurrentDirectory, "extracted-rom");
-            ScenarioContext.Current.Get<List<string>>("CleanupFiles").Add(extractedDirectory);
+            CleanupFiles.Add(extractedDirectory);
 
             using (var converter = new DotNet3dsToolkit.Converter())
             {
@@ -141,15 +162,13 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp.SpecflowStepDefinitions
             }
         }
 
-        [Then("The personality test script should have been properly patched")]
-        public async Task ThePersonalityTestShouldHaveBeenProperlyPatched()
+        private async Task ThePersonalityTestShouldHaveBeenProperlyPatched()
         {
-            var applicationViewModel = ScenarioContext.Current.Get<ApplicationViewModel>("ApplicationViewModel");
-            var baseromProject = applicationViewModel.CurrentSolution.GetAllProjects().FirstOrDefault(p => p is BaseRomProject) as BaseRomProject;
+            var baseromProject = ApplicationViewModel.CurrentSolution.GetAllProjects().FirstOrDefault(p => p is BaseRomProject) as BaseRomProject;
             if (baseromProject == null)
             {
                 Assert.Fail("Failed to find a BaseRomProject");
-            }            
+            }
 
             var originalScript = Path.Combine(baseromProject.GetRawFilesDir(), "RomFS", "script", "event", "other", "seikakushindan", "seikakushindan.lua");
             if (!File.Exists(originalScript))
@@ -171,6 +190,27 @@ namespace SkyEditor.ROMEditor.IntegrationTestsCSharp.SpecflowStepDefinitions
                 Assert.AreNotEqual(originalScriptContents, modifiedScriptContents, "The personality test script should be different than what it was before being patched.");
                 Assert.IsTrue(modifiedScriptContents.Contains("WINDOW:SysMsg(200000)"), "The modified script should contain 'WINDOW:SysMsg(200000)', which is evidence of Sky Editor's modifications.");
             }
+        }
+
+        #endregion
+
+        [TestMethod]
+        public async Task StarterModBuildsSuccessfully()
+        {
+            // This was originally a SpecFlow test, but I abandoned SpecFlow, so this is the minimum-effort way of replicating it.
+
+            // Given
+            await GivenIHaveADSModSolution();
+            await IInitializeTheSolutionWithAPSMDUSROM("PSMD-US.3ds");
+            await GivenTheSolutionHasAPsmdStarterModProject();
+            TheModpackProjectWillOutputADecryptedROM();
+
+            // When
+            await WhenIBuildTheProject();
+            await WhenIUnpackTheResultingROM();
+
+            // Then
+            await ThePersonalityTestShouldHaveBeenProperlyPatched();
         }
     }
 }
