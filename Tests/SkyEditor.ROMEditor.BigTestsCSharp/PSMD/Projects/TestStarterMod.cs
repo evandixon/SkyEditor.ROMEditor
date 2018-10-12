@@ -199,18 +199,26 @@ namespace SkyEditor.ROMEditor.BigTestsCSharp.PSMD.Projects
         {
             // This was originally a SpecFlow test, but I abandoned SpecFlow, so this is the minimum-effort way of replicating it.
 
-            // Given
-            await GivenIHaveADSModSolution();
-            await IInitializeTheSolutionWithAPSMDUSROM("PSMD-US.3ds");
-            await GivenTheSolutionHasAPsmdStarterModProject();
-            TheModpackProjectWillOutputADecryptedROM();
+            try
+            {
+                // Given
+                await GivenIHaveADSModSolution();
+                await IInitializeTheSolutionWithAPSMDUSROM("PSMD-US.3ds");
+                await GivenTheSolutionHasAPsmdStarterModProject();
+                TheModpackProjectWillOutputADecryptedROM();
 
-            // When
-            await WhenIBuildTheProject();
-            await WhenIUnpackTheResultingROM();
+                // When
+                await WhenIBuildTheProject();
+                await WhenIUnpackTheResultingROM();
 
-            // Then
-            await ThePersonalityTestShouldHaveBeenProperlyPatched();
+                // Then
+                await ThePersonalityTestShouldHaveBeenProperlyPatched();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Encountered exception: " + ex.ToString());
+                throw;
+            }            
         }
     }
 }
