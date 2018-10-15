@@ -17,11 +17,11 @@
                 <DataGridTextColumn Binding="{Binding Filename}" Header="{x:Static res:Language.Filename}" IsReadOnly="True" SortDirection="Ascending"/>
                 <DataGridTextColumn Binding="{Binding FileSize}" Header="{x:Static res:Language.FileSize}" IsReadOnly="True"/>
             </DataGrid.Columns>
-            <DataGrid.ContextMenu>
+            <!--<DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="{x:Static res:Language.MysteryDungeon_PSMD_Views_FarcView_DeleteMenuItem}" Command="{Binding DeleteCommand}" />
                 </ContextMenu>
-            </DataGrid.ContextMenu>
+            </DataGrid.ContextMenu>-->
         </DataGrid>
     </Grid>
 </skyWPF:DataBoundViewControl>
