@@ -11,13 +11,98 @@ Namespace MysteryDungeon.PSMD.Extensions
         ''' <param name="pokemonGraphic">The pokemon_graphic.bin to modify</param>
         ''' <param name="pkmDb">The pokemon_graphics_database.bin corresponding to <paramref name="pokemonGraphic"/></param>
         ''' <param name="progressReportToken">An optional token used to relay the progress of the operation</param>
-        <Extension>
-        Public Async Function SubstituteMissingAnimations(pokemonGraphic As Farc, pkmDb As PGDB, Optional progressReportToken As ProgressReportToken = Nothing) As Task
+        Private Async Function SubstituteMissingAnimations(pokemonGraphic As Farc, pkmDb As PGDB, substitutes As Dictionary(Of String, IEnumerable(Of String)), Optional progressReportToken As ProgressReportToken = Nothing) As Task
             If progressReportToken IsNot Nothing Then
                 progressReportToken.Progress = 0
                 progressReportToken.IsIndeterminate = False
             End If
 
+            Dim entries = pkmDb.Entries.Select(Function(x) x.SecondaryBgrsName & ".bgrs").Distinct().Concat(pkmDb.Entries.Select(Function(y) y.PrimaryBgrsFilename)).ToList()
+
+            Dim af As New AsyncFor
+
+            If progressReportToken IsNot Nothing Then
+                AddHandler af.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                                   progressReportToken.Progress = e.Progress
+                                               End Sub
+            End If
+
+            Dim numComplete = 0
+
+            Await af.RunForEach(entries,
+                                Async Function(entry As String) As Task
+                                    If Not String.IsNullOrEmpty(entry) Then
+                                        If pokemonGraphic.FileExists("/" & entry) Then
+                                            Dim currentBgrs As New BGRS
+                                            Await currentBgrs.OpenFile("/" & entry, pokemonGraphic)
+
+                                            'Dark matter causes a crash in a cutscene. Let's skip it.
+                                            'Using a "contains" because there's 9 variants
+                                            If currentBgrs.Filename.Contains("darkmatter") Then
+                                                Exit Function
+                                            End If
+
+                                            For Each substituteData In substitutes
+                                                Dim substitutePending = True
+                                                For Each substitute In substituteData.Value
+                                                    Dim newAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substituteData.Key)
+
+                                                    If newAnimation IsNot Nothing Then
+                                                        'Then we have an animation and there's no need to substitute
+                                                        substitutePending = False
+                                                        Continue For
+                                                    End If
+
+                                                    Dim oldAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substitute)
+                                                    If oldAnimation Is Nothing Then
+                                                        'One of our substitute candidates doesn't exist.
+                                                        Continue For
+                                                    End If
+
+                                                    'We now have an animation to use and an empty slot to put it in
+                                                    Dim copiedAnimation = oldAnimation.Clone
+                                                    copiedAnimation.Name = oldAnimation.Name.Replace(substitute, substituteData.Key)
+
+                                                    If copiedAnimation.AnimationType And BGRS.AnimationType.SkeletalAnimation > 0 Then
+                                                        Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bcskla", "/" & copiedAnimation.Name & ".bcskla") 'GTI
+                                                        Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bchskla", "/" & copiedAnimation.Name & ".bchskla") 'PSMD
+                                                    End If
+
+                                                    If copiedAnimation.AnimationType And BGRS.AnimationType.MaterialAnimation > 0 Then
+                                                        Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bcmata", "/" & copiedAnimation.Name & ".bcmata") 'GTI
+                                                        Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bchmata", "/" & copiedAnimation.Name & ".bchmata") 'PSMD
+                                                    End If
+
+                                                    currentBgrs.Animations.Add(copiedAnimation)
+                                                    substitutePending = False
+                                                    Exit For
+                                                Next
+
+                                                If substitutePending Then
+                                                    'Could not find an animation to substitute. Not necessarily a bad thing, but this shows we need more explicit substitute data
+                                                    'Note to future devs: it is safe to ignore this breakpoint if you are not actively working on this feature
+                                                    Debugger.Break()
+                                                End If
+                                            Next
+
+                                            Await currentBgrs.Save(pokemonGraphic)
+                                        End If
+                                    End If
+                                End Function)
+
+            If progressReportToken IsNot Nothing Then
+                progressReportToken.IsCompleted = True
+            End If
+        End Function
+
+        ''' <summary>
+        ''' Adds missing animations using comparable existing animations. Build progress is reported too.
+        ''' </summary>
+        ''' <param name="pokemonGraphic">The pokemon_graphic.bin to modify</param>
+        ''' <param name="pkmDb">The pokemon_graphics_database.bin corresponding to <paramref name="pokemonGraphic"/></param>
+        ''' <param name="progressReportToken">An optional token used to relay the progress of the operation</param>
+        <Extension>
+        Public Async Function SubstituteMissingAnimationsPsmd(pokemonGraphic As Farc, pkmDb As PGDB, Optional progressReportToken As ProgressReportToken = Nothing) As Task
             Dim substitutes As New Dictionary(Of String, IEnumerable(Of String))
 
             'Key: animation to be supplied
@@ -84,71 +169,71 @@ Namespace MysteryDungeon.PSMD.Extensions
             substitutes.Add("bd_ev026_relax01", {"bd_wait00"}) 'Looking left at the player
             substitutes.Add("bd_ev026_relax02", {"bd_wait00"}) 'Turning back ahead
 
-            Dim entries = pkmDb.Entries.Select(Function(x) x.SecondaryBgrsName & ".bgrs").Distinct().Concat(pkmDb.Entries.Select(Function(y) y.PrimaryBgrsFilename)).ToList()
+            Await SubstituteMissingAnimations(pokemonGraphic, pkmDb, substitutes, progressReportToken)
+        End Function
 
-            Dim af As New AsyncFor
+        ''' <summary>
+        ''' Adds missing animations using comparable existing animations. Build progress is reported too.
+        ''' </summary>
+        ''' <param name="pokemonGraphic">The pokemon_graphic.bin to modify</param>
+        ''' <param name="pkmDb">The pokemon_graphics_database.bin corresponding to <paramref name="pokemonGraphic"/></param>
+        ''' <param name="progressReportToken">An optional token used to relay the progress of the operation</param>
+        <Extension>
+        Public Async Function SubstituteMissingAnimationsGti(pokemonGraphic As Farc, pkmDb As PGDB, Optional progressReportToken As ProgressReportToken = Nothing) As Task
+            Dim substitutes As New Dictionary(Of String, IEnumerable(Of String))
 
-            If progressReportToken IsNot Nothing Then
-                AddHandler af.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
-                                                   progressReportToken.Progress = e.Progress
-                                               End Sub
-            End If
+            'Key: animation to be supplied
+            'Value: animations that can be substituted. The ones that come first will be used first if they exist.
+            'Comments are a description of what Tepig looks like, and should be mostly true of other starters
+            'Values are the best guess of animations that Zorua has that would work
+            substitutes.Add("bd_ev000_cswait", {"bd_wait02", "bd_wait00", "bd_wait"}) 'Variant of wait
+            substitutes.Add("bd_ev000_cswalk", {"bd_ev011_tired05", "bd_walk", "bd_wait02", "bd_wait"}) 'Walking, but sneakier
+            substitutes.Add("bd_ev000_surprise", {"bd_surprise", "bd_wait02", "bd_wait"}) 'Jump back, slower than bd_surprise
+            substitutes.Add("bd_ev000_banzai", {"bd_letsgo", "bd_wait00", "bd_wait"}) 'Looking up (two-legged Pokemon throw hands up too). Perhaps the team cheer?
+            substitutes.Add("bd_ev001_confirms", {"bd_wait00", "bd_wait"}) 'Always look both ways before crossing the street. bd_disagree may work, but it's too fast.
+            substitutes.Add("bd_ev001_down00", {"bd_ev011_tired02", "bd_fall", "bd_sleep", "bd_wait02", "bd_wait"}) 'To down01
+            substitutes.Add("bd_ev001_down01", {"bd_ev011_tired02_loop", "bd_sleeploop", "bd_dsleeploop", "bd_wait02", "bd_wait"}) 'Lying on ground defeated
+            substitutes.Add("bd_ev001_down02", {"bd_ev011_tired04", "bd_dwait02", "bd_wait02", "bd_wait"}) 'From down01
+            substitutes.Add("bd_ev001_gasagasa", {"bd_greet", "bd_wait02", "bd_wait"}) 'Digging, searching for something. bd_greet is probably a too different, but kinda similar between Tepig and Zorua
+            substitutes.Add("bd_ev001_look00", {"bd_wait02", "bd_wait"}) 'To look01
+            substitutes.Add("bd_ev000_look01", {"bd_wait02", "bd_wait"}) 'Looking off a cliff
+            substitutes.Add("bd_ev001_look02", {"bd_wait02", "bd_wait"}) 'To look 03
+            substitutes.Add("bd_ev001_look03", {"bd_landing", "bd_wait02", "bd_wait"}) 'Jumping off a cliff
+            substitutes.Add("bd_ev001_shy", {"bd_wait02", "bd_wait"}) 'Tepig: lower and tilt head. Pikachu: tilt head and put paw to cheek. No clue how to substitute.
+            substitutes.Add("bd_ev001_skydv00", {"bd_jumploop", "bd_wait02", "bd_wait"}) 'Probably falling into the Pokemon world for the first time.
+            substitutes.Add("bd_ev001_dkydv01", {"bd_endure", "bd_wait02", "bd_wait"}) 'skydv00, except flailing
+            substitutes.Add("bd_ev001_sleep00", {"bd_sleep", "bd_wait02", "bd_wait"}) 'Falling asleep
+            substitutes.Add("bd_ev001_sleep01", {"bd_sleeploop", "bd_dsleeploop", "bd_wait02", "bd_wait"}) 'Sleeping
+            substitutes.Add("bd_ev001_sleep02", {"bd_wait02", "bd_wait"}) 'Getting up
+            substitutes.Add("bd_ev011_kneeattache00", {"bd_ev011_tired00", "bd_damage", "bd_ddamage", "bd_wait02", "bd_wait"}) 'Hit in leg
+            substitutes.Add("bd_ev011_kneeattache01", {"bd_ev011_tired01", "bd_wait00", "bd_wait"}) 'Trying to stand, in pain
+            substitutes.Add("bd_ev011_kneeattache02", {"bd_ev011_tired02", "bd_wait02", "bd_wait"}) 'Falling down
+            substitutes.Add("bd_ev011_kneeattache03", {"bd_ev011_tired04", "bd_wait02", "bd_wait"}) 'Getting up
+            substitutes.Add("bd_ev013_avoid00", {"bd_jump", "bd_ddamage", "bd_wait02", "bd_wait"}) 'Jump right to avoid
+            substitutes.Add("bd_ev013_avoid01", {"bd_jump", "bd_ddamage", "bd_wait02", "bd_wait"}) 'Jump left to avoid (direction varies by Pokemon)
+            substitutes.Add("bd_ev013_avoid02", {"bd_jump", "bd_ddamage", "bd_wait02", "bd_wait"}) 'Jump center to avoid (direction varies by Pokemon)
+            substitutes.Add("bd_ev013_avoid03", {"bd_ddamage", "bd_wait02", "bd_wait"}) 'Backflip, too avoid04
+            substitutes.Add("bd_ev013_avoid04", {"bd_ev011_tired04", "bd_sleeploop", "bd_dsleeploop", "bd_wait02", "bd_wait"}) 'Failed to avoid; on ground.
+            substitutes.Add("bd_ev013_start", {"bd_push", "bd_walk", "bd_wait02", "bd_wait"}) 'Pushing something
+            substitutes.Add("bd_ev013_tired", {"bd_ev011_tired01", "bd_wait02", "bd_wait"}) 'Panting
+            substitutes.Add("bd_ev013_wakeup", {"bd_jump", "bd_wait02", "bd_wait"}) 'Jump up
+            substitutes.Add("bd_ev014_wait", {"bd_jump", "bd_wait02", "bd_wait"}) 'Some kind of jump??
+            substitutes.Add("bd_ev015_protect00", {"bd_wait02", "bd_wait"}) 'Standing in from of someone to protect
+            substitutes.Add("bd_ev015_protect01", {"bd_ev011_tired00", "bd_sleep", "bd_wait02", "bd_wait"}) 'Falling strait down
+            substitutes.Add("bd_ev015_protect02", {"bd_ev011_tired01", "bd_sleeploop", "bd_dsleeploop", "bd_wait02", "bd_wait"}) 'Being down
+            substitutes.Add("bd_ev015_wakeup00", {"bd_ev011_tired04", "bd_wait02", "bd_wait"}) 'Getting up from being on side (unrelated to protect02)
+            substitutes.Add("bd_ev018_cry00", {"bd_wait02", "bd_wait"}) 'To cry01
+            substitutes.Add("bd_ev018_cry01", {"bd_cry", "bd_wait02", "bd_wait"}) 'Variant of wait
+            substitutes.Add("bd_op000_jump00", {"bd_jump", "bd_wait02", "bd_wait"}) 'Initial jump
+            substitutes.Add("bd_op000_jump00loop", {"bd_jumploop", "bd_wait02", "bd_wait"}) 'In air after jump
+            substitutes.Add("bd_op000_jump01", {"bd_jumploop", "bd_wait02", "bd_wait"}) 'Starting to fall
+            substitutes.Add("bd_op000_jump01loop", {"bd_jumploop", "bd_wait02", "bd_wait"}) 'Falling
+            substitutes.Add("bd_op000_sleep00", {"bd_wait02", "bd_wait"}) 'Getting up and starting stretching
+            substitutes.Add("bd_op000_sleep00loop", {"bd_wait02", "bd_wait"}) 'Holding the stretching
+            substitutes.Add("bd_op000_sleep01", {"bd_wait02", "bd_wait"}) 'Getting up and rubbing eyes
+            substitutes.Add("bd_op000_sleep01loop", {"bd_wait02", "bd_wait"}) 'Rubbing eyes
 
-            Dim numComplete = 0
-
-            Await af.RunForEach(entries,
-                                Async Function(entry As String) As Task
-                                    If Not String.IsNullOrEmpty(entry) Then
-                                        If pokemonGraphic.FileExists("/" & entry) Then
-                                            Dim currentBgrs As New BGRS
-                                            Await currentBgrs.OpenFile("/" & entry, pokemonGraphic)
-
-                                            'Dark matter causes a crash in a cutscene. Let's skip it.
-                                            'Using a "contains" because there's 9 variants
-                                            If currentBgrs.Filename.Contains("darkmatter") Then
-                                                Exit Function
-                                            End If
-
-                                            For Each substituteData In substitutes
-                                                For Each substitute In substituteData.Value
-                                                    Dim newAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substituteData.Key)
-
-                                                    If newAnimation IsNot Nothing Then
-                                                        'Then we have an animation and there's no need to substitute
-                                                        Continue For
-                                                    End If
-
-                                                    Dim oldAnimation = currentBgrs.Animations.FirstOrDefault(Function(a) a.AnimationName = substitute)
-                                                    If oldAnimation Is Nothing Then
-                                                        'One of our substitute candidates doesn't exist.
-                                                        Continue For
-                                                    End If
-
-                                                    'We now have an animation to use and an empty slot to put it in
-                                                    Dim copiedAnimation = oldAnimation.Clone
-                                                    copiedAnimation.Name = oldAnimation.Name.Replace(substitute, substituteData.Key)
-
-                                                    If copiedAnimation.AnimationType And BGRS.AnimationType.SkeletalAnimation > 0 Then
-                                                        pokemonGraphic.CopyFile("/" & oldAnimation.Name & ".bchskla", "/" & copiedAnimation.Name & ".bchskla")
-                                                    End If
-
-                                                    If copiedAnimation.AnimationType And BGRS.AnimationType.MaterialAnimation > 0 Then
-                                                        pokemonGraphic.CopyFile("/" & oldAnimation.Name & ".bchmata", "/" & copiedAnimation.Name & ".bchmata")
-                                                    End If
-
-                                                    currentBgrs.Animations.Add(copiedAnimation)
-                                                    Exit For
-                                                Next
-                                            Next
-
-                                            Await currentBgrs.Save(pokemonGraphic)
-                                        End If
-                                    End If
-                                End Function)
-
-            If progressReportToken IsNot Nothing Then
-                progressReportToken.IsCompleted = True
-            End If
+            Await SubstituteMissingAnimations(pokemonGraphic, pkmDb, substitutes, progressReportToken)
         End Function
 
         ''' <summary>

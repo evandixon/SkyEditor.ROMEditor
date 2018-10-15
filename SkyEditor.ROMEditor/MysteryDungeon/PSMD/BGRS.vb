@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.IO.PluginInfrastructure
 
 Namespace MysteryDungeon.PSMD
     Public Class BGRS
@@ -119,7 +120,7 @@ Namespace MysteryDungeon.PSMD
 
         Private Async Function OpenInternal(f As GenericFile) As Task
             Magic = Await f.ReadNullTerminatedStringAsync(0, Text.Encoding.ASCII)
-            ReferencedBchFileName = (Await f.ReadStringAsync(&H8, &H40, Text.Encoding.ASCII)).TrimEnd(vbNullChar)
+            ReferencedBchFileName = (Await f.ReadNullTerminatedStringAsync(&H8, Text.Encoding.ASCII)).TrimEnd(vbNullChar) 'Max length: &H40
             Type = Await f.ReadInt32Async(&H48)
 
             Select Case Type
@@ -133,7 +134,7 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Private Async Function OpenInternalNormal(f As GenericFile) As Task
-            BgrsName = (Await f.ReadStringAsync(&H58, &HC0, Text.Encoding.ASCII)).TrimEnd(vbNullChar)
+            BgrsName = (Await f.ReadNullTerminatedStringAsync(&H58, Text.Encoding.ASCII)) 'Max length: &HC0
 
             'Yes, the counts of these two sections are in a different order than the sections themselves
             Dim animationCount = Await f.ReadInt32Async(&H118)
@@ -158,7 +159,7 @@ Namespace MysteryDungeon.PSMD
 
         Private Async Function OpenInternalAnimations(f As GenericFile, animationIndex As Integer, animationCount As Integer) As Task
             For i = animationIndex To animationIndex + (&HC4 * animationCount) - 1 Step &HC4
-                Dim animName = (Await f.ReadStringAsync(i, &HC0, Text.Encoding.ASCII)).TrimEnd(vbNullChar)
+                Dim animName = (Await f.ReadNullTerminatedStringAsync(i, Text.Encoding.ASCII)) 'Max length: &HC0
                 Dim animType = Await f.ReadInt32Async(i + &HC0)
                 Dim anim As New Animation(animName, animType)
                 Animations.Add(anim)

@@ -18,6 +18,9 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
             Entries = New ObservableCollection(Of FarcEntryViewModel)
             CurrentApplicationViewModel = appViewModel
+
+            OpenSelectedCommand = New RelayCommand(Sub() OpenSelectedFile())
+            DeleteCommand = New RelayCommand(Sub() DeleteSelectedItem())
         End Sub
 
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
@@ -46,6 +49,10 @@ Namespace MysteryDungeon.PSMD.ViewModels
         End Property
         Private _farcEntryViewModel As FarcEntryViewModel
 
+        Public ReadOnly Property OpenSelectedCommand As ICommand
+
+        Public ReadOnly Property DeleteCommand As ICommand
+
         Public Overrides Sub SetModel(model As Object)
             MyBase.SetModel(model)
 
@@ -57,11 +64,26 @@ Namespace MysteryDungeon.PSMD.ViewModels
             Next
         End Sub
 
+        Public Overrides Sub UpdateModel(model As Object)
+            MyBase.UpdateModel(model)
+
+            Dim farc As Farc = model
+
+        End Sub
+
         Public Async Sub OpenSelectedFile()
             If SelectedEntry IsNot Nothing Then
                 Dim file = New GenericFile(Model.GetFileData(SelectedEntry.Filename))
                 file.Name = SelectedEntry.Filename
                 Await CurrentApplicationViewModel.OpenFile(file, True)
+            End If
+        End Sub
+
+        Private Sub DeleteSelectedItem()
+            If SelectedEntry IsNot Nothing Then
+                Model.DeleteFile(SelectedEntry.Model.Filename)
+                Entries.Remove(SelectedEntry)
+                SelectedEntry = Nothing
             End If
         End Sub
 

@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.IO.PluginInfrastructure
 
 Namespace MysteryDungeon.PSMD
     Public Class MessageBinDebug
@@ -92,7 +93,7 @@ Namespace MysteryDungeon.PSMD
             Next
 
             'Write sections to file
-            Me.Length = 16 + stringSection.Count + infoSection.Count
+            Me.SetLength(16 + stringSection.Count + infoSection.Count)
             Await Me.WriteAsync(16, stringSection.Count, stringSection.ToArray)
             Await Me.WriteAsync(16 + stringSection.Count, infoSection.Count, infoSection.ToArray)
 

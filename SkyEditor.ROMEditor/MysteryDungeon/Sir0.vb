@@ -179,13 +179,17 @@ Namespace MysteryDungeon
         End Function
 
         Protected Overridable Async Function DoPreSave() As Task
-            'The header and relative pointers must be set by child classes
+            'Set the length to be the minimum size for the header, in case it wasn't already set
+            If Me.Length = 0 Then
+                SetLength(&H10)
+            End If
 
+            'The header and relative pointers must be set by child classes
             Await Me.WriteAsync(0, 4, {&H53, &H49, &H52, &H30})
 
             'Update subheader length
             Dim oldLength = Me.Length 'the new header offset
-            Me.Length += Me.ContentHeader.Length 'Change the file length
+            SetLength(Me.Length + Me.ContentHeader.Length) 'Change the file length
             Await Me.WriteInt32Async(&H4, oldLength) 'Update the header pointer
             Me.HeaderOffset = oldLength
 
@@ -194,7 +198,7 @@ Namespace MysteryDungeon
 
             'Pad the footer
             While Not Length Mod 16 = 0
-                Length += 1
+                SetLength(Length + 1)
                 Await Me.WriteAsync(Me.Length - 1, PaddingByte)
             End While
 
@@ -247,13 +251,13 @@ Namespace MysteryDungeon
             pointerSection.Add(0) 'Seems to mark the end of the pointers
 
             oldLength = Me.Length
-            Me.Length += pointerSection.Count
+            SetLength(Me.Length + pointerSection.Count)
             Await Me.WriteInt32Async(&H8, oldLength)
             Me.PointerOffset = oldLength
             Await Me.WriteAsync(oldLength, pointerSection.Count, pointerSection.ToArray)
 
             While Not Length Mod 16 = 0
-                Length += 1
+                SetLength(Length + 1)
                 Await WriteAsync(Me.Length - 1, PaddingByte)
             End While
         End Function
@@ -280,7 +284,7 @@ Namespace MysteryDungeon
         ''' Sets the body of the content to the given data.
         ''' </summary>
         Public Async Function SetContent(content As Byte()) As Task
-            Me.Length = &H10 + content.Length
+            SetLength(&H10 + content.Length)
             Await Me.WriteAsync(&H10, content.Length, content)
         End Function
 
@@ -333,7 +337,7 @@ Namespace MysteryDungeon
 
             'Remove the header and pointer sections, because it will be reconstructed on save
             If Not Me.IsReadOnly AndAlso ResizeFileOnLoad Then
-                Me.Length = Me.Length - Me.PointerLength - Me.HeaderLength
+                SetLength(Me.Length - Me.PointerLength - Me.HeaderLength)
             End If
 
         End Sub

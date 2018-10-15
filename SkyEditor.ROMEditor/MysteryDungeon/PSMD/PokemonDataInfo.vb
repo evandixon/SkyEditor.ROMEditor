@@ -172,7 +172,7 @@ Namespace MysteryDungeon.PSMD
             Next
         End Function
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
-            Me.Length = Entries.Count * entryLength
+            SetLength(Entries.Count * entryLength)
 
             For count = 0 To Entries.Count - 1
                 Await WriteAsync(count * entryLength, entryLength, Entries(count).ToBytes)

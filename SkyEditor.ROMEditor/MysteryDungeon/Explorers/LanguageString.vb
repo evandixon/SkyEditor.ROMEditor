@@ -1,6 +1,7 @@
 ﻿Imports System.Text
 Imports Microsoft
 Imports SkyEditor.Core.IO
+Imports SkyEditor.ROMEditor.CustomEncoding
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers.ViewModels
 
 Namespace MysteryDungeon.Explorers
@@ -62,7 +63,7 @@ Namespace MysteryDungeon.Explorers
             Items = New List(Of String)
 
             Dim offset1 As UInt32 = BitConverter.ToUInt32(bytes, 0)
-            Dim e = Encoding.GetEncoding("Windows-1252")
+            Dim e = New Windows1252Encoding
             'Loop through each entry
             For count As Integer = 0 To offset1 - 5 Step 4
                 Dim startOffset As UInteger = BitConverter.ToUInt32(bytes, count)
@@ -79,7 +80,7 @@ Namespace MysteryDungeon.Explorers
         End Function
         Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
             'Generate File
-            Dim e = Encoding.GetEncoding("Windows-1252")
+            Dim e = New Windows1252Encoding
             Dim offsets As New List(Of UInt32)
             For i As UInt32 = 0 To Items.Count - 1
                 offsets.Add(0)
@@ -113,7 +114,7 @@ Namespace MysteryDungeon.Explorers
                 totalData.Add(b)
             Next
             'Write buffer to stream
-            Length = totalData.Count
+            SetLength(totalData.Count)
             Await WriteAsync(0, totalData.Count, totalData.ToArray)
             Await MyBase.Save(Destination, provider)
         End Function

@@ -6,6 +6,7 @@ Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports Force.Crc32
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.IO.PluginInfrastructure
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
 
@@ -100,6 +101,11 @@ Namespace MysteryDungeon.PSMD
 
         Public Property PreLoadFiles As Boolean = False
         Public Property EnableInMemoryLoad As Boolean = True
+
+        ''' <summary>
+        ''' Whether or not to allow multiple files to reference the same data when saving. If enabled, files containing the same data will be stored once with two or more references.
+        ''' </summary>
+        Public Property EnableMultiReferenceOnSave As Boolean = True
         Public Property Filename As String Implements IOnDisk.Filename
         Private Property Entries As ConcurrentBag(Of FarcEntry)
         Private Property CachedEntries As ConcurrentDictionary(Of UInteger, FarcEntry)
@@ -288,14 +294,14 @@ Namespace MysteryDungeon.PSMD
             Dim entry As FarcEntry = Nothing
             If CachedEntries.ContainsKey(hash) Then
                 entry = CachedEntries(hash)
-            ElseIf Not CachedEntries.ContainsKey(hash) Then
+            Else
                 entry = Entries.FirstOrDefault(Function(x) x.FilenameHash = hash OrElse x.Filename = filename)
                 If entry IsNot Nothing Then
                     CachedEntries(hash) = entry
                 End If
             End If
 
-            If entry IsNot Nothing AndAlso String.IsNullOrEmpty(entry.Filename) Then
+            If entry IsNot Nothing AndAlso Not String.IsNullOrEmpty(entry.Filename) Then
                 entry.Filename = filename
             End If
 
@@ -384,27 +390,41 @@ Namespace MysteryDungeon.PSMD
         Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
             'Analyze data to identify duplicate entries (i.e. make sure files with the same data are not added multiple times, instead having multiple references to the same data)
             Dim condensedEntries As New List(Of EntryMapping)
-            For Each item In Entries
-                Dim data = Await GetFileDataAsync(item)
-                Dim hashCode = CreateByteArrayHashCode(data)
 
-                '"Where" criteria first compares hash code to disregard incorrect matches
-                'THEN it double-checks equality by checking the array reference if the hashes match
-                'THEN it compares the actual data if the object reference is different and the hashes match
-                'If changing this, take care to not change this order, because short-circuit logic should greatly improve performance
-                Dim mapping = condensedEntries.Where(Function(x) x.FileDataHashCode = hashCode AndAlso (data Is x.FileData OrElse x.FileData.SequenceEqual(data))).FirstOrDefault
+            If EnableMultiReferenceOnSave Then
+                For Each item In Entries.OrderBy(Function(e) If(e.Filename, e.FilenameHash))
+                    Dim data = Await GetFileDataAsync(item)
+                    Dim hashCode = CreateByteArrayHashCode(data)
 
-                If mapping IsNot Nothing Then
-                    mapping.FilenameHashes.Add(item.FilenameHash)
-                Else
+                    '"Where" criteria first compares hash code to disregard incorrect matches
+                    'THEN it double-checks equality by checking the array reference if the hashes match
+                    'THEN it compares the actual data if the object reference is different and the hashes match
+                    'If changing this, take care to not change this order, because short-circuit logic should greatly improve performance
+                    Dim mapping = condensedEntries.
+                        Where(Function(x) x.FileDataHashCode = hashCode AndAlso (data Is x.FileData OrElse x.FileData.SequenceEqual(data))).
+                        FirstOrDefault
+
+                    If mapping IsNot Nothing Then
+                        mapping.PossibleFilenames.Add(item.Filename)
+                    Else
+                        Dim newMapping As New EntryMapping
+                        newMapping.FileData = item.FileData
+                        newMapping.PossibleFilenames = New List(Of String)
+                        newMapping.PossibleFilenames.Add(item.Filename)
+                        newMapping.Filename = item.Filename
+                        condensedEntries.Add(newMapping)
+                    End If
+                Next
+            Else
+                For Each item In Entries.OrderBy(Function(e) If(e.Filename, e.FilenameHash))
                     Dim newMapping As New EntryMapping
-                    newMapping.FileData = item.FileData
-                    newMapping.FilenameHashes = New List(Of UInteger)
-                    newMapping.FilenameHashes.Add(item.FilenameHash)
+                    newMapping.FileData = Await GetFileDataAsync(item)
+                    newMapping.PossibleFilenames = New List(Of String)
+                    newMapping.PossibleFilenames.Add(item.Filename)
                     newMapping.Filename = item.Filename
                     condensedEntries.Add(newMapping)
-                End If
-            Next
+                Next
+            End If
 
             'Write the data to the file
             Using f As New GenericFile
@@ -418,10 +438,9 @@ Namespace MysteryDungeon.PSMD
                 For Each item In condensedEntries
                     'Add all filenames/hashes to this particular file at the same time
                     'fat.GetRawData should properly order these further on
-                    For Each hash In item.FilenameHashes
+                    For Each filename In item.PossibleFilenames
                         fat.Entries.Add(New FarcFat5.Entry With {
-                                    .FilenameHash = hash,
-                                    .Filename = item.Filename,
+                                    .Filename = filename,
                                     .DataOffset = fileData.Count,
                                     .DataLength = item.FileData.Length
                                     })
@@ -451,7 +470,7 @@ Namespace MysteryDungeon.PSMD
                 farcHeader.AddRange(BitConverter.GetBytes(&H80 + fatData.Length)) '0x2C
                 farcHeader.AddRange(BitConverter.GetBytes(fileData.Count)) '0x30
 
-                f.Length = farcHeader.Count + &H4C + fatData.Length + fileData.Count
+                f.SetLength(farcHeader.Count + &H4C + fatData.Length + fileData.Count)
                 Await f.WriteAsync(0, farcHeader.ToArray())
                 Await f.WriteAsync(farcHeader.Count, Array.CreateInstance(GetType(Byte), &H4C))
                 Await f.WriteAsync(farcHeader.Count + &H4C, fatData)
@@ -703,7 +722,7 @@ Namespace MysteryDungeon.PSMD
             End Property
             Dim _fileDataHashCode As Integer?
 
-            Public Property FilenameHashes As List(Of UInteger)
+            Public Property PossibleFilenames As List(Of String)
 
             Public Property Filename As String
         End Class

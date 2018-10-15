@@ -540,6 +540,21 @@ evandixon (Personality test, bgp files)</value>
   <data name="MenuFarcSubstituteGtiPortraits" xml:space="preserve">
     <value>Substitute Missing Portraits (GTI)</value>
   </data>
+  <data name="Views_PsmdStarterModSettings_EnableModelPatching" xml:space="preserve">
+    <value>Enable Model Patching</value>
+  </data>
+  <data name="Views_PsmdStarterModSettings_EnablePortraitPatching" xml:space="preserve">
+    <value>Enable Portrait Patching</value>
+  </data>
+  <data name="Views_PsmdStarterModSettings_Title" xml:space="preserve">
+    <value>PSMD/GTI Starter Mod Settings</value>
+  </data>
+  <data name="MenuFarcSubstituteGtiAnimations" xml:space="preserve">
+    <value>Substitute Missing Animations (GTI)</value>
+  </data>
+  <data name="MysteryDungeon_PSMD_Views_FarcView_DeleteMenuItem" xml:space="preserve">
+    <value>_Delete</value>
+  </data>
   <data name="MenuFarcAddFile" xml:space="preserve">
     <value>_Add File</value>
   </data>

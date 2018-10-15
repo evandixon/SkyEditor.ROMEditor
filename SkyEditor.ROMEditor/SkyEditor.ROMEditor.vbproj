@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Crc32.Net" Version="1.2.0" />
-    <PackageReference Include="SkyEditor.Core" Version="4.1.0-CI215" />
-    <PackageReference Include="SkyEditor.SaveEditor" Version="4.1.0-CI108" />
+    <PackageReference Include="SkyEditor.Core" Version="4.2.4" />
+    <PackageReference Include="SkyEditor.SaveEditor" Version="4.1.0-CI109" />
   </ItemGroup>
 
   <ItemGroup>

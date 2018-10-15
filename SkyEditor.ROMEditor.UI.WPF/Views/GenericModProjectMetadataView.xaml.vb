@@ -1,5 +1,5 @@
 ﻿Namespace Views
-    Public Class GenericModProjectMetadataViewModel
+    Public Class GenericModProjectMetadataView
 
     End Class
 End Namespace

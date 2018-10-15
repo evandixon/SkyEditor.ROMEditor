@@ -1,0 +1,24 @@
+﻿<skywpf:DataBoundViewControl x:Class="Views.PsmdStarterModSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:skywpf="clr-namespace:SkyEditor.UI.WPF;assembly=SkyEditor.UI.WPF"
+             xmlns:vm="clr-namespace:SkyEditor.ROMEditor.UI.WPF.ViewModels"
+             xmlns:res="clr-namespace:SkyEditor.ROMEditor.UI.WPF.My.Resources"
+             mc:Ignorable="d"
+             TargetType="{x:Type vm:PsmdStarterModSettingsViewModel}"
+             Header="{x:Static res:Language.Views_PsmdStarterModSettings_Title}"
+             SortOrder="1"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+    <UniformGrid Columns="2" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300">
+            <Label Content="{x:Static res:Language.Views_PsmdStarterModSettings_EnableModelPatching}" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
+            <CheckBox IsChecked="{Binding EnableModelPatching}" VerticalContentAlignment="Center" HorizontalAlignment="Stretch"/>
+
+            <Label Content="{x:Static res:Language.Views_PsmdStarterModSettings_EnablePortraitPatching}" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Stretch"/>
+            <CheckBox IsChecked="{Binding EnablePortraitPatching}"  VerticalContentAlignment="Center" HorizontalAlignment="Stretch"/>
+
+        </UniformGrid>
+    </Grid>
+</skywpf:DataBoundViewControl>

@@ -59,7 +59,7 @@ Namespace MenuActions
                 Dim token As New ProgressReportToken
                 CurrentApplicationViewModel.ShowLoading(token)
 
-                loadingTasks.Add(Task.Run(Function() item.SubstituteMissingAnimations(pgdb, token)))
+                loadingTasks.Add(Task.Run(Function() item.SubstituteMissingAnimationsPsmd(pgdb, token)))
             Next
 
             'While the application view model is handling the extraction display, we need to wait here in case there's exceptions.

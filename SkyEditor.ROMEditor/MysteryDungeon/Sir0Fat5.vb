@@ -78,7 +78,7 @@ Namespace MysteryDungeon
             Next
 
             'Write data
-            Me.Length = 16 + data.Count
+            SetLength(16 + data.Count)
             Await Me.WriteAsync(16, data.Count, data.ToArray)
 
             'Generate header, and let the base class write it

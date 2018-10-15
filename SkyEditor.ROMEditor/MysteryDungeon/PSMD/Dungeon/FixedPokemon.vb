@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports SkyEditor.Core.IO
+Imports SkyEditor.Core.IO.PluginInfrastructure
 
 Namespace MysteryDungeon.PSMD.Dungeon
     Public Class FixedPokemon
@@ -92,7 +93,7 @@ Namespace MysteryDungeon.PSMD.Dungeon
             Next
 
             'Write sections to file
-            Me.Length = 16 + dataSection.Count
+            Me.SetLength(16 + dataSection.Count)
             Await Me.WriteAsync(16, dataSection.Count, dataSection.ToArray)
 
             'Update header
@@ -158,8 +159,8 @@ Namespace MysteryDungeon.PSMD.Dungeon
                 Move4 = BitConverter.ToUInt16(RawData, &HE)
                 Level = RawData(&H16)
                 AttackBoost = Data(&H17)
-                SpAttackBoost = Data(&H18)
-                DefenseBoost = Data(&H19)
+                DefenseBoost = Data(&H18)
+                SpAttackBoost = Data(&H19)
                 SpDefenseBoost = Data(&H1A)
                 SpeedBoost = Data(&H1B)
             End Sub
@@ -194,8 +195,8 @@ Namespace MysteryDungeon.PSMD.Dungeon
 
                 Data(&H16) = Level
                 Data(&H17) = AttackBoost
-                Data(&H18) = SpAttackBoost
-                Data(&H19) = DefenseBoost
+                Data(&H18) = DefenseBoost
+                Data(&H19) = SpAttackBoost
                 Data(&H1A) = SpDefenseBoost
                 Data(&H1B) = SpeedBoost
 

@@ -214,22 +214,22 @@ Namespace Projects
             Select Case GetBaseRomSystem(solution)
                 Case "3DS"
                     If OutputDec3DSFile Then
-                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-3ds", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "PatchedRom.3ds")))
+                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-3ds", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "PatchedRom.3ds")), False)
                     End If
                     If OutputEnc3DSFile Then
-                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-3ds -key0", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "PatchedRom.3ds")))
+                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-3ds -key0", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "PatchedRom.3ds")), False)
                     End If
                     If OutputCIAFile Then
-                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-cia", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "PatchedRom.cia")))
+                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-cia", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "PatchedRom.cia")), False)
                     End If
                     If OutputHans Then
-                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-hans", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "SD Card")))
+                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-hans", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "SD Card")), False)
                     End If
                     If OutputLuma Then
-                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-luma", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "SD Card")))
+                        Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-luma", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "SD Card")), False)
                     End If
                 Case "NDS"
-                    Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-nds", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "PatchedRom.nds")))
+                    Await ConsoleApp.RunProgram(Path.Combine(GetModPackDir, "DSPatcher.exe"), String.Format("""{0}"" ""{1}"" -output-nds", GetBaseRomFilename(solution), Path.Combine(GetOutputDir, "PatchedRom.nds")), False)
             End Select
         End Function
     End Class

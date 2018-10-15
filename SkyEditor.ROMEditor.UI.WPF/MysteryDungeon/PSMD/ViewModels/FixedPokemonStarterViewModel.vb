@@ -104,9 +104,9 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
             Else
                 ClearList(StarterEntries)
-                StarterEntries.Add(Await CreateFileViewModel(f.Entries(71)))
+                'StarterEntries.Add(Await CreateFileViewModel(f.Entries(71)))
                 StarterEntries.Add(Await CreateFileViewModel(f.Entries(72)))
-                StarterEntries.Add(Await CreateFileViewModel(f.Entries(73)))
+                'StarterEntries.Add(Await CreateFileViewModel(f.Entries(73)))
                 StarterEntries.Add(Await CreateFileViewModel(f.Entries(74)))
                 StarterEntries.Add(Await CreateFileViewModel(f.Entries(75)))
 
@@ -164,11 +164,11 @@ Namespace MysteryDungeon.PSMD.ViewModels
                 f.Entries(73) = EvolutionEntries(18).Model
                 f.Entries(74) = EvolutionEntries(19).Model
             Else
-                f.Entries(71) = StarterEntries(0).Model
-                f.Entries(72) = StarterEntries(1).Model
-                f.Entries(73) = StarterEntries(2).Model
-                f.Entries(74) = StarterEntries(3).Model
-                f.Entries(75) = StarterEntries(4).Model
+                'f.Entries(71) = StarterEntries(0).Model
+                f.Entries(72) = StarterEntries(0).Model
+                'f.Entries(73) = StarterEntries(2).Model
+                f.Entries(74) = StarterEntries(1).Model
+                f.Entries(75) = StarterEntries(2).Model
             End If
         End Sub
 

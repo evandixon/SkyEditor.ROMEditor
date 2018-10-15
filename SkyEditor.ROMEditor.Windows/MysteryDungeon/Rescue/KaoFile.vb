@@ -210,7 +210,7 @@ Public Class KaoFile
         End While
 
         'Write the sections to the file
-        Me.Length = &H10 + dataSection.Count
+        SetLength(&H10 + dataSection.Count)
         Await WriteAsync(&H10, dataSection.Count, dataSection.ToArray)
         ContentHeader = pointersSection.ToArray
 

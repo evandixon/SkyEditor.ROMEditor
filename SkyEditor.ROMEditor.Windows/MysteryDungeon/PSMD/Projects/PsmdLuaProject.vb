@@ -8,6 +8,7 @@ Imports SkyEditor.ROMEditor.Projects
 Imports System.Collections.Concurrent
 Imports SkyEditor.Core
 Imports SkyEditor.ROMEditor.ProcessManagement
+Imports System.Windows.Threading
 
 Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
@@ -359,7 +360,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                       Directory.CreateDirectory(Path.GetDirectoryName(dest))
                                   End If
 
-                                  Await unluac.DecompileScriptAsync(item, dest)
+                                  Await unluac.DecompileScript(item, dest)
 
                                   File.Copy(dest, dest & ".original")
                                   filesToOpen.Add(dest)
@@ -433,7 +434,22 @@ Namespace MysteryDungeon.PSMD.Projects
 
                                    If Not sourceText = sourceOrig Then
                                        Dim dest = Item.Replace(scriptSource, scriptDestination)
-                                       Await ConsoleApp.RunProgram(EnvironmentPaths.GetResourceName("lua/luac5.1.exe"), $"-o ""{dest}"" ""{Item}""")
+                                       Try
+                                           Await ConsoleApp.RunProgram(Core.Utilities.EnvironmentPaths.GetResourceName("lua/luac5.1.exe"), $"-o ""{dest}"" ""{Item}""", True)
+                                       Catch ex As UnsuccessfulExitCodeException
+                                           'Can't report the error right now because of threading issues
+                                           Throw
+                                           'Dispatcher.CurrentDispatcher.Invoke(
+                                           'Sub()
+                                           '    ReportError(New ErrorInfo() With {
+                                           '            .Message = ex.Output,
+                                           '            .InnerException = ex,
+                                           '            .Type = ErrorType.Error,
+                                           '            .SourceProject = Me
+                                           '            })
+                                           'End Sub)
+                                           ''Can't include the SourceFile unless we have the FileViewModel
+                                       End Try
                                    End If
                                End Function)
             RemoveHandler f.ProgressChanged, onProgressChanged

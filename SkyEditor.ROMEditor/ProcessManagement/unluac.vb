@@ -20,15 +20,8 @@ Namespace ProcessManagement
         ''' <summary>
         ''' Saves the result of the decompilation to the given file path
         ''' </summary>
-        Public Sub SaveAllOutput(destinationFilename As String)
-            File.WriteAllText(destinationFilename, GetAllOutput())
-        End Sub
-
-        ''' <summary>
-        ''' Saves the result of the decompilation to the given file path
-        ''' </summary>
-        Public Async Function SaveAllOutputAsync(destinationFilename As String) As Task
-            File.WriteAllText(destinationFilename, Await GetAllOutputAsync())
+        Public Async Function SaveAllOutput(destinationFilename As String) As Task
+            File.WriteAllText(destinationFilename, Await GetAllOutput())
         End Function
     End Class
 End Namespace
