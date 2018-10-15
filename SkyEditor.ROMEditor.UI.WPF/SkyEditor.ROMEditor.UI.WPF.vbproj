@@ -198,6 +198,7 @@
     <Import Include="System.Windows.Navigation" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MenuActions\PsmdFarcAddFile.vb" />
     <Compile Include="MenuActions\PsmdFarcPsmdExtractPortraits.vb" />
     <Compile Include="MenuActions\PsmdFarcPsmdFarcSubstituteGtiPortraits.vb" />
     <Compile Include="MenuActions\PsmdFarcPsmdFarcSubstitutePsmdAnimations.vb" />

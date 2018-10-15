@@ -551,6 +551,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to _Add File.
+        '''</summary>
+        Public Shared ReadOnly Property MenuFarcAddFile() As String
+            Get
+                Return ResourceManager.GetString("MenuFarcAddFile", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Extract.
         '''</summary>
         Public Shared ReadOnly Property MenuFarcExtract() As String

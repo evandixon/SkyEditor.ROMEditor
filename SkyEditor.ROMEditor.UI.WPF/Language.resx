@@ -540,4 +540,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="MenuFarcSubstituteGtiPortraits" xml:space="preserve">
     <value>Substitute Missing Portraits (GTI)</value>
   </data>
+  <data name="MenuFarcAddFile" xml:space="preserve">
+    <value>_Add File</value>
+  </data>
 </root>
