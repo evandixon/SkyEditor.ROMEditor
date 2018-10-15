@@ -552,4 +552,7 @@ evandixon (Personality test, bgp files)</value>
   <data name="MenuFarcSubstituteGtiAnimations" xml:space="preserve">
     <value>Substitute Missing Animations (GTI)</value>
   </data>
+  <data name="MysteryDungeon_PSMD_Views_FarcView_DeleteMenuItem" xml:space="preserve">
+    <value>_Delete</value>
+  </data>
 </root>

@@ -722,6 +722,15 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to _Delete.
+        '''</summary>
+        Public Shared ReadOnly Property MysteryDungeon_PSMD_Views_FarcView_DeleteMenuItem() As String
+            Get
+                Return ResourceManager.GetString("MysteryDungeon_PSMD_Views_FarcView_DeleteMenuItem", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Naïve Female:.
         '''</summary>
         Public Shared ReadOnly Property NaiveFemale() As String
