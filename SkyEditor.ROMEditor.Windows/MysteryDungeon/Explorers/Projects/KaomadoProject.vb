@@ -1,4 +1,5 @@
 ﻿Imports PPMDU
+Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Projects
@@ -31,8 +32,10 @@ Namespace MysteryDungeon.Explorers.Projects
                 IO.Directory.CreateDirectory(portraitDir)
             End If
 
-            Using manager As New UtilityManager
-                Await manager.RunKaoUtil(IO.Path.Combine(GetRawFilesDir, "data", "FONT", "kaomado.kao"), portraitDir, False)
+            Dim provider = New PhysicalIOProvider
+            Using kao As New Kaomado
+                Await kao.OpenFile(IO.Path.Combine(GetRawFilesDir, "data", "FONT", "kaomado.kao"), provider)
+                Await kao.Extract(portraitDir, provider)
             End Using
 
             Await ApplyMissingPortraitFix(portraitDir)
@@ -57,8 +60,10 @@ Namespace MysteryDungeon.Explorers.Projects
             Me.Message = My.Resources.Language.LoadingPacking
 
             'Pack
-            Using manager As New UtilityManager
-                Await manager.RunKaoUtil(IO.Path.Combine(GetRootDirectory, "Pokemon", "Portraits"), IO.Path.Combine(GetRawFilesDir, "data", "FONT", "kaomado.kao"), False)
+            Dim provider = New PhysicalIOProvider
+            Using kao As New Kaomado
+                Await kao.Import(IO.Path.Combine(GetRootDirectory, "Pokemon", "Portraits"), provider)
+                Await kao.Save(IO.Path.Combine(GetRawFilesDir, "data", "FONT", "kaomado.kao"), provider)
             End Using
 
             'Stop loading
@@ -93,6 +98,10 @@ Namespace MysteryDungeon.Explorers.Projects
             Await runner.RunForEach(directories,
                                     Sub(directory As String)
                                         For j As Integer = 1 To faces.Length - 1
+                                            If Not IO.File.Exists(IO.Path.Combine(directory, faces(0))) Then
+                                                Exit Sub
+                                            End If
+
                                             If Not IO.File.Exists(IO.Path.Combine(directory, faces(j))) Then
                                                 IO.File.Copy(IO.Path.Combine(directory, faces(0)), IO.Path.Combine(directory, faces(j)))
                                             End If
