@@ -391,8 +391,14 @@ Namespace MysteryDungeon.PSMD
             'Analyze data to identify duplicate entries (i.e. make sure files with the same data are not added multiple times, instead having multiple references to the same data)
             Dim condensedEntries As New List(Of EntryMapping)
 
+            Dim ordered As IOrderedEnumerable(Of FarcEntry)
+            If Entries.First().Filename IsNot Nothing Then
+                ordered = Entries.OrderBy(Function(e) e.Filename)
+            Else
+                ordered = Entries.OrderBy(Function(e) e.FilenameHash)
+            End If
             If EnableMultiReferenceOnSave Then
-                For Each item In Entries.OrderBy(Function(e) If(e.Filename, e.FilenameHash))
+                For Each item In ordered
                     Dim data = Await GetFileDataAsync(item)
                     Dim hashCode = CreateByteArrayHashCode(data)
 
@@ -416,7 +422,7 @@ Namespace MysteryDungeon.PSMD
                     End If
                 Next
             Else
-                For Each item In Entries.OrderBy(Function(e) If(e.Filename, e.FilenameHash))
+                For Each item In ordered
                     Dim newMapping As New EntryMapping
                     newMapping.FileData = Await GetFileDataAsync(item)
                     newMapping.PossibleFilenames = New List(Of String)
@@ -456,14 +462,20 @@ Namespace MysteryDungeon.PSMD
 
                 Dim fatData = Await fat.GetRawData()
                 Dim farcHeader As New List(Of Byte)
-                farcHeader.AddRange({&H46, &H41, &H52, &H43}) 'Magic: FARC)
-                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x4
-                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x8
-                farcHeader.AddRange(BitConverter.GetBytes(2)) '0xC
-                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x10
-                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x14
-                farcHeader.AddRange(BitConverter.GetBytes(7)) '0x18
-                farcHeader.AddRange(BitConverter.GetBytes(&H77EA3CA4)) '0x1C
+                farcHeader.AddRange({&H46, &H41, &H52, &H43}) 'Magic: FARC
+
+                If UnknownHeaderData?.Length = &H1C Then
+                    farcHeader.AddRange(UnknownHeaderData)
+                Else
+                    farcHeader.AddRange(BitConverter.GetBytes(0)) '0x4
+                    farcHeader.AddRange(BitConverter.GetBytes(0)) '0x8
+                    farcHeader.AddRange(BitConverter.GetBytes(2)) '0xC
+                    farcHeader.AddRange(BitConverter.GetBytes(0)) '0x10
+                    farcHeader.AddRange(BitConverter.GetBytes(0)) '0x14
+                    farcHeader.AddRange(BitConverter.GetBytes(7)) '0x18
+                    farcHeader.AddRange(BitConverter.GetBytes(&H77EA3CA4)) '0x1C
+                End If
+
                 farcHeader.AddRange(BitConverter.GetBytes(Sir0Type)) '0x20
                 farcHeader.AddRange(BitConverter.GetBytes(&H80)) '0x24
                 farcHeader.AddRange(BitConverter.GetBytes(fatData.Length)) '0x28

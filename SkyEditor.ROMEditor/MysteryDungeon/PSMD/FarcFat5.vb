@@ -1,4 +1,5 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports System.Text
+Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
 
 Namespace MysteryDungeon.PSMD
@@ -128,7 +129,7 @@ Namespace MysteryDungeon.PSMD
                         'Generate data
                         Dim data As New List(Of Byte)
                         Dim stringData As New List(Of Byte)
-                        For Each item In Entries.OrderBy(Function(x) x.Filename) 'Sorting by filename is critical to correct lookups.
+                        For Each item In Entries.OrderBy(Function(x) x.Filename, StringComparer.Ordinal) 'Sorting by filename is critical to correct lookups.
                             data.AddRange(BitConverter.GetBytes(&H10 + stringData.Count))
                             data.AddRange(BitConverter.GetBytes(item.DataOffset))
                             data.AddRange(BitConverter.GetBytes(item.DataLength))
