@@ -30,15 +30,21 @@ Namespace MysteryDungeon.PSMD
 
         Public Class Animation
 
-            Public Sub New(name As String, animationType As AnimationType)
+            Public Sub New(name As String, devName As String, animationType As AnimationType)
                 Me.Name = name
                 Me.AnimationType = animationType
+                Me.DevName = devName
             End Sub
 
             ''' <summary>
             ''' The raw name of the animation. Ex. bgrs_name__animation_name
             ''' </summary>
             Public Property Name As String
+
+            ''' <summary>
+            ''' Apparently the name of the *.dae file during development. Always null in PSMD.
+            ''' </summary>
+            Public Property DevName As String
 
             ''' <summary>
             ''' The name of the BGRS to which this animation belongs. If the raw name is bgrs_name__animation_name, this returns bgrs_name
@@ -61,7 +67,7 @@ Namespace MysteryDungeon.PSMD
             Public Property AnimationType As Integer
 
             Public Function Clone() As Animation
-                Return New Animation(Name, AnimationType)
+                Return New Animation(Name, DevName, AnimationType)
             End Function
 
             Public Overrides Function ToString() As String
@@ -96,6 +102,8 @@ Namespace MysteryDungeon.PSMD
 
         Public Property BgrsName As String
 
+        Public Property BgrsDevName As String
+
         Public Property Type As BgrsType
 
         Public Property Parts As New List(Of ModelPart)
@@ -103,6 +111,8 @@ Namespace MysteryDungeon.PSMD
         Public Property UnknownModelPartsFooter As Byte()
 
         Public Property Filename As String Implements IOnDisk.Filename
+
+        Private Property UsesDevNames As Boolean
 
         Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Using f As New GenericFile(filename, provider)
@@ -134,7 +144,8 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Private Async Function OpenInternalNormal(f As GenericFile) As Task
-            BgrsName = (Await f.ReadNullTerminatedStringAsync(&H58, Text.Encoding.ASCII)) 'Max length: &HC0
+            BgrsName = (Await f.ReadNullTerminatedStringAsync(&H58, Text.Encoding.ASCII)) 'Max length: &H40
+            BgrsDevName = (Await f.ReadNullTerminatedStringAsync(&H58 + &H40, Text.Encoding.ASCII)) 'Max length: &H80
 
             'Yes, the counts of these two sections are in a different order than the sections themselves
             Dim animationCount = Await f.ReadInt32Async(&H118)
@@ -159,9 +170,14 @@ Namespace MysteryDungeon.PSMD
 
         Private Async Function OpenInternalAnimations(f As GenericFile, animationIndex As Integer, animationCount As Integer) As Task
             For i = animationIndex To animationIndex + (&HC4 * animationCount) - 1 Step &HC4
-                Dim animName = (Await f.ReadNullTerminatedStringAsync(i, Text.Encoding.ASCII)) 'Max length: &HC0
+                Dim animName = (Await f.ReadNullTerminatedStringAsync(i, Text.Encoding.ASCII)) 'Max length: &H40
+                Dim animDevName = (Await f.ReadNullTerminatedStringAsync(i + &H40, Text.Encoding.ASCII)) 'Max length: &H80
+                If Not String.IsNullOrEmpty(animDevName) Then
+                    'If any animation has a dev name, then this is a file format that requires them
+                    UsesDevNames = True
+                End If
                 Dim animType = Await f.ReadInt32Async(i + &HC0)
-                Dim anim As New Animation(animName, animType)
+                Dim anim As New Animation(animName, animDevName, animType)
                 Animations.Add(anim)
             Next
         End Function
@@ -193,7 +209,11 @@ Namespace MysteryDungeon.PSMD
 
                     Dim bgrsNameBytes = Text.Encoding.ASCII.GetBytes(BgrsName)
                     rawData.AddRange(bgrsNameBytes)
-                    rawData.AddRange(Enumerable.Repeat(Of Byte)(0, &HC0 - bgrsNameBytes.Length))
+                    rawData.AddRange(Enumerable.Repeat(Of Byte)(0, &H40 - bgrsNameBytes.Length))
+
+                    Dim bgrsDevNameBytes = Text.Encoding.ASCII.GetBytes(BgrsDevName)
+                    rawData.AddRange(bgrsDevNameBytes)
+                    rawData.AddRange(Enumerable.Repeat(Of Byte)(0, &H80 - bgrsDevNameBytes.Length))
 
                     rawData.AddRange(BitConverter.GetBytes(Animations.Count))
                     rawData.AddRange(BitConverter.GetBytes(Parts.Count))
@@ -229,14 +249,30 @@ Namespace MysteryDungeon.PSMD
 
             For Each item In Animations.OrderBy(Function(a) a.Name)
                 Dim nameBytes = Text.Encoding.ASCII.GetBytes(item.Name)
-
                 animSection.AddRange(nameBytes)
-                animSection.AddRange(Enumerable.Repeat(Of Byte)(0, &HC0 - nameBytes.Length))
+                animSection.AddRange(Enumerable.Repeat(Of Byte)(0, &H40 - nameBytes.Length))
+
+                Dim devNameBytes(0) As Byte
+                'If UsesDevNames AndAlso String.IsNullOrEmpty(item.DevName) AndAlso Not String.IsNullOrEmpty(item.Name) Then
+                '    'Hypothesis: the null reference resulting from editing this file is because this field is null
+                '    'Let's make sure it's set to something logical, for science
+                '    Dim exampleDevname = Animations.FirstOrDefault(Function(a) Not String.IsNullOrEmpty(a.DevName))
+                '    If exampleDevname IsNot Nothing Then
+                '        devNameBytes = Text.Encoding.ASCII.GetBytes(exampleDevname.DevName.Replace(exampleDevname.Name, )
+                '    Else
+                '        devNameBytes = Text.Encoding.ASCII.GetBytes(item.Name & "_anime.dae")
+                '    End If
+
+                'ElseIf Not String.IsNullOrEmpty(item.DevName) Then
+                devNameBytes = Text.Encoding.ASCII.GetBytes(item.DevName)
+                'End If
+                animSection.AddRange(devNameBytes)
+                animSection.AddRange(Enumerable.Repeat(Of Byte)(0, &H80 - devNameBytes.Length))
 
                 animSection.AddRange(BitConverter.GetBytes(item.AnimationType))
             Next
 
-            animSection.AddRange(Enumerable.Repeat(Of Byte)(0, &HC0))
+            'animSection.AddRange(Enumerable.Repeat(Of Byte)(0, &HC0))
 
             Return animSection
         End Function

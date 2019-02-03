@@ -62,6 +62,7 @@ Namespace MysteryDungeon.PSMD.Extensions
                                                     'We now have an animation to use and an empty slot to put it in
                                                     Dim copiedAnimation = oldAnimation.Clone
                                                     copiedAnimation.Name = oldAnimation.Name.Replace(substitute, substituteData.Key)
+                                                    copiedAnimation.DevName = oldAnimation.DevName
 
                                                     If copiedAnimation.AnimationType And BGRS.AnimationType.SkeletalAnimation > 0 Then
                                                         Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bcskla", "/" & copiedAnimation.Name & ".bcskla") 'GTI
