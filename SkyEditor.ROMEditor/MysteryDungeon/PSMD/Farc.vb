@@ -97,9 +97,15 @@ Namespace MysteryDungeon.PSMD
         Protected Property DataOffset As Integer
         Protected Property UnknownHeaderData As Byte()
         Protected Property Sir0Type As Integer
+        Protected Property Sir0FatType As Integer
 
         Public Property PreLoadFiles As Boolean = False
         Public Property EnableInMemoryLoad As Boolean = True
+
+        ''' <summary>
+        ''' Whether or not to allow multiple files to reference the same data when saving. If enabled, files containing the same data will be stored once with two or more references.
+        ''' </summary>
+        Public Property EnableMultiReferenceOnSave As Boolean = True
         Public Property Filename As String Implements IOnDisk.Filename
         Private Property Entries As ConcurrentBag(Of FarcEntry)
         Private Property CachedEntries As ConcurrentDictionary(Of UInteger, FarcEntry)
@@ -127,6 +133,7 @@ Namespace MysteryDungeon.PSMD
 
             Dim header = New FarcFat5
             Await header.OpenFile(Await f.ReadAsync(sir0Offset, sir0Length))
+            Sir0FatType = header.Sir0Fat5Type
 
             For Each item In header.Entries
                 Dim fileEntry As New FarcEntry
@@ -151,117 +158,119 @@ Namespace MysteryDungeon.PSMD
             Me.Filename = filename
 
             'Try to load filenames
-            Select Case Path.GetFileName(filename).ToLower()
-                Case "image_2d.bin"
-                    Dim dbPath = Path.Combine(Path.GetDirectoryName(filename), "image_2d_database.bin")
-                    If provider.FileExists(dbPath) Then
-                        Dim dbFile As New SAJD
-                        Await dbFile.OpenFile(dbPath, provider)
-                        SetFilenames(dbFile.Entries.Select(Function(e) e.FileName & ".img"))
-                    End If
-                Case "pokemon_graphic.bin"
-                    Dim dbPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon_graphics_database.bin")
-                    If provider.FileExists(dbPath) Then
-                        Dim dbFile As New PGDB
-                        Await dbFile.OpenFile(dbPath, provider)
+            If Not header.UsesFilenames Then
+                Select Case Path.GetFileName(filename).ToLower()
+                    Case "image_2d.bin"
+                        Dim dbPath = Path.Combine(Path.GetDirectoryName(filename), "image_2d_database.bin")
+                        If provider.FileExists(dbPath) Then
+                            Dim dbFile As New SAJD
+                            Await dbFile.OpenFile(dbPath, provider)
+                            SetFilenames(dbFile.Entries.Select(Function(e) e.FileName & ".img"))
+                        End If
+                    Case "pokemon_graphic.bin"
+                        Dim dbPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon_graphics_database.bin")
+                        If provider.FileExists(dbPath) Then
+                            Dim dbFile As New PGDB
+                            Await dbFile.OpenFile(dbPath, provider)
 
-                        SetFilenames(dbFile.Entries.Select(Function(e) e.PrimaryBgrsFilename).Distinct())
-                        SetFilenames(dbFile.Entries.Select(Function(e) e.SecondaryBgrsName & ".bgrs").Distinct())
+                            SetFilenames(dbFile.Entries.Select(Function(e) e.PrimaryBgrsFilename).Distinct())
+                            SetFilenames(dbFile.Entries.Select(Function(e) e.SecondaryBgrsName & ".bgrs").Distinct())
 
-                        'Identify BGRS files that were not referenced, and infer the names
-                        Dim af As New AsyncFor
-                        Await af.RunForEach(Entries.Where(Function(e) e.Filename Is Nothing),
-                                     Async Function(unmatchedFile As FarcEntry) As Task
-                                         Dim data = Await GetFileDataAsync(unmatchedFile)
-                                         Using dataFile As New GenericFile()
-                                             dataFile.CreateFile(data)
+                            'Identify BGRS files that were not referenced, and infer the names
+                            Dim af As New AsyncFor
+                            Await af.RunForEach(Entries.Where(Function(e) e.Filename Is Nothing),
+                                         Async Function(unmatchedFile As FarcEntry) As Task
+                                             Dim data = Await GetFileDataAsync(unmatchedFile)
+                                             Using dataFile As New GenericFile()
+                                                 dataFile.CreateFile(data)
 
-                                             Dim bgrs As New BGRS
-                                             If Await bgrs.IsOfType(dataFile) Then
-                                                 Await bgrs.OpenFile(data)
+                                                 Dim bgrs As New BGRS
+                                                 If Await bgrs.IsOfType(dataFile) Then
+                                                     Await bgrs.OpenFile(data)
 
-                                                 SetFilenames({bgrs.BgrsName & ".bgrs"}, False)
-                                             End If
-                                         End Using
-                                     End Function)
+                                                     SetFilenames({bgrs.BgrsName & ".bgrs"}, False)
+                                                 End If
+                                             End Using
+                                         End Function)
 
-                        'Infer BCH files from BGRS
-                        Dim bchFilenames As New List(Of String)
-                        For Each bgrsFilename In Entries.Where(Function(e) e.Filename IsNot Nothing AndAlso e.Filename.EndsWith(".bgrs")).Select(Function(e) e.Filename)
-                            Dim bgrs As New BGRS
-                            Await bgrs.OpenFile("/" & bgrsFilename, Me)
-                            bchFilenames.Add(bgrs.ReferencedBchFileName)
-                            For Each item In bgrs.Animations
-                                bchFilenames.Add(item.Name & ".bchmata")
-                                bchFilenames.Add(item.Name & ".bchskla")
+                            'Infer BCH files from BGRS
+                            Dim bchFilenames As New List(Of String)
+                            For Each bgrsFilename In Entries.Where(Function(e) e.Filename IsNot Nothing AndAlso e.Filename.EndsWith(".bgrs")).Select(Function(e) e.Filename)
+                                Dim bgrs As New BGRS
+                                Await bgrs.OpenFile("/" & bgrsFilename, Me)
+                                bchFilenames.Add(bgrs.ReferencedBchFileName)
+                                For Each item In bgrs.Animations
+                                    bchFilenames.Add(item.Name & ".bchmata")
+                                    bchFilenames.Add(item.Name & ".bchskla")
+                                Next
+                            Next
+
+                            SetFilenames(bchFilenames.Distinct(), False)
+                        End If
+                    Case "message.bin",
+                         "message_en.bin",
+                         "message_fr.bin",
+                         "message_ge.bin",
+                         "message_it.bin",
+                         "message_sp.bin",
+                         "message_us.bin",
+                         "message_debug.bin",
+                         "message_debug_en.bin",
+                         "message_debug_fr.bin",
+                         "message_debug_ge.bin",
+                         "message_debug_it.bin",
+                         "message_debug_sp.bin",
+                         "message_debug_us.bin"
+                        Dim dbPath = Path.ChangeExtension(filename, ".lst")
+                        If provider.FileExists(dbPath) Then
+                            Dim lines = provider.ReadAllText(dbPath).Split(vbLf)
+                            SetFilenames(lines.Select(Function(l) Path.GetFileName(l.Trim)))
+                        End If
+                    Case "face_graphic.bin"
+                        Dim msgDebugPath = Path.Combine(Path.GetDirectoryName(filename), "message_debug.bin")
+                        Dim graphicsDbPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon_graphics_database.bin")
+                        Dim actorDataPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon", "pokemon_actor_data_info.bin")
+
+                        Dim pokemonNames As New List(Of String)
+                        If provider.FileExists(msgDebugPath) Then
+                            Dim debugMsg As New Farc
+                            Await debugMsg.OpenFile(msgDebugPath, provider)
+
+                            Dim commonDebugMsg As New MessageBinDebug
+                            Await commonDebugMsg.OpenFile("common.dbin", debugMsg)
+
+                            pokemonNames.AddRange(commonDebugMsg.GetPsmdCommonPokemonNames().Select(Function(p) p.Value.ToLower().Replace("pokemon_", "")))
+                        End If
+
+                        If provider.FileExists(graphicsDbPath) Then
+                            Dim graphicsDb As New PGDB
+                            Await graphicsDb.OpenFile(graphicsDbPath, provider)
+                            pokemonNames.AddRange(graphicsDb.Entries.Select(Function(x) x.ActorName))
+                        End If
+
+                        If provider.FileExists(actorDataPath) Then
+                            Dim actorInfo As New ActorDataInfo
+                            Await actorInfo.OpenFile(actorDataPath, provider)
+                            pokemonNames.AddRange(actorInfo.Entries.Select(Function(x) x.Name.ToLower()))
+                        End If
+
+                        pokemonNames = pokemonNames.Distinct().ToList()
+
+                        Dim potentialFilenames As New List(Of String)
+                        For Each pokemonName In pokemonNames
+                            For emotionNumber = 0 To 50
+                                potentialFilenames.Add($"{pokemonName}_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                                potentialFilenames.Add($"{pokemonName}_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                                potentialFilenames.Add($"{pokemonName}_f_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                                potentialFilenames.Add($"{pokemonName}_f{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                                potentialFilenames.Add($"{pokemonName}_f_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
+                                potentialFilenames.Add($"{pokemonName}_r_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
                             Next
                         Next
+                        SetFilenames(potentialFilenames)
+                End Select
 
-                        SetFilenames(bchFilenames.Distinct(), False)
-                    End If
-                Case "message.bin",
-                     "message_en.bin",
-                     "message_fr.bin",
-                     "message_ge.bin",
-                     "message_it.bin",
-                     "message_sp.bin",
-                     "message_us.bin",
-                     "message_debug.bin",
-                     "message_debug_en.bin",
-                     "message_debug_fr.bin",
-                     "message_debug_ge.bin",
-                     "message_debug_it.bin",
-                     "message_debug_sp.bin",
-                     "message_debug_us.bin"
-                    Dim dbPath = Path.ChangeExtension(filename, ".lst")
-                    If provider.FileExists(dbPath) Then
-                        Dim lines = provider.ReadAllText(dbPath).Split(vbLf)
-                        SetFilenames(lines.Select(Function(l) Path.GetFileName(l.Trim)))
-                    End If
-                Case "face_graphic.bin"
-                    Dim msgDebugPath = Path.Combine(Path.GetDirectoryName(filename), "message_debug.bin")
-                    Dim graphicsDbPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon_graphics_database.bin")
-                    Dim actorDataPath = Path.Combine(Path.GetDirectoryName(filename), "pokemon", "pokemon_actor_data_info.bin")
-
-                    Dim pokemonNames As New List(Of String)
-                    If provider.FileExists(msgDebugPath) Then
-                        Dim debugMsg As New Farc
-                        Await debugMsg.OpenFile(msgDebugPath, provider)
-
-                        Dim commonDebugMsg As New MessageBinDebug
-                        Await commonDebugMsg.OpenFile("common.dbin", debugMsg)
-
-                        pokemonNames.AddRange(commonDebugMsg.GetCommonPokemonNames().Select(Function(p) p.Value.ToLower().Replace("pokemon_", "")))
-                    End If
-
-                    If provider.FileExists(graphicsDbPath) Then
-                        Dim graphicsDb As New PGDB
-                        Await graphicsDb.OpenFile(graphicsDbPath, provider)
-                        pokemonNames.AddRange(graphicsDb.Entries.Select(Function(x) x.ActorName))
-                    End If
-
-                    If provider.FileExists(actorDataPath) Then
-                        Dim actorInfo As New ActorDataInfo
-                        Await actorInfo.OpenFile(actorDataPath, provider)
-                        pokemonNames.AddRange(actorInfo.Entries.Select(Function(x) x.Name.ToLower()))
-                    End If
-
-                    pokemonNames = pokemonNames.Distinct().ToList()
-
-                    Dim potentialFilenames As New List(Of String)
-                    For Each pokemonName In pokemonNames
-                        For emotionNumber = 0 To 50
-                            potentialFilenames.Add($"{pokemonName}_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                            potentialFilenames.Add($"{pokemonName}_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                            potentialFilenames.Add($"{pokemonName}_f_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                            potentialFilenames.Add($"{pokemonName}_f{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                            potentialFilenames.Add($"{pokemonName}_f_hanten_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                            potentialFilenames.Add($"{pokemonName}_r_{emotionNumber.ToString().PadLeft(2, "0")}.bin")
-                        Next
-                    Next
-                    SetFilenames(potentialFilenames)
-            End Select
-
+            End If
         End Function
 
         Protected Sub RefreshEntryCache()
@@ -270,14 +279,6 @@ Namespace MysteryDungeon.PSMD
                 CachedEntries(item.FilenameHash) = item
             Next
         End Sub
-
-        Protected Function GetFileEntry(fileHash As UInteger) As FarcEntry
-            If Not CachedEntries.ContainsKey(fileHash) Then
-                Dim entry = Entries.FirstOrDefault(Function(x) x.FilenameHash = fileHash)
-                CachedEntries(fileHash) = entry
-            End If
-            Return CachedEntries(fileHash)
-        End Function
 
         Protected Function GetFileEntry(filename As String) As FarcEntry
             Dim hex As UInteger
@@ -290,10 +291,20 @@ Namespace MysteryDungeon.PSMD
                 hash = PmdFunctions.Crc32Hash(filename)
             End If
 
-            Dim entry = GetFileEntry(hash)
-            If entry IsNot Nothing AndAlso String.IsNullOrEmpty(entry.Filename) Then
+            Dim entry As FarcEntry = Nothing
+            If CachedEntries.ContainsKey(hash) Then
+                entry = CachedEntries(hash)
+            Else
+                entry = Entries.FirstOrDefault(Function(x) x.FilenameHash = hash OrElse x.Filename = filename)
+                If entry IsNot Nothing Then
+                    CachedEntries(hash) = entry
+                End If
+            End If
+
+            If entry IsNot Nothing AndAlso Not String.IsNullOrEmpty(entry.Filename) Then
                 entry.Filename = filename
             End If
+
             Return entry
         End Function
 
@@ -304,6 +315,15 @@ Namespace MysteryDungeon.PSMD
             Return entry.FileData
         End Function
 
+        Public Function GetFileData(filename As String) As Byte()
+            Dim entry = GetFileEntry(filename)
+            If entry IsNot Nothing Then
+                Return GetFileData(entry)
+            Else
+                Return Nothing
+            End If
+        End Function
+
         Protected Async Function GetFileDataAsync(entry As FarcEntry) As Task(Of Byte())
             If entry.FileData Is Nothing Then
                 entry.FileData = Await InnerData.ReadAsync(DataOffset + entry.DataEntry.DataOffset, entry.DataEntry.DataLength)
@@ -311,10 +331,10 @@ Namespace MysteryDungeon.PSMD
             Return entry.FileData
         End Function
 
-        Public Function GetFileData(filename As String) As Byte()
+        Public Async Function GetFileDataAsync(filename As String) As Task(Of Byte())
             Dim entry = GetFileEntry(filename)
             If entry IsNot Nothing Then
-                Return GetFileData(entry)
+                Return Await GetFileDataAsync(entry)
             Else
                 Return Nothing
             End If
@@ -368,28 +388,49 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
-            'Analyze data to identify duplicate entries
+            'Analyze data to identify duplicate entries (i.e. make sure files with the same data are not added multiple times, instead having multiple references to the same data)
             Dim condensedEntries As New List(Of EntryMapping)
-            For Each item In Entries
-                Dim data = Await GetFileDataAsync(item)
-                Dim hashCode = CreateByteArrayHashCode(data)
 
-                '"Where" criteria first compares hash code to disregard incorrect matches
-                'THEN it double-checks equality by checking the array reference if the hashes match
-                'THEN it compares the actual data if the object reference is different and the hashes match
-                'If changing this, take care to not change this order, because short-circuit logic should greatly improve performance
-                Dim mapping = condensedEntries.Where(Function(x) x.FileDataHashCode = hashCode AndAlso (data Is x.FileData OrElse x.FileData.SequenceEqual(data))).FirstOrDefault
+            Dim ordered As IOrderedEnumerable(Of FarcEntry)
+            If Entries.First().Filename IsNot Nothing Then
+                ordered = Entries.OrderBy(Function(e) e.Filename)
+            Else
+                ordered = Entries.OrderBy(Function(e) e.FilenameHash)
+            End If
+            If EnableMultiReferenceOnSave Then
+                For Each item In ordered
+                    Dim data = Await GetFileDataAsync(item)
+                    Dim hashCode = CreateByteArrayHashCode(data)
 
-                If mapping IsNot Nothing Then
-                    mapping.FilenameHashes.Add(item.FilenameHash)
-                Else
+                    '"Where" criteria first compares hash code to disregard incorrect matches
+                    'THEN it double-checks equality by checking the array reference if the hashes match
+                    'THEN it compares the actual data if the object reference is different and the hashes match
+                    'If changing this, take care to not change this order, because short-circuit logic should greatly improve performance
+                    Dim mapping = condensedEntries.
+                        Where(Function(x) x.FileDataHashCode = hashCode AndAlso (data Is x.FileData OrElse x.FileData.SequenceEqual(data))).
+                        FirstOrDefault
+
+                    If mapping IsNot Nothing Then
+                        mapping.PossibleFilenames.Add(item.Filename)
+                    Else
+                        Dim newMapping As New EntryMapping
+                        newMapping.FileData = item.FileData
+                        newMapping.PossibleFilenames = New List(Of String)
+                        newMapping.PossibleFilenames.Add(item.Filename)
+                        newMapping.Filename = item.Filename
+                        condensedEntries.Add(newMapping)
+                    End If
+                Next
+            Else
+                For Each item In ordered
                     Dim newMapping As New EntryMapping
-                    newMapping.FileData = item.FileData
-                    newMapping.FilenameHashes = New List(Of UInteger)
-                    newMapping.FilenameHashes.Add(item.FilenameHash)
+                    newMapping.FileData = Await GetFileDataAsync(item)
+                    newMapping.PossibleFilenames = New List(Of String)
+                    newMapping.PossibleFilenames.Add(item.Filename)
+                    newMapping.Filename = item.Filename
                     condensedEntries.Add(newMapping)
-                End If
-            Next
+                Next
+            End If
 
             'Write the data to the file
             Using f As New GenericFile
@@ -397,15 +438,15 @@ Namespace MysteryDungeon.PSMD
                 Await f.OpenFile(filename, provider)
 
                 Dim fat As New FarcFat5
-                fat.Sir0Fat5Type = 1
+                fat.Sir0Fat5Type = Me.Sir0FatType
                 Dim fileData As New List(Of Byte)
 
                 For Each item In condensedEntries
                     'Add all filenames/hashes to this particular file at the same time
                     'fat.GetRawData should properly order these further on
-                    For Each hash In item.FilenameHashes
+                    For Each filename In item.PossibleFilenames
                         fat.Entries.Add(New FarcFat5.Entry With {
-                                    .FilenameHash = hash,
+                                    .Filename = filename,
                                     .DataOffset = fileData.Count,
                                     .DataLength = item.FileData.Length
                                     })
@@ -421,15 +462,21 @@ Namespace MysteryDungeon.PSMD
 
                 Dim fatData = Await fat.GetRawData()
                 Dim farcHeader As New List(Of Byte)
-                farcHeader.AddRange({&H46, &H41, &H52, &H43}) 'Magic: FARC)
-                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x4
-                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x8
-                farcHeader.AddRange(BitConverter.GetBytes(2)) '0xC
-                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x10
-                farcHeader.AddRange(BitConverter.GetBytes(0)) '0x14
-                farcHeader.AddRange(BitConverter.GetBytes(7)) '0x18
-                farcHeader.AddRange(BitConverter.GetBytes(&H77EA3CA4)) '0x1C
-                farcHeader.AddRange(BitConverter.GetBytes(5)) '0x20
+                farcHeader.AddRange({&H46, &H41, &H52, &H43}) 'Magic: FARC
+
+                If UnknownHeaderData?.Length = &H1C Then
+                    farcHeader.AddRange(UnknownHeaderData)
+                Else
+                    farcHeader.AddRange(BitConverter.GetBytes(0)) '0x4
+                    farcHeader.AddRange(BitConverter.GetBytes(0)) '0x8
+                    farcHeader.AddRange(BitConverter.GetBytes(2)) '0xC
+                    farcHeader.AddRange(BitConverter.GetBytes(0)) '0x10
+                    farcHeader.AddRange(BitConverter.GetBytes(0)) '0x14
+                    farcHeader.AddRange(BitConverter.GetBytes(7)) '0x18
+                    farcHeader.AddRange(BitConverter.GetBytes(&H77EA3CA4)) '0x1C
+                End If
+
+                farcHeader.AddRange(BitConverter.GetBytes(Sir0Type)) '0x20
                 farcHeader.AddRange(BitConverter.GetBytes(&H80)) '0x24
                 farcHeader.AddRange(BitConverter.GetBytes(fatData.Length)) '0x28
                 farcHeader.AddRange(BitConverter.GetBytes(&H80 + fatData.Length)) '0x2C
@@ -534,6 +581,10 @@ Namespace MysteryDungeon.PSMD
             Return GetFileData(FixPath(filename))
         End Function
 
+        Public Async Function ReadAllBytesAsync(filename As String) As Task(Of Byte())
+            Return Await GetFileDataAsync(FixPath(filename))
+        End Function
+
         Public Function ReadAllText(filename As String) As String Implements IIOProvider.ReadAllText
             Using f = OpenFileReadOnly(filename)
                 Using reader As New StreamReader(f)
@@ -554,7 +605,6 @@ Namespace MysteryDungeon.PSMD
                     'Filename is unknown, use raw hash
                     entry.FilenameHash = hex
                 Else
-                    'Hash the filename
                     entry.Filename = FixPath(filename)
                 End If
 
@@ -573,6 +623,13 @@ Namespace MysteryDungeon.PSMD
                 WriteAllBytes(destinationFilename, source)
             End If
         End Sub
+
+        Public Async Function CopyFileAsync(sourceFilename As String, destinationFilename As String) As Task
+            Dim source = Await ReadAllBytesAsync(sourceFilename)
+            If source IsNot Nothing Then
+                WriteAllBytes(destinationFilename, source)
+            End If
+        End Function
 
         Public Sub DeleteFile(filename As String) Implements IIOProvider.DeleteFile
             Dim tries = 5
@@ -677,7 +734,9 @@ Namespace MysteryDungeon.PSMD
             End Property
             Dim _fileDataHashCode As Integer?
 
-            Public Property FilenameHashes As List(Of UInteger)
+            Public Property PossibleFilenames As List(Of String)
+
+            Public Property Filename As String
         End Class
 
         Public Class FarcFileStream

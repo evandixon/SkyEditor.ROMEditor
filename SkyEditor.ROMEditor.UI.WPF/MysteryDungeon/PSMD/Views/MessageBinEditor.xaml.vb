@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
+Imports SkyEditor.ROMEditor.UI.WPF.MysteryDungeon.PSMD.ViewModels
 Imports SkyEditor.UI.WPF
 
 Namespace MysteryDungeon.PSMD.Views
@@ -13,5 +14,8 @@ Namespace MysteryDungeon.PSMD.Views
             End If
         End Sub
 
+        Private Sub menuExport_Click(sender As Object, e As RoutedEventArgs) Handles menuExport.Click
+            DirectCast(ViewModel, MessageBinViewModel).Export(lstEntries.SelectedItems)
+        End Sub
     End Class
 End Namespace

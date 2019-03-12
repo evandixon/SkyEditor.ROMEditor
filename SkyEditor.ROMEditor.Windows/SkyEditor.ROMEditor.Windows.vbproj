@@ -145,10 +145,6 @@
       <HintPath>..\packages\TagLib.Portable.1.0.4\lib\portable-net45+win+wpa81+wp8+MonoAndroid10+xamarinios10+MonoTouch10\TagLib.Portable.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="Zlib.Portable, Version=1.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zlib.Portable.1.11.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -164,6 +160,7 @@
   <ItemGroup>
     <Compile Include="DsModSolutionInitializationWizard.vb" />
     <Compile Include="MysteryDungeon\Explorers\Kaomado.vb" />
+    <Compile Include="MysteryDungeon\PSMD\FarcExtensions.vb" />
     <Compile Include="MysteryDungeon\PSMD\PmdGraphics.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\PsmdPokemonGraphicsProject.vb" />
     <Compile Include="MysteryDungeon\PSMD\Projects\PsmdPortraitProject.vb" />

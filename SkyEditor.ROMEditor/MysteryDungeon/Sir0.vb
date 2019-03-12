@@ -179,8 +179,12 @@ Namespace MysteryDungeon
         End Function
 
         Protected Overridable Async Function DoPreSave() As Task
-            'The header and relative pointers must be set by child classes
+            'Set the length to be the minimum size for the header, in case it wasn't already set
+            If Me.Length = 0 Then
+                SetLength(&H10)
+            End If
 
+            'The header and relative pointers must be set by child classes
             Await Me.WriteAsync(0, 4, {&H53, &H49, &H52, &H30})
 
             'Update subheader length

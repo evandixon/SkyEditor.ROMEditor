@@ -48,6 +48,90 @@ Namespace MysteryDungeon.PSMD.Projects
 
 #End Region
 
+#Region "Game Detection"
+
+        Protected ReadOnly Property IsPsmd As Boolean
+            Get
+                If Not _isPsmd.HasValue Then
+                    _isPsmd = GetIsPsmd()
+                End If
+                Return _isPsmd.Value
+            End Get
+        End Property
+        Private _isPsmd As Boolean?
+
+        Protected ReadOnly Property IsGti As Boolean
+            Get
+                If Not _isGti.HasValue Then
+                    _isGti = GetIsGti()
+                End If
+                Return _isGti.Value
+            End Get
+        End Property
+        Private _isGti As Boolean?
+
+        Protected ReadOnly Property IsGtiUS As Boolean
+            Get
+                If Not _isGtiUS.HasValue Then
+                    _isGtiUS = GetIsGtiUS()
+                End If
+                Return _isGtiUS.Value
+            End Get
+        End Property
+        Private _isGtiUS As Boolean?
+
+        Protected ReadOnly Property IsGtiEU As Boolean
+            Get
+                If Not _isGtiEU.HasValue Then
+                    _isGtiEU = GetIsGtiEU()
+                End If
+                Return _isGtiEU.Value
+            End Get
+        End Property
+        Private _isGtiEU As Boolean?
+
+        Protected ReadOnly Property IsGtiJP As Boolean
+            Get
+                If Not _isGtiJP.HasValue Then
+                    _isGtiJP = GetIsGtiJP()
+                End If
+                Return _isGtiJP.Value
+            End Get
+        End Property
+        Private _isGtiJP As Boolean?
+
+        Protected Function GetTitleId() As String
+            Dim exHeaderFilename = Path.Combine(Me.GetRawFilesDir, "ExHeader.bin")
+            Dim bytes = File.ReadAllBytes(exHeaderFilename)
+            Return BitConverter.ToUInt64(bytes, &H1C8).ToString("X").PadLeft(16, "0")
+        End Function
+
+        Protected Function GetIsPsmd() As Boolean
+            Dim psmdRegex As New Regex(GameStrings.PSMDCode)
+            Return psmdRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGti() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICode)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGtiUS() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICodeUS)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGtiEU() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICodeEU)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGtiJP() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICodeJP)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+#End Region
+
 #Region "IPsmdMessageBinProject Implementation"
         ''' <summary>
         ''' Gets the localized language file with the given name.
@@ -78,7 +162,13 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Public Async Function GetPokemonNames() As Task(Of Dictionary(Of Integer, String)) Implements IPsmdMessageBinProject.GetPokemonNames
             If _pokemonNames Is Nothing Then
-                _pokemonNames = (Await GetLanguageFile("common.bin")).GetCommonPokemonNames
+                If IsPsmd Then
+                    _pokemonNames = (Await GetLanguageFile("common.bin")).GetPsmdCommonPokemonNames
+                ElseIf IsGti Then
+                    _pokemonNames = (Await GetLanguageFile("common.bin")).GetGtiCommonPokemonNames
+                Else
+                    Throw New NotSupportedException("Only GTI and PSMD are supported")
+                End If
             End If
             Return _pokemonNames
         End Function
@@ -86,7 +176,13 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Public Async Function GetMoveNames() As Task(Of Dictionary(Of Integer, String)) Implements IPsmdMessageBinProject.GetMoveNames
             If _moveNames Is Nothing Then
-                _moveNames = (Await GetLanguageFile("common.bin")).GetCommonMoveNames
+                If IsPsmd Then
+                    _pokemonNames = (Await GetLanguageFile("common.bin")).GetPsmdCommonMoveNames
+                ElseIf IsGti Then
+                    _pokemonNames = (Await GetLanguageFile("common.bin")).GetGtiCommonMoveNames
+                Else
+                    Throw New NotSupportedException("Only GTI and PSMD are supported")
+                End If
             End If
             Return _moveNames
         End Function
@@ -363,10 +459,7 @@ Namespace MysteryDungeon.PSMD.Projects
         Public Overrides Function GetFilesToCopy(Solution As Solution, BaseRomProjectName As String) As IEnumerable(Of String)
             Dim project As Project = Solution.GetProjectsByName(BaseRomProjectName).FirstOrDefault
             If project IsNot Nothing AndAlso TypeOf project Is BaseRomProject Then
-                Dim code = DirectCast(project, BaseRomProject).GameCode
-                Dim psmd As New Regex(GameStrings.PSMDCode)
-                Dim gti As New Regex(GameStrings.GTICode)
-                If psmd.IsMatch(code) Then
+                If IsPsmd Then
                     Return {Path.Combine("romfs", "script"),
                             Path.Combine("romfs", "message_en.bin"),
                             Path.Combine("romfs", "message_fr.bin"),
@@ -395,26 +488,29 @@ Namespace MysteryDungeon.PSMD.Projects
                             Path.Combine("romfs", "message_debug_it.lst"),
                             Path.Combine("romfs", "message_debug_sp.lst"),
                             Path.Combine("romfs", "message_debug_us.lst"),
-                            Path.Combine("romfs", "message_debug.lst")}
-                ElseIf gti.IsMatch(code) Then
+                            Path.Combine("romfs", "message_debug.lst"),
+                            Path.Combine("ExHeader.bin")}
+                ElseIf IsGti Then
                     Return {Path.Combine("romfs", "script"),
                             Path.Combine("romfs", "message_fr"),
                             Path.Combine("romfs", "message_ge"),
                             Path.Combine("romfs", "message_it"),
                             Path.Combine("romfs", "message_sp"),
-                            Path.Combine("romfs", "message")}
+                            Path.Combine("romfs", "message"),
+                            Path.Combine("ExHeader.bin")}
                 Else
-                    Return {Path.Combine("romfs", "script")}
+                    Return {Path.Combine("romfs", "script"),
+                            Path.Combine("ExHeader.bin")}
                 End If
             Else
-                Return {Path.Combine("romfs", "script")}
+                Return {Path.Combine("romfs", "script"),
+                            Path.Combine("ExHeader.bin")}
             End If
         End Function
 
         Public Overrides Function GetSupportedGameCodes() As IEnumerable(Of String)
             Return {GameStrings.GTICode, GameStrings.PSMDCode}
         End Function
-
 
     End Class
 

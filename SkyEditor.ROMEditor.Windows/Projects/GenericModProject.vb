@@ -13,47 +13,47 @@ Namespace Projects
 #Region "Project Settings"
         Public Property ModName As String
             Get
-                Return Settings("ModName")
+                Return Settings(NameOf(ModName))
             End Get
             Set(value As String)
-                Settings("ModName") = value
+                Settings(NameOf(ModName)) = value
             End Set
         End Property
 
         Public Property ModVersion As String
             Get
-                Return Settings("ModVersion")
+                Return Settings(NameOf(ModVersion))
             End Get
             Set(value As String)
-                Settings("ModVersion") = value
+                Settings(NameOf(ModVersion)) = value
             End Set
         End Property
 
         Public Property ModAuthor As String
             Get
-                Return Settings("ModAuthor")
+                Return Settings(NameOf(ModAuthor))
             End Get
             Set(value As String)
-                Settings("ModAuthor") = value
+                Settings(NameOf(ModAuthor)) = value
             End Set
         End Property
 
         Public Property ModDescription As String
             Get
-                Return Settings("ModDescription")
+                Return Settings(nameof(ModDescription))
             End Get
             Set(value As String)
-                Settings("ModDescription") = value
+                Settings(nameof(ModDescription)) = value
             End Set
         End Property
 
         Public Property Homepage As String
             Get
-                Return Settings("Homepage")
+                Return Settings(NameOf(Homepage))
             End Get
             Set(value As String)
-                Settings("Homepage") = value
-            End Set
+                Settings(nameof(Homepage)) = value
+                End Set
         End Property
 
         Public Property ModDependenciesBefore As List(Of String)

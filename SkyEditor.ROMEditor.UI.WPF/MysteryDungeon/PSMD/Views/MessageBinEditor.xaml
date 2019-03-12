@@ -33,6 +33,11 @@
                     </DataGridTextColumn.EditingElementStyle>
                 </DataGridTextColumn>
             </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="menuExport" Header="{x:Static res:Language.MenuExport}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
         <Button Content="{x:Static res:Language.Reset}" Command="{Binding ResetSearchCommand}" Margin="0,6,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Height="18"/>
     </Grid>

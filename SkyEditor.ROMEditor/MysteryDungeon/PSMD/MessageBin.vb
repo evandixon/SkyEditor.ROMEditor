@@ -26,21 +26,27 @@ Namespace MysteryDungeon.PSMD
             End Get
         End Property
 
+        Public Shared ReadOnly Property GtiPokemonNameHashes() As String
+            Get
+                Return My.Resources.Resources.GTI_Pokemon_Name_Hashes
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property GtiMoveNameHashes() As String
+            Get
+                Return My.Resources.Resources.GTI_Move_Name_Hashes
+            End Get
+        End Property
+
         Public Shared Shadows Async Function IsFileOfType(file As GenericFile) As Task(Of Boolean)
             If Not Await Sir0.IsFileOfType(file) Then
                 Return False
             End If
 
-            Try
-                Using sir0 As New Sir0(file)
-                    Dim stringCount As Integer = BitConverter.ToInt32(sir0.ContentHeader, 0)
-                    Dim stringInfoPointer As Integer = BitConverter.ToInt32(sir0.ContentHeader, 4)
 
-                    For i = 0 To stringCount - 1
-                        Dim stringPointer As Integer = BitConverter.ToInt32(Await sir0.ReadAsync(stringInfoPointer + i * 12 + &H0, 4), 0)
-                        Dim stringHash As UInteger = BitConverter.ToUInt32(Await sir0.ReadAsync(stringInfoPointer + i * 12 + &H4, 4), 0)
-                        Dim unk As UInt32 = BitConverter.ToUInt32(Await sir0.ReadAsync(stringInfoPointer + i * 12 + &H8, 4), 0)
-                    Next
+            Try
+                Using messageBinDebug As New MessageBin()
+                    Await messageBinDebug.OpenFile(file)
                 End Using
             Catch ex As Exception
                 Debug.WriteLine("Encountered exception in MessageBin.IsFileOfType: " & ex.ToString)
@@ -207,10 +213,10 @@ Namespace MysteryDungeon.PSMD
         ''' </summary>
         ''' <returns>A dictionary matching the IDs of Pokemon to Pokemon names.</returns>
         ''' <exception cref="InvalidOperationException">Thrown if the current instance of <see cref="MessageBin"/> is not the common file.</exception>
-        Public Function GetCommonPokemonNames() As Dictionary(Of Integer, String)
+        Public Function GetPsmdCommonPokemonNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
-            For Each item In My.Resources.Resources.PSMD_Pokemon_Name_Hashes.Replace(vbCrLf, vbLf).Split(vbLf).Select(Function(x) x.Trim)
+            For Each item In PsmdPokemonNameHashes.Replace(vbCrLf, vbLf).Split(vbLf).Select(Function(x) x.Trim)
                 Dim hash As Integer
                 If Integer.TryParse(item, hash) Then
                     pokemonNameHashes.Add(item)
@@ -231,14 +237,72 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         ''' <summary>
+        ''' Gets the Pokemon names, if the current instance of <see cref="MessageBin"/> is the common file. 
+        ''' </summary>
+        ''' <returns>A dictionary matching the IDs of Pokemon to Pokemon names.</returns>
+        ''' <exception cref="InvalidOperationException">Thrown if the current instance of <see cref="MessageBin"/> is not the common file.</exception>
+        Public Function GetGtiCommonPokemonNames() As Dictionary(Of Integer, String)
+            'Get the hashes from the resources
+            Dim pokemonNameHashes As New List(Of Integer)
+            For Each item In GtiPokemonNameHashes.Replace(vbCrLf, vbLf).Split(vbLf).Select(Function(x) x.Trim)
+                Dim hash As Integer
+                If Integer.TryParse(item, hash) Then
+                    pokemonNameHashes.Add(item)
+                Else
+                    Throw New Exception($"Invalid resource item: ""{item}""")
+                End If
+            Next
+
+            'Get the corresponding names
+            Dim pokemonNames As New Dictionary(Of Integer, String)
+            pokemonNames.Add(0, My.Resources.Language.NonePokemon)
+            For count = 0 To pokemonNameHashes.Count - 1
+                Dim count2 = count 'Helps avoid potential weirdness from having an iterator variable in the lambda expression below
+                pokemonNames.Add(count + 1, ((From s In Strings Where s.HashSigned = pokemonNameHashes(count2)).First).Entry)
+            Next
+
+            Return pokemonNames
+        End Function
+
+
+        ''' <summary>
         ''' Gets the move names, if the current instance of <see cref="MessageBin"/> is the common file. 
         ''' </summary>
         ''' <returns>A dictionary matching the IDs of moves to move names.</returns>
         ''' <exception cref="InvalidOperationException">Thrown if the current instance of <see cref="MessageBin"/> is not the common file.</exception>
-        Public Function GetCommonMoveNames() As Dictionary(Of Integer, String)
+        Public Function GetPsmdCommonMoveNames() As Dictionary(Of Integer, String)
             'Get the hashes from the resources
             Dim pokemonNameHashes As New List(Of Integer)
             For Each item In PsmdMoveNameHashes.Replace(vbCrLf, vbLf).Split(vbLf)
+                Dim trimmed = item.Trim
+                Dim hash As Integer
+                If Integer.TryParse(trimmed, hash) Then
+                    pokemonNameHashes.Add(trimmed)
+                Else
+                    Throw New Exception($"Invalid resource item: ""{trimmed}""")
+                End If
+            Next
+
+            'Get the corresponding names
+            Dim pokemonNames As New Dictionary(Of Integer, String)
+            pokemonNames.Add(0, My.Resources.Language.NonePokemon)
+            For count = 0 To pokemonNameHashes.Count - 1
+                Dim count2 = count 'Helps avoid potential weirdness from having an iterator variable in the lambda expression below
+                pokemonNames.Add(count + 1, ((From s In Strings Where s.HashSigned = pokemonNameHashes(count2)).First).Entry)
+            Next
+
+            Return pokemonNames
+        End Function
+
+        ''' <summary>
+        ''' Gets the move names, if the current instance of <see cref="MessageBin"/> is the common file. 
+        ''' </summary>
+        ''' <returns>A dictionary matching the IDs of moves to move names.</returns>
+        ''' <exception cref="InvalidOperationException">Thrown if the current instance of <see cref="MessageBin"/> is not the common file.</exception>
+        Public Function GetGtiCommonMoveNames() As Dictionary(Of Integer, String)
+            'Get the hashes from the resources
+            Dim pokemonNameHashes As New List(Of Integer)
+            For Each item In GtiMoveNameHashes.Replace(vbCrLf, vbLf).Split(vbLf)
                 Dim trimmed = item.Trim
                 Dim hash As Integer
                 If Integer.TryParse(trimmed, hash) Then

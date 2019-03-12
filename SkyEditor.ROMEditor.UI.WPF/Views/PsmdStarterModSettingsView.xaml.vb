@@ -1,5 +1,5 @@
 ﻿Namespace Views
-    Public Class GenericModProjectMetadataView
+    Public Class PsmdStarterModSettingsView
 
     End Class
 End Namespace

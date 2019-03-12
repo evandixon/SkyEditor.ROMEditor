@@ -5,8 +5,8 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Projects
 
 Namespace MysteryDungeon.PSMD.ViewModels
-    Public Class FixedPokemonEntryViewModel
-        Inherits GenericViewModel(Of FixedPokemon.PokemonEntry)
+    Public Class FixedPokemonEntryPsmdViewModel
+        Inherits GenericViewModel(Of FixedPokemon.PokemonEntryPsmd)
         Implements INotifyPropertyChanged
         Implements INotifyModified
 

@@ -533,11 +533,29 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to _Export.
+        '''</summary>
+        Public Shared ReadOnly Property MenuExport() As String
+            Get
+                Return ResourceManager.GetString("MenuExport", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to FARC.
         '''</summary>
         Public Shared ReadOnly Property MenuFarc() As String
             Get
                 Return ResourceManager.GetString("MenuFarc", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to _Add File.
+        '''</summary>
+        Public Shared ReadOnly Property MenuFarcAddFile() As String
+            Get
+                Return ResourceManager.GetString("MenuFarcAddFile", resourceCulture)
             End Get
         End Property
         
@@ -551,11 +569,38 @@ Namespace My.Resources
         End Property
         
         '''<summary>
-        '''  Looks up a localized string similar to Substitute Missing Animations.
+        '''  Looks up a localized string similar to _Extract Portraits.
         '''</summary>
-        Public Shared ReadOnly Property MenuFarcSubstitute() As String
+        Public Shared ReadOnly Property MenuFarcExtractPortraits() As String
             Get
-                Return ResourceManager.GetString("MenuFarcSubstitute", resourceCulture)
+                Return ResourceManager.GetString("MenuFarcExtractPortraits", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Substitute Missing Animations (GTI).
+        '''</summary>
+        Public Shared ReadOnly Property MenuFarcSubstituteGtiAnimations() As String
+            Get
+                Return ResourceManager.GetString("MenuFarcSubstituteGtiAnimations", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Substitute Missing Portraits (GTI).
+        '''</summary>
+        Public Shared ReadOnly Property MenuFarcSubstituteGtiPortraits() As String
+            Get
+                Return ResourceManager.GetString("MenuFarcSubstituteGtiPortraits", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Substitute Missing Animations (PSMD).
+        '''</summary>
+        Public Shared ReadOnly Property MenuFarcSubstitutePsmdAnimations() As String
+            Get
+                Return ResourceManager.GetString("MenuFarcSubstitutePsmdAnimations", resourceCulture)
             End Get
         End Property
         
@@ -682,6 +727,15 @@ Namespace My.Resources
         Public Shared ReadOnly Property Move4() As String
             Get
                 Return ResourceManager.GetString("Move4", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to _Delete.
+        '''</summary>
+        Public Shared ReadOnly Property MysteryDungeon_PSMD_Views_FarcView_DeleteMenuItem() As String
+            Get
+                Return ResourceManager.GetString("MysteryDungeon_PSMD_Views_FarcView_DeleteMenuItem", resourceCulture)
             End Get
         End Property
         
@@ -1297,6 +1351,33 @@ Namespace My.Resources
         Public Shared ReadOnly Property Version() As String
             Get
                 Return ResourceManager.GetString("Version", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Enable Model Patching.
+        '''</summary>
+        Public Shared ReadOnly Property Views_PsmdStarterModSettings_EnableModelPatching() As String
+            Get
+                Return ResourceManager.GetString("Views_PsmdStarterModSettings_EnableModelPatching", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Enable Portrait Patching.
+        '''</summary>
+        Public Shared ReadOnly Property Views_PsmdStarterModSettings_EnablePortraitPatching() As String
+            Get
+                Return ResourceManager.GetString("Views_PsmdStarterModSettings_EnablePortraitPatching", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to PSMD/GTI Starter Mod Settings.
+        '''</summary>
+        Public Shared ReadOnly Property Views_PsmdStarterModSettings_Title() As String
+            Get
+                Return ResourceManager.GetString("Views_PsmdStarterModSettings_Title", resourceCulture)
             End Get
         End Property
     End Class
