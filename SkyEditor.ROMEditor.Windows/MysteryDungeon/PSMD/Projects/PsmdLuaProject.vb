@@ -177,9 +177,9 @@ Namespace MysteryDungeon.PSMD.Projects
         Public Async Function GetMoveNames() As Task(Of Dictionary(Of Integer, String)) Implements IPsmdMessageBinProject.GetMoveNames
             If _moveNames Is Nothing Then
                 If IsPsmd Then
-                    _pokemonNames = (Await GetLanguageFile("common.bin")).GetPsmdCommonMoveNames
+                    _moveNames = (Await GetLanguageFile("common.bin")).GetPsmdCommonMoveNames
                 ElseIf IsGti Then
-                    _pokemonNames = (Await GetLanguageFile("common.bin")).GetGtiCommonMoveNames
+                    _moveNames = (Await GetLanguageFile("common.bin")).GetGtiCommonMoveNames
                 Else
                     Throw New NotSupportedException("Only GTI and PSMD are supported")
                 End If
