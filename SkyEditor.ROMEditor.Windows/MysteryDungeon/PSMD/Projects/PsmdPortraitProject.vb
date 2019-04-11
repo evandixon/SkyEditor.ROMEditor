@@ -50,8 +50,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                    Me.IsIndeterminate = False
                                End Sub
 
-            Dim f As New Farc()
-            f.CreateFile()
+            Dim f As New Farc(5)
 
             Dim a = New AsyncFor
             AddHandler a.ProgressChanged, onProgressed
