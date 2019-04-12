@@ -78,6 +78,15 @@ Namespace MysteryDungeon.PSMD
             CachedEntries = New ConcurrentDictionary(Of UInteger, FarcEntry)
         End Sub
 
+        Public Sub New(sir0Type As Integer, useFilenames As Boolean)
+            Me.New
+            If sir0Type <> 4 AndAlso sir0Type <> 5 Then
+                Throw New ArgumentOutOfRangeException(NameOf(sir0Type))
+            End If
+            Me.Sir0Type = sir0Type
+            Me.UseFilenames = useFilenames
+        End Sub
+
         ''' <summary>
         ''' Raised when the file has been saved
         ''' </summary>
@@ -98,6 +107,7 @@ Namespace MysteryDungeon.PSMD
         Protected Property UnknownHeaderData As Byte()
         Protected Property Sir0Type As Integer
         Protected Property Sir0FatType As Integer
+        Protected Property UseFilenames As Boolean
 
         Public Property PreLoadFiles As Boolean = False
         Public Property EnableInMemoryLoad As Boolean = True
@@ -109,10 +119,6 @@ Namespace MysteryDungeon.PSMD
         Public Property Filename As String Implements IOnDisk.Filename
         Private Property Entries As ConcurrentBag(Of FarcEntry)
         Private Property CachedEntries As ConcurrentDictionary(Of UInteger, FarcEntry)
-
-        Public Sub CreateFile()
-            Entries = New ConcurrentBag(Of FarcEntry)
-        End Sub
 
         Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
             Entries = New ConcurrentBag(Of FarcEntry)
@@ -392,7 +398,7 @@ Namespace MysteryDungeon.PSMD
             Dim condensedEntries As New List(Of EntryMapping)
 
             Dim ordered As IOrderedEnumerable(Of FarcEntry)
-            If Entries.First().Filename IsNot Nothing Then
+            If Me.UseFilenames Then
                 ordered = Entries.OrderBy(Function(e) e.Filename)
             Else
                 ordered = Entries.OrderBy(Function(e) e.FilenameHash)
@@ -411,13 +417,13 @@ Namespace MysteryDungeon.PSMD
                         FirstOrDefault
 
                     If mapping IsNot Nothing Then
-                        mapping.PossibleFilenames.Add(item.Filename)
+                        mapping.PossibleFilenames.Add(item.FilenameOrHash)
                     Else
                         Dim newMapping As New EntryMapping
                         newMapping.FileData = item.FileData
                         newMapping.PossibleFilenames = New List(Of String)
-                        newMapping.PossibleFilenames.Add(item.Filename)
-                        newMapping.Filename = item.Filename
+                        newMapping.PossibleFilenames.Add(item.FilenameOrHash)
+                        newMapping.Filename = item.FilenameOrHash
                         condensedEntries.Add(newMapping)
                     End If
                 Next
@@ -426,8 +432,8 @@ Namespace MysteryDungeon.PSMD
                     Dim newMapping As New EntryMapping
                     newMapping.FileData = Await GetFileDataAsync(item)
                     newMapping.PossibleFilenames = New List(Of String)
-                    newMapping.PossibleFilenames.Add(item.Filename)
-                    newMapping.Filename = item.Filename
+                    newMapping.PossibleFilenames.Add(item.FilenameOrHash)
+                    newMapping.Filename = item.FilenameOrHash
                     condensedEntries.Add(newMapping)
                 Next
             End If
@@ -438,7 +444,7 @@ Namespace MysteryDungeon.PSMD
                 Await f.OpenFile(filename, provider)
 
                 Dim fat As New FarcFat5
-                fat.Sir0Fat5Type = Me.Sir0FatType
+                fat.Sir0Fat5Type = If(Me.UseFilenames, 0, 1)
                 Dim fileData As New List(Of Byte)
 
                 For Each item In condensedEntries
@@ -681,7 +687,17 @@ Namespace MysteryDungeon.PSMD
             Dim _filename As String
 
             Public Property FilenameHash As UInteger?
+
+            Public ReadOnly Property FilenameOrHash As String
+                Get
+                    Return If(Filename,
+                    If(FilenameHash?.ToString("X"),
+                    MyBase.ToString))
+                End Get
+            End Property
+
             Public Property FileData As Byte()
+
             Friend Property DataEntry As FarcFat5.Entry
 
             Public ReadOnly Property DataLength As Integer
@@ -714,9 +730,7 @@ Namespace MysteryDungeon.PSMD
             End Function
 
             Public Overrides Function ToString() As String
-                Return If(Filename,
-                    If(FilenameHash?.ToString("X"),
-                    MyBase.ToString))
+                Return FilenameOrHash
             End Function
         End Class
 

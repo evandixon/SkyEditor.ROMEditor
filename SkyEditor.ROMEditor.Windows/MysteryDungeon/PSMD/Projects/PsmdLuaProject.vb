@@ -275,7 +275,7 @@ Namespace MysteryDungeon.PSMD.Projects
             AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
                                               Me.Progress = e.Progress
                                           End Sub
-            f.RunSynchronously = True
+
             Await f.RunForEach(languageFileNames, Async Function(item As String) As Task
                                                       Dim lang = "jp"
 
@@ -299,7 +299,7 @@ Namespace MysteryDungeon.PSMD.Projects
             AddHandler f2.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
                                                Me.Progress = e.Progress
                                            End Sub
-            f.RunSynchronously = True
+
             Await f2.RunForEach(languageDirFilenames, Async Function(item As String) As Task
                                                           Dim lang = "en"
 
