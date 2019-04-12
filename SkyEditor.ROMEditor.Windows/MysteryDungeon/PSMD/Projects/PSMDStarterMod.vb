@@ -450,7 +450,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.Progress = 0
             Me.IsIndeterminate = False
 
-            Dim f As New Farc(5)
+            Dim f As New Farc(5, False)
 
             Dim onProgressed3 = Sub(sender As Object, e As ProgressReportedEventArgs)
                                     Me.Message = My.Resources.Language.LoadingRepackingPortraits
