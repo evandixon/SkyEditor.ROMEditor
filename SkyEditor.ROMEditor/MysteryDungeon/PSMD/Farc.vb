@@ -78,12 +78,13 @@ Namespace MysteryDungeon.PSMD
             CachedEntries = New ConcurrentDictionary(Of UInteger, FarcEntry)
         End Sub
 
-        Public Sub New(sir0Type As Integer)
+        Public Sub New(sir0Type As Integer, useFilenames As Boolean)
             Me.New
             If sir0Type <> 4 AndAlso sir0Type <> 5 Then
                 Throw New ArgumentOutOfRangeException(NameOf(sir0Type))
             End If
             Me.Sir0Type = sir0Type
+            Me.UseFilenames = useFilenames
         End Sub
 
         ''' <summary>
@@ -106,6 +107,7 @@ Namespace MysteryDungeon.PSMD
         Protected Property UnknownHeaderData As Byte()
         Protected Property Sir0Type As Integer
         Protected Property Sir0FatType As Integer
+        Protected Property UseFilenames As Boolean
 
         Public Property PreLoadFiles As Boolean = False
         Public Property EnableInMemoryLoad As Boolean = True
@@ -395,10 +397,8 @@ Namespace MysteryDungeon.PSMD
             'Analyze data to identify duplicate entries (i.e. make sure files with the same data are not added multiple times, instead having multiple references to the same data)
             Dim condensedEntries As New List(Of EntryMapping)
 
-            Dim useFilenames = Entries.All(Function(e) e.Filename IsNot Nothing)
-
             Dim ordered As IOrderedEnumerable(Of FarcEntry)
-            If useFilenames Then
+            If Me.UseFilenames Then
                 ordered = Entries.OrderBy(Function(e) e.Filename)
             Else
                 ordered = Entries.OrderBy(Function(e) e.FilenameHash)
@@ -444,7 +444,7 @@ Namespace MysteryDungeon.PSMD
                 Await f.OpenFile(filename, provider)
 
                 Dim fat As New FarcFat5
-                fat.Sir0Fat5Type = Me.Sir0FatType
+                fat.Sir0Fat5Type = If(Me.UseFilenames, 0, 1)
                 Dim fileData As New List(Of Byte)
 
                 For Each item In condensedEntries
