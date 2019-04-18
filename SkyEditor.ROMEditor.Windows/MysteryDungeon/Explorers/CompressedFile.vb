@@ -12,10 +12,8 @@ Namespace MysteryDungeon.Explorers
 
         Protected Property IsAT4PX As Boolean
 
-        Protected Property TempFilename As String
-
         Public Overrides Async Function OpenFile(filename As String, provider As IIOProvider) As Task
-            TempFilename = provider.GetTempFilename
+            Dim tempFilename = GetTempFilename(provider)
 
             Using external As New UtilityManager
                 Await external.RunUnPX(filename, TempFilename)
@@ -31,6 +29,7 @@ Namespace MysteryDungeon.Explorers
         ''' </summary>
         ''' <remarks></remarks>
         Public Overrides Async Function Save(filename As String, provider As IIOProvider) As Task
+            Dim tempFilename = GetTempFilename(provider)
 
             Await MyBase.Save(TempFilename, provider)
 
@@ -47,6 +46,25 @@ Namespace MysteryDungeon.Explorers
 
             Me.Filename = filename
         End Function
+
+        Private Function GetTempFilename(provider As IIOProvider)
+            If String.IsNullOrEmpty(_tempFilename) Then
+                _ioProvider = provider
+                _tempFilename = provider.GetTempFilename
+            End If
+            Return _tempFilename
+        End Function
+        Private _tempFilename As String
+        Private _ioProvider As IIOProvider
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            MyBase.Dispose(disposing)
+            If Not String.IsNullOrEmpty(_tempFilename) AndAlso _ioProvider IsNot Nothing AndAlso _ioProvider.FileExists(_tempFilename) Then
+                _ioProvider.DeleteFile(_tempFilename)
+                _tempFilename = Nothing
+                _ioProvider = Nothing
+            End If
+        End Sub
 
     End Class
 End Namespace
