@@ -140,6 +140,7 @@ Namespace MysteryDungeon.PSMD
             Dim header = New FarcFat5
             Await header.OpenFile(Await f.ReadAsync(sir0Offset, sir0Length))
             Sir0FatType = header.Sir0Fat5Type
+            UseFilenames = header.UsesFilenames
 
             For Each item In header.Entries
                 Dim fileEntry As New FarcEntry
