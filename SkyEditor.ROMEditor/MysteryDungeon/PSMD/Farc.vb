@@ -74,8 +74,7 @@ Namespace MysteryDungeon.PSMD
 
         Public Sub New()
             ResetWorkingDirectory()
-            Entries = New ConcurrentBag(Of FarcEntry)
-            CachedEntries = New ConcurrentDictionary(Of UInteger, FarcEntry)
+            Entries = New ConcurrentDictionary(Of UInteger, FarcEntry)
         End Sub
 
         Public Sub New(sir0Type As Integer, useFilenames As Boolean)
@@ -117,11 +116,9 @@ Namespace MysteryDungeon.PSMD
         ''' </summary>
         Public Property EnableMultiReferenceOnSave As Boolean = True
         Public Property Filename As String Implements IOnDisk.Filename
-        Private Property Entries As ConcurrentBag(Of FarcEntry)
-        Private Property CachedEntries As ConcurrentDictionary(Of UInteger, FarcEntry)
+        Private Property Entries As ConcurrentDictionary(Of UInteger, FarcEntry) 'Key: hash, value: entry
 
         Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
-            Entries = New ConcurrentBag(Of FarcEntry)
             Dim f As New GenericFile
             f.EnableInMemoryLoad = Me.EnableInMemoryLoad
             Await f.OpenFile(filename, provider)
@@ -157,8 +154,7 @@ Namespace MysteryDungeon.PSMD
                     'Don't load the file data yet, to save time and resources
                 End If
 
-                Entries.Add(fileEntry)
-                CachedEntries(fileEntry.FilenameHash.Value) = fileEntry
+                Entries(fileEntry.FilenameHash.Value) = fileEntry
             Next
 
             Me.InnerData = f
@@ -185,7 +181,7 @@ Namespace MysteryDungeon.PSMD
 
                             'Identify BGRS files that were not referenced, and infer the names
                             Dim af As New AsyncFor
-                            Await af.RunForEach(Entries.Where(Function(e) e.Filename Is Nothing),
+                            Await af.RunForEach(Entries.Values.Where(Function(e) e.Filename Is Nothing),
                                          Async Function(unmatchedFile As FarcEntry) As Task
                                              Dim data = Await GetFileDataAsync(unmatchedFile)
                                              Using dataFile As New GenericFile()
@@ -202,7 +198,7 @@ Namespace MysteryDungeon.PSMD
 
                             'Infer BCH files from BGRS
                             Dim bchFilenames As New List(Of String)
-                            For Each bgrsFilename In Entries.Where(Function(e) e.Filename IsNot Nothing AndAlso e.Filename.EndsWith(".bgrs")).Select(Function(e) e.Filename)
+                            For Each bgrsFilename In Entries.Values.Where(Function(e) e.Filename IsNot Nothing AndAlso e.Filename.EndsWith(".bgrs")).Select(Function(e) e.Filename)
                                 Dim bgrs As New BGRS
                                 Await bgrs.OpenFile("/" & bgrsFilename, Me)
                                 bchFilenames.Add(bgrs.ReferencedBchFileName)
@@ -281,10 +277,15 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Protected Sub RefreshEntryCache()
-            CachedEntries.Clear()
-            For Each item In Entries
-                CachedEntries(item.FilenameHash) = item
+            Dim newCache As New ConcurrentDictionary(Of UInteger, FarcEntry)
+            For Each item In Entries.Values
+                newCache(item.FilenameHash) = item
             Next
+
+            Dim oldCache = Entries
+            Entries = newCache
+
+            oldCache.Clear()
         End Sub
 
         Protected Function GetFileEntry(filename As String) As FarcEntry
@@ -299,13 +300,12 @@ Namespace MysteryDungeon.PSMD
             End If
 
             Dim entry As FarcEntry = Nothing
-            If CachedEntries.ContainsKey(hash) Then
-                entry = CachedEntries(hash)
+            If Entries.ContainsKey(hash) Then
+                entry = Entries(hash)
             Else
-                entry = Entries.FirstOrDefault(Function(x) x.FilenameHash = hash OrElse x.Filename = filename)
-                If entry IsNot Nothing Then
-                    CachedEntries(hash) = entry
-                End If
+                'We couldn't find it in the cache, and they contain the same number of items (as expected)
+                'So let's not do a full search to save on time
+                Return Nothing
             End If
 
             If entry IsNot Nothing AndAlso Not String.IsNullOrEmpty(entry.Filename) Then
@@ -348,7 +348,7 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Public Function GetEntries() As IEnumerable(Of FarcEntry)
-            Return Entries
+            Return Entries.Values
         End Function
 
         Public Sub ResizeFileData(filename As String, newSize As Integer)
@@ -365,8 +365,8 @@ Namespace MysteryDungeon.PSMD
             Dim numberSet As Integer = 0
             For Each item In filenames
                 Dim hash = PmdFunctions.Crc32Hash(item)
-                If CachedEntries.ContainsKey(hash) Then
-                    CachedEntries(hash).TrySetFilename(item)
+                If Entries.ContainsKey(hash) Then
+                    Entries(hash).TrySetFilename(item)
                     numberSet += 1
                 End If
             Next
@@ -386,9 +386,9 @@ Namespace MysteryDungeon.PSMD
             Dim a As New AsyncFor
             a.RunSynchronously = Not InnerData.IsThreadSafe
             AddHandler a.ProgressChanged, onProgressed
-            Await a.RunForEach(Entries, Async Function(item As FarcEntry) As Task
-                                            provider.WriteAllBytes(Path.Combine(outputDirectory, If(item.Filename, item.FilenameHash.Value.ToString("X"))), Await GetFileDataAsync(item))
-                                        End Function)
+            Await a.RunForEach(Entries.Values, Async Function(item As FarcEntry) As Task
+                                                   provider.WriteAllBytes(Path.Combine(outputDirectory, If(item.Filename, item.FilenameHash.Value.ToString("X"))), Await GetFileDataAsync(item))
+                                               End Function)
             RemoveHandler a.ProgressChanged, onProgressed
             IsCompleted = True
             RaiseEvent Completed(Me, New EventArgs)
@@ -400,9 +400,9 @@ Namespace MysteryDungeon.PSMD
 
             Dim ordered As IOrderedEnumerable(Of FarcEntry)
             If Me.UseFilenames Then
-                ordered = Entries.OrderBy(Function(e) e.Filename)
+                ordered = Entries.Values.OrderBy(Function(e) e.Filename)
             Else
-                ordered = Entries.OrderBy(Function(e) e.FilenameHash)
+                ordered = Entries.Values.OrderBy(Function(e) e.FilenameHash)
             End If
             If EnableMultiReferenceOnSave Then
                 For Each item In ordered
@@ -521,13 +521,7 @@ Namespace MysteryDungeon.PSMD
             InnerData?.Dispose()
             InnerData = Nothing
 
-            CachedEntries?.Clear()
-            CachedEntries = Nothing
-
-            Dim entry As FarcEntry = Nothing
-            While Entries?.TryTake(entry)
-                'Do nothing; just want to clear Entries
-            End While
+            Entries?.Clear()
             Entries = Nothing
         End Sub
 
@@ -569,13 +563,13 @@ Namespace MysteryDungeon.PSMD
 
         Public Function GetFiles(path As String, searchPattern As String, topDirectoryOnly As Boolean) As String() Implements IIOProvider.GetFiles
             Dim filter = New Regex(GetFileSearchRegex(searchPattern))
-            Dim files = Entries.Select(Function(entry)
-                                           If Not String.IsNullOrEmpty(entry.Filename) Then
-                                               Return "/" & entry.Filename
-                                           Else
-                                               Return "/" & entry.FilenameHash.Value.ToString("X")
-                                           End If
-                                       End Function).
+            Dim files = Entries.Values.Select(Function(entry)
+                                                  If Not String.IsNullOrEmpty(entry.Filename) Then
+                                                      Return "/" & entry.Filename
+                                                  Else
+                                                      Return "/" & entry.FilenameHash.Value.ToString("X")
+                                                  End If
+                                              End Function).
                         Where(Function(filename) filter.IsMatch(filename))
             Return files.ToArray()
         End Function
@@ -616,7 +610,7 @@ Namespace MysteryDungeon.PSMD
                 End If
 
                 entry.FileData = data
-                Entries.Add(entry)
+                Entries(entry.FilenameHash) = entry
             End If
         End Sub
 
@@ -639,8 +633,9 @@ Namespace MysteryDungeon.PSMD
         End Function
 
         Public Sub DeleteFile(filename As String) Implements IIOProvider.DeleteFile
+            Dim entry = GetFileEntry(FixPath(filename))
             Dim tries = 5
-            While tries > 0 AndAlso Not Entries.TryTake(GetFileEntry(FixPath(filename)))
+            While tries > 0 AndAlso Not Entries.TryRemove(entry.FilenameHash, entry)
                 Thread.Sleep(250 + tries)
                 tries -= 1
             End While

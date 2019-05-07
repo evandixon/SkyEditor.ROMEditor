@@ -11,7 +11,7 @@ Namespace MysteryDungeon.PSMD.Extensions
         ''' <param name="pokemonGraphic">The pokemon_graphic.bin to modify</param>
         ''' <param name="pkmDb">The pokemon_graphics_database.bin corresponding to <paramref name="pokemonGraphic"/></param>
         ''' <param name="progressReportToken">An optional token used to relay the progress of the operation</param>
-        Private Async Function SubstituteMissingAnimations(pokemonGraphic As Farc, pkmDb As PGDB, substitutes As Dictionary(Of String, IEnumerable(Of String)), Optional progressReportToken As ProgressReportToken = Nothing) As Task
+        Private Async Function SubstituteMissingAnimations(pokemonGraphic As Farc, pkmDb As PGDB, substitutes As Dictionary(Of String, IEnumerable(Of String)), isPsmd As Boolean, Optional progressReportToken As ProgressReportToken = Nothing) As Task
             If progressReportToken IsNot Nothing Then
                 progressReportToken.Progress = 0
                 progressReportToken.IsIndeterminate = False
@@ -28,7 +28,7 @@ Namespace MysteryDungeon.PSMD.Extensions
             End If
 
             Dim numComplete = 0
-
+            af.BatchSize = Environment.ProcessorCount * 2
             Await af.RunForEach(entries,
                                 Async Function(entry As String) As Task
                                     If Not String.IsNullOrEmpty(entry) Then
@@ -65,13 +65,19 @@ Namespace MysteryDungeon.PSMD.Extensions
                                                     copiedAnimation.DevName = oldAnimation.DevName
 
                                                     If copiedAnimation.AnimationType And BGRS.AnimationType.SkeletalAnimation > 0 Then
-                                                        Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bcskla", "/" & copiedAnimation.Name & ".bcskla") 'GTI
-                                                        Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bchskla", "/" & copiedAnimation.Name & ".bchskla") 'PSMD
+                                                        If isPsmd Then
+                                                            Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bchskla", "/" & copiedAnimation.Name & ".bchskla") 'PSMD
+                                                        Else
+                                                            Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bcskla", "/" & copiedAnimation.Name & ".bcskla") 'GTI
+                                                        End If
                                                     End If
 
                                                     If copiedAnimation.AnimationType And BGRS.AnimationType.MaterialAnimation > 0 Then
-                                                        Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bcmata", "/" & copiedAnimation.Name & ".bcmata") 'GTI
-                                                        Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bchmata", "/" & copiedAnimation.Name & ".bchmata") 'PSMD
+                                                        If isPsmd Then
+                                                            Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bchmata", "/" & copiedAnimation.Name & ".bchmata") 'PSMD
+                                                        Else
+                                                            Await pokemonGraphic.CopyFileAsync("/" & oldAnimation.Name & ".bcmata", "/" & copiedAnimation.Name & ".bcmata") 'GTI
+                                                        End If
                                                     End If
 
                                                     currentBgrs.Animations.Add(copiedAnimation)
@@ -170,7 +176,7 @@ Namespace MysteryDungeon.PSMD.Extensions
             substitutes.Add("bd_ev026_relax01", {"bd_wait00"}) 'Looking left at the player
             substitutes.Add("bd_ev026_relax02", {"bd_wait00"}) 'Turning back ahead
 
-            Await SubstituteMissingAnimations(pokemonGraphic, pkmDb, substitutes, progressReportToken)
+            Await SubstituteMissingAnimations(pokemonGraphic, pkmDb, substitutes, True, progressReportToken)
         End Function
 
         ''' <summary>
@@ -234,7 +240,7 @@ Namespace MysteryDungeon.PSMD.Extensions
             substitutes.Add("bd_op000_sleep01", {"bd_wait02", "bd_wait"}) 'Getting up and rubbing eyes
             substitutes.Add("bd_op000_sleep01loop", {"bd_wait02", "bd_wait"}) 'Rubbing eyes
 
-            Await SubstituteMissingAnimations(pokemonGraphic, pkmDb, substitutes, progressReportToken)
+            Await SubstituteMissingAnimations(pokemonGraphic, pkmDb, substitutes, False, progressReportToken)
         End Function
 
         ''' <summary>
