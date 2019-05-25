@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.IO.FileSystem
 
 Public Class TestHelpers
     Public Const AutomatedTestCategory As String = "Automated"

@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
 

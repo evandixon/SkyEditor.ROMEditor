@@ -4,6 +4,7 @@ Imports System.Security.Cryptography
 Imports DotNet3dsToolkit
 Imports DotNetNdsToolkit
 Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor
 Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
 Imports SkyEditor.ROMEditor.Utilities
