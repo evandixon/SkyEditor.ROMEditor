@@ -1,27 +1,29 @@
-﻿Imports System.Text
+﻿Imports System.IO
+Imports System.Text
 Imports SkyEditor.Core.ConsoleCommands
 Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace Windows.ConsoleCommands
     Public Class PSMDExpTableCsv
         Inherits ConsoleCommand
 
-        Public Sub New(ioProvider As IIOProvider)
-            If ioProvider Is Nothing Then
-                Throw New ArgumentNullException(NameOf(ioProvider))
+        Public Sub New(FileSystem As IFileSystem)
+            If FileSystem Is Nothing Then
+                Throw New ArgumentNullException(NameOf(FileSystem))
             End If
 
-            CurrentIOProvider = ioProvider
+            CurrentFileSystem = FileSystem
         End Sub
 
-        Protected Property CurrentIOProvider As IIOProvider
+        Protected Property CurrentFileSystem As IFileSystem
 
         Public Overrides Async Function MainAsync(Arguments() As String) As Task
             If Arguments.Length > 0 Then
-                If IO.File.Exists(Arguments(0)) Then
+                If File.Exists(Arguments(0)) Then
                     Dim exp As New Experience
-                    Await exp.OpenFile(Arguments(0), CurrentIOProvider)
+                    Await exp.OpenFile(Arguments(0), CurrentFileSystem)
 
                     For Each item In exp.Entries
                         Dim s As New StringBuilder
@@ -42,7 +44,7 @@ Namespace Windows.ConsoleCommands
                             speed += entry.AddedSpeed
                             s.AppendLine($"{count},{entry.Exp},{hp},{attack},{spAttack},{defense},{spDefense},{speed}")
                         Next
-                        IO.File.WriteAllText(IO.Path.Combine(IO.Path.GetDirectoryName(Arguments(0)), "Exp Table " & item.Key & ".csv"), s.ToString)
+                        File.WriteAllText(Path.Combine(Path.GetDirectoryName(Arguments(0)), "Exp Table " & item.Key & ".csv"), s.ToString)
                     Next
                     Console.WriteLine("Done")
                 Else

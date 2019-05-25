@@ -1,5 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.Explorers
     Public Class MonsterMDEntry
@@ -137,7 +138,7 @@ Namespace MysteryDungeon.Explorers
         Private Property NumberOfEntries As UInt32
         Public Property Entries As Generic.List(Of MonsterMDEntry)
 
-        Public Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Function OpenFile(filename As String, provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Dim rawData = provider.ReadAllBytes(filename)
             ProcessData(rawData)
             Return Task.CompletedTask

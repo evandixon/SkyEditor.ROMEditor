@@ -3,9 +3,11 @@ Imports System.IO
 Imports PPMDU
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor.MysteryDungeon
 Imports SkyEditor.ROMEditor.MysteryDungeon.Explorers
 Imports SkyEditor.ROMEditor.Utilities
+Imports SkyEditor.Utilities.AsyncFor
 
 Public Class KaoFile
     Inherits ExplorersSir0
@@ -123,7 +125,7 @@ Public Class KaoFile
 
     End Function
 
-    Public Overrides Async Function OpenFile(filename As String, provider As IIOProvider) As Task
+    Public Overrides Async Function OpenFile(filename As String, provider As IFileSystem) As Task
         Await MyBase.OpenFile(filename, provider)
         Await Initialize(provider.ReadAllBytes(filename))
     End Function

@@ -29,7 +29,7 @@ Namespace MysteryDungeon.Rescue.Projects
             Me.Message = My.Resources.Language.LoadingConvertingLanguages
 
             'Add Personality Test
-            Me.AddExistingFileToPath("/Starter Pokemon", Path.Combine(rawDir, "arm9.bin"), GetType(BlueNorthAmericanArm9Bin), CurrentPluginManager.CurrentIOProvider)
+            Me.AddExistingFileToPath("/Starter Pokemon", Path.Combine(rawDir, "arm9.bin"), GetType(BlueNorthAmericanArm9Bin), CurrentPluginManager.CurrentFileSystem)
 
             Me.Progress = 1
             Me.IsIndeterminate = False

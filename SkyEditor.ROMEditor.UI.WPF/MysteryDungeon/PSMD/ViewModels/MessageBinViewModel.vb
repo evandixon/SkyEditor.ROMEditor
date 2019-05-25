@@ -8,6 +8,7 @@ Imports SkyEditor.UI.WPF
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports System.Text
 Imports System.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD.ViewModels
     Public Class MessageBinViewModel
@@ -15,16 +16,16 @@ Namespace MysteryDungeon.PSMD.ViewModels
         Implements INotifyPropertyChanged
         Implements INotifyModified
 
-        Public Sub New(ioProvider As IIOProvider)
-            If ioProvider Is Nothing Then
-                Throw New ArgumentNullException(NameOf(ioProvider))
+        Public Sub New(FileSystem As IFileSystem)
+            If FileSystem Is Nothing Then
+                Throw New ArgumentNullException(NameOf(FileSystem))
             End If
 
             searchTimer = New Timers.Timer(500)
             cancelSearch = False
             RawEntries = New ObservableCollection(Of MessageBinEntryViewModel)
             ResetSearchCommand = New RelayCommand(AddressOf ResetSearch)
-            CurrentIOProvider = ioProvider
+            CurrentFileSystem = FileSystem
         End Sub
 
 #Region "Events"
@@ -80,9 +81,9 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
         Public ReadOnly Property ExportCommand As RelayCommand
 
-        Protected Property CurrentIOProvider As IIOProvider
+        Protected Property CurrentFileSystem As IFileSystem
 
-        Public Async Function Save(provider As IIOProvider) As Task
+        Public Async Function Save(provider As IFileSystem) As Task
             UpdateModel(Model)
             Await Model.Save(provider)
 
@@ -133,7 +134,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
                 output.Append(item.Entry)
                 output.AppendLine()
             Next
-            CurrentIOProvider.WriteAllText(filename, output.ToString)
+            CurrentFileSystem.WriteAllText(filename, output.ToString)
         End Sub
 
         ''' <summary>

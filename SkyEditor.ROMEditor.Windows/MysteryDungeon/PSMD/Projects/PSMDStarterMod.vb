@@ -10,6 +10,8 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Extensions
 Imports SkyEditor.Core.IO
 Imports SkyEditor.ROMEditor.MysteryDungeon.GTI
+Imports SkyEditor.IO.FileSystem
+Imports SkyEditor.Utilities.AsyncFor
 
 Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
@@ -18,17 +20,17 @@ Namespace MysteryDungeon.PSMD.Projects
     Public Class PsmdStarterMod
         Inherits PsmdLuaProject
 
-        Public Sub New(ioProvider As IIOProvider)
-            If ioProvider Is Nothing Then
-                Throw New ArgumentNullException(NameOf(ioProvider))
+        Public Sub New(FileSystem As IFileSystem)
+            If FileSystem Is Nothing Then
+                Throw New ArgumentNullException(NameOf(FileSystem))
             End If
 
-            CurrentIOProvider = ioProvider
+            CurrentFileSystem = FileSystem
 
             Me.AddScriptsToProject = False
         End Sub
 
-        Protected Property CurrentIOProvider As IIOProvider
+        Protected Property CurrentFileSystem As IFileSystem
 
 #Region "Settings"
         Public Property EnableModelPatching As Boolean
@@ -98,7 +100,7 @@ Namespace MysteryDungeon.PSMD.Projects
             For Each item In pgdb.Entries.Where(Function(x) x.PrimaryBgrsFilename = "dummypokemon_00.bgrs").ToArray()
                 item.PrimaryBgrsFilename = item.ActorName & "_00.bgrs"
             Next
-            Await pgdb.Save(CurrentIOProvider)
+            Await pgdb.Save(CurrentFileSystem)
         End Function
 
         ''' <summary>
@@ -116,9 +118,9 @@ Namespace MysteryDungeon.PSMD.Projects
             AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
                                               Me.Progress = e.Progress
                                           End Sub
-            Await f.RunForEach(Directory.GetFiles(IO.Path.Combine(Me.GetRootDirectory, "script"), "*.lua", SearchOption.AllDirectories),
+            Await f.RunForEach(Directory.GetFiles(Path.Combine(Me.GetRootDirectory, "script"), "*.lua", SearchOption.AllDirectories),
                                Sub(filename As String)
-                                   Dim script = CurrentPluginManager.CurrentIOProvider.ReadAllText(filename & ".original")
+                                   Dim script = CurrentPluginManager.CurrentFileSystem.ReadAllText(filename & ".original")
 
                                    Dim edited As Boolean = False
                                    For Each item As Match In patchExpression.Matches(script)
@@ -138,7 +140,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
                                    If edited Then
                                        'Preserves filesystem timestamp if we don't overwrite all the files
-                                       CurrentPluginManager.CurrentIOProvider.WriteAllText(filename, script)
+                                       CurrentPluginManager.CurrentFileSystem.WriteAllText(filename, script)
                                        Console.WriteLine("Edited script: " & filename)
                                    End If
 
@@ -151,19 +153,19 @@ Namespace MysteryDungeon.PSMD.Projects
 #Region "GTI Patching Functions"
         Private Async Function AddMissingModelAnimationsGti(pgdb As PGDB) As Task
             Using pokemonGraphic As New Farc
-                Await pokemonGraphic.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphic.bin"), CurrentIOProvider)
+                Await pokemonGraphic.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphic.bin"), CurrentFileSystem)
 
                 Dim token As New ProgressReportToken
                 WatchProgressReportToken(token, False)
                 Await pokemonGraphic.SubstituteMissingAnimationsGti(pgdb, token)
                 UnwatchProgressReportToken(token)
 
-                Await pokemonGraphic.Save(CurrentIOProvider)
+                Await pokemonGraphic.Save(CurrentFileSystem)
             End Using
         End Function
 
         Private Async Function SubstituteMissingPortraitsGti() As Task
-            Dim provider = CurrentPluginManager.CurrentIOProvider
+            Dim provider = CurrentPluginManager.CurrentFileSystem
 
             'Extract face_graphic.bin
             Me.Message = My.Resources.Language.LoadingExtractingPortraits
@@ -180,13 +182,13 @@ Namespace MysteryDungeon.PSMD.Projects
         Private Async Function FixCodeBinGti(starters As StarterDefinitionsGti) As Task
             If IsGtiUS Then
                 Using codeBin As New CodeBinGtiUS
-                    Await codeBin.OpenFile(Path.Combine(Me.GetRawFilesDir, "exefs", "code.bin"), CurrentPluginManager.CurrentIOProvider)
+                    Await codeBin.OpenFile(Path.Combine(Me.GetRawFilesDir, "exefs", "code.bin"), CurrentPluginManager.CurrentFileSystem)
                     'Await codeBin.SetStarter1(starters.Starter1)
                     Await codeBin.SetStarter39(starters.Starter39)
                     'Await codeBin.SetStarter42(starters.Starter42)
                     Await codeBin.SetStarter45(starters.Starter45)
                     Await codeBin.SetStarter122(starters.Starter122)
-                    Await codeBin.Save(CurrentPluginManager.CurrentIOProvider)
+                    Await codeBin.Save(CurrentPluginManager.CurrentFileSystem)
                 End Using
             ElseIf IsGtiEU Then
                 Throw New NotImplementedException("EU regions of GTI are not currently implemented.")
@@ -199,13 +201,13 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Private Async Function FixHighResModelsGti(starters As StarterDefinitionsGti) As Task
             Dim actorInfo As New ActorDataInfoGti
-            Await actorInfo.OpenFile(IO.Path.Combine(Me.GetRawFilesDir, "romfs", "script", "pokemon_actor_data.bin"), CurrentPluginManager.CurrentIOProvider)
+            Await actorInfo.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "script", "pokemon_actor_data.bin"), CurrentPluginManager.CurrentFileSystem)
             'actorInfo.GetEntryByName("PIKACHUU_H").PokemonID = starters.Starter1
             actorInfo.GetEntryByName("TSUTAAJA_H").PokemonID = starters.Starter39
             'actorInfo.GetEntryByName("POKABU_H").PokemonID = starters.Starter42
             actorInfo.GetEntryByName("MIJUMARU_H").PokemonID = starters.Starter45
             actorInfo.GetEntryByName("KIBAGO_H").PokemonID = starters.Starter122
-            Await actorInfo.Save(CurrentPluginManager.CurrentIOProvider)
+            Await actorInfo.Save(CurrentPluginManager.CurrentFileSystem)
         End Function
 
         Private Sub FixPersonalityTestGti(starters As StarterDefinitionsGti)
@@ -279,14 +281,14 @@ Namespace MysteryDungeon.PSMD.Projects
 
         Private Async Function AddMissingModelAnimationsPsmd(pgdb As PGDB) As Task
             Using pokemonGraphic As New Farc
-                Await pokemonGraphic.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphic.bin"), CurrentIOProvider)
+                Await pokemonGraphic.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphic.bin"), CurrentFileSystem)
 
                 Dim token As New ProgressReportToken
                 WatchProgressReportToken(token, False)
                 Await pokemonGraphic.SubstituteMissingAnimationsPsmd(pgdb, token)
                 UnwatchProgressReportToken(token)
 
-                Await pokemonGraphic.Save(CurrentIOProvider)
+                Await pokemonGraphic.Save(CurrentFileSystem)
             End Using
         End Function
 
@@ -294,7 +296,7 @@ Namespace MysteryDungeon.PSMD.Projects
         ''' Replaces placeholder portraits with the default emotion. Build progress is reported too.
         ''' </summary>
         Private Async Function SubstituteMissingPortraitsPsmd() As Task
-            Dim provider = CurrentPluginManager.CurrentIOProvider
+            Dim provider = CurrentPluginManager.CurrentFileSystem
 
             'Extract face_graphic.bin
             Me.Message = My.Resources.Language.LoadingExtractingPortraits
@@ -468,7 +470,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                End Sub)
             RemoveHandler a3.ProgressChanged, onProgressed3
 
-            Await f.Save(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), CurrentPluginManager.CurrentIOProvider)
+            Await f.Save(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), CurrentPluginManager.CurrentFileSystem)
         End Function
 
         ''' <summary>
@@ -478,7 +480,7 @@ Namespace MysteryDungeon.PSMD.Projects
         ''' <returns></returns>
         Private Async Function FixHighResModelsPsmd(starters As StarterDefinitionsPsmd) As Task
             Dim actorInfo As New ActorDataInfo
-            Await actorInfo.OpenFile(IO.Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon", "pokemon_actor_data_info.bin"), CurrentPluginManager.CurrentIOProvider)
+            Await actorInfo.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon", "pokemon_actor_data_info.bin"), CurrentPluginManager.CurrentFileSystem)
             actorInfo.GetEntryByName("FUSHIGIDANE_H").PokemonID = starters.Starter1
             actorInfo.GetEntryByName("HITOKAGE_H").PokemonID = starters.Starter5
             actorInfo.GetEntryByName("ZENIGAME_H").PokemonID = starters.Starter10
@@ -501,7 +503,7 @@ Namespace MysteryDungeon.PSMD.Projects
             actorInfo.GetEntryByName("HARIMARON_H").PokemonID = starters.Starter766
             actorInfo.GetEntryByName("FOKKO_H").PokemonID = starters.Starter769
             actorInfo.GetEntryByName("KEROMATSU_H").PokemonID = starters.Starter772
-            Await actorInfo.Save(CurrentPluginManager.CurrentIOProvider)
+            Await actorInfo.Save(CurrentPluginManager.CurrentFileSystem)
         End Function
 
 
@@ -554,22 +556,22 @@ Namespace MysteryDungeon.PSMD.Projects
         End Function
 
         Private Sub ReplacePersonalityTestScriptPsmd(starters As StarterDefinitionsPsmd)
-            CurrentIOProvider.WriteAllText(IO.Path.Combine(Me.GetRootDirectory, "script", "event", "other", "seikakushindan", "seikakushindan.lua"), GetCustomPersonalityTestScriptPsmd(starters))
+            CurrentFileSystem.WriteAllText(Path.Combine(Me.GetRootDirectory, "script", "event", "other", "seikakushindan", "seikakushindan.lua"), GetCustomPersonalityTestScriptPsmd(starters))
         End Sub
 
         Private Async Function UpdateLanguageFilesForCustomPersonalityTestScriptPsmd() As Task
-            Dim enLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "en", "seikakushindan.bin")
-            Dim frLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "fr", "seikakushindan.bin")
-            Dim geLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "ge", "seikakushindan.bin")
-            Dim itLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "it", "seikakushindan.bin")
-            Dim jpLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "jp", "seikakushindan.bin")
-            Dim spLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "sp", "seikakushindan.bin")
-            Dim usLangFile = IO.Path.Combine(Me.GetRootDirectory, "Languages", "us", "seikakushindan.bin")
+            Dim enLangFile = Path.Combine(Me.GetRootDirectory, "Languages", "en", "seikakushindan.bin")
+            Dim frLangFile = Path.Combine(Me.GetRootDirectory, "Languages", "fr", "seikakushindan.bin")
+            Dim geLangFile = Path.Combine(Me.GetRootDirectory, "Languages", "ge", "seikakushindan.bin")
+            Dim itLangFile = Path.Combine(Me.GetRootDirectory, "Languages", "it", "seikakushindan.bin")
+            Dim jpLangFile = Path.Combine(Me.GetRootDirectory, "Languages", "jp", "seikakushindan.bin")
+            Dim spLangFile = Path.Combine(Me.GetRootDirectory, "Languages", "sp", "seikakushindan.bin")
+            Dim usLangFile = Path.Combine(Me.GetRootDirectory, "Languages", "us", "seikakushindan.bin")
 
             For Each langFilename In {enLangFile, geLangFile, itLangFile, jpLangFile, spLangFile, usLangFile}
                 If File.Exists(langFilename) Then
                     Using langFile As New MessageBin()
-                        Await langFile.OpenFile(langFilename, CurrentPluginManager.CurrentIOProvider)
+                        Await langFile.OpenFile(langFilename, CurrentPluginManager.CurrentFileSystem)
                         If Not langFile.Strings.Any(Function(x) x.Hash = 200000) Then
                             langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200000, .Entry = "Hero: \D301" & vbLf & "Partner: \D302"})
                             langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200001, .Entry = "Done"})
@@ -578,14 +580,14 @@ Namespace MysteryDungeon.PSMD.Projects
                             langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200004, .Entry = "Setting Hero..."})
                             langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200005, .Entry = "Setting Partner..."})
                         End If
-                        Await langFile.Save(CurrentPluginManager.CurrentIOProvider)
+                        Await langFile.Save(CurrentPluginManager.CurrentFileSystem)
                     End Using
                 End If
             Next
 
             If File.Exists(frLangFile) Then
                 Using langFile As New MessageBin()
-                    Await langFile.OpenFile(frLangFile, CurrentPluginManager.CurrentIOProvider)
+                    Await langFile.OpenFile(frLangFile, CurrentPluginManager.CurrentFileSystem)
                     If Not langFile.Strings.Any(Function(x) x.Hash = 200000) Then
                         langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200000, .Entry = "L'héro: \D301" & vbLf & "Le partenaire: \D302"})
                         langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200001, .Entry = "Fini"})
@@ -594,7 +596,7 @@ Namespace MysteryDungeon.PSMD.Projects
                         langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200004, .Entry = "Définir le héros..."})
                         langFile.Strings.Add(New MessageBinStringEntry() With {.Hash = 200005, .Entry = "Définir le partenaire..."})
                     End If
-                    Await langFile.Save(CurrentPluginManager.CurrentIOProvider)
+                    Await langFile.Save(CurrentPluginManager.CurrentFileSystem)
                 End Using
             End If
 
@@ -626,15 +628,15 @@ Namespace MysteryDungeon.PSMD.Projects
             charchoiceLanguageTemplates.Add("sp", "\C200¡{0}!")
             charchoiceLanguageTemplates.Add("us", "\C200{0}!")
             For Each charchoiceLanguageTemplate In charchoiceLanguageTemplates
-                If IO.Directory.Exists(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key)) Then
+                If Directory.Exists(Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key)) Then
                     'Get Pokemon names to work with
                     Dim common As New MessageBin
-                    Await common.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "common.bin"), CurrentPluginManager.CurrentIOProvider)
+                    Await common.OpenFile(Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "common.bin"), CurrentPluginManager.CurrentFileSystem)
                     Dim pokemonNames = common.GetPsmdCommonPokemonNames
 
                     'Open the message bin file
                     Dim charchoiceFile As New MessageBin
-                    Await charchoiceFile.OpenFile(IO.Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "inc_charchoice.bin"), CurrentPluginManager.CurrentIOProvider)
+                    Await charchoiceFile.OpenFile(Path.Combine(Me.GetRootDirectory, "Languages", charchoiceLanguageTemplate.Key, "inc_charchoice.bin"), CurrentPluginManager.CurrentFileSystem)
 
                     For Each charchoice In charchoiceData
                         Dim pokemonID As Integer
@@ -690,7 +692,7 @@ Namespace MysteryDungeon.PSMD.Projects
                     Next
 
                     'Save the file
-                    Await charchoiceFile.Save(CurrentPluginManager.CurrentIOProvider)
+                    Await charchoiceFile.Save(CurrentPluginManager.CurrentFileSystem)
                 End If
             Next
         End Function
@@ -699,7 +701,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim scarfGlowRegex = New Regex("(if(.|\n)*?)(else\s(.|\n)*?)(end)", RegexOptions.Compiled Or RegexOptions.IgnoreCase)
             Dim scarfGlowScripts = {"script/event/main15/120_enteishujinkoushinkaboss1st/enteishujinkoushinkaboss1st.lua"}
             For Each item In scarfGlowScripts
-                Dim scriptContent = CurrentIOProvider.ReadAllText(Path.Combine(Me.GetRootDirectory, item))
+                Dim scriptContent = CurrentFileSystem.ReadAllText(Path.Combine(Me.GetRootDirectory, item))
 
                 For Each targetSection As Match In scarfGlowRegex.Matches(scriptContent)
                     Dim newContent As New StringBuilder
@@ -722,7 +724,7 @@ Namespace MysteryDungeon.PSMD.Projects
                     scriptContent = scriptContent.Replace(targetSection.Value, newContent.ToString())
                 Next
 
-                CurrentIOProvider.WriteAllText(Path.Combine(Me.GetRootDirectory, item), scriptContent)
+                CurrentFileSystem.WriteAllText(Path.Combine(Me.GetRootDirectory, item), scriptContent)
             Next
         End Sub
 
@@ -735,7 +737,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.EnablePortraitPatching = True
 
             'Add fixed_pokemon to project, so we can edit it with our UI
-            Me.AddExistingFile("", Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), CurrentIOProvider)
+            Me.AddExistingFile("", Path.Combine(Me.GetRawFilesDir, "romfs", "dungeon", "fixed_pokemon.bin"), CurrentFileSystem)
 
             Me.IsCompleted = True
         End Function
@@ -747,7 +749,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
             'Non Pokemon-dependent patches
             Dim pgdb As New PGDB
-            Await pgdb.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphics_database.bin"), CurrentIOProvider)
+            Await pgdb.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "pokemon_graphics_database.bin"), CurrentFileSystem)
 
             Await FixPokemonWithDummyModel(pgdb)
 
@@ -762,7 +764,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
                 'Pokemon-dependent patches
                 Dim fixedPokemon As New FixedPokemon()
-                Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)
+                Await fixedPokemon.OpenFile(fpFilename, Me.CurrentFileSystem)
                 Dim starters = New StarterDefinitionsPsmd(fixedPokemon)
 
                 ReplacePersonalityTestScriptPsmd(starters)
@@ -783,7 +785,7 @@ Namespace MysteryDungeon.PSMD.Projects
 
                 'Pokemon-dependent patches
                 Dim fixedPokemon As New FixedPokemon()
-                Await fixedPokemon.OpenFile(fpFilename, Me.CurrentIOProvider)
+                Await fixedPokemon.OpenFile(fpFilename, Me.CurrentFileSystem)
                 Dim starters = New StarterDefinitionsGti(fixedPokemon)
 
                 FixPersonalityTestGti(starters)

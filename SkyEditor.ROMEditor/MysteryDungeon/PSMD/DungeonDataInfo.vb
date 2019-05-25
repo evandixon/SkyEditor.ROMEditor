@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD
     Public Class DungeonDataInfo
@@ -27,7 +28,7 @@ Namespace MysteryDungeon.PSMD
 
         Public Property Entries As List(Of DungeonDataInfoEntry)
 
-        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Using f As New GenericFile
                 Await f.OpenFile(Filename, Provider)
 

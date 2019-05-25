@@ -4,6 +4,7 @@ Imports SkyEditor.CodeEditor
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 Imports SkyEditor.UI.WPF
 
@@ -13,12 +14,12 @@ Namespace MysteryDungeon.PSMD.ViewModels
         Implements INotifyModified
         Implements INamed
 
-        Public Sub New(ioProvider As IIOProvider)
-            If ioProvider Is Nothing Then
-                Throw New ArgumentNullException(NameOf(ioProvider))
+        Public Sub New(FileSystem As IFileSystem)
+            If FileSystem Is Nothing Then
+                Throw New ArgumentNullException(NameOf(FileSystem))
             End If
 
-            CurrentIOProvider = ioProvider
+            CurrentFileSystem = FileSystem
         End Sub
 
         Public Overridable ReadOnly Property Name As String Implements INamed.Name
@@ -29,7 +30,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
         Public Property MessageTabs As ObservableCollection(Of TabItem)
         Protected Overridable ReadOnly Property TargetExtension As String = ".bin"
-        Protected Property CurrentIOProvider As IIOProvider
+        Protected Property CurrentFileSystem As IFileSystem
 
         Public Overrides Function SupportsObject(Obj As Object) As Boolean
             Return MyBase.SupportsObject(Obj) AndAlso CurrentApplicationViewModel.GetFileViewModelForModel(Obj)?.ParentProject IsNot Nothing
@@ -65,14 +66,14 @@ Namespace MysteryDungeon.PSMD.ViewModels
                 End If
 
                 If exists Then
-                    Await msgfile.OpenFile(filename, CurrentIOProvider)
+                    Await msgfile.OpenFile(filename, CurrentFileSystem)
                     messageFiles.Add(Path.GetFileName(item), msgfile)
                 End If
             Next
 
             MessageTabs = New ObservableCollection(Of TabItem)
             For Each item In messageFiles
-                Dim m As New MessageBinViewModel(CurrentIOProvider)
+                Dim m As New MessageBinViewModel(CurrentFileSystem)
                 m.SetApplicationViewModel(CurrentApplicationViewModel)
                 m.SetModel(item.Value)
                 AddHandler m.Modified, AddressOf Me.OnModified
@@ -80,7 +81,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
                 Dim debugFilename = Path.ChangeExtension(item.Value.Filename.Replace("\", "/").Replace("Languages/", "Languages/debug_"), ".dbin")
                 If File.Exists(debugFilename) Then
                     Dim d As New MessageBinDebug
-                    Await d.OpenFile(debugFilename, CurrentIOProvider)
+                    Await d.OpenFile(debugFilename, CurrentFileSystem)
                     m.LoadDebugSymbols(d)
                 End If
 
@@ -99,7 +100,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
             MyBase.UpdateModel(model)
 
             For Each item As TabItem In MessageTabs
-                Await DirectCast(DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit, MessageBinViewModel).Save(CurrentIOProvider)
+                Await DirectCast(DirectCast(item.Content, ObjectControlPlaceholder).ObjectToEdit, MessageBinViewModel).Save(CurrentFileSystem)
             Next
         End Sub
 

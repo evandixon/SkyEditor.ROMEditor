@@ -7,6 +7,7 @@ Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
 Imports SkyEditor.ROMEditor.Projects
+Imports SkyEditor.Utilities.AsyncFor
 
 Namespace MysteryDungeon.PSMD.Projects
     Public Class PsmdPortraitProject
@@ -23,7 +24,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.Progress = 0
             Me.IsIndeterminate = False
 
-            Dim provider = CurrentPluginManager.CurrentIOProvider
+            Dim provider = CurrentPluginManager.CurrentFileSystem
             Dim faceFarc As New Farc
             Await faceFarc.OpenFile(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), provider)
 
@@ -62,7 +63,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                End Sub)
             RemoveHandler a.ProgressChanged, onProgressed
 
-            Await f.Save(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), CurrentPluginManager.CurrentIOProvider)
+            Await f.Save(Path.Combine(Me.GetRawFilesDir, "romfs", "face_graphic.bin"), CurrentPluginManager.CurrentFileSystem)
 
             Me.IsCompleted = True
 

@@ -1,5 +1,7 @@
-﻿Imports SkyEditor.Core.IO
+﻿Imports System.IO
+Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.IO.FileSystem
 
 Namespace Windows.FileFormats.Explorers.Script
     Public Class SSA
@@ -11,11 +13,11 @@ Namespace Windows.FileFormats.Explorers.Script
 
         Public ReadOnly Property Name As String Implements INamed.Name
             Get
-                Return IO.Path.GetFileName(Filename)
+                Return Path.GetFileName(Filename)
             End Get
         End Property
 
-        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Me.Filename = Filename
 
             Using f As New GenericFile

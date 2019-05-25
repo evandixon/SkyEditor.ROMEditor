@@ -12,13 +12,13 @@ Namespace MysteryDungeon.Explorers.Projects
         Inherits GenericModProject
 
         Public Overrides Function GetFilesToCopy(solution As Solution, baseRomProjectName As String) As IEnumerable(Of String)
-            Return {IO.Path.Combine("overlay", "overlay_0013.bin"),
-                    IO.Path.Combine("data", "MESSAGE", "text_e.str"),
-                    IO.Path.Combine("data", "MESSAGE", "text_f.str"),
-                    IO.Path.Combine("data", "MESSAGE", "text_s.str"),
-                    IO.Path.Combine("data", "MESSAGE", "text_i.str"),
-                    IO.Path.Combine("data", "MESSAGE", "text_g.str"),
-                    IO.Path.Combine("data", "MESSAGE", "text_j.str")}
+            Return {Path.Combine("overlay", "overlay_0013.bin"),
+                    Path.Combine("data", "MESSAGE", "text_e.str"),
+                    Path.Combine("data", "MESSAGE", "text_f.str"),
+                    Path.Combine("data", "MESSAGE", "text_s.str"),
+                    Path.Combine("data", "MESSAGE", "text_i.str"),
+                    Path.Combine("data", "MESSAGE", "text_g.str"),
+                    Path.Combine("data", "MESSAGE", "text_j.str")}
         End Function
         Public Overrides Function GetSupportedGameCodes() As IEnumerable(Of String)
             Return {GameStrings.SkyCode}
@@ -72,14 +72,14 @@ Namespace MysteryDungeon.Explorers.Projects
             For Each item In languageDictionary
                 If File.Exists(Path.Combine(rawDir, "Data", "MESSAGE", item.Key)) Then
                     Using langString = New LanguageString()
-                        Await langString.OpenFile(Path.Combine(rawDir, "Data", "MESSAGE", item.Key), CurrentPluginManager.CurrentIOProvider)
-                        Json.SerializeToFile(Path.Combine(projDir, "Languages", item.Value), langString.Items, CurrentPluginManager.CurrentIOProvider)
+                        Await langString.OpenFile(Path.Combine(rawDir, "Data", "MESSAGE", item.Key), CurrentPluginManager.CurrentFileSystem)
+                        Json.SerializeToFile(Path.Combine(projDir, "Languages", item.Value), langString.Items, CurrentPluginManager.CurrentFileSystem)
                     End Using
                 End If
             Next
 
             'Add Personality Test
-            Me.AddExistingFileToPath("/Starter Pokemon", Path.Combine(rawDir, "Overlay", "overlay_0013.bin"), GetType(Overlay13), CurrentPluginManager.CurrentIOProvider)
+            Me.AddExistingFileToPath("/Starter Pokemon", Path.Combine(rawDir, "Overlay", "overlay_0013.bin"), GetType(Overlay13), CurrentPluginManager.CurrentFileSystem)
 
             Me.Progress = 1
             Me.IsIndeterminate = False
@@ -102,16 +102,16 @@ Namespace MysteryDungeon.Explorers.Projects
             languageDictionary.Add("text_g.str", "Deutsche") 'German
             languageDictionary.Add("text_j.str", "日本語") 'Japanese
             For Each item In languageDictionary
-                If File.Exists(IO.Path.Combine(projDir, "Languages", item.Value)) Then
+                If File.Exists(Path.Combine(projDir, "Languages", item.Value)) Then
                     Using langString As New LanguageString
                         langString.CreateFile("")
-                        langString.Items = Json.DeserializeFromFile(Of List(Of String))(Path.Combine(projDir, "Languages", item.Value), CurrentPluginManager.CurrentIOProvider)
+                        langString.Items = Json.DeserializeFromFile(Of List(Of String))(Path.Combine(projDir, "Languages", item.Value), CurrentPluginManager.CurrentFileSystem)
 
                         If personalityTest IsNot Nothing Then
                             langString.UpdatePersonalityTestResult(personalityTest)
                         End If
 
-                        Await langString.Save(IO.Path.Combine(rawDir, "Data", "MESSAGE", item.Key), CurrentPluginManager.CurrentIOProvider)
+                        Await langString.Save(Path.Combine(rawDir, "Data", "MESSAGE", item.Key), CurrentPluginManager.CurrentFileSystem)
                     End Using
                 End If
             Next

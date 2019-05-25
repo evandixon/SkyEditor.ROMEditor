@@ -1,4 +1,5 @@
-﻿Imports PPMDU
+﻿Imports System.IO
+Imports PPMDU
 Imports SkyEditor.ROMEditor.Projects
 Imports SkyEditor.ROMEditor.Windows
 
@@ -13,7 +14,7 @@ Namespace MysteryDungeon.Explorers.Projects
         Public Overrides Async Function Initialize() As Task
             Await MyBase.Initialize()
 
-            Dim outputDir = IO.Path.Combine(Me.GetRootDirectory)
+            Dim outputDir = Path.Combine(Me.GetRootDirectory)
 
             Me.IsIndeterminate = True
             Me.Message = My.Resources.Language.Loading
@@ -29,8 +30,8 @@ Namespace MysteryDungeon.Explorers.Projects
             End Using
 
             'Add files to project
-            For Each item In IO.Directory.GetFiles(outputDir, "*.xml", IO.SearchOption.AllDirectories)
-                Me.AddExistingFile(IO.Path.GetDirectoryName(item).Replace(outputDir, ""), item, CurrentPluginManager.CurrentIOProvider)
+            For Each item In Directory.GetFiles(outputDir, "*.xml", SearchOption.AllDirectories)
+                Me.AddExistingFile(Path.GetDirectoryName(item).Replace(outputDir, ""), item, CurrentPluginManager.CurrentFileSystem)
             Next
 
             Me.Message = My.Resources.Language.Complete
@@ -39,7 +40,7 @@ Namespace MysteryDungeon.Explorers.Projects
         End Function
 
         Public Overrides Async Function Build() As Task
-            Dim outputDir = IO.Path.Combine(Me.GetRootDirectory)
+            Dim outputDir = Path.Combine(Me.GetRootDirectory)
 
             Using external As New UtilityManager
                 Dim options As New StatsUtilOptions

@@ -1,6 +1,8 @@
-﻿Imports SkyEditor.Core.Projects
+﻿Imports System.IO
+Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Projects
+Imports SkyEditor.Utilities.AsyncFor
 
 Namespace MysteryDungeon.PSMD.Projects
     Public Class GtiImage2dProject
@@ -11,7 +13,7 @@ Namespace MysteryDungeon.PSMD.Projects
         End Function
 
         Public Overrides Function GetFilesToCopy(Solution As Solution, BaseRomProjectName As String) As IEnumerable(Of String)
-            Return {IO.Path.Combine("romfs", "bg"), IO.Path.Combine("romfs", "font"), IO.Path.Combine("romfs", "image_2d")}
+            Return {Path.Combine("romfs", "bg"), Path.Combine("romfs", "font"), Path.Combine("romfs", "image_2d")}
         End Function
 
         Public Overrides Async Function Initialize() As Task
@@ -23,7 +25,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.IsIndeterminate = False
             Me.Progress = 0
 
-            Dim backFiles = IO.Directory.GetFiles(IO.Path.Combine(rawFilesDir, "romfs"), "*.img", IO.SearchOption.AllDirectories)
+            Dim backFiles = Directory.GetFiles(Path.Combine(rawFilesDir, "romfs"), "*.img", SearchOption.AllDirectories)
             Dim f As New AsyncFor
             AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
                                               Me.Progress = e.Progress
@@ -31,17 +33,17 @@ Namespace MysteryDungeon.PSMD.Projects
             Await f.RunForEach(backFiles,
                                Async Function(Item As String) As Task
                                    Using b As New CteImage
-                                       Await b.OpenFile(Item, CurrentPluginManager.CurrentIOProvider)
+                                       Await b.OpenFile(Item, CurrentPluginManager.CurrentFileSystem)
                                        Dim image = b.ContainedImage
-                                       Dim newFilename = IO.Path.Combine(backDir, IO.Path.GetDirectoryName(Item).Replace(rawFilesDir, "").Replace("\romfs", "").Trim("\"), IO.Path.GetFileNameWithoutExtension(Item) & ".png")
-                                       If Not IO.Directory.Exists(IO.Path.GetDirectoryName(newFilename)) Then
-                                           IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(newFilename))
+                                       Dim newFilename = Path.Combine(backDir, Path.GetDirectoryName(Item).Replace(rawFilesDir, "").Replace("\romfs", "").Trim("\"), Path.GetFileNameWithoutExtension(Item) & ".png")
+                                       If Not Directory.Exists(Path.GetDirectoryName(newFilename)) Then
+                                           Directory.CreateDirectory(Path.GetDirectoryName(newFilename))
                                        End If
                                        image.Save(newFilename, Drawing.Imaging.ImageFormat.Png)
-                                       IO.File.Copy(newFilename, newFilename & ".original")
+                                       File.Copy(newFilename, newFilename & ".original")
 
-                                       Dim internalDir = IO.Path.GetDirectoryName(Item).Replace(rawFilesDir, "").Replace("\romfs", "")
-                                       Me.AddExistingFile(internalDir, newFilename, CurrentPluginManager.CurrentIOProvider)
+                                       Dim internalDir = Path.GetDirectoryName(Item).Replace(rawFilesDir, "").Replace("\romfs", "")
+                                       Me.AddExistingFile(internalDir, newFilename, CurrentPluginManager.CurrentFileSystem)
                                    End Using
                                End Function)
 
@@ -54,12 +56,12 @@ Namespace MysteryDungeon.PSMD.Projects
             Dim sourceDir = GetRootDirectory()
             Dim rawFilesDir = GetRawFilesDir()
 
-            For Each background In IO.Directory.GetFiles(GetRootDirectory, "*.png", IO.SearchOption.AllDirectories)
+            For Each background In Directory.GetFiles(GetRootDirectory, "*.png", SearchOption.AllDirectories)
                 Dim includeInPack As Boolean
 
-                If IO.File.Exists(background & ".original") Then
-                    Using bmp As New IO.FileStream(background, IO.FileMode.Open)
-                        Using orig As New IO.FileStream(background & ".original", IO.FileMode.Open)
+                If File.Exists(background & ".original") Then
+                    Using bmp As New FileStream(background, FileMode.Open)
+                        Using orig As New FileStream(background & ".original", FileMode.Open)
                             Dim equal As Boolean = (bmp.Length = orig.Length)
                             While equal
                                 Dim b = bmp.ReadByte
@@ -78,9 +80,9 @@ Namespace MysteryDungeon.PSMD.Projects
 
                 If includeInPack Then
                     Dim img As New CteImage
-                    Await img.OpenFile(IO.Path.Combine(rawFilesDir, "romfs", IO.Path.GetDirectoryName(background).Replace(sourceDir, ""), IO.Path.GetFileNameWithoutExtension(background) & ".img"), CurrentPluginManager.CurrentIOProvider)
+                    Await img.OpenFile(Path.Combine(rawFilesDir, "romfs", Path.GetDirectoryName(background).Replace(sourceDir, ""), Path.GetFileNameWithoutExtension(background) & ".img"), CurrentPluginManager.CurrentFileSystem)
                     img.ContainedImage = Drawing.Image.FromFile(background)
-                    Await img.Save(CurrentPluginManager.CurrentIOProvider)
+                    Await img.Save(CurrentPluginManager.CurrentFileSystem)
                     img.Dispose()
                 End If
 

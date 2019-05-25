@@ -7,10 +7,10 @@ Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
 
     Private Const TestCategory As String = "Combined EOS/BRT Tests"
 
-    Dim provider As IIOProvider
+    Dim provider As IFileSystem
 
     '<TestInitialize> Public Sub TestInit()
-    '    provider = New PhysicalIOProvider
+    '    provider = New PhysicalFileSystem
     '    If Not BRTUTests.IsTestInitialized Then
     '        BRTUTests.UnpackFiles(provider)
     '    End If

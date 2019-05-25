@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon
     ''' <summary>
@@ -168,7 +169,7 @@ Namespace MysteryDungeon
             End If
         End Sub
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
             ProcessData()
         End Function
@@ -262,7 +263,7 @@ Namespace MysteryDungeon
             End While
         End Function
 
-        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IFileSystem) As Task
             Await DoPreSave()
 
             Await MyBase.Save(Destination, provider)

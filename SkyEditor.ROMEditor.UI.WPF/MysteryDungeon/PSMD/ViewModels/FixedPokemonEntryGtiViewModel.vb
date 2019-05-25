@@ -1,6 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Projects
 
@@ -10,15 +11,15 @@ Namespace MysteryDungeon.PSMD.ViewModels
         Implements INotifyPropertyChanged
         Implements INotifyModified
 
-        Public Sub New(fixedPokemon As FixedPokemon, ioProvider As IIOProvider)
+        Public Sub New(fixedPokemon As FixedPokemon, FileSystem As IFileSystem)
             If fixedPokemon Is Nothing Then
                 Throw New ArgumentNullException(NameOf(fixedPokemon))
             End If
-            If ioProvider Is Nothing Then
-                Throw New ArgumentNullException(NameOf(ioProvider))
+            If FileSystem Is Nothing Then
+                Throw New ArgumentNullException(NameOf(FileSystem))
             End If
 
-            CurrentIOProvider = ioProvider
+            CurrentFileSystem = FileSystem
         End Sub
 
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
@@ -28,7 +29,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
             RaiseEvent Modified(Me, New EventArgs)
         End Sub
 
-        Protected Property CurrentIOProvider As IIOProvider
+        Protected Property CurrentFileSystem As IFileSystem
 
         Protected Property FixedPokemon As FixedPokemon
 

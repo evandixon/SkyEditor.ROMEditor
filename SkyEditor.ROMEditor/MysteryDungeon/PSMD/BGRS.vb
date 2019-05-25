@@ -1,5 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.IO.PluginInfrastructure
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD
     Public Class BGRS
@@ -114,7 +115,7 @@ Namespace MysteryDungeon.PSMD
 
         Private Property UsesDevNames As Boolean
 
-        Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(filename As String, provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Using f As New GenericFile(filename, provider)
                 Await OpenInternal(f)
             End Using
@@ -277,12 +278,12 @@ Namespace MysteryDungeon.PSMD
             Return animSection
         End Function
 
-        Public Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
+        Public Function Save(filename As String, provider As IFileSystem) As Task Implements ISavableAs.Save
             provider.WriteAllBytes(filename, GetRawData())
             Return Task.CompletedTask
         End Function
 
-        Public Async Function Save(provider As IIOProvider) As Task Implements ISavable.Save
+        Public Async Function Save(provider As IFileSystem) As Task Implements ISavable.Save
             Await Save(Me.Filename, provider)
         End Function
 

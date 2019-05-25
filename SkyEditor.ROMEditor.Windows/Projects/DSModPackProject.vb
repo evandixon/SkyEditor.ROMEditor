@@ -100,21 +100,21 @@ Namespace Projects
         ''' </summary>
         ''' <returns></returns>
         Public Overridable Function GetSourceModsDir() As String
-            Return IO.Path.Combine(GetRootDirectory, "Mods")
+            Return Path.Combine(GetRootDirectory, "Mods")
         End Function
 
         'Gets the directory mods in the current modpack build are stored in.
         Public Overridable Function GetModsDir() As String
-            Return IO.Path.Combine(GetModPackDir, "Mods")
+            Return Path.Combine(GetModPackDir, "Mods")
         End Function
         Public Overridable Function GetToolsDir() As String
-            Return IO.Path.Combine(GetModPackDir, "Tools")
+            Return Path.Combine(GetModPackDir, "Tools")
         End Function
         Public Overridable Function GetPatchersDir() As String
-            Return IO.Path.Combine(GetModPackDir, "Tools", "Patchers")
+            Return Path.Combine(GetModPackDir, "Tools", "Patchers")
         End Function
         Public Overridable Function GetModPackDir() As String
-            Return IO.Path.Combine(IO.Path.GetDirectoryName(Me.Filename), "Modpack Files")
+            Return Path.Combine(Path.GetDirectoryName(Me.Filename), "Modpack Files")
         End Function
 
         ''' <summary>
@@ -122,7 +122,7 @@ Namespace Projects
         ''' </summary>
         ''' <returns></returns>
         Public Overridable Function GetOutputDir() As String
-            Return IO.Path.Combine(IO.Path.GetDirectoryName(Me.Filename), "Output")
+            Return Path.Combine(Path.GetDirectoryName(Me.Filename), "Output")
         End Function
 
         Public Overridable Function GetBaseRomFilename(solution As Solution) As String
@@ -140,7 +140,7 @@ Namespace Projects
             Return p.GameCode
         End Function
         Public Overridable Function GetLocalSmdhPath() As String
-            Return IO.Path.Combine(GetRootDirectory, "Modpack.smdh")
+            Return Path.Combine(GetRootDirectory, "Modpack.smdh")
         End Function
 
         Public Overrides Async Function Initialize() As Task
@@ -178,7 +178,7 @@ Namespace Projects
             End If
 
             'Copy external mods
-            For Each item In IO.Directory.GetFiles(modsSourceDir)
+            For Each item In Directory.GetFiles(modsSourceDir)
                 ModBuilder.CopyMod(item, modpackDir, True)
             Next
 

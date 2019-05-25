@@ -12,7 +12,7 @@ Imports SkyEditor.ROMEditor.Utilities
 
     Private Const Category As String = "BRT (U) Files"
 
-    Dim provider As IIOProvider
+    Dim provider As IFileSystem
 
     <TestInitialize()> Public Sub TestInit()
         Try

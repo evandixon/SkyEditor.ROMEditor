@@ -1,13 +1,15 @@
-﻿Imports SkyEditor.Core.Projects
+﻿Imports System.IO
+Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Projects
+Imports SkyEditor.Utilities.AsyncFor
 
 Namespace MysteryDungeon.Explorers.Projects
     Public Class SkyBackModProject
         Inherits GenericModProject
 
         Public Overrides Function GetFilesToCopy(Solution As Solution, BaseRomProjectName As String) As IEnumerable(Of String)
-            Return {IO.Path.Combine("data", "BACK")}
+            Return {Path.Combine("data", "BACK")}
         End Function
 
         Public Overrides Function GetSupportedGameCodes() As IEnumerable(Of String)
@@ -25,8 +27,8 @@ Namespace MysteryDungeon.Explorers.Projects
             Dim projectDir = GetRootDirectory()
             Dim sourceDir = GetRawFilesDir()
 
-            Dim BACKdir As String = IO.Path.Combine(projectDir, "Backgrounds")
-            Dim backFiles = IO.Directory.GetFiles(IO.Path.Combine(sourceDir, "Data", "BACK"), "*.bgp")
+            Dim BACKdir As String = Path.Combine(projectDir, "Backgrounds")
+            Dim backFiles = Directory.GetFiles(Path.Combine(sourceDir, "Data", "BACK"), "*.bgp")
             Dim f As New AsyncFor
             AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
                                               Me.Progress = e.Progress
@@ -34,17 +36,17 @@ Namespace MysteryDungeon.Explorers.Projects
             Await f.RunForEach(backFiles,
                                Async Function(Item As String) As Task
                                    Using b As New BGP
-                                       Await b.OpenFile(Item, CurrentPluginManager.CurrentIOProvider)
+                                       Await b.OpenFile(Item, CurrentPluginManager.CurrentFileSystem)
 
-                                       Dim newFilename = IO.Path.Combine(BACKdir, IO.Path.GetFileNameWithoutExtension(Item) & ".png")
-                                       If Not IO.Directory.Exists(IO.Path.GetDirectoryName(newFilename)) Then
-                                           IO.Directory.CreateDirectory(IO.Path.GetDirectoryName(newFilename))
+                                       Dim newFilename = Path.Combine(BACKdir, Path.GetFileNameWithoutExtension(Item) & ".png")
+                                       If Not Directory.Exists(Path.GetDirectoryName(newFilename)) Then
+                                           Directory.CreateDirectory(Path.GetDirectoryName(newFilename))
                                        End If
 
                                        b.GetImage.Save(newFilename, Drawing.Imaging.ImageFormat.Png)
-                                       IO.File.Copy(newFilename, newFilename & ".original")
+                                       File.Copy(newFilename, newFilename & ".original")
 
-                                       Me.AddExistingFileToPath("/" & IO.Path.GetFileName(newFilename), newFilename, Nothing, CurrentPluginManager.CurrentIOProvider)
+                                       Me.AddExistingFileToPath("/" & Path.GetFileName(newFilename), newFilename, Nothing, CurrentPluginManager.CurrentFileSystem)
                                    End Using
                                End Function)
 
@@ -58,13 +60,13 @@ Namespace MysteryDungeon.Explorers.Projects
             'Convert BACK
             Dim projectDir = GetRootDirectory()
             Dim rawDir = GetRawFilesDir()
-            If IO.Directory.Exists(IO.Path.Combine(projectDir, "Backgrounds")) Then
-                For Each background In IO.Directory.GetFiles(IO.Path.Combine(projectDir, "Backgrounds"), "*.png")
+            If Directory.Exists(Path.Combine(projectDir, "Backgrounds")) Then
+                For Each background In Directory.GetFiles(Path.Combine(projectDir, "Backgrounds"), "*.png")
                     Dim includeInPack As Boolean
 
-                    If IO.File.Exists(background & ".original") Then
-                        Using bmp As New IO.FileStream(background, IO.FileMode.Open)
-                            Using orig As New IO.FileStream(background & ".original", IO.FileMode.Open)
+                    If File.Exists(background & ".original") Then
+                        Using bmp As New FileStream(background, FileMode.Open)
+                            Using orig As New FileStream(background & ".original", FileMode.Open)
                                 Dim equal As Boolean = (bmp.Length = orig.Length)
                                 While equal
                                     Dim b = bmp.ReadByte
@@ -84,7 +86,7 @@ Namespace MysteryDungeon.Explorers.Projects
                     If includeInPack Then
                         Using bitmap = Drawing.Bitmap.FromFile(background)
                             Using img = BGP.ConvertFromBitmap(bitmap)
-                                Await img.Save(IO.Path.Combine(rawDir, "Data", "BACK", IO.Path.GetFileNameWithoutExtension(background) & ".bgp"), CurrentPluginManager.CurrentIOProvider)
+                                Await img.Save(Path.Combine(rawDir, "Data", "BACK", Path.GetFileNameWithoutExtension(background) & ".bgp"), CurrentPluginManager.CurrentFileSystem)
                             End Using
                         End Using
                     End If

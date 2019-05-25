@@ -9,6 +9,7 @@ Imports System.Collections.Concurrent
 Imports SkyEditor.Core
 Imports SkyEditor.ROMEditor.ProcessManagement
 Imports System.Windows.Threading
+Imports SkyEditor.Utilities.AsyncFor
 
 Namespace MysteryDungeon.PSMD.Projects
     ''' <summary>
@@ -156,7 +157,7 @@ Namespace MysteryDungeon.PSMD.Projects
             End If
 
             Dim message As New MessageBin
-            Await message.OpenFile(Path.Combine(languageDir, name), CurrentPluginManager.CurrentIOProvider)
+            Await message.OpenFile(Path.Combine(languageDir, name), CurrentPluginManager.CurrentFileSystem)
             Return message
         End Function
 
@@ -255,7 +256,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                                       Await f2.RunForEach(Directory.GetFiles(item),
                                                                           Async Function(file As String) As Task
                                                                               Using msg As New MessageBin(True)
-                                                                                  Await msg.OpenFileOnlyIDs(file, CurrentPluginManager.CurrentIOProvider)
+                                                                                  Await msg.OpenFileOnlyIDs(file, CurrentPluginManager.CurrentFileSystem)
 
                                                                                   For Each entry In msg.Strings
                                                                                       ExistingLanguageIds.Add(entry.Hash)
@@ -285,11 +286,11 @@ Namespace MysteryDungeon.PSMD.Projects
                                                       End If
 
                                                       Dim destDir = Path.Combine(Me.GetRootDirectory, "Languages", lang)
-                                                      Await FileSystem.EnsureDirectoryExistsEmpty(destDir, CurrentPluginManager.CurrentIOProvider)
+                                                      Await FileSystem.EnsureDirectoryExistsEmpty(destDir, CurrentPluginManager.CurrentFileSystem)
 
                                                       Dim farc As New Farc
-                                                      Await farc.OpenFile(item, CurrentPluginManager.CurrentIOProvider)
-                                                      Await farc.Extract(destDir, CurrentPluginManager.CurrentIOProvider)
+                                                      Await farc.OpenFile(item, CurrentPluginManager.CurrentFileSystem)
+                                                      Await farc.Extract(destDir, CurrentPluginManager.CurrentFileSystem)
                                                   End Function)
 
             'GTI style
@@ -309,8 +310,8 @@ Namespace MysteryDungeon.PSMD.Projects
                                                           End If
 
                                                           Dim destDir = Path.Combine(Me.GetRootDirectory, "Languages", lang)
-                                                          Await FileSystem.EnsureDirectoryExistsEmpty(destDir, CurrentPluginManager.CurrentIOProvider)
-                                                          Await FileSystem.CopyDirectory(item, destDir, CurrentPluginManager.CurrentIOProvider)
+                                                          Await FileSystem.EnsureDirectoryExistsEmpty(destDir, CurrentPluginManager.CurrentFileSystem)
+                                                          Await FileSystem.CopyDirectory(item, destDir, CurrentPluginManager.CurrentFileSystem)
                                                       End Function)
         End Function
 
@@ -373,7 +374,7 @@ Namespace MysteryDungeon.PSMD.Projects
             If AddScriptsToProject Then
                 For Each item In filesToOpen
                     Dim d = Path.GetDirectoryName(item).Replace(scriptDestination, "script")
-                    Me.AddExistingFile(d, item, CurrentPluginManager.CurrentIOProvider)
+                    Me.AddExistingFile(d, item, CurrentPluginManager.CurrentFileSystem)
                 Next
             End If
 
@@ -397,7 +398,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                        Me.Progress = count / dirs.Length
                                        Dim newFilename As String = "message_" & Path.GetFileNameWithoutExtension(dirs(count)) & ".bin"
                                        Dim newFilePath As String = Path.Combine(Path.Combine(Me.GetRawFilesDir, "romfs", newFilename.Replace("_jp", "")))
-                                       Await Farc.Pack(dirs(count), newFilePath, CurrentPluginManager.CurrentIOProvider)
+                                       Await Farc.Pack(dirs(count), newFilePath, CurrentPluginManager.CurrentFileSystem)
                                    Next
                                    Me.Progress = 1
                                End Function)
@@ -410,7 +411,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                        Me.Progress = count / dirs.Length
                                        Dim newFilename As String = "message_" & Path.GetFileNameWithoutExtension(dirs(count))
                                        Dim newFilePath As String = Path.Combine(Path.Combine(Me.GetRawFilesDir, "romfs", newFilename.Replace("_en", "")))
-                                       Await FileSystem.CopyDirectory(dirs(count), newFilePath, CurrentPluginManager.CurrentIOProvider)
+                                       Await FileSystem.CopyDirectory(dirs(count), newFilePath, CurrentPluginManager.CurrentFileSystem)
                                    Next
                                    Me.Progress = 1
                                End Function)

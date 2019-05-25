@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD
     Public Class PokemonDataInfo
@@ -162,7 +163,7 @@ Namespace MysteryDungeon.PSMD
 
         Public Property Entries As List(Of PokemonInfoEntry)
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
 
             Dim numEntries = Math.Floor(Me.Length / entryLength)
@@ -171,7 +172,7 @@ Namespace MysteryDungeon.PSMD
                 Entries.Add(New PokemonInfoEntry(Await ReadAsync(count * entryLength, entryLength)))
             Next
         End Function
-        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IFileSystem) As Task
             SetLength(Entries.Count * entryLength)
 
             For count = 0 To Entries.Count - 1

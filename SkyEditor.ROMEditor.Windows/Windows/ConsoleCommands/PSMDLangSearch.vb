@@ -1,31 +1,33 @@
-﻿Imports SkyEditor.Core.ConsoleCommands
+﻿Imports System.IO
+Imports SkyEditor.Core.ConsoleCommands
 Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
 
 Namespace Windows.ConsoleCommands
     Public Class PSMDLangSearch
         Inherits ConsoleCommand
 
-        Public Sub New(ioProvider As IIOProvider)
-            If ioProvider Is Nothing Then
-                Throw New ArgumentNullException(NameOf(ioProvider))
+        Public Sub New(FileSystem As IFileSystem)
+            If FileSystem Is Nothing Then
+                Throw New ArgumentNullException(NameOf(FileSystem))
             End If
 
-            CurrentIOProvider = ioProvider
+            CurrentFileSystem = FileSystem
         End Sub
 
-        Protected Property CurrentIOProvider As IIOProvider
+        Protected Property CurrentFileSystem As IFileSystem
 
         Public Overrides Async Function MainAsync(Arguments() As String) As Task
-            If IO.Directory.Exists(Arguments(0)) Then
+            If Directory.Exists(Arguments(0)) Then
                 Dim languageEntries As New Dictionary(Of String, Dictionary(Of UInteger, String))
                 Dim totalList As New Dictionary(Of UInteger, String)
-                For Each item In IO.Directory.GetFiles(Arguments(0))
+                For Each item In Directory.GetFiles(Arguments(0))
                     Dim msg As New MessageBin
-                    Await msg.OpenFile(item, CurrentIOProvider)
-                    languageEntries.Add(IO.Path.GetFileNameWithoutExtension(item), New Dictionary(Of UInteger, String))
+                    Await msg.OpenFile(item, CurrentFileSystem)
+                    languageEntries.Add(Path.GetFileNameWithoutExtension(item), New Dictionary(Of UInteger, String))
                     For Each s In msg.Strings
-                        languageEntries(IO.Path.GetFileNameWithoutExtension(item)).Add(s.Hash, s.Entry)
+                        languageEntries(Path.GetFileNameWithoutExtension(item)).Add(s.Hash, s.Entry)
                         If Not totalList.ContainsKey(s.Hash) Then
                             totalList.Add(s.Hash, s.Entry)
                         Else

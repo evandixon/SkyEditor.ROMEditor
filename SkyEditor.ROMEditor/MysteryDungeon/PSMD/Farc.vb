@@ -8,7 +8,9 @@ Imports Force.Crc32
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.IO.PluginInfrastructure
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Pokemon
+Imports SkyEditor.Utilities.AsyncFor
 
 Namespace MysteryDungeon.PSMD
     Public Class Farc
@@ -17,7 +19,7 @@ Namespace MysteryDungeon.PSMD
         Implements ISavableAs
         Implements IDetectableFileType
         Implements IDisposable
-        Implements IIOProvider
+        Implements IFileSystem
         Implements IReportProgress
 
         Private Shared Function GetFileSearchRegexQuestionMarkOnly(searchPattern As String) As StringBuilder
@@ -47,7 +49,7 @@ Namespace MysteryDungeon.PSMD
             Return regexString.ToString()
         End Function
 
-        Public Shared Async Function Pack(sourceDirectory As String, outputFile As String, provider As IIOProvider) As Task
+        Public Shared Async Function Pack(sourceDirectory As String, outputFile As String, provider As IFileSystem) As Task
             Using f As New Farc
                 For Each item In provider.GetFiles(sourceDirectory, "*", True)
                     f.WriteAllBytes(Path.GetFileName(item), provider.ReadAllBytes(item))
@@ -118,7 +120,7 @@ Namespace MysteryDungeon.PSMD
         Public Property Filename As String Implements IOnDisk.Filename
         Private Property Entries As ConcurrentDictionary(Of UInteger, FarcEntry) 'Key: hash, value: entry
 
-        Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(filename As String, provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Dim f As New GenericFile
             f.EnableInMemoryLoad = Me.EnableInMemoryLoad
             Await f.OpenFile(filename, provider)
@@ -373,7 +375,7 @@ Namespace MysteryDungeon.PSMD
             Return numberSet
         End Function
 
-        Public Async Function Extract(outputDirectory As String, provider As IIOProvider) As Task
+        Public Async Function Extract(outputDirectory As String, provider As IFileSystem) As Task
             IsCompleted = False
 
             Dim onProgressed = Sub(sender As Object, e As ProgressReportedEventArgs)
@@ -394,7 +396,7 @@ Namespace MysteryDungeon.PSMD
             RaiseEvent Completed(Me, New EventArgs)
         End Function
 
-        Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
+        Public Async Function Save(filename As String, provider As IFileSystem) As Task Implements ISavableAs.Save
             'Analyze data to identify duplicate entries (i.e. make sure files with the same data are not added multiple times, instead having multiple references to the same data)
             Dim condensedEntries As New List(Of EntryMapping)
 
@@ -499,7 +501,7 @@ Namespace MysteryDungeon.PSMD
             End Using
         End Function
 
-        Public Async Function Save(provider As IIOProvider) As Task Implements ISavable.Save
+        Public Async Function Save(provider As IFileSystem) As Task Implements ISavable.Save
             Await Save(Filename, provider)
         End Function
 
@@ -535,33 +537,33 @@ Namespace MysteryDungeon.PSMD
         Public Property IsCompleted As Boolean Implements IReportProgress.IsCompleted
 #End Region
 
-#Region "IIOProvider Implementation"
-        Public Property WorkingDirectory As String Implements IIOProvider.WorkingDirectory
+#Region "IFileSystem Implementation"
+        Public Property WorkingDirectory As String Implements IFileSystem.WorkingDirectory
 
-        Public Sub ResetWorkingDirectory() Implements IIOProvider.ResetWorkingDirectory
+        Public Sub ResetWorkingDirectory() Implements IFileSystem.ResetWorkingDirectory
             WorkingDirectory = "/"
         End Sub
         Protected Function FixPath(filePath As String) As String
             Return filePath.TrimStart("/")
         End Function
 
-        Public Function GetFileLength(filename As String) As Long Implements IIOProvider.GetFileLength
+        Public Function GetFileLength(filename As String) As Long Implements IFileSystem.GetFileLength
             Return GetFileEntry(FixPath(filename)).DataLength
         End Function
 
-        Public Function FileExists(filename As String) As Boolean Implements IIOProvider.FileExists
+        Public Function FileExists(filename As String) As Boolean Implements IFileSystem.FileExists
             Return GetFileEntry(FixPath(filename)) IsNot Nothing
         End Function
 
-        Public Function DirectoryExists(path As String) As Boolean Implements IIOProvider.DirectoryExists
+        Public Function DirectoryExists(path As String) As Boolean Implements IFileSystem.DirectoryExists
             Return False
         End Function
 
-        Public Sub CreateDirectory(path As String) Implements IIOProvider.CreateDirectory
+        Public Sub CreateDirectory(path As String) Implements IFileSystem.CreateDirectory
             Throw New NotSupportedException()
         End Sub
 
-        Public Function GetFiles(path As String, searchPattern As String, topDirectoryOnly As Boolean) As String() Implements IIOProvider.GetFiles
+        Public Function GetFiles(path As String, searchPattern As String, topDirectoryOnly As Boolean) As String() Implements IFileSystem.GetFiles
             Dim filter = New Regex(GetFileSearchRegex(searchPattern))
             Dim files = Entries.Values.Select(Function(entry)
                                                   If Not String.IsNullOrEmpty(entry.Filename) Then
@@ -574,11 +576,11 @@ Namespace MysteryDungeon.PSMD
             Return files.ToArray()
         End Function
 
-        Public Function GetDirectories(path As String, topDirectoryOnly As Boolean) As String() Implements IIOProvider.GetDirectories
+        Public Function GetDirectories(path As String, topDirectoryOnly As Boolean) As String() Implements IFileSystem.GetDirectories
             Return {}
         End Function
 
-        Public Function ReadAllBytes(filename As String) As Byte() Implements IIOProvider.ReadAllBytes
+        Public Function ReadAllBytes(filename As String) As Byte() Implements IFileSystem.ReadAllBytes
             Return GetFileData(FixPath(filename))
         End Function
 
@@ -586,7 +588,7 @@ Namespace MysteryDungeon.PSMD
             Return Await GetFileDataAsync(FixPath(filename))
         End Function
 
-        Public Function ReadAllText(filename As String) As String Implements IIOProvider.ReadAllText
+        Public Function ReadAllText(filename As String) As String Implements IFileSystem.ReadAllText
             Using f = OpenFileReadOnly(filename)
                 Using reader As New StreamReader(f)
                     Return reader.ReadToEnd()
@@ -594,7 +596,7 @@ Namespace MysteryDungeon.PSMD
             End Using
         End Function
 
-        Public Sub WriteAllBytes(filename As String, data() As Byte) Implements IIOProvider.WriteAllBytes
+        Public Sub WriteAllBytes(filename As String, data() As Byte) Implements IFileSystem.WriteAllBytes
             Dim entry = GetFileEntry(FixPath(filename))
             If entry IsNot Nothing Then
                 entry.FileData = data
@@ -614,11 +616,11 @@ Namespace MysteryDungeon.PSMD
             End If
         End Sub
 
-        Public Sub WriteAllText(filename As String, data As String) Implements IIOProvider.WriteAllText
+        Public Sub WriteAllText(filename As String, data As String) Implements IFileSystem.WriteAllText
             WriteAllBytes(filename, Text.Encoding.Unicode.GetBytes(data))
         End Sub
 
-        Public Sub CopyFile(sourceFilename As String, destinationFilename As String) Implements IIOProvider.CopyFile
+        Public Sub CopyFile(sourceFilename As String, destinationFilename As String) Implements IFileSystem.CopyFile
             Dim source = ReadAllBytes(sourceFilename)
             If source IsNot Nothing Then
                 WriteAllBytes(destinationFilename, source)
@@ -632,7 +634,7 @@ Namespace MysteryDungeon.PSMD
             End If
         End Function
 
-        Public Sub DeleteFile(filename As String) Implements IIOProvider.DeleteFile
+        Public Sub DeleteFile(filename As String) Implements IFileSystem.DeleteFile
             Dim entry = GetFileEntry(FixPath(filename))
             Dim tries = 5
             While tries > 0 AndAlso Not Entries.TryRemove(entry.FilenameHash, entry)
@@ -641,27 +643,27 @@ Namespace MysteryDungeon.PSMD
             End While
         End Sub
 
-        Public Sub DeleteDirectory(path As String) Implements IIOProvider.DeleteDirectory
+        Public Sub DeleteDirectory(path As String) Implements IFileSystem.DeleteDirectory
             Throw New NotSupportedException()
         End Sub
 
-        Public Function GetTempFilename() As String Implements IIOProvider.GetTempFilename
+        Public Function GetTempFilename() As String Implements IFileSystem.GetTempFilename
             Throw New NotImplementedException()
         End Function
 
-        Public Function GetTempDirectory() As String Implements IIOProvider.GetTempDirectory
+        Public Function GetTempDirectory() As String Implements IFileSystem.GetTempDirectory
             Throw New NotSupportedException()
         End Function
 
-        Public Function OpenFile(filename As String) As Stream Implements IIOProvider.OpenFile
+        Public Function OpenFile(filename As String) As Stream Implements IFileSystem.OpenFile
             Return New FarcFileStream(Me, FixPath(filename), True, True)
         End Function
 
-        Public Function OpenFileReadOnly(filename As String) As Stream Implements IIOProvider.OpenFileReadOnly
+        Public Function OpenFileReadOnly(filename As String) As Stream Implements IFileSystem.OpenFileReadOnly
             Return New FarcFileStream(Me, FixPath(filename), True, False)
         End Function
 
-        Public Function OpenFileWriteOnly(filename As String) As Stream Implements IIOProvider.OpenFileWriteOnly
+        Public Function OpenFileWriteOnly(filename As String) As Stream Implements IFileSystem.OpenFileWriteOnly
             Return New FarcFileStream(Me, FixPath(filename), False, True)
         End Function
 #End Region

@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor.MysteryDungeon
 
 Namespace MysteryDungeon.Explorers
@@ -377,7 +378,7 @@ Namespace MysteryDungeon.Explorers
 
 #Region "Open"
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task
             Await MyBase.OpenFile(Filename, Provider)
 
             'Load pointers
@@ -562,7 +563,7 @@ Namespace MysteryDungeon.Explorers
 #End Region
 
 #Region "Save"
-        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IFileSystem) As Task
 
             Dim dataBlock As New List(Of Byte)
 

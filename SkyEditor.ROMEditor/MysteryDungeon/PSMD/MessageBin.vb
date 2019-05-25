@@ -2,6 +2,7 @@
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.IO.PluginInfrastructure
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD
     ''' <summary>
@@ -82,7 +83,7 @@ Namespace MysteryDungeon.PSMD
             ProcessData()
         End Sub
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
 
             ProcessData()
@@ -149,7 +150,7 @@ Namespace MysteryDungeon.PSMD
             SetOriginalIndexes(Strings)
         End Sub
 
-        Public Async Function OpenFileOnlyIDs(Filename As String, provider As IIOProvider) As Task
+        Public Async Function OpenFileOnlyIDs(Filename As String, provider As IFileSystem) As Task
             Await MyBase.OpenFile(Filename, provider)
 
             Dim stringCount As Integer = BitConverter.ToInt32(ContentHeader, 0)
@@ -168,7 +169,7 @@ Namespace MysteryDungeon.PSMD
             SetOriginalIndexes(Strings)
         End Function
 
-        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IFileSystem) As Task
             If Not SkipMessageBinSave Then
                 Me.RelativePointers.Clear()
                 'Sir0 header pointers

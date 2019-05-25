@@ -1,6 +1,7 @@
 ﻿Imports System.Text
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD
     Public Class FarcFat5
@@ -61,7 +62,7 @@ Namespace MysteryDungeon.PSMD
             End Get
         End Property
 
-        Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(filename As String, provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Entries = New List(Of Entry)
 
             Using f As New Sir0
@@ -200,11 +201,11 @@ Namespace MysteryDungeon.PSMD
             End Select
         End Function
 
-        Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
+        Public Async Function Save(filename As String, provider As IFileSystem) As Task Implements ISavableAs.Save
             provider.WriteAllBytes(filename, Await GetRawData())
         End Function
 
-        Public Async Function Save(provider As IIOProvider) As Task Implements ISavable.Save
+        Public Async Function Save(provider As IFileSystem) As Task Implements ISavable.Save
             Await Save(Filename, provider)
         End Function
 

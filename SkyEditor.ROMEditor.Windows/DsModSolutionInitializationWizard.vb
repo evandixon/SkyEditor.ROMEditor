@@ -6,6 +6,7 @@ Imports SkyEditor.Core.ConsoleCommands
 Imports SkyEditor.Core.UI
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.Projects
+Imports SkyEditor.Utilities.AsyncFor
 
 Public Class DsModSolutionInitializationWizard
     Inherits Wizard

@@ -1,6 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.UI
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD.Dungeon
 
 Namespace MysteryDungeon.PSMD.ViewModels
@@ -9,18 +10,18 @@ Namespace MysteryDungeon.PSMD.ViewModels
         Implements INotifyModified
         Implements INotifyPropertyChanged
 
-        Public Sub New(ioProvider As IIOProvider)
-            If ioProvider Is Nothing Then
-                Throw New ArgumentNullException(NameOf(ioProvider))
+        Public Sub New(FileSystem As IFileSystem)
+            If FileSystem Is Nothing Then
+                Throw New ArgumentNullException(NameOf(FileSystem))
             End If
 
-            CurrentIOProvider = ioProvider
+            CurrentFileSystem = FileSystem
         End Sub
 
         Public Event Modified As EventHandler Implements INotifyModified.Modified
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
-        Protected Property CurrentIOProvider As IIOProvider
+        Protected Property CurrentFileSystem As IFileSystem
 
         Public Property StarterEntries As List(Of Object)
 
@@ -178,7 +179,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
         Private Async Function CreateFileViewModel(model As FixedPokemon.PokemonEntry) As Task(Of Object)
             If TypeOf model Is FixedPokemon.PokemonEntryPsmd Then
-                Dim vm As New FixedPokemonEntryPsmdViewModel(Me.Model, CurrentIOProvider)
+                Dim vm As New FixedPokemonEntryPsmdViewModel(Me.Model, CurrentFileSystem)
                 vm.SetApplicationViewModel(CurrentApplicationViewModel)
                 vm.SetModel(model)
                 Await vm.SetLanguageProject(CurrentApplicationViewModel.GetFileViewModelForModel(Me.Model).ParentProject)
@@ -186,7 +187,7 @@ Namespace MysteryDungeon.PSMD.ViewModels
 
                 Return vm
             Else
-                Dim vm As New FixedPokemonEntryGtiViewModel(Me.Model, CurrentIOProvider)
+                Dim vm As New FixedPokemonEntryGtiViewModel(Me.Model, CurrentFileSystem)
                 vm.SetApplicationViewModel(CurrentApplicationViewModel)
                 vm.SetModel(model)
                 Await vm.SetLanguageProject(CurrentApplicationViewModel.GetFileViewModelForModel(Me.Model).ParentProject)

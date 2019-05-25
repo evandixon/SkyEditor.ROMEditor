@@ -1,6 +1,7 @@
 ﻿Imports System.Drawing
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.IO.PluginInfrastructure
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD
     Public Class CteImage
@@ -22,7 +23,7 @@ Namespace MysteryDungeon.PSMD
 
         Private Property Height As Integer
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
             Position = &H4
             ImageFormat = ReadInt32()
@@ -86,7 +87,7 @@ Namespace MysteryDungeon.PSMD
             End If
         End Function
 
-        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IFileSystem) As Task
             Dim empty64(64) As Byte
             Dim dataLength = Width * Height * PixelLength
             SetLength(dataLength + &H80)

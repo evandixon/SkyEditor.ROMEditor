@@ -1,15 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.2;net462</TargetFrameworks>
     <VersionPrefix>4.1.0</VersionPrefix>
     <VersionSuffix>dev</VersionSuffix>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Crc32.Net" Version="1.2.0" />
-    <PackageReference Include="SkyEditor.Core" Version="4.2.4" />
-    <PackageReference Include="SkyEditor.SaveEditor" Version="4.1.0-CI109" />
+    <PackageReference Include="SkyEditor.Core" Version="4.2.10" />
+    <PackageReference Include="SkyEditor.SaveEditor" Version="4.2.1" />
   </ItemGroup>
 
   <ItemGroup>

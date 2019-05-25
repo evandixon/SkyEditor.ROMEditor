@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.Explorers
     Public Class waza_p
@@ -86,7 +87,7 @@ Namespace MysteryDungeon.Explorers
             End Function
         End Class
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task
             Await MyBase.OpenFile(Filename, Provider)
 
             Moves = New List(Of MoveData)

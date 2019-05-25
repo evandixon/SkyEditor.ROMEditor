@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.Explorers
     Public Class item_p
@@ -160,7 +161,7 @@ Namespace MysteryDungeon.Explorers
 
         End Sub
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Await MyBase.OpenFile(Filename, Provider)
             ProcessRawData()
         End Function
@@ -173,7 +174,7 @@ Namespace MysteryDungeon.Explorers
             Next
         End Sub
 
-        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IFileSystem) As Task
             'Let the Sir0 class automatically handle the relative pointers in the SIR0 header
             AutoAddSir0HeaderRelativePointers = True
             AutoAddSir0SubHeaderRelativePointers = True

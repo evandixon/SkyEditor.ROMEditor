@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.GTI
     Public Class ActorDataInfoGti
@@ -20,7 +21,7 @@ Namespace MysteryDungeon.GTI
             Return (From e In Entries Where e.ActorName = name).FirstOrDefault
         End Function
 
-        Public Async Function OpenFile(filename As String, provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(filename As String, provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Entries = New List(Of Entry)
             Me.Filename = filename
 
@@ -45,7 +46,7 @@ Namespace MysteryDungeon.GTI
             End Using
         End Function
 
-        Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
+        Public Async Function Save(filename As String, provider As IFileSystem) As Task Implements ISavableAs.Save
             Using sir0 As New Sir0
                 sir0.AutoAddSir0HeaderRelativePointers = True
                 sir0.AutoAddSir0SubHeaderRelativePointers = True
@@ -89,7 +90,7 @@ Namespace MysteryDungeon.GTI
             End Using
         End Function
 
-        Public Async Function Save(provider As IIOProvider) As Task Implements ISavable.Save
+        Public Async Function Save(provider As IFileSystem) As Task Implements ISavable.Save
             Await Save(Filename, provider)
         End Function
 

@@ -1,5 +1,6 @@
 ﻿Imports PPMDU
 Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.Explorers
     Public Class CompressedFile
@@ -12,14 +13,14 @@ Namespace MysteryDungeon.Explorers
 
         Protected Property IsAT4PX As Boolean
 
-        Public Overrides Async Function OpenFile(filename As String, provider As IIOProvider) As Task
+        Public Overrides Async Function OpenFile(filename As String, provider As IFileSystem) As Task
             Dim tempFilename = GetTempFilename(provider)
 
             Using external As New UtilityManager
-                Await external.RunUnPX(filename, TempFilename)
+                Await external.RunUnPX(filename, tempFilename)
             End Using
 
-            Await MyBase.OpenFile(TempFilename, provider)
+            Await MyBase.OpenFile(tempFilename, provider)
 
             Me.Filename = filename
         End Function
@@ -28,10 +29,10 @@ Namespace MysteryDungeon.Explorers
         ''' Saves and compresses the DecompressedFile.
         ''' </summary>
         ''' <remarks></remarks>
-        Public Overrides Async Function Save(filename As String, provider As IIOProvider) As Task
+        Public Overrides Async Function Save(filename As String, provider As IFileSystem) As Task
             Dim tempFilename = GetTempFilename(provider)
 
-            Await MyBase.Save(TempFilename, provider)
+            Await MyBase.Save(tempFilename, provider)
 
             Using external As New UtilityManager
                 Dim format As PXFormat
@@ -41,28 +42,28 @@ Namespace MysteryDungeon.Explorers
                     format = PXFormat.PKDPX
                 End If
 
-                Await external.RunDoPX(TempFilename, filename, format)
+                Await external.RunDoPX(tempFilename, filename, format)
             End Using
 
             Me.Filename = filename
         End Function
 
-        Private Function GetTempFilename(provider As IIOProvider)
+        Private Function GetTempFilename(provider As IFileSystem)
             If String.IsNullOrEmpty(_tempFilename) Then
-                _ioProvider = provider
+                _FileSystem = provider
                 _tempFilename = provider.GetTempFilename
             End If
             Return _tempFilename
         End Function
         Private _tempFilename As String
-        Private _ioProvider As IIOProvider
+        Private _FileSystem As IFileSystem
 
         Protected Overrides Sub Dispose(disposing As Boolean)
             MyBase.Dispose(disposing)
-            If Not String.IsNullOrEmpty(_tempFilename) AndAlso _ioProvider IsNot Nothing AndAlso _ioProvider.FileExists(_tempFilename) Then
-                _ioProvider.DeleteFile(_tempFilename)
+            If Not String.IsNullOrEmpty(_tempFilename) AndAlso _FileSystem IsNot Nothing AndAlso _FileSystem.FileExists(_tempFilename) Then
+                _FileSystem.DeleteFile(_tempFilename)
                 _tempFilename = Nothing
-                _ioProvider = Nothing
+                _FileSystem = Nothing
             End If
         End Sub
 

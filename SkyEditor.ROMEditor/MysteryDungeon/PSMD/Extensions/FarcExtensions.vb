@@ -2,6 +2,7 @@
 Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.MysteryDungeon.PSMD
+Imports SkyEditor.Utilities.AsyncFor
 
 Namespace MysteryDungeon.PSMD.Extensions
     Public Module FarcExtensions

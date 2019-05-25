@@ -1,6 +1,7 @@
 ﻿Imports System.Reflection
 Imports SkyEditor.Core
 Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.Explorers
     ''' <summary>
@@ -8,7 +9,7 @@ Namespace MysteryDungeon.Explorers
     ''' </summary>
     ''' <remarks></remarks>
     Public Class Overlay13
-        Implements IOpenableFile        
+        Implements IOpenableFile
         Implements ISavable
         Implements IOnDisk
 
@@ -17,16 +18,16 @@ Namespace MysteryDungeon.Explorers
         Public Sub New()
         End Sub
 
-        Public Sub New(filename As String, provider As IIOProvider)
+        Public Sub New(filename As String, provider As IFileSystem)
             OpenFileInternal(filename, provider)
         End Sub
 
-        Public Function OpenFile(filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Function OpenFile(filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             OpenFileInternal(filename, Provider)
             Return Task.FromResult(0)
         End Function
 
-        Private Sub OpenFileInternal(filename As String, provider As IIOProvider)
+        Private Sub OpenFileInternal(filename As String, provider As IFileSystem)
             Me.Filename = filename
             RawData = provider.ReadAllBytes(filename)
         End Sub
@@ -625,7 +626,7 @@ Namespace MysteryDungeon.Explorers
             End If
         End Function
 
-        Public Function Save(provider As IIOProvider) As Task Implements ISavable.Save
+        Public Function Save(provider As IFileSystem) As Task Implements ISavable.Save
             provider.WriteAllBytes(Filename, RawData)
             RaiseEvent FileSaved(Me, New EventArgs)
             Return Task.FromResult(0)

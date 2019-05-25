@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD
     Public Class FlowData
@@ -9,7 +10,7 @@ Namespace MysteryDungeon.PSMD
         Public Property Data1 As List(Of ULong)
         Public Property Data2 As List(Of ULong)
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task
             Await MyBase.OpenFile(Filename, Provider)
 
             Dim numEntries1 As UInteger = Await Me.ReadUInt32Async(&H18)

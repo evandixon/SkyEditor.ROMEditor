@@ -1,28 +1,30 @@
-﻿Imports SkyEditor.Core.ConsoleCommands
+﻿Imports System.IO
+Imports SkyEditor.Core.ConsoleCommands
 Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor.MysteryDungeon
 
 Namespace Windows.ConsoleCommands
     Public Class Sir0Ptrs
         Inherits ConsoleCommand
 
-        Public Sub New(ioProvider As IIOProvider)
-            If ioProvider Is Nothing Then
-                Throw New ArgumentNullException(NameOf(ioProvider))
+        Public Sub New(FileSystem As IFileSystem)
+            If FileSystem Is Nothing Then
+                Throw New ArgumentNullException(NameOf(FileSystem))
             End If
 
-            CurrentIOProvider = ioProvider
+            CurrentFileSystem = FileSystem
         End Sub
 
-        Protected Property CurrentIOProvider As IIOProvider
+        Protected Property CurrentFileSystem As IFileSystem
 
         Public Overrides Async Function MainAsync(Arguments() As String) As Task
             If Arguments.Length > 0 Then
-                If IO.File.Exists(Arguments(0)) Then
+                If File.Exists(Arguments(0)) Then
                     Dim pointers As New Dictionary(Of UInt32, UInt32)
                     Using f As New Sir0
                         f.IsReadOnly = True
-                        Await f.OpenFile(Arguments(0), CurrentIOProvider)
+                        Await f.OpenFile(Arguments(0), CurrentFileSystem)
                         Dim offset As UInt32 = 0
                         For Each item In f.RelativePointers
                             offset += item
@@ -48,7 +50,7 @@ Namespace Windows.ConsoleCommands
                                 i += 4
                             End If
                         End While
-                        IO.File.WriteAllText(Arguments(0) & ".txt", s.ToString)
+                        File.WriteAllText(Arguments(0) & ".txt", s.ToString)
                     End Using
                 Else
                     Console.WriteLine("File doesn't exist")

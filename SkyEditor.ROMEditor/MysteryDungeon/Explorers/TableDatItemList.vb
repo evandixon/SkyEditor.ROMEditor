@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.Explorers
     Public Class TableDatItemList
@@ -43,12 +44,12 @@ Namespace MysteryDungeon.Explorers
             End If
         End Function
 
-        Public Overrides Async Function OpenFile(filename As String, provider As IIOProvider) As Task
+        Public Overrides Async Function OpenFile(filename As String, provider As IFileSystem) As Task
             Await MyBase.OpenFile(filename, provider)
             Await InitItems()
         End Function
 
-        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IFileSystem) As Task
             SetLength(2 + (Items.Count * 4))
             Await WriteAsync(0, 2, BitConverter.GetBytes(Items.Count))
             For count As Integer = 0 To Items.Count - 1

@@ -5,7 +5,7 @@ Imports SkyEditor.Core.Utilities
 Public Class TestHelpers
     Public Const AutomatedTestCategory As String = "Automated"
     Public Const ManualTestCategory As String = "Manual"
-    Public Shared Function GetAndTestFile(Of T As IOpenableFile)(filePath As String, enableResaveTest As Boolean, provider As IIOProvider) As T
+    Public Shared Function GetAndTestFile(Of T As IOpenableFile)(filePath As String, enableResaveTest As Boolean, provider As IFileSystem) As T
         Dim tempFilename As String = provider.GetTempFilename
         Dim originalData = provider.ReadAllBytes(filePath)
 
@@ -39,7 +39,7 @@ Public Class TestHelpers
         Return testFile
     End Function
 
-    Public Shared Function GetFile(Of T As IOpenableFile)(filePath As String, provider As IIOProvider) As T
+    Public Shared Function GetFile(Of T As IOpenableFile)(filePath As String, provider As IFileSystem) As T
         Dim testFile = ReflectionHelpers.CreateInstance(GetType(T))
         testFile.OpenFile(filePath, provider).Wait()
         Return testFile

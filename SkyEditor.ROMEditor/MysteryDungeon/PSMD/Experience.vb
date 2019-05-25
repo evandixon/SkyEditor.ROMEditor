@@ -1,4 +1,5 @@
 ﻿Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD
     Public Class Experience
@@ -25,7 +26,7 @@ Namespace MysteryDungeon.PSMD
 
         Public Property Entries As Dictionary(Of Integer, List(Of ExperienceEntry))
 
-        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Const entryLength = &HC
             Const tableLength = &H4C0
             Using f As New GenericFile

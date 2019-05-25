@@ -1,6 +1,7 @@
 ﻿Imports System.Text
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.IO.PluginInfrastructure
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD
     Public Class PGDB
@@ -44,7 +45,7 @@ Namespace MysteryDungeon.PSMD
         Public Property Entries As List(Of Entry)
         Public Property Filename As String Implements IOnDisk.Filename
 
-        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Dim total As New Text.StringBuilder
             Using f As New GenericFile
                 f.IsReadOnly = True
@@ -116,7 +117,7 @@ Namespace MysteryDungeon.PSMD
             Return Await file.ReadInt32Async(subHeader) = &H42444750
         End Function
 
-        Public Async Function Save(filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
+        Public Async Function Save(filename As String, provider As IFileSystem) As Task Implements ISavableAs.Save
             Using f As New Sir0
                 f.AutoAddSir0HeaderRelativePointers = True
                 f.CreateFile()
@@ -190,7 +191,7 @@ Namespace MysteryDungeon.PSMD
             End Using
         End Function
 
-        Public Async Function Save(provider As IIOProvider) As Task Implements ISavable.Save
+        Public Async Function Save(provider As IFileSystem) As Task Implements ISavable.Save
             Await Save(Filename, provider)
         End Function
 

@@ -5,6 +5,7 @@ Imports DS_ROM_Patcher
 Imports SkyEditor.Core
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.Utilities.AsyncFor
 
 Namespace Projects
     Public Class GenericModProject
@@ -40,10 +41,10 @@ Namespace Projects
 
         Public Property ModDescription As String
             Get
-                Return Settings(nameof(ModDescription))
+                Return Settings(NameOf(ModDescription))
             End Get
             Set(value As String)
-                Settings(nameof(ModDescription)) = value
+                Settings(NameOf(ModDescription)) = value
             End Set
         End Property
 
@@ -52,8 +53,8 @@ Namespace Projects
                 Return Settings(NameOf(Homepage))
             End Get
             Set(value As String)
-                Settings(nameof(Homepage)) = value
-                End Set
+                Settings(NameOf(Homepage)) = value
+            End Set
         End Property
 
         Public Property ModDependenciesBefore As List(Of String)
@@ -199,7 +200,7 @@ Namespace Projects
                         End If
                         File.Copy(source, dest, True)
                     ElseIf Directory.Exists(source) Then
-                        Await FileSystem.CopyDirectory(source, dest, CurrentPluginManager.CurrentIOProvider)
+                        Await FileSystem.CopyDirectory(source, dest, CurrentPluginManager.CurrentFileSystem)
                     End If
                 ElseIf filesToCopy.Count > 0 Then
                     Me.IsIndeterminate = False
@@ -228,7 +229,7 @@ Namespace Projects
                                            End If
                                        End Sub)
                 Else
-                    Await FileSystem.CopyDirectory(sourceRoot, GetRawFilesDir, CurrentPluginManager.CurrentIOProvider)
+                    Await FileSystem.CopyDirectory(sourceRoot, GetRawFilesDir, CurrentPluginManager.CurrentFileSystem)
                 End If
 
                 Me.Progress = 1
@@ -278,7 +279,7 @@ Namespace Projects
                     End If
 
                     'Do the build
-                    Await builder.BuildMod(GetRawFilesSourceDir(ParentSolution, sourceProjectName), GetRawFilesDir(), GetModOutputFilename(sourceProjectName), CurrentPluginManager.CurrentIOProvider)
+                    Await builder.BuildMod(GetRawFilesSourceDir(ParentSolution, sourceProjectName), GetRawFilesDir(), GetModOutputFilename(sourceProjectName), CurrentPluginManager.CurrentFileSystem)
 
                     'Remove progress event handler
                     RemoveHandler builder.BuildStatusChanged, AddressOf OnModBuilderProgressed

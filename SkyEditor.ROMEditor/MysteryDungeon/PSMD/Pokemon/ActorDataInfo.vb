@@ -1,5 +1,6 @@
 ﻿Imports System.Text
 Imports SkyEditor.Core.IO
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD.Pokemon
     ''' <summary>
@@ -70,7 +71,7 @@ Namespace MysteryDungeon.PSMD.Pokemon
         End Function
 
 #Region "IO"
-        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Me.Filename = Filename
             Using f As New GenericFile(Filename, Provider)
                 Dim numEntries = Math.Floor(f.Length / &H58)
@@ -83,7 +84,7 @@ Namespace MysteryDungeon.PSMD.Pokemon
             End Using
         End Function
 
-        Public Function Save(Destination As String, provider As IIOProvider) As Task Implements ISavableAs.Save
+        Public Function Save(Destination As String, provider As IFileSystem) As Task Implements ISavableAs.Save
             Me.Filename = Destination
             Dim dataBuffer As New List(Of Byte)(&H58 * Entries.Count)
             For Each item In Entries
@@ -95,7 +96,7 @@ Namespace MysteryDungeon.PSMD.Pokemon
             Return Task.FromResult(0)
         End Function
 
-        Public Async Function Save(provider As IIOProvider) As Task Implements ISavable.Save
+        Public Async Function Save(provider As IFileSystem) As Task Implements ISavable.Save
             Await Save(Filename, provider)
         End Function
 

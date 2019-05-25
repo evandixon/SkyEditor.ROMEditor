@@ -4,9 +4,11 @@ Imports System.IO
 Imports PPMDU
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.IO.FileSystem
 Imports SkyEditor.ROMEditor.MysteryDungeon.Rescue
 Imports SkyEditor.ROMEditor.Utilities
 Imports SkyEditor.SaveEditor.MysteryDungeon
+Imports SkyEditor.Utilities.AsyncFor
 
 Namespace MysteryDungeon.Explorers
     Public Class Kaomado
@@ -142,7 +144,7 @@ Namespace MysteryDungeon.Explorers
             End If
         End Function
 
-        Public Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task Implements IOpenableFile.OpenFile
+        Public Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task Implements IOpenableFile.OpenFile
             Await Initialize(Provider.ReadAllBytes(Filename))
             Me.Filename = Filename
         End Function
@@ -218,12 +220,12 @@ Namespace MysteryDungeon.Explorers
             Return tocSection.Concat(dataSection).ToArray
         End Function
 
-        Public Async Function Save(Filename As String, provider As IIOProvider) As Task Implements ISavableAs.Save
+        Public Async Function Save(Filename As String, provider As IFileSystem) As Task Implements ISavableAs.Save
             provider.WriteAllBytes(Filename, Await GetBytes())
             RaiseEvent FileSaved(Me, New EventArgs)
         End Function
 
-        Public Async Function Save(provider As IIOProvider) As Task Implements ISavable.Save
+        Public Async Function Save(provider As IFileSystem) As Task Implements ISavable.Save
             Await Save(Filename, provider)
         End Function
 
@@ -318,7 +320,7 @@ Namespace MysteryDungeon.Explorers
             Next
         End Function
 
-        Public Async Function Extract(outputDirectory As String, provider As IIOProvider) As Task
+        Public Async Function Extract(outputDirectory As String, provider As IFileSystem) As Task
             If (Not provider.DirectoryExists(outputDirectory)) Then
                 provider.CreateDirectory(outputDirectory)
             End If
@@ -368,7 +370,7 @@ Namespace MysteryDungeon.Explorers
                 End Function)
         End Function
 
-        Public Async Function Import(inputDirectory As String, provider As IIOProvider) As Task
+        Public Async Function Import(inputDirectory As String, provider As IFileSystem) As Task
             Dim pokemonDirectories = Directory.GetDirectories(inputDirectory)
             Dim maxPokemonId As Integer = pokemonDirectories.
                 Select(Function(d)
@@ -407,49 +409,49 @@ Namespace MysteryDungeon.Explorers
         End Function
 
 #Region "Strings"
-            'These strings have been copy/pasted from ppmd_kaoutil for backwards compatibility
+        'These strings have been copy/pasted from ppmd_kaoutil for backwards compatibility
 
-            Private Shared PortraitNames As String() = {
-            "STANDARD",
-            "",
-            "GRIN",
-            "",
-            "PAINED",
-            "",
-            "ANGRY",
-            "",
-            "WORRIED",
-            "",
-            "SAD",
-            "",
-            "CRYING",
-            "",
-            "SHOUTING",
-            "",
-            "TEARY_EYED",
-            "",
-            "DETERMINED",
-            "",
-            "JOYOUS",
-            "",
-            "INSPIRED",
-            "",
-            "SURPRISED",
-            "",
-            "DIZZY",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "SIGH",
-            "",
-            "STUNNED",
-            "",
-            "",
-            "",
-            "",
-            ""}
+        Private Shared PortraitNames As String() = {
+        "STANDARD",
+        "",
+        "GRIN",
+        "",
+        "PAINED",
+        "",
+        "ANGRY",
+        "",
+        "WORRIED",
+        "",
+        "SAD",
+        "",
+        "CRYING",
+        "",
+        "SHOUTING",
+        "",
+        "TEARY_EYED",
+        "",
+        "DETERMINED",
+        "",
+        "JOYOUS",
+        "",
+        "INSPIRED",
+        "",
+        "SURPRISED",
+        "",
+        "DIZZY",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "SIGH",
+        "",
+        "STUNNED",
+        "",
+        "",
+        "",
+        "",
+        ""}
 
         Private Shared PokemonNames As String() = {"",
             "bulbasaur",

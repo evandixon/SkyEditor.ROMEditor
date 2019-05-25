@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.IO.PluginInfrastructure
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD.Dungeon
     Public Class FixedPokemon
@@ -44,7 +45,7 @@ Namespace MysteryDungeon.PSMD.Dungeon
         '    End Get
         'End Property
 
-        Public Overrides Async Function OpenFile(Filename As String, Provider As IIOProvider) As Task
+        Public Overrides Async Function OpenFile(Filename As String, Provider As IFileSystem) As Task
             Await MyBase.OpenFile(Filename, Provider)
 
             Dim numEntries = BitConverter.ToUInt32(Me.ContentHeader, 0)
@@ -72,7 +73,7 @@ Namespace MysteryDungeon.PSMD.Dungeon
             End If
         End Function
 
-        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IFileSystem) As Task
             Me.RelativePointers.Clear()
             'Sir0 header pointers
             Me.RelativePointers.Add(4)

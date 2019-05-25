@@ -1,5 +1,6 @@
 ﻿Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.IO.PluginInfrastructure
+Imports SkyEditor.IO.FileSystem
 
 Namespace MysteryDungeon.PSMD
     Public Class MessageBinDebug
@@ -71,7 +72,7 @@ Namespace MysteryDungeon.PSMD
             SetOriginalIndexes(Strings)
         End Sub
 
-        Public Overrides Async Function Save(Destination As String, provider As IIOProvider) As Task
+        Public Overrides Async Function Save(Destination As String, provider As IFileSystem) As Task
             Me.RelativePointers.Clear()
             'Sir0 header pointers
             Me.RelativePointers.Add(4)

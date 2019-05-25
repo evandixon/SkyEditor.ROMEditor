@@ -4,13 +4,15 @@ Imports System.Runtime.CompilerServices
 Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.IO.FileSystem
+Imports SkyEditor.Utilities.AsyncFor
 
 Namespace MysteryDungeon.PSMD
     Public Module FarcExtensions
 
         'Can't define this as an extension method due to conflicting definitions :(
         '<Extension>
-        Public Async Function ExtractPortraits(farc As Farc, outputDirectory As String, ioProvider As IIOProvider, Optional progressToken As ProgressReportToken = Nothing) As Task
+        Public Async Function ExtractPortraits(farc As Farc, outputDirectory As String, FileSystem As IFileSystem, Optional progressToken As ProgressReportToken = Nothing) As Task
             Dim onProgressed = Sub(sender As Object, e As ProgressReportedEventArgs)
                                    If progressToken IsNot Nothing Then
                                        progressToken.Message = My.Resources.Language.LoadingExtractingPortraits
@@ -35,10 +37,10 @@ Namespace MysteryDungeon.PSMD
                                    End If
 
                                    'Create directory if it doesn't exist
-                                   If Not ioProvider.DirectoryExists(Path.GetDirectoryName(outputPath)) Then
+                                   If Not FileSystem.DirectoryExists(Path.GetDirectoryName(outputPath)) Then
                                        SyncLock directoryCreateLock
-                                           If Not ioProvider.DirectoryExists(Path.GetDirectoryName(outputPath)) Then 'Check again in case of race condition
-                                               ioProvider.CreateDirectory(Path.GetDirectoryName(outputPath))
+                                           If Not FileSystem.DirectoryExists(Path.GetDirectoryName(outputPath)) Then 'Check again in case of race condition
+                                               FileSystem.CreateDirectory(Path.GetDirectoryName(outputPath))
                                            End If
                                        End SyncLock
                                    End If

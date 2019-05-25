@@ -11,7 +11,7 @@ Imports SkyEditor.ROMEditor.Utilities
 
     Private Const EosTestCategory As String = "EOS (U) Files"
 
-    Dim provider As IIOProvider
+    Dim provider As IFileSystem
 
     <TestInitialize()> Public Sub TestInit()
         Using md5 As New MD5CryptoServiceProvider

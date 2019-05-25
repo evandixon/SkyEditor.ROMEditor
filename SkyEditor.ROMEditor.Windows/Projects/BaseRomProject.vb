@@ -4,6 +4,7 @@ Imports SkyEditor.Core.IO
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor
+Imports SkyEditor.Utilities.AsyncFor
 
 Namespace Projects
     Public Class BaseRomProject
