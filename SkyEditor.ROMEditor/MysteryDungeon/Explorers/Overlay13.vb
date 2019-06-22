@@ -627,6 +627,13 @@ Namespace MysteryDungeon.Explorers
         End Function
 
         Public Function Save(provider As IFileSystem) As Task Implements ISavable.Save
+            'Patch to allow the player and partner to be the same type
+            'Credit to End45: https://projectpokemon.org/home/forums/topic/53341-pmd2-getting-a-partner-with-the-same-type/?do=findComment&comment=246145
+            RawData(&H180C) = 0 'Original: 0x07
+            RawData(&H180D) = 0 'Original: 0x00
+            RawData(&H180E) = &HA0 'Original: 0x00
+            RawData(&H180F) = &HE1 'Original: 0x1A
+
             provider.WriteAllBytes(Filename, RawData)
             RaiseEvent FileSaved(Me, New EventArgs)
             Return Task.FromResult(0)
