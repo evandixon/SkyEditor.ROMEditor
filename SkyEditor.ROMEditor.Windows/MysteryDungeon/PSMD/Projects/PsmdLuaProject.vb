@@ -1,14 +1,12 @@
-﻿Imports System.IO
+﻿Imports System.Collections.Concurrent
+Imports System.IO
 Imports System.Text.RegularExpressions
 Imports DS_ROM_Patcher
+Imports SkyEditor.Core
 Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
-Imports SkyEditor.ROMEditor.Windows
-Imports SkyEditor.ROMEditor.Projects
-Imports System.Collections.Concurrent
-Imports SkyEditor.Core
 Imports SkyEditor.ROMEditor.ProcessManagement
-Imports System.Windows.Threading
+Imports SkyEditor.ROMEditor.Projects
 Imports SkyEditor.Utilities.AsyncFor
 
 Namespace MysteryDungeon.PSMD.Projects
@@ -460,7 +458,7 @@ Namespace MysteryDungeon.PSMD.Projects
         Public Overrides Function GetFilesToCopy(Solution As Solution, BaseRomProjectName As String) As IEnumerable(Of String)
             Dim project As Project = Solution.GetProjectsByName(BaseRomProjectName).FirstOrDefault
             If project IsNot Nothing AndAlso TypeOf project Is BaseRomProject Then
-                If IsPsmd Then
+                If DirectCast(project, BaseRomProject).IsPsmd Then
                     Return {Path.Combine("romfs", "script"),
                             Path.Combine("romfs", "message_en.bin"),
                             Path.Combine("romfs", "message_fr.bin"),
@@ -491,7 +489,7 @@ Namespace MysteryDungeon.PSMD.Projects
                             Path.Combine("romfs", "message_debug_us.lst"),
                             Path.Combine("romfs", "message_debug.lst"),
                             Path.Combine("ExHeader.bin")}
-                ElseIf IsGti Then
+                ElseIf DirectCast(project, BaseRomProject).IsGti Then
                     Return {Path.Combine("romfs", "script"),
                             Path.Combine("romfs", "message_fr"),
                             Path.Combine("romfs", "message_ge"),

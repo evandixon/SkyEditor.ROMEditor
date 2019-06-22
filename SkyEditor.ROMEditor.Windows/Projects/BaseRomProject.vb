@@ -1,9 +1,6 @@
 ﻿Imports System.IO
-Imports SkyEditor.Core
-Imports SkyEditor.Core.IO
+Imports System.Text.RegularExpressions
 Imports SkyEditor.Core.Projects
-Imports SkyEditor.Core.Utilities
-Imports SkyEditor.ROMEditor
 Imports SkyEditor.Utilities.AsyncFor
 
 Namespace Projects
@@ -86,6 +83,90 @@ Namespace Projects
             End Select
         End Function
 
+#End Region
+
+#Region "Game Detection"
+
+        Public ReadOnly Property IsPsmd As Boolean
+            Get
+                If Not _isPsmd.HasValue Then
+                    _isPsmd = GetIsPsmd()
+                End If
+                Return _isPsmd.Value
+            End Get
+        End Property
+        Private _isPsmd As Boolean?
+
+        Public ReadOnly Property IsGti As Boolean
+            Get
+                If Not _isGti.HasValue Then
+                    _isGti = GetIsGti()
+                End If
+                Return _isGti.Value
+            End Get
+        End Property
+        Private _isGti As Boolean?
+
+        Public ReadOnly Property IsGtiUS As Boolean
+            Get
+                If Not _isGtiUS.HasValue Then
+                    _isGtiUS = GetIsGtiUS()
+                End If
+                Return _isGtiUS.Value
+            End Get
+        End Property
+        Private _isGtiUS As Boolean?
+
+        Public ReadOnly Property IsGtiEU As Boolean
+            Get
+                If Not _isGtiEU.HasValue Then
+                    _isGtiEU = GetIsGtiEU()
+                End If
+                Return _isGtiEU.Value
+            End Get
+        End Property
+        Private _isGtiEU As Boolean?
+
+        Public ReadOnly Property IsGtiJP As Boolean
+            Get
+                If Not _isGtiJP.HasValue Then
+                    _isGtiJP = GetIsGtiJP()
+                End If
+                Return _isGtiJP.Value
+            End Get
+        End Property
+        Private _isGtiJP As Boolean?
+
+        Protected Function GetTitleId() As String
+            Dim exHeaderFilename = Path.Combine(Me.GetRawFilesDir, "ExHeader.bin")
+            Dim bytes = File.ReadAllBytes(exHeaderFilename)
+            Return BitConverter.ToUInt64(bytes, &H1C8).ToString("X").PadLeft(16, "0")
+        End Function
+
+        Protected Function GetIsPsmd() As Boolean
+            Dim psmdRegex As New Regex(GameStrings.PSMDCode)
+            Return psmdRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGti() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICode)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGtiUS() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICodeUS)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGtiEU() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICodeEU)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
+
+        Protected Function GetIsGtiJP() As Boolean
+            Dim gtiRegex As New Regex(GameStrings.GTICodeJP)
+            Return gtiRegex.IsMatch(GetTitleId)
+        End Function
 #End Region
 
         Public Async Function ImportRom(romPath As String) As Task
