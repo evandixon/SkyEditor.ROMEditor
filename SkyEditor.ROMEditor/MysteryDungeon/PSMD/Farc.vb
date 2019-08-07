@@ -49,8 +49,8 @@ Namespace MysteryDungeon.PSMD
             Return regexString.ToString()
         End Function
 
-        Public Shared Async Function Pack(sourceDirectory As String, outputFile As String, provider As IFileSystem) As Task
-            Using f As New Farc
+        Public Shared Async Function Pack(sourceDirectory As String, outputFile As String, sir0Type As Integer, useFilenames As Boolean, provider As IFileSystem) As Task
+            Using f As New Farc(sir0Type, useFilenames)
                 For Each item In provider.GetFiles(sourceDirectory, "*", True)
                     f.WriteAllBytes(Path.GetFileName(item), provider.ReadAllBytes(item))
                 Next

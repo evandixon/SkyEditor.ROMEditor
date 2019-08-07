@@ -286,9 +286,10 @@ Namespace MysteryDungeon.PSMD.Projects
                                                       Dim destDir = Path.Combine(Me.GetRootDirectory, "Languages", lang)
                                                       Await FileSystem.EnsureDirectoryExistsEmpty(destDir, CurrentPluginManager.CurrentFileSystem)
 
-                                                      Dim farc As New Farc
-                                                      Await farc.OpenFile(item, CurrentPluginManager.CurrentFileSystem)
-                                                      Await farc.Extract(destDir, CurrentPluginManager.CurrentFileSystem)
+                                                      Using farc As New Farc
+                                                          Await farc.OpenFile(item, CurrentPluginManager.CurrentFileSystem)
+                                                          Await farc.Extract(destDir, CurrentPluginManager.CurrentFileSystem)
+                                                      End Using
                                                   End Function)
 
             'GTI style
@@ -396,7 +397,7 @@ Namespace MysteryDungeon.PSMD.Projects
                                        Me.Progress = count / dirs.Length
                                        Dim newFilename As String = "message_" & Path.GetFileNameWithoutExtension(dirs(count)) & ".bin"
                                        Dim newFilePath As String = Path.Combine(Path.Combine(Me.GetRawFilesDir, "romfs", newFilename.Replace("_jp", "")))
-                                       Await Farc.Pack(dirs(count), newFilePath, CurrentPluginManager.CurrentFileSystem)
+                                       Await Farc.Pack(dirs(count), newFilePath, 5, False, CurrentPluginManager.CurrentFileSystem)
                                    Next
                                    Me.Progress = 1
                                End Function)
