@@ -10,7 +10,7 @@
     <AssemblyName>SkyEditor.ROMEditor.Windows</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -105,9 +105,7 @@
       <HintPath>..\packages\MediaToolkit.1.2.2-CI5\lib\net20\MediaToolkit.dll</HintPath>
     </Reference>
     <Reference Include="MessageFARCPatcher, Version=1.0.2.6, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Message-FARC-Patcher.1.0.2\lib\net452\MessageFARCPatcher.exe</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -121,7 +119,7 @@
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.Core.4.2.10\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.IO, Version=5.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SkyEditor.IO, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.IO.5.0.8\lib\net462\SkyEditor.IO.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.2.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -270,6 +268,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\PSMDStarterIntroScript.lua" />
     <None Include="Windows\app.config" />
     <Compile Include="Windows\FileFormats\Explorers\Script\SSB.SkyCommandFactory.vb" />
@@ -281,9 +280,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
-    </None>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
     </None>
     <Content Include="Windows\App.ico" />
     <None Include="SkyEditor.ROMEditor.Windows\lua\bin2c5.1.exe">
