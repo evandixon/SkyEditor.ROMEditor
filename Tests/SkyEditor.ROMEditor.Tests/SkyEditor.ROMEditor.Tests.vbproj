@@ -69,6 +69,7 @@
     </Reference>
     <Reference Include="SkyEditor.IO, Version=5.0.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SkyEditor.IO.5.0.8\lib\net462\SkyEditor.IO.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SkyEditor.Utilities.AsyncFor, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SkyEditor.Utilities.AsyncFor.5.0.0\lib\netstandard2.0\SkyEditor.Utilities.AsyncFor.dll</HintPath>

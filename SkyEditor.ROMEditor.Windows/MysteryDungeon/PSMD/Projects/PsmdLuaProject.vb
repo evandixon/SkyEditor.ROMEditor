@@ -7,6 +7,7 @@ Imports SkyEditor.Core.Projects
 Imports SkyEditor.Core.Utilities
 Imports SkyEditor.ROMEditor.ProcessManagement
 Imports SkyEditor.ROMEditor.Projects
+Imports SkyEditor.ROMEditor.Utilities
 Imports SkyEditor.Utilities.AsyncFor
 
 Namespace MysteryDungeon.PSMD.Projects
@@ -351,24 +352,19 @@ Namespace MysteryDungeon.PSMD.Projects
 
             f.BatchSize = Environment.ProcessorCount * 2
 
-            Try
-                Using unluac As New UnluacManager
-                    Await f.RunForEach(Directory.GetFiles(scriptSource, "*.lua", SearchOption.AllDirectories),
-                              Async Function(item As String) As Task
-                                  Dim dest = item.Replace(scriptSource, scriptDestination)
-                                  If Not Directory.Exists(Path.GetDirectoryName(dest)) Then
-                                      Directory.CreateDirectory(Path.GetDirectoryName(dest))
-                                  End If
+            Await f.RunForEach(Directory.GetFiles(scriptSource, "*.lua", SearchOption.AllDirectories),
+                          Sub(item As String)
+                              Dim dest = item.Replace(scriptSource, scriptDestination)
+                              If Not Directory.Exists(Path.GetDirectoryName(dest)) Then
+                                  Directory.CreateDirectory(Path.GetDirectoryName(dest))
+                              End If
 
-                                  Await unluac.DecompileScript(item, dest)
+                              Dim decompiledScript = LuaDecompiler.DecompileScript(File.ReadAllBytes(scriptSource))
+                              File.WriteAllText(scriptDestination, decompiledScript)
 
-                                  File.Copy(dest, dest & ".original")
-                                  filesToOpen.Add(dest)
-                              End Function)
-                End Using
-            Catch ex As JavaNotFoundException
-                ReportError(New ErrorInfo(Me) With {.Type = ErrorType.Error, .Message = My.Resources.Language.ProcessManagement_JavaNotFoundMessage})
-            End Try
+                              File.Copy(dest, dest & ".original")
+                              filesToOpen.Add(dest)
+                          End Sub)
 
             If AddScriptsToProject Then
                 For Each item In filesToOpen

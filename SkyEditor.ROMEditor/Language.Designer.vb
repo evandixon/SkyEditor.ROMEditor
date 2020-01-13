@@ -22,7 +22,7 @@ Namespace My.Resources
     '''<summary>
     '''  A strongly-typed resource class, for looking up localized strings, etc.
     '''</summary>
-    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0"),  _
+    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0"),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute()>  _
     Public Class Language
@@ -118,15 +118,6 @@ Namespace My.Resources
         Public Shared ReadOnly Property PluginName() As String
             Get
                 Return ResourceManager.GetString("PluginName", resourceCulture)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  Looks up a localized string similar to Java could not be run on your system. Please ensure it&apos;s installed and accessible in the PATH environemnt variable..
-        '''</summary>
-        Public Shared ReadOnly Property ProcessManagement_JavaNotFoundMessage() As String
-            Get
-                Return ResourceManager.GetString("ProcessManagement_JavaNotFoundMessage", resourceCulture)
             End Get
         End Property
         

@@ -119,7 +119,7 @@
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.Core.4.2.10\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SkyEditor.IO, Version=5.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SkyEditor.IO, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SkyEditor.IO.5.0.8\lib\net462\SkyEditor.IO.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.SaveEditor, Version=4.2.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -254,6 +254,7 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Language.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -332,6 +333,10 @@
     <ProjectReference Include="..\Library3DS\EveryFileExplorer.csproj">
       <Project>{e92df34a-5cf0-4f9c-9640-a16b7453270d}</Project>
       <Name>EveryFileExplorer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SkyEditor.RomEditor.CSharp\SkyEditor.RomEditor.CSharp.csproj">
+      <Project>{48b3e8de-de58-4a1e-9b70-7cd53a739b4d}</Project>
+      <Name>SkyEditor.RomEditor.CSharp</Name>
     </ProjectReference>
     <ProjectReference Include="..\SkyEditor.ROMEditor\SkyEditor.ROMEditor.vbproj">
       <Project>{f1b430d7-c00d-4673-8816-97c9df4376bc}</Project>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SkyEditor.ROMEditor.Windows", "SkyEditor.ROMEditor.Windows\SkyEditor.ROMEditor.Windows.vbproj", "{F05C12E8-EAB7-4B9E-A8D2-D21B80C1A646}"
 EndProject
@@ -35,6 +35,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{924A8A27-C1C7-44EF-B7AF-BB8F6247670B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FarcFilenameHasher", "Misc\FarcFilenameHasher\FarcFilenameHasher.csproj", "{78E03B61-5B59-45B6-8388-F9F059199954}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyEditor.RomEditor.CSharp", "SkyEditor.RomEditor.CSharp\SkyEditor.RomEditor.CSharp.csproj", "{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,6 +140,18 @@ Global
 		{78E03B61-5B59-45B6-8388-F9F059199954}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{78E03B61-5B59-45B6-8388-F9F059199954}.Test|x86.ActiveCfg = Debug|Any CPU
 		{78E03B61-5B59-45B6-8388-F9F059199954}.Test|x86.Build.0 = Debug|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Debug|x86.Build.0 = Debug|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Release|x86.ActiveCfg = Release|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Release|x86.Build.0 = Release|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Test|x86.ActiveCfg = Debug|Any CPU
+		{48B3E8DE-DE58-4A1E-9B70-7CD53A739B4D}.Test|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
