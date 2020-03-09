@@ -132,11 +132,15 @@ Namespace MysteryDungeon.PSMD
             DataOffset = Await f.ReadInt32Async(&H2C)
             Dim dataLength = Await f.ReadInt32Async(&H30)
 
-            If Sir0Type <> 5 AndAlso Sir0Type <> 4 Then
+            Dim header As FarcFat5
+            If Sir0Type = 5 Then
+                header = New FarcFat5
+            ElseIf Sir0Type = 4 Then
+                header = New FarcFat4
+            Else
                 Throw New NotSupportedException("Only FARC v4 and v5 are supported for the time being")
             End If
 
-            Dim header = New FarcFat5
             Await header.OpenFile(Await f.ReadAsync(sir0Offset, sir0Length))
             Sir0FatType = header.Sir0Fat5Type
             UseFilenames = header.UsesFilenames
@@ -446,7 +450,15 @@ Namespace MysteryDungeon.PSMD
                 f.EnableInMemoryLoad = False
                 Await f.OpenFile(filename, provider)
 
-                Dim fat As New FarcFat5
+                Dim fat As FarcFat5
+                If Sir0Type = 5 Then
+                    fat = New FarcFat5
+                ElseIf Sir0Type = 4 Then
+                    fat = New FarcFat4
+                Else
+                    Throw New NotSupportedException("Only FARC v4 and v5 are supported for the time being")
+                End If
+
                 fat.Sir0Fat5Type = If(Me.UseFilenames, 0, 1)
                 Dim fileData As New List(Of Byte)
 
