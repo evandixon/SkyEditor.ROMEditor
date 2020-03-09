@@ -15,10 +15,21 @@ namespace SkyEditor.RomEditor.Utilities
             var decompiler = new Decompiler(function);
             decompiler.decompile();
 
-            var output = new StringOutput();
-            decompiler.print(output);
+            try
+            {
+                var output = new StringOutput();
+                decompiler.print(output);
 
-            return output.GetOutput();
+                return output.GetOutput();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.ToString());
+                return $"--[=====[\n" +
+                    $"Encountered exception in LuaDecompiler.DecompileScript:" +
+                    $"{ex}\n" +
+                    $"--]=====]";
+            }
         }
 
         private static LFunction LoadScript(byte[] compiledScript)

@@ -341,7 +341,7 @@ Namespace MysteryDungeon.PSMD.Projects
             Me.Message = My.Resources.Language.LoadingDecompilingScripts
             Me.Progress = 0
 
-            Dim scriptSource As String = Path.Combine(Me.GetRawFilesDir, "romfs", "script")
+            Dim scriptSourceDir As String = Path.Combine(Me.GetRawFilesDir, "romfs", "script")
             Dim scriptDestination As String = Path.Combine(Me.GetRootDirectory, "script")
             Dim filesToOpen As New ConcurrentBag(Of String)
 
@@ -352,15 +352,15 @@ Namespace MysteryDungeon.PSMD.Projects
 
             f.BatchSize = Environment.ProcessorCount * 2
 
-            Await f.RunForEach(Directory.GetFiles(scriptSource, "*.lua", SearchOption.AllDirectories),
-                          Sub(item As String)
-                              Dim dest = item.Replace(scriptSource, scriptDestination)
+            Await f.RunForEach(Directory.GetFiles(scriptSourceDir, "*.lua", SearchOption.AllDirectories),
+                          Sub(scriptSource As String)
+                              Dim dest = scriptSource.Replace(scriptSourceDir, scriptDestination)
                               If Not Directory.Exists(Path.GetDirectoryName(dest)) Then
                                   Directory.CreateDirectory(Path.GetDirectoryName(dest))
                               End If
 
                               Dim decompiledScript = LuaDecompiler.DecompileScript(File.ReadAllBytes(scriptSource))
-                              File.WriteAllText(scriptDestination, decompiledScript)
+                              File.WriteAllText(dest, decompiledScript)
 
                               File.Copy(dest, dest & ".original")
                               filesToOpen.Add(dest)
