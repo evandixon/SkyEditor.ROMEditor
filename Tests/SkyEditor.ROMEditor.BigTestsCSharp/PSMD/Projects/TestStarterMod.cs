@@ -1,14 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SkyEditor.Core;
 using SkyEditor.Core.Projects;
+using SkyEditor.RomEditor.Utilities;
 using SkyEditor.ROMEditor.MysteryDungeon.PSMD.Projects;
-using SkyEditor.ROMEditor.ProcessManagement;
 using SkyEditor.ROMEditor.Projects;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SkyEditor.ROMEditor.BigTestsCSharp.PSMD.Projects
@@ -88,7 +87,6 @@ namespace SkyEditor.ROMEditor.BigTestsCSharp.PSMD.Projects
 
         private async Task IInitializeTheSolutionWithAPSMDUSROM(string romName)
         {
-            var pluginManager = PluginManager;
             var applicationViewModel = ApplicationViewModel;
 
             var solution = applicationViewModel.CurrentSolution;
@@ -162,7 +160,7 @@ namespace SkyEditor.ROMEditor.BigTestsCSharp.PSMD.Projects
             }
         }
 
-        private async Task ThePersonalityTestShouldHaveBeenProperlyPatched()
+        private void ThePersonalityTestShouldHaveBeenProperlyPatched()
         {
             var baseromProject = ApplicationViewModel.CurrentSolution.GetAllProjects().FirstOrDefault(p => p is BaseRomProject) as BaseRomProject;
             if (baseromProject == null)
@@ -182,14 +180,11 @@ namespace SkyEditor.ROMEditor.BigTestsCSharp.PSMD.Projects
                 Assert.Fail("Failed to find modified personality test script: " + modifiedScript);
             }
 
-            using (var unluacManager = new UnluacManager())
-            {
-                var originalScriptContents = await unluacManager.DecompileScript(originalScript);
-                var modifiedScriptContents = await unluacManager.DecompileScript(modifiedScript);
+            var originalScriptContents = LuaDecompiler.DecompileScript(File.ReadAllBytes(originalScript));
+            var modifiedScriptContents = LuaDecompiler.DecompileScript(File.ReadAllBytes(modifiedScript));
 
-                Assert.AreNotEqual(originalScriptContents, modifiedScriptContents, "The personality test script should be different than what it was before being patched.");
-                Assert.IsTrue(modifiedScriptContents.Contains("WINDOW:SysMsg(200000)"), "The modified script should contain 'WINDOW:SysMsg(200000)', which is evidence of Sky Editor's modifications.");
-            }
+            Assert.AreNotEqual(originalScriptContents, modifiedScriptContents, "The personality test script should be different than what it was before being patched.");
+            Assert.IsTrue(modifiedScriptContents.Contains("WINDOW:SysMsg(200000)"), "The modified script should contain 'WINDOW:SysMsg(200000)', which is evidence of Sky Editor's modifications.");
         }
 
         #endregion
@@ -212,7 +207,7 @@ namespace SkyEditor.ROMEditor.BigTestsCSharp.PSMD.Projects
                 await WhenIUnpackTheResultingROM();
 
                 // Then
-                await ThePersonalityTestShouldHaveBeenProperlyPatched();
+                ThePersonalityTestShouldHaveBeenProperlyPatched();
             }
             catch (Exception ex)
             {

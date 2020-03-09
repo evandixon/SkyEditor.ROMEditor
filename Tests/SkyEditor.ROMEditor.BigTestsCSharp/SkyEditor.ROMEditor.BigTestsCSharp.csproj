@@ -85,6 +85,10 @@
     <None Include="TestRoms\placeholder.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SkyEditor.RomEditor.CSharp\SkyEditor.RomEditor.CSharp.csproj">
+      <Project>{48b3e8de-de58-4a1e-9b70-7cd53a739b4d}</Project>
+      <Name>SkyEditor.RomEditor.CSharp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SkyEditor.ROMEditor.Windows\SkyEditor.ROMEditor.Windows.vbproj">
       <Project>{f05c12e8-eab7-4b9e-a8d2-d21b80c1a646}</Project>
       <Name>SkyEditor.ROMEditor.Windows</Name>
