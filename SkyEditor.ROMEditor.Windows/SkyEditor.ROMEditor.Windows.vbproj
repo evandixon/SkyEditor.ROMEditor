@@ -96,7 +96,7 @@
       <HintPath>..\packages\DotNetNdsToolkit.2.0.4\lib\net462\DotNetNdsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DSPatcher, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DS-ROM-Patcher.1.2.2\lib\net462\DSPatcher.exe</HintPath>
+      <HintPath>..\packages\DS-ROM-Patcher.1.2.4\lib\net472\DSPatcher.exe</HintPath>
     </Reference>
     <Reference Include="LanguageStringPatcher, Version=1.0.0.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LanguageStringPatcher.1.0.1\lib\net46\LanguageStringPatcher.exe</HintPath>

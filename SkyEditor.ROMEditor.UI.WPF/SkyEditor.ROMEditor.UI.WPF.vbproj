@@ -81,7 +81,7 @@
       <HintPath>..\packages\DotNetNdsToolkit.2.0.4\lib\net462\DotNetNdsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="DSPatcher, Version=1.0.0.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DS-ROM-Patcher.1.2.2\lib\net462\DSPatcher.exe</HintPath>
+      <HintPath>..\packages\DS-ROM-Patcher.1.2.4\lib\net472\DSPatcher.exe</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
