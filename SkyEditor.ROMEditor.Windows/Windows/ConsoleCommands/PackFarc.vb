@@ -20,10 +20,10 @@ Namespace Windows.ConsoleCommands
 
         Public Overrides Async Function MainAsync(Arguments() As String) As Task
             If Arguments.Count > 1 Then
-                If Directory.Exists(Arguments(0)) Then
-                    Await Farc.Pack(Arguments(0), Arguments(1), Integer.Parse(Arguments(2)), Boolean.Parse(Arguments(3)), CurrentFileSystem)
+                If Directory.Exists(Arguments(1)) Then
+                    Await Farc.Pack(Arguments(1), Arguments(2), Integer.Parse(Arguments(3)), Boolean.Parse(Arguments(4)), CurrentFileSystem)
                 Else
-                    Console.WriteLine("Directory does not exist: " & Arguments(0))
+                    Console.WriteLine("Directory does not exist: " & Arguments(1))
                 End If
             Else
                 Console.WriteLine("Usage: PackFarc <Input Directory> <Output Filename> <FARC Type (4 or 5)> <Use Filenames?>")
